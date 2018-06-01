@@ -1,0 +1,48 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".VocabRecallActivity">
+
+    <!-- using this above for better performance: android:baselineAligned="false" -->
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimaryDark"
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="@drawable/cell_background_unused"
+                  android:baselineAligned="false"
+                  android:orientation="horizontal"
+                  tools:context=".VocabRecallActivity">
+
+        <!-- puzzle fragment -->
+        <fragment android:id="@+id/puzzle_fragment"
+                  class="org.indiv.dls.games.vocabrecall.feature.PuzzleFragment"
+                  android:layout_width="0dp"
+                  android:layout_height="match_parent"
+                  android:layout_weight="1"
+        />
+
+        <!-- answer fragment -->
+        <fragment android:id="@+id/answer_fragment"
+                  class="org.indiv.dls.games.vocabrecall.feature.AnswerFragment"
+                  android:layout_width="@dimen/fragment_answer_width"
+                  android:layout_height="match_parent"
+        />
+
+    </LinearLayout>
+</LinearLayout>

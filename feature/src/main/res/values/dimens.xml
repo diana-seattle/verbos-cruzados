@@ -1,0 +1,17 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <!-- width of answer fragment panel -->
+    <dimen name="fragment_answer_width">325dp</dimen>
+
+    <!-- width of individual cell -->
+    <dimen name="cell_width">25dp</dimen>
+
+    <!-- width of individual cell in puzzle representation in answer dialog -->
+    <dimen name="cell_representation_width">22dp</dimen>
+
+    <!-- height to allow for stats view -->
+    <!--
+    <dimen name="stats_view_height">20dp</dimen>
+    -->
+</resources>

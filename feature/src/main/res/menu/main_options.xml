@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" 
+      xmlns:app="http://schemas.android.com/apk/res-auto" >
+ 
+    <item android:id="@+id/action_startnewgame"
+          android:icon="@drawable/ic_replay_24px"
+          android:title="@string/action_startnewgame" 
+          android:titleCondensed="@string/action_startnewgame_condensed" 
+          app:showAsAction="ifRoom|withText" />
+    <item android:id="@+id/action_showerrors"
+          android:icon="@drawable/ic_report_24px"
+          android:title="@string/action_showerrors"
+          app:showAsAction="ifRoom|withText" />
+    <item android:id="@+id/action_help"
+          android:icon="@drawable/ic_help_24px"
+          android:title="@string/action_help" 
+          app:showAsAction="ifRoom|withText" />
+    <item android:id="@+id/action_give3letters"
+          android:title="@string/action_give3letters" />
+    <item android:id="@+id/action_giveanswer"
+          android:title="@string/action_giveanswer" />
+    <item android:id="@+id/action_playagainsoon"
+          android:title="@string/action_playagainsoon" />    
+    <item android:id="@+id/action_showstats"
+          android:title="@string/action_showstats" />
+</menu>

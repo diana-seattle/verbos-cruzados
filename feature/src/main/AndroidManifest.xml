@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest package="org.indiv.dls.games.vocabrecall.feature"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <activity
+            android:name=".VocabRecallActivity"
+            android:configChanges="screenLayout|orientation|screenSize|smallestScreenSize"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustNothing">
+
+            <!-- For instant app -->
+            <!--<intent-filter android:order="1">-->
+                <!--<action android:name="android.intent.action.VIEW"/>-->
+
+                <!--<category android:name="android.intent.category.BROWSABLE"/>-->
+                <!--<category android:name="android.intent.category.DEFAULT"/>-->
+
+                <!--<data-->
+                    <!--android:host="games.dls.indiv.org"-->
+                    <!--android:pathPattern="/.*"-->
+                    <!--android:scheme="https"/>-->
+            <!--</intent-filter>-->
+
+            <!-- Main activity launched on startup -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".AnswerActivity"
+            android:configChanges="screenLayout|orientation|screenSize|smallestScreenSize"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustNothing">  <!-- needed by ActionBarActivity -->
+
+            <!-- android:windowSoftInputMode="stateHidden" needed to prevent soft keyboard from popping up
+                 automatically when activity opened -->
+        </activity>
+
+        <provider
+            android:name=".content.VocabContentProvider"
+            android:authorities="org.indiv.dls.games.vocabprovider"
+            android:exported="false">
+        </provider>
+
+    </application>
+
+</manifest>

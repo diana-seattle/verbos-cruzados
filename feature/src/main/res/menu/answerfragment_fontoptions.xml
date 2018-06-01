@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_setfont"
+          android:title="@string/action_setfont">
+       	  <menu>
+			  <group android:checkableBehavior="single">
+	     	    <item android:id="@+id/action_font_extra_small"
+	                  android:title="@string/action_font_extra_small" />
+    	     	<item android:id="@+id/action_font_small"
+	                  android:title="@string/action_font_small" />
+	            <item android:id="@+id/action_font_medium"
+	                  android:title="@string/action_font_medium" />
+	            <item android:id="@+id/action_font_large"
+	                  android:title="@string/action_font_large" />
+	            <item android:id="@+id/action_font_extra_large"
+	                  android:title="@string/action_font_extra_large" />
+ 		      </group>
+          </menu>
+    </item>
+</menu>

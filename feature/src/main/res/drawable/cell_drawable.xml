@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level-list
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:drawable="@drawable/cell_border"
+        android:maxLevel="1"
+    />
+    <item
+        android:drawable="@drawable/cell_border_errored"
+        android:maxLevel="2"
+    />
+    <item
+        android:drawable="@drawable/cell_border_selected"
+        android:maxLevel="3"
+    />
+    <item
+        android:drawable="@drawable/cell_border_errored_selected"
+        android:maxLevel="4"
+    />
+</level-list>
