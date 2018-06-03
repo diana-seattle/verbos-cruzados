@@ -1,59 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView android:id="@+id/scrollView_definitions"
             xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingBottom="3dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="3dp"
->
+            android:layout_width="match_parent" android:layout_height="wrap_content">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:paddingBottom="@dimen/default_margin"
+        android:paddingRight="@dimen/default_margin"
+        android:paddingStart="@dimen/default_margin"
+        android:paddingTop="@dimen/half_margin">
 
         <!-- instructions heading -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="8dp"
+            android:paddingBottom="@dimen/half_margin"
             android:text="@string/dialog_help_title"
-            android:textSize="24sp"
-        />
+            android:textColor="@color/light_gray"
+            android:textSize="@dimen/xx_large"/>
+
         <!-- step 1 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dialog_help_step1"
-            android:textSize="18sp"
-        />
+            android:textColor="@color/light_gray"
+            android:textSize="@dimen/large"/>
+
         <!-- step 2 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawablePadding="12sp"
+            android:drawablePadding="12dp"
             android:drawableRight="@drawable/ic_keyboard_24px_white"
             android:gravity="center_vertical"
             android:text="@string/dialog_help_step2"
-            android:textSize="18sp"
-        />
+            android:textColor="@color/light_gray"
+            android:textSize="@dimen/large"/>
+
         <!-- step 3 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dialog_help_step3"
-            android:textSize="18sp"
-        />
-
+            android:textColor="@color/light_gray"
+            android:textSize="@dimen/large"/>
 
         <!-- actions heading -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingTop="15dp"
-            android:text="@string/dialog_help_actions" android:textSize="24sp"
-        />
+            android:paddingBottom="@dimen/half_margin"
+            android:paddingTop="@dimen/default_margin"
+            android:text="@string/dialog_help_actions"
+            android:textColor="@color/light_gray"
+            android:textSize="@dimen/xx_large"/>
+
         <!-- starting new game -->
         <TextView
             android:layout_width="wrap_content"
@@ -62,8 +66,9 @@
             android:drawablePadding="4dp"
             android:gravity="center"
             android:text="@string/dialog_help_startnewgame"
-            android:textSize="18sp"
-        />
+            android:textColor="@color/light_gray"
+            android:textSize="@dimen/large"/>
+
         <!-- showing errors -->
         <TextView
             android:layout_width="wrap_content"
@@ -72,8 +77,9 @@
             android:drawablePadding="4dp"
             android:gravity="center"
             android:text="@string/dialog_help_showerrors"
-            android:textSize="18sp"
-        />
+            android:textColor="@color/light_gray"
+            android:textSize="@dimen/large"/>
+
         <!-- showing help -->
         <TextView
             android:layout_width="wrap_content"
@@ -82,81 +88,84 @@
             android:drawablePadding="4dp"
             android:gravity="center"
             android:text="@string/dialog_help_showhelp"
-            android:textSize="18sp"
-        />
-
+            android:textColor="@color/light_gray"
+            android:textSize="@dimen/large"/>
 
         <!-- menu heading -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingTop="15dp"
+            android:paddingBottom="@dimen/half_margin"
+            android:paddingTop="@dimen/default_margin"
             android:text="@string/dialog_help_menu"
-            android:textSize="24sp"
-        />
+            android:textColor="@color/light_gray"
+            android:textSize="@dimen/xx_large"/>
+
         <!-- menu - stats -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_dot_24dp"
-            android:drawablePadding="8dp"
+            android:drawablePadding="@dimen/half_margin"
             android:gravity="center"
             android:text="@string/action_showstats"
-            android:textSize="18sp"
-        />
+            android:textColor="@color/light_gray"
+            android:textSize="@dimen/large"/>
+
         <!-- menu - font -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_dot_24dp"
-            android:drawablePadding="8dp"
+            android:drawablePadding="@dimen/half_margin"
             android:gravity="center"
             android:text="@string/action_setfont"
-            android:textSize="18sp"
-        />
+            android:textColor="@color/light_gray"
+            android:textSize="@dimen/large"/>
+
         <!-- menu - 3 letter hint -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_dot_24dp"
-            android:drawablePadding="8dp"
+            android:drawablePadding="@dimen/half_margin"
             android:gravity="center"
             android:text="@string/action_give3letters"
-            android:textSize="18sp"
-        />
+            android:textColor="@color/light_gray"
+            android:textSize="@dimen/large"/>
+
         <!-- menu - full hint -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_dot_24dp"
-            android:drawablePadding="8dp"
+            android:drawablePadding="@dimen/half_margin"
             android:gravity="center"
             android:text="@string/action_giveanswer"
-            android:textSize="18sp"
-        />
+            android:textColor="@color/light_gray"
+            android:textSize="@dimen/large"/>
+
         <!-- menu - play again soon -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_dot_24dp"
-            android:drawablePadding="8dp"
+            android:drawablePadding="@dimen/half_margin"
             android:gravity="center"
             android:text="@string/action_playagainsoon"
-            android:textSize="18sp"
-        />
-
+            android:textColor="@color/light_gray"
+            android:textSize="@dimen/large"/>
 
         <!-- note about offline play -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="18dp"
+            android:maxWidth="600dp"
+            android:paddingTop="@dimen/default_margin"
             android:text="@string/dialog_help_offline"
-            android:textSize="18sp"
-            android:textStyle="italic"
-        />
-
+            android:textColor="@color/light_gray"
+            android:textSize="@dimen/large"
+            android:textStyle="italic"/>
 
     </LinearLayout>
 </ScrollView>
