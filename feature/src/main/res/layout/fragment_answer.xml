@@ -5,33 +5,31 @@
               android:layout_height="wrap_content"
               android:layout_gravity="center"
               android:background="#FFFFFF"
-              android:orientation="vertical" android:paddingLeft="3dp" android:paddingRight="3dp"
-              android:paddingTop="3dp"
->
-
+              android:orientation="vertical">
 
     <!-- confirmation buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="fill_horizontal"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingEnd="@dimen/quarter_margin"
+        android:paddingStart="@dimen/quarter_margin"
+        android:paddingTop="@dimen/quarter_margin">
         <Button
             android:id="@+id/button_tentative"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:singleLine="true"
-            android:text="@string/dialog_tentative"
-        />
+            android:text="@string/dialog_tentative"/>
         <Button
             android:id="@+id/button_confident"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:singleLine="true"
-            android:text="@string/dialog_confident"
-        />
+            android:text="@string/dialog_confident"/>
     </LinearLayout>
 
 
@@ -44,13 +42,15 @@
 	    android:id="@+id/puzzle_representation_scrollview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" 
-        android:paddingLeft="4dp" android:paddingRight="4dp" android:paddingTop="3dp" >
+        android:paddingStart="@dimen/quarter_margin"
+        android:paddingEnd="@dimen/quarter_margin"
+        android:paddingTop="@dimen/quarter_margin" >
         <LinearLayout 
 		    android:id="@+id/puzzle_representation"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
             android:background="@drawable/cell_background_unused"
-	        android:paddingLeft="2dp" android:paddingRight="2dp" 
+	        android:paddingStart="2dp" android:paddingEnd="2dp"
 	        android:paddingTop="2dp" android:paddingBottom="2dp"   
 		    android:orientation="horizontal" 
 	    />
@@ -59,23 +59,26 @@
     <HorizontalScrollView
         android:id="@+id/puzzle_representation_scrollview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="4dp" android:paddingRight="3dp" android:paddingTop="3dp"
-    >
+        android:layout_height="wrap_content">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/half_margin"
+            android:paddingStart="@dimen/half_margin"
+            android:paddingTop="@dimen/quarter_margin">
 
             <LinearLayout
                 android:id="@+id/puzzle_representation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/cell_background_unused"
-                android:orientation="horizontal" android:paddingBottom="2dp"
-                android:paddingLeft="2dp" android:paddingRight="2dp"
-                android:paddingTop="2dp"
-            />
+                android:orientation="horizontal"
+                android:paddingBottom="2dp"
+                android:paddingEnd="2dp"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"/>
 
             <TextView
                 android:id="@+id/lbl_letter_count"
@@ -83,8 +86,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical"
                 android:width="70dp"
-                android:paddingLeft="8dp"
-            />
+                android:paddingStart="8dp"/>
+
         </LinearLayout>
     </HorizontalScrollView>
 
@@ -96,17 +99,19 @@
         android:layout_height="wrap_content"
         android:layout_gravity="left"
         android:orientation="horizontal"
-        android:paddingLeft="2dp"
+        android:paddingEnd="@dimen/quarter_margin"
+        android:paddingStart="@dimen/quarter_margin"
         android:paddingTop="2dp"
         android:singleLine="true">
+
         <EditText
             android:id="@+id/txt_answer"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:width="250dp"
             android:drawableRight="@drawable/ic_keyboard_24px"
             android:imeOptions="actionDone"
-            android:inputType="text"
-        >
+            android:inputType="text">
             <!-- In conjunction with android:inputType=”text”, android:imeOptions=”actionDone” configures
                  the soft keyboard to show a Done key in place of the Enter key. -->
 
@@ -120,8 +125,8 @@
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:layout_gravity="left|center_vertical"
+                   android:layout_marginStart="@dimen/quarter_margin"
                    android:contentDescription="@string/dialog_deletetext"
-                   android:layout_marginStart="4dp"
                    android:src="@drawable/ic_delete_24px"/>
 
     </LinearLayout>
@@ -131,84 +136,81 @@
     <ScrollView
         android:id="@+id/scrollView_definitions"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
-        android:paddingTop="8dp">
+        android:layout_height="wrap_content">
+
         <LinearLayout
             android:id="@+id/layout_definition_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/quarter_margin"
+            android:paddingEnd="@dimen/half_margin"
+            android:paddingStart="@dimen/half_margin"
+            android:paddingTop="@dimen/half_margin">
+
             <TextView android:id="@+id/textview_attribution_ahd"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:paddingTop="2dp"
+                      android:paddingTop="@dimen/quarter_margin"
                       android:text="@string/attribution_ahd"
-                      android:textSize="13sp"
-                      android:textStyle="italic"
-            />
+                      android:textColor="@color/dark_gray"
+                      android:textSize="@dimen/small"
+                      android:textStyle="italic"/>
             <TextView android:id="@+id/textview_definitions_ahd"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:textSize="18sp"
-            />
+                      android:textSize="@dimen/large"/>
 
             <TextView android:id="@+id/textview_attribution_wiktionary"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:paddingTop="10dp"
+                      android:paddingTop="@dimen/half_margin"
                       android:text="@string/attribution_wiktionary"
-                      android:textSize="13sp"
-                      android:textStyle="italic"
-            />
+                      android:textColor="@color/dark_gray"
+                      android:textSize="@dimen/small"
+                      android:textStyle="italic"/>
             <TextView android:id="@+id/textview_definitions_wiktionary"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:textSize="18sp"
-            />
+                      android:textSize="@dimen/large"/>
 
             <TextView android:id="@+id/textview_attribution_century"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:paddingTop="10dp"
+                      android:paddingTop="@dimen/half_margin"
                       android:text="@string/attribution_century"
-                      android:textSize="13sp"
-                      android:textStyle="italic"
-            />
+                      android:textColor="@color/dark_gray"
+                      android:textSize="@dimen/small"
+                      android:textStyle="italic"/>
             <TextView android:id="@+id/textview_definitions_century"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:textSize="18sp"
-            />
+                      android:textSize="@dimen/large"/>
 
             <TextView android:id="@+id/textview_attribution_webster"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:paddingTop="10dp"
+                      android:paddingTop="@dimen/half_margin"
                       android:text="@string/attribution_webster"
-                      android:textSize="13sp"
-                      android:textStyle="italic"
-            />
+                      android:textColor="@color/dark_gray"
+                      android:textSize="@dimen/small"
+                      android:textStyle="italic"/>
             <TextView android:id="@+id/textview_definitions_webster"
                       android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:textSize="18sp"
-            />
+                      android:textSize="@dimen/large"/>
 
             <!-- hyperlinked wordnik image (as per requirements) -->
             <ImageView android:id="@+id/image_wordnik"
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
                        android:layout_gravity="center|bottom"
-                       android:layout_marginBottom="2dp"
-                       android:layout_marginTop="25dp"
+                       android:layout_marginBottom="@dimen/quarter_margin"
+                       android:layout_marginTop="@dimen/large_margin"
                        android:contentDescription="@string/attribution_wordnik"
-                       android:src="@drawable/wordnik_badge_a2"
-            />
+                       android:src="@drawable/wordnik_badge_a2"/>
         </LinearLayout>
     </ScrollView>
-
 
 </LinearLayout>
 

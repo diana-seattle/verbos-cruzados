@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Margins -->
+    <dimen name="quarter_margin">4dp</dimen>
+    <dimen name="half_margin">8dp</dimen>
+    <dimen name="default_margin">16dp</dimen>
+    <dimen name="large_margin">24dp</dimen>
+    <dimen name="double_margin">32dp</dimen>
+
+    <!-- Text sizes -->
+    <dimen name="x_small">12sp</dimen>
+    <dimen name="small">14sp</dimen>
+    <dimen name="medium">16sp</dimen>
+    <dimen name="large">18sp</dimen>
+    <dimen name="x_large">20sp</dimen>
+    <dimen name="xx_large">24sp</dimen>
+
+</resources>
