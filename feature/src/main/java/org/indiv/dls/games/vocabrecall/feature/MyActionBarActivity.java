@@ -19,18 +19,22 @@ import android.widget.TextView;
 
 public abstract class MyActionBarActivity extends AppCompatActivity {
 
-    // some global static variables
+    //region CLASS VARIABLES -----------------------------------------------------------------------
+
+    // some static variables
     public static GameWord sCurrentGameWord;
     public static List<TextView> sPuzzleRepresentation;
     protected static ContentHelper sDbHelper;
     protected static int sGamesCompleted = 0;
     protected static int sWordsCompleted = 0;
-    protected static boolean sShowingErrors = false;
     protected static boolean sDbSetupComplete = false;
-
 
     protected Menu mOptionsMenu;
     protected Toolbar mToolbar;
+
+    //endregion
+
+    //region OVERRIDDEN METHODS --------------------------------------------------------------------
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -63,18 +67,7 @@ public abstract class MyActionBarActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         int i = item.getItemId();
-        if (i == android.R.id.home) {// in response to back button on answer activity, close answer activity
-            // (back button enabled by calling getSupportActionBar().setDisplayHomeAsUpEnabled(true) in Activity.onCreate, see http://stackoverflow.com/questions/10108774/android-actionbar-back-button)
-            setResult(Activity.RESULT_CANCELED);
-            finish();
-            return true;
-        } else if (i == R.id.action_showerrors) {
-            showErrors(!sShowingErrors);
-            return true;
-        } else if (i == R.id.action_startnewgame) {
-            promptForNewGame(null);
-            return true;
-        } else if (i == R.id.action_help) {
+        if (i == R.id.action_help) {
             showHelpDialog();
             return true;
         } else if (i == R.id.action_showstats) {
@@ -94,15 +87,12 @@ public abstract class MyActionBarActivity extends AppCompatActivity {
         }
     }
 
+    //endregion
 
-    /*
-     * override to show/hide errors in puzzle
-     */
-    protected void showErrors(boolean showErrors) {
-        sShowingErrors = showErrors;
-        // set menu text to opposite of what we're currently doing
-        setOptionsMenuText(R.id.action_showerrors, sShowingErrors ? R.string.action_hideerrors : R.string.action_showerrors);
-    }
+    //region PUBLIC CLASS METHODS ------------------------------------------------------------------
+    //endregion
+
+    //region PROTECTED CLASS METHODS ---------------------------------------------------------------
 
     /*
      * override to display answer
@@ -122,31 +112,19 @@ public abstract class MyActionBarActivity extends AppCompatActivity {
         // subclass handles the rest
     }
 
-
-    protected void setOptionsMenuText(int menuItemId, String text) {
-        mOptionsMenu.findItem(menuItemId).setTitle(text);
-    }
-
     protected void setOptionsMenuText(int menuItemId, int textId) {
         if (mOptionsMenu != null) {
             mOptionsMenu.findItem(menuItemId).setTitle(textId);
         }
     }
 
-    public void showHelpDialog() {
+    protected void showHelpDialog() {
         new HelpDialogFragment().show(getSupportFragmentManager(), "fragment_showhelp");
     }
 
-    protected void promptForNewGame(String extraMessage) {
-        ConfirmStartNewGameDialogFragment dlg = new ConfirmStartNewGameDialogFragment();
-        if (extraMessage != null) {
-            dlg.setExtraMessage(extraMessage);
-        }
-        dlg.showDlg((ConfirmStartNewGameDialogFragment.StartNewGameDialogListener) this,
-                getSupportFragmentManager(), "fragment_startnewgame");
-    }
+    //endregion
 
-    // ----- private methods -------//
+    //region PRIVATE METHODS -----------------------------------------------------------------------
 
     private void showStatsDialog() {
         ContentHelper.WordsSolvedStats stats = sDbHelper.getWordsSolvedStats();
@@ -154,5 +132,7 @@ public abstract class MyActionBarActivity extends AppCompatActivity {
         dlg.setStats(sGamesCompleted, sWordsCompleted, stats);
         dlg.show(getSupportFragmentManager(), "fragment_showstats");
     }
+
+    //endregion
 
 }

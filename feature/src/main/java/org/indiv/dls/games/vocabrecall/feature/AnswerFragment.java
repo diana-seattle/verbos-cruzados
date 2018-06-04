@@ -179,15 +179,8 @@ public class AnswerFragment extends Fragment {
             return true;
         });
 
-
-        // Show soft keyboard automatically
-        // (this works when called from onCreateView, but not from onClick)
-//	     mTextEditorAnswer.requestFocus();
-//	     getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
         return mFragmentView;
     }
-
 
     @Override
     public void onResume() { // called when activity in foreground again
@@ -307,12 +300,7 @@ public class AnswerFragment extends Fragment {
 
     // called by main activity in dual pane mode
     public void setGameWord() {
-//    public void setGameWord(GameWord gameWord, List<TextView> puzzleRepresentation) {
-//        mGameWord = gameWord;
-//        mWordLength = mGameWord.getWord().length();
-//        mPuzzleRepresentation = puzzleRepresentation;
-
-        // if dual pane mode, update game word, otherwise do it when dialog done drawing itself 
+        // if dual pane mode, update game word, otherwise do it when dialog done drawing itself
         if (mLayoutPuzzleRepresentation != null) {
             updateGameWord();
         }
@@ -320,13 +308,7 @@ public class AnswerFragment extends Fragment {
 
     // called by activity
     public void clearGameWord() {
-//        mGameWord = null;
-//        mWordLength = 0;
-//        if (mPuzzleRepresentation != null) {
-//        	mPuzzleRepresentation.clear();
-//        }
-
-        // if dual pane mode, update game word, otherwise do it when dialog done drawing itself 
+        // if dual pane mode, update game word, otherwise do it when dialog done drawing itself
         if (mLayoutPuzzleRepresentation != null) {
             mLayoutPuzzleRepresentation.removeAllViews();
             mTextEditorAnswer.setText("");
@@ -336,6 +318,12 @@ public class AnswerFragment extends Fragment {
             ((TextView) view.findViewById(R.id.textview_definitions_century)).setText(""); // in dual panel mode, there may be existing text
             ((TextView) view.findViewById(R.id.textview_definitions_webster)).setText(""); // in dual panel mode, there may be existing text
         }
+    }
+
+    public void hideSoftKeyboardForAnswer() {
+        // this works when called from onClick, but not from onCreateView (don't know why)
+        InputMethodManager keyboard = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        keyboard.hideSoftInputFromWindow(mTextEditorAnswer.getWindowToken(), 0);
     }
 
     //endregion
@@ -399,7 +387,6 @@ public class AnswerFragment extends Fragment {
         mScrollViewDefinitions.fullScroll(ScrollView.FOCUS_UP);
     }
 
-
     private void updateDefinitionViews(List<Definition> definitions, TextView textViewAttribution, TextView textViewDefinitions) {
         // update definitions
         textViewDefinitions.setText(""); // in dual panel mode, there may be existing text
@@ -423,7 +410,6 @@ public class AnswerFragment extends Fragment {
             }
         }
     }
-
 
     private void updateActivityWithAnswer(boolean confident) {
 
@@ -463,12 +449,6 @@ public class AnswerFragment extends Fragment {
         int letterCount = getUserEntry().length();
         String letterCountText = letterCount + " / " + mWordLength;
         mTextViewLetterCount.setText(letterCountText);
-    }
-
-    private void hideSoftKeyboardForAnswer() {
-        // this works when called from onClick, but not from onCreateView (don't know why)
-        InputMethodManager keyboard = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        keyboard.hideSoftInputFromWindow(mTextEditorAnswer.getWindowToken(), 0);
     }
 
     private void showSoftKeyboardForAnswer() {

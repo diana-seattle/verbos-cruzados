@@ -1,8 +1,10 @@
 package org.indiv.dls.games.vocabrecall.feature;
 
+import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 
 /*
  * this class is only used in single pane mode (on smaller screens)
@@ -41,6 +43,21 @@ public class AnswerActivity extends MyActionBarActivity {
         getMenuInflater().inflate(R.menu.answerfragment_options, menu);
         mOptionsMenu = menu;
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            // in response to back button on answer activity, close answer activity
+            mAnswerFragment.hideSoftKeyboardForAnswer();
+            setResult(Activity.RESULT_CANCELED);
+            finish();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     /*

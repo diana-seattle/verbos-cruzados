@@ -133,6 +133,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -167,6 +168,8 @@ public class VocabRecallActivity extends MyActionBarActivity
     private ProgressDialog mProgressDialog;
     private long timeProgressDialogShown = 0;
     private boolean mHelpShownYet = false;
+
+    protected static boolean sShowingErrors = false;
 
     //endregion
 
@@ -281,13 +284,19 @@ public class VocabRecallActivity extends MyActionBarActivity
         }
     }
 
-    /*
-     * overriding to show/hide errors in puzzle
-     */
     @Override
-    protected void showErrors(boolean showErrors) {
-        super.showErrors(showErrors);
-        mPuzzleFragment.showErrors(showErrors);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        int i = item.getItemId();
+        if (i == R.id.action_showerrors) {
+            showErrors(!sShowingErrors);
+            return true;
+        } else if (i == R.id.action_startnewgame) {
+            promptForNewGame(null);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     /*
@@ -443,6 +452,24 @@ public class VocabRecallActivity extends MyActionBarActivity
     //endregion
 
     //region PRIVATE METHODS -----------------------------------------------------------------------
+
+    /*
+     * show/hide errors in puzzle
+     */
+    private void showErrors(boolean showErrors) {
+        sShowingErrors = showErrors;
+        setOptionsMenuText(R.id.action_showerrors, sShowingErrors ? R.string.action_hideerrors : R.string.action_showerrors);
+        mPuzzleFragment.showErrors(showErrors);
+    }
+
+    private void promptForNewGame(String extraMessage) {
+        ConfirmStartNewGameDialogFragment dlg = new ConfirmStartNewGameDialogFragment();
+        if (extraMessage != null) {
+            dlg.setExtraMessage(extraMessage);
+        }
+        dlg.showDlg((ConfirmStartNewGameDialogFragment.StartNewGameDialogListener) this,
+                getSupportFragmentManager(), "fragment_startnewgame");
+    }
 
     /**
      * this is called when db setup completes
