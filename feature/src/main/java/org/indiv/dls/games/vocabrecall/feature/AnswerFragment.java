@@ -173,28 +173,21 @@ public class AnswerFragment extends Fragment {
         // wordnik image
         View wordnikImg = mFragmentView.findViewById(R.id.image_wordnik);
         wordnikImg.setOnLongClickListener(v -> {
-            GameWord gameWord = MyActionBarActivity.sCurrentGameWord;
+            GameWord gameWord = MyActionBarActivity.Companion.getSCurrentGameWord();
             Uri uri = Uri.parse("https://www.wordnik.com/words/" + gameWord.getWord().toLowerCase());
             startActivity(new Intent(Intent.ACTION_VIEW, uri));
             return true;
         });
 
-
-        // Show soft keyboard automatically
-        // (this works when called from onCreateView, but not from onClick)
-//	     mTextEditorAnswer.requestFocus();
-//	     getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
         return mFragmentView;
     }
-
 
     @Override
     public void onResume() { // called when activity in foreground again
         super.onResume();
 
         // if showing fragment in separate activity, need to update game word info here
-        if (MyActionBarActivity.sCurrentGameWord != null) {
+        if (MyActionBarActivity.Companion.getSCurrentGameWord() != null) {
             updateGameWord();
         } else {
             // if single pane, and phone turned off, then back on, and user returns to answer activity, definitions will be empty, so handle that case
@@ -276,13 +269,13 @@ public class AnswerFragment extends Fragment {
     //region PUBLIC CLASS METHODS ------------------------------------------------------------------
 
     public void giveAnswer() {
-        String answer = MyActionBarActivity.sCurrentGameWord.getWord().toLowerCase();
+        String answer = MyActionBarActivity.Companion.getSCurrentGameWord().getWord().toLowerCase();
         mTextEditorAnswer.setText(answer);
         updateDualPaneActivityWithAnswer(answer, true);
     }
 
     public void give3LetterHint() {
-        String hint = MyActionBarActivity.sCurrentGameWord.get3LetterHint().toLowerCase();
+        String hint = MyActionBarActivity.Companion.getSCurrentGameWord().get3LetterHint().toLowerCase();
         mTextEditorAnswer.setText(hint);
         updateDualPaneActivityWithAnswer(hint, true);
     }
@@ -307,12 +300,7 @@ public class AnswerFragment extends Fragment {
 
     // called by main activity in dual pane mode
     public void setGameWord() {
-//    public void setGameWord(GameWord gameWord, List<TextView> puzzleRepresentation) {
-//        mGameWord = gameWord;
-//        mWordLength = mGameWord.getWord().length();
-//        mPuzzleRepresentation = puzzleRepresentation;
-
-        // if dual pane mode, update game word, otherwise do it when dialog done drawing itself 
+        // if dual pane mode, update game word, otherwise do it when dialog done drawing itself
         if (mLayoutPuzzleRepresentation != null) {
             updateGameWord();
         }
@@ -320,13 +308,7 @@ public class AnswerFragment extends Fragment {
 
     // called by activity
     public void clearGameWord() {
-//        mGameWord = null;
-//        mWordLength = 0;
-//        if (mPuzzleRepresentation != null) {
-//        	mPuzzleRepresentation.clear();
-//        }
-
-        // if dual pane mode, update game word, otherwise do it when dialog done drawing itself 
+        // if dual pane mode, update game word, otherwise do it when dialog done drawing itself
         if (mLayoutPuzzleRepresentation != null) {
             mLayoutPuzzleRepresentation.removeAllViews();
             mTextEditorAnswer.setText("");
@@ -338,17 +320,23 @@ public class AnswerFragment extends Fragment {
         }
     }
 
+    public void hideSoftKeyboardForAnswer() {
+        // this works when called from onClick, but not from onCreateView (don't know why)
+        InputMethodManager keyboard = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        keyboard.hideSoftInputFromWindow(mTextEditorAnswer.getWindowToken(), 0);
+    }
+
     //endregion
 
     //region PRIVATE METHODS -----------------------------------------------------------------------
 
     private void updateGameWord() {
-        GameWord gameWord = MyActionBarActivity.sCurrentGameWord;
+        GameWord gameWord = MyActionBarActivity.Companion.getSCurrentGameWord();
         mWordLength = gameWord.getWord().length();
 
         // update puzzle representation
         mLayoutPuzzleRepresentation.removeAllViews();  // may have previous contents when displayed in dual pane 
-        for (TextView v : MyActionBarActivity.sPuzzleRepresentation) {
+        for (TextView v : MyActionBarActivity.Companion.getSPuzzleRepresentation()) {
             mLayoutPuzzleRepresentation.addView(v);
             if (v.getText() == null || v.getText().length() == 0) {
                 v.setTextColor(COLOR_ANSWER);
@@ -399,7 +387,6 @@ public class AnswerFragment extends Fragment {
         mScrollViewDefinitions.fullScroll(ScrollView.FOCUS_UP);
     }
 
-
     private void updateDefinitionViews(List<Definition> definitions, TextView textViewAttribution, TextView textViewDefinitions) {
         // update definitions
         textViewDefinitions.setText(""); // in dual panel mode, there may be existing text
@@ -423,7 +410,6 @@ public class AnswerFragment extends Fragment {
             }
         }
     }
-
 
     private void updateActivityWithAnswer(boolean confident) {
 
@@ -463,12 +449,6 @@ public class AnswerFragment extends Fragment {
         int letterCount = getUserEntry().length();
         String letterCountText = letterCount + " / " + mWordLength;
         mTextViewLetterCount.setText(letterCountText);
-    }
-
-    private void hideSoftKeyboardForAnswer() {
-        // this works when called from onClick, but not from onCreateView (don't know why)
-        InputMethodManager keyboard = (InputMethodManager) mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        keyboard.hideSoftInputFromWindow(mTextEditorAnswer.getWindowToken(), 0);
     }
 
     private void showSoftKeyboardForAnswer() {
