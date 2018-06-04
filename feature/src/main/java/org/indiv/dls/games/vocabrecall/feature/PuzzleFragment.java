@@ -276,17 +276,17 @@ public class PuzzleFragment extends Fragment {
         showAsSelected(mCurrentGameWord, true);
     }
 
-    public Integer selectNextErroredGameWord(int startingRow) {
+    public boolean selectNextErroredGameWord() {
         for (int row = 0; row < mGridHeight; row++) {
             for (int col = 0; col < mGridWidth; col++) {
                 GridCell gridCell = mCellGrid[row][col];
                 if (gridCell != null && gridCell.hasUserError()) {
                     setCurrentGameWord(gridCell.getGameWordAcross() != null ? gridCell.getGameWordAcross() : gridCell.getGameWordDown());
-                    return row;
+                    return true;
                 }
             }
         }
-        return null;
+        return false;
     }
 
     public boolean showErrors(boolean showErrors) {

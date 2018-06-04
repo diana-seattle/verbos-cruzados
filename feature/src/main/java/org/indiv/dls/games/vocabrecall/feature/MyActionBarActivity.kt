@@ -23,10 +23,10 @@ abstract class MyActionBarActivity : AppCompatActivity() {
     companion object {
         var sCurrentGameWord: GameWord? = null
         var sPuzzleRepresentation: List<TextView>? = null
-        protected var sDbHelper: ContentHelper? = null
-        protected var sGamesCompleted = 0
-        protected var sWordsCompleted = 0
-        protected var sDbSetupComplete = false
+        var sDbHelper: ContentHelper? = null
+        var sDbSetupComplete = false
+        var sGamesCompleted = 0
+        var sWordsCompleted = 0
     }
 
     //endregion
