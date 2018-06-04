@@ -173,7 +173,7 @@ public class AnswerFragment extends Fragment {
         // wordnik image
         View wordnikImg = mFragmentView.findViewById(R.id.image_wordnik);
         wordnikImg.setOnLongClickListener(v -> {
-            GameWord gameWord = MyActionBarActivity.sCurrentGameWord;
+            GameWord gameWord = MyActionBarActivity.Companion.getSCurrentGameWord();
             Uri uri = Uri.parse("https://www.wordnik.com/words/" + gameWord.getWord().toLowerCase());
             startActivity(new Intent(Intent.ACTION_VIEW, uri));
             return true;
@@ -187,7 +187,7 @@ public class AnswerFragment extends Fragment {
         super.onResume();
 
         // if showing fragment in separate activity, need to update game word info here
-        if (MyActionBarActivity.sCurrentGameWord != null) {
+        if (MyActionBarActivity.Companion.getSCurrentGameWord() != null) {
             updateGameWord();
         } else {
             // if single pane, and phone turned off, then back on, and user returns to answer activity, definitions will be empty, so handle that case
@@ -269,13 +269,13 @@ public class AnswerFragment extends Fragment {
     //region PUBLIC CLASS METHODS ------------------------------------------------------------------
 
     public void giveAnswer() {
-        String answer = MyActionBarActivity.sCurrentGameWord.getWord().toLowerCase();
+        String answer = MyActionBarActivity.Companion.getSCurrentGameWord().getWord().toLowerCase();
         mTextEditorAnswer.setText(answer);
         updateDualPaneActivityWithAnswer(answer, true);
     }
 
     public void give3LetterHint() {
-        String hint = MyActionBarActivity.sCurrentGameWord.get3LetterHint().toLowerCase();
+        String hint = MyActionBarActivity.Companion.getSCurrentGameWord().get3LetterHint().toLowerCase();
         mTextEditorAnswer.setText(hint);
         updateDualPaneActivityWithAnswer(hint, true);
     }
@@ -331,12 +331,12 @@ public class AnswerFragment extends Fragment {
     //region PRIVATE METHODS -----------------------------------------------------------------------
 
     private void updateGameWord() {
-        GameWord gameWord = MyActionBarActivity.sCurrentGameWord;
+        GameWord gameWord = MyActionBarActivity.Companion.getSCurrentGameWord();
         mWordLength = gameWord.getWord().length();
 
         // update puzzle representation
         mLayoutPuzzleRepresentation.removeAllViews();  // may have previous contents when displayed in dual pane 
-        for (TextView v : MyActionBarActivity.sPuzzleRepresentation) {
+        for (TextView v : MyActionBarActivity.Companion.getSPuzzleRepresentation()) {
             mLayoutPuzzleRepresentation.addView(v);
             if (v.getText() == null || v.getText().length() == 0) {
                 v.setTextColor(COLOR_ANSWER);

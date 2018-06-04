@@ -1,105 +1,35 @@
 package org.indiv.dls.games.vocabrecall.feature;
 
 /*
- * author: Diana Sutlief
- * skills: UI layout, SQLite database, user preferences, file I/O, background processes, RESTful service client, JSON, 
- *         support for API level 8 and above, fragments, dialogs, event handling, action bar, 
- *         adapting to multiple screen sizes (single and dual pane layout), multiple activities, progress dialog 
- *         AndEngine? media player? context menu? github? 
- *         
- * desc: over 4000/5000 words (such as ...), helps improve recall of commonly used vocabulary which is often heard and read
+ * Over 4000/5000 words (such as ...), helps improve recall of commonly used vocabulary which is often heard and read
  * but which may be occasionally difficult to recall at the appropriate time due to infrequent personal use.
  * (the focus is on words you tend to already know but may occasionally struggle to recall due to infrequent use)
  * Definitions as clues aren't perfect. Some are too easy and some too hard, but I've done my best to programmatically
- * redact text that givew away the answer. The emphasis is not on trying to stump you, but on giving you practice
+ * redact text that gives away the answer. The emphasis is not on trying to stump you, but on giving you practice
  * recalling words so it will become easier during natural conversation. A limited number of hints are available per
  * game for those last few words that are difficult to get. 
  * 
- * Words such as perpetuate, propagate, legacy, blemish, exacerbate
- * infiltrate, prolong, endorse, advocate, traipse, reconvene
+ * Words such as perpetuate, propagate, legacy, blemish, exacerbate, infiltrate, prolong, endorse, advocate, traipse, reconvene
  * 
  * Wordnik: As a game is completed, definitions used in that game are flushed from the the cache and definitions
  * of new words are retrieved to replace them.
  * 
- * 
- *         "super blast fun words"
- *         
-A crossword puzzle game for strengthening your vocabulary recall ability.
-We all encounter a rich vocabulary of words heard and read in the media we consume. However, our word recognition is often much stronger than our word recall due to less frequent personal use of those words. Often mid-sentence, we discover that the precise word needed to complete the thought isn't going to materialize, and we have to substitute less descriptive ones.
-This game takes the form of a crossword puzzle, with dictionary entries as clues. The emphasis is not on trying to stump you, but on giving you practice recalling words so it will become easier during natural conversation. A limited number of extra hints are available per game for those last few words that are difficult to get. 
-Definitions are provided by American Heritage� Dictionary, Wiktionary, The Century Dictionary, and the GNU version of the Collaborative International Dictionary of English. When the word or a portion of the word is included in the definition, asterisks are substituted in place of the word.
-Examples of words include perpetuate, propagate, legacy, blemish, exacerbate, infiltrate, prolong, endorse, advocate, traipse, reconvene.
-This game may be played offline. However, playing with an active network connection will provide a greater variety of words.
-
-// Play Store: https://play.google.com/store/apps/details?id=org.indiv.dls.games.vocabrecall 
- 
-//1. Click on the Accept button at the bottom of this email.
-//2. Open this link: https://play.google.com/apps/testing/org.indiv.dls.games.vocabrecall
-//3. Click on the "Download Vocab Recall Crossword from the Play Store" link
- *   alpha testing: https://play.google.com/apps/testing/org.indiv.dls.games.vocabrecall
- *    (found on publishing site under "manage list of testers")				      
+ * A crossword puzzle game for strengthening your vocabulary recall ability.
+ * We all encounter a rich vocabulary of words heard and read in the media we consume. However, our word recognition is often much stronger than our word recall due to less frequent personal use of those words. Often mid-sentence, we discover that the precise word needed to complete the thought isn't going to materialize, and we have to substitute less descriptive ones.
+ * This game takes the form of a crossword puzzle, with dictionary entries as clues. The emphasis is not on trying to stump you, but on giving you practice recalling words so it will become easier during natural conversation. A limited number of extra hints are available per game for those last few words that are difficult to get.
+ * Definitions are provided by American Heritage� Dictionary, Wiktionary, The Century Dictionary, and the GNU version of the Collaborative International Dictionary of English. When the word or a portion of the word is included in the definition, asterisks are substituted in place of the word.
+ * Examples of words include perpetuate, propagate, legacy, blemish, exacerbate, infiltrate, prolong, endorse, advocate, traipse, reconvene.
+ * This game may be played offline. However, playing with an active network connection will provide a greater variety of words.
+ *
+ * Play Store: https://play.google.com/store/apps/details?id=org.indiv.dls.games.vocabrecall
  */
 
-
-//
-//TODO: install on google play as beta (http://developer.android.com/training/distribute.html)
-//TODO: contact wordnik for >15k limit 
-//
 //TODO: new full set of initial definitions
-//TODO: verify stats working correctly, play soon 
-//TODO: error/exception handling
-//TODO: test wifi only on phone w/o data plan
-//TODO: test variety of screen sizes
-//
-//TODO: optimize one-time initialization   
-//TODO: zoom puzzle / Andengine / gridLayout?
-//
-//TODO: confirm sqlite transaction isolation
-//TODO: prepare next game in background 
-//
-
-
-//TODO:
-//load user preferences (http://developer.android.com/guide/topics/data/data-storage.html#pref)
-//action bar (http://developer.android.com/training/basics/actionbar/index.html)
-//fragments (http://developer.android.com/training/basics/fragments/index.html)
-//user specified words?
-
-//clearing cache of devices on google play: https://productforums.google.com/forum/#!topic/mobile/DomkP6dWgzo
-
-/*
- * C:\mobile\workspace\vocabrecall\z-myFolderForVariousFiles\DICTIONARY
-
-.output c:/tmp/definitions.txt
-
---select case when length(d.definition)>500 then 'ZZZ'||d.WORD else d.WORD end as WORD, d.DEF_ORDER, d.SOURCE, d.PART_OF_SPEECH, d.DEFINITION 
-select d.* 
-from definition d, word w 
-where d.word=w.word and w.NEVER_PLAY=0 and w.DEF_NOT_FOUND=0
-order by w.RANDOMIZER, w.word, d.def_order 
---limit 1000
-
-.output stdout
-
-
-select * from definition where word in  
-(select word from definition d group by word having count(*) = 2); 
-
-select count(distinct d.word) from definition d, word w 
-where d.word=w.word and w.NEVER_PLAY=0 and w.DEF_NOT_FOUND=0;
-
- */
+//TODO: optimize one-time initialization
 
 
 /*
-focus on vocab recall rather than trivia
-speech recognition
-learning a foreign language?
-pinch or dblclick zoom in/out
-
 wordnik: http://developer.wordnik.com/docs.html#!/word/getDefinitions_get_2
-my API key: f4e5b019cbc525972530c0bf0a0088162bff83d8464c1883a
-(email on nov 9,2013)
 wordnik usage stats: http://api.wordnik.com/v4/account.json/apiTokenStatus?api_key=f4e5b019cbc525972530c0bf0a0088162bff83d8464c1883a
 
 similar to:
@@ -181,14 +111,14 @@ public class VocabRecallActivity extends MyActionBarActivity
         setContentView(R.layout.activity_vocabrecall);
 
         // Set up toolbar
-        mToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        setToolbar(findViewById(R.id.toolbar));
+        setSupportActionBar(getToolbar());
         if (BuildConfig.BUILD_TYPE == "debug") {
-            mToolbar.setOnLongClickListener(v -> {
+            getToolbar().setOnLongClickListener(v -> {
                 Integer startingRow = mPuzzleFragment.getCurrentGameWord().getRow();
                 do {
-                    sCurrentGameWord = mPuzzleFragment.getCurrentGameWord();
-                    String answer = sCurrentGameWord.getWord().toLowerCase();
+                    Companion.setSCurrentGameWord(mPuzzleFragment.getCurrentGameWord());
+                    String answer = Companion.getSCurrentGameWord().getWord().toLowerCase();
                     onFinishAnswerDialog(answer, true);
                 } while ((startingRow = mPuzzleFragment.selectNextErroredGameWord(startingRow)) != null);
                 return true;
@@ -234,8 +164,8 @@ public class VocabRecallActivity extends MyActionBarActivity
 
 
         // get database
-        sDbHelper = new ContentHelper(this);
-        mCompositeDisposable.add(mDbSetup.ensureDbLoaded(this, sDbHelper)
+        Companion.setSDbHelper(new ContentHelper(this));
+        mCompositeDisposable.add(mDbSetup.ensureDbLoaded(this, Companion.getSDbHelper())
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onProgressDbSetup,
@@ -251,7 +181,7 @@ public class VocabRecallActivity extends MyActionBarActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_options, menu);
-        mOptionsMenu = menu;
+        setOptionsMenu(menu);
         return true;
     }
 
@@ -262,11 +192,11 @@ public class VocabRecallActivity extends MyActionBarActivity
         mCompositeDisposable.clear();
 
         // reset static variables since these may stick around after activity destroyed
-        sPuzzleRepresentation = null;
-        sCurrentGameWord = null;
-        sDbHelper = null;
+        Companion.setSPuzzleRepresentation(null);
+        Companion.setSCurrentGameWord(null);
+        Companion.setSDbHelper(null);
         sShowingErrors = false;
-        sDbSetupComplete = false;
+        Companion.setSDbSetupComplete(false);
     }
 
     @Override
@@ -308,7 +238,7 @@ public class VocabRecallActivity extends MyActionBarActivity
         if (mAnswerFragment != null) { // dual pane mode
             mAnswerFragment.giveAnswer();
         } else { // else single pane mode and answer activity not visible
-            onFinishAnswerDialog(sCurrentGameWord.getWord(), true);
+            onFinishAnswerDialog(Companion.getSCurrentGameWord().getWord(), true);
         }
     }
 
@@ -321,7 +251,7 @@ public class VocabRecallActivity extends MyActionBarActivity
         if (mAnswerFragment != null) { // dual pane mode
             mAnswerFragment.give3LetterHint();
         } else { // else single pane mode and answer activity not visible
-            onFinishAnswerDialog(sCurrentGameWord.get3LetterHint(), true);
+            onFinishAnswerDialog(Companion.getSCurrentGameWord().get3LetterHint(), true);
         }
     }
 
@@ -334,8 +264,8 @@ public class VocabRecallActivity extends MyActionBarActivity
      */
     @Override
     public void onPuzzleClick(GameWord gameWord) {
-        sCurrentGameWord = gameWord;
-        sPuzzleRepresentation = mPuzzleFragment.getPuzzleRepresentation();
+        Companion.setSCurrentGameWord(gameWord);
+        Companion.setSPuzzleRepresentation(mPuzzleFragment.getPuzzleRepresentation());
 
         if (mAnswerFragment != null) {
             mAnswerFragment.setGameWord(); // update answer fragment with current game word
@@ -369,7 +299,7 @@ public class VocabRecallActivity extends MyActionBarActivity
         mPuzzleFragment.updateUserTextInPuzzle(currentGameWord);
 
         // update database with answer
-        new Thread(() -> sDbHelper.updateGameWordUserEntry(currentGameWord)).start();
+        new Thread(() -> Companion.getSDbHelper().updateGameWordUserEntry(currentGameWord)).start();
 
         // update error indications
         if (sShowingErrors) {
@@ -384,20 +314,20 @@ public class VocabRecallActivity extends MyActionBarActivity
 
                 // save completion status to db
                 try {
-                    sDbHelper.markGameComplete(mGame);
+                    Companion.getSDbHelper().markGameComplete(mGame);
                 } catch (Exception e) {
                     Log.e(TAG, "error marking game complete: " + e.getMessage());
                 }
 
                 // update stats
-                sGamesCompleted = sDbHelper.getGamesCompleted();
-                sWordsCompleted = sDbHelper.getWordCountOfGamesCompleted();
+                Companion.setSGamesCompleted(Companion.getSDbHelper().getGamesCompleted());
+                Companion.setSWordsCompleted(Companion.getSDbHelper().getWordCountOfGamesCompleted());
             }
 
             // prompt user with congrats and new game
             String extraMessage = getResources().getString(R.string.dialog_startnewgame_congrats);
-            if (sGamesCompleted > 1) {
-                extraMessage += "\n\n" + getResources().getString(R.string.dialog_startnewgame_congrats2).replace("!games!", "" + sGamesCompleted).replace("!words!", "" + sWordsCompleted);
+            if (Companion.getSGamesCompleted() > 1) {
+                extraMessage += "\n\n" + getResources().getString(R.string.dialog_startnewgame_congrats2).replace("!games!", "" + Companion.getSGamesCompleted()).replace("!words!", "" + Companion.getSWordsCompleted());
             }
             promptForNewGame(extraMessage);
 
@@ -433,7 +363,7 @@ public class VocabRecallActivity extends MyActionBarActivity
         showErrors(false);
 
         // setup new game
-        mCompositeDisposable.add(mGameSetup.newGame(sDbHelper, mPuzzleFragment.getCellGrid(), newGameNo)
+        mCompositeDisposable.add(mGameSetup.newGame(Companion.getSDbHelper(), mPuzzleFragment.getCellGrid(), newGameNo)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(game -> {
@@ -477,7 +407,7 @@ public class VocabRecallActivity extends MyActionBarActivity
     private void loadNewOrExistingGame() {
 
         // get current game if any
-        mGame = sDbHelper.getCurrentGame();
+        mGame = Companion.getSDbHelper().getCurrentGame();
 
         // if on very first game, or if no saved game (due to an error), create a new one, otherwise open existing game
         if (mGame == null || mGame.getGameWords() == null || mGame.getGameWords().size() == 0 || !mPuzzleFragment.doWordsFitInGrid(mGame.getGameWords())) {
@@ -486,9 +416,9 @@ public class VocabRecallActivity extends MyActionBarActivity
             restoreExistingGame();
             if (mGame.getGameNo() > 1) {
                 // if any games won yet, update stats
-                sGamesCompleted = sDbHelper.getGamesCompleted();
-                if (sGamesCompleted > 0) {
-                    sWordsCompleted = sDbHelper.getWordCountOfGamesCompleted();
+                Companion.setSGamesCompleted(Companion.getSDbHelper().getGamesCompleted());
+                if (Companion.getSGamesCompleted() > 0) {
+                    Companion.setSWordsCompleted(Companion.getSDbHelper().getWordCountOfGamesCompleted());
                 }
             }
         }
@@ -514,7 +444,7 @@ public class VocabRecallActivity extends MyActionBarActivity
         if (mProgressDialog != null) {
             mProgressDialog.dismiss(); // dismiss progress dialog
         }
-        sDbSetupComplete = true;
+        Companion.setSDbSetupComplete(true);
         loadNewOrExistingGame();
     }
 
@@ -561,12 +491,12 @@ public class VocabRecallActivity extends MyActionBarActivity
     private void createGrid() {
         mPuzzleFragment.createGrid();
 
-        sCurrentGameWord = mPuzzleFragment.getCurrentGameWord();
-        sPuzzleRepresentation = mPuzzleFragment.getPuzzleRepresentation();
+        Companion.setSCurrentGameWord(mPuzzleFragment.getCurrentGameWord());
+        Companion.setSPuzzleRepresentation(mPuzzleFragment.getPuzzleRepresentation());
 
         // if dual panel, update answer fragment with current game word
         if (mAnswerFragment != null) {
-            if (sCurrentGameWord != null) { // this extra check is necessary for case where setting up initial game and no words available in db
+            if (Companion.getSCurrentGameWord() != null) { // this extra check is necessary for case where setting up initial game and no words available in db
                 mAnswerFragment.setGameWord();
                 mAnswerFragment.setVisible(true); // set answer dialog fragment visible now that puzzle drawn
             }
@@ -576,7 +506,7 @@ public class VocabRecallActivity extends MyActionBarActivity
     private void retrieveNewDefinitions() {
         // Fetch a new set of definitions.
         if (isNetworkAvailable()) {
-            mCompositeDisposable.add(mDefinitionRetrieval.retrieveDefinitions(sDbHelper, 10)
+            mCompositeDisposable.add(mDefinitionRetrieval.retrieveDefinitions(Companion.getSDbHelper(), 10)
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(() -> {
