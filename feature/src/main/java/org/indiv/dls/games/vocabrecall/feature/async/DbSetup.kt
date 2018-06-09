@@ -78,7 +78,7 @@ class DbSetup {
                 }
                 line = reader.readLine()
             }
-            if (words.size > 0) {
+            if (words.isNotEmpty()) {
                 saveWordsToDb(dbHelper, words)
                 emitter.onNext(PROGRESS_RANGE * numWordsProcessed / totalWordsToProcess)
             }
@@ -126,7 +126,7 @@ class DbSetup {
                 }
                 line = reader.readLine()
             }
-            if (words.size > 0) {
+            if (words.isNotEmpty()) {
                 saveWordDefinitionsToDb(dbHelper, words, gameExists)
                 emitter.onNext(PROGRESS_RANGE)
             }

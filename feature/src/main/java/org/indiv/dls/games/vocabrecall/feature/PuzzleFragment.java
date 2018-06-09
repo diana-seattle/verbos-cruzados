@@ -11,6 +11,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Space;
@@ -48,7 +49,7 @@ public class PuzzleFragment extends Fragment {
     private Vibrator mVibrator;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // inflate the view
         View view = inflater.inflate(R.layout.fragment_puzzle, container);
@@ -56,46 +57,11 @@ public class PuzzleFragment extends Fragment {
         // Get instance of Vibrator from current Context
         mVibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
 
-
-//		Resources r = getResources();
-//		DisplayMetrics displayMetrics = r.getDisplayMetrics();
-//		
-////		Configuration config = r.getConfiguration();
-//		
-////		int viewWidthPixels = displayMetrics.widthPixels;
-////		int viewHeightPixels = displayMetrics.heightPixels - actionBarHeightInPixels;
-//		int viewWidthPixels = view.getWidth();
-//		int viewHeightPixels = view.getHeight();
-//		
-//
-//		
-//		mTableLayout = (TableLayout)view.findViewById(R.id.cellTable);
-//		
-//		
-//		// calculate number of pixels equivalent to 24dp (24dp allows 13 cells on smallest screen supported by Android (320dp width, 426dp height))
-//	    mPixelsPerCell = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, displayMetrics));
-//		
-//		
-//		// set up grid
-//		mGridHeight = (int)(viewHeightPixels / mPixelsPerCell) - 1;  // subtract 1 because subtracting action bar height doesn't seem to be enough
-//		mGridWidth = viewWidthPixels / mPixelsPerCell - 1;  // subtract 1 to give margin for consistency with height
-//		mCellGrid = new GridCell[mGridHeight][mGridWidth];
-//
-//		// create table rows 
-//		for (int row = 0;  row < mGridHeight;  row++) {
-//			TableRow tableRow = new TableRow(getActivity());
-//			tableRow.setGravity(Gravity.CENTER);
-//			mTableLayout.addView(tableRow);
-//		}
-
-
         // Note that database not set up yet at this point (happening in other thread).
         // When it completes, it will call onFinishDbSetup().
 
-
         return view;
     }
-
 
     //---------------------------------------------------//
     //------------ end of overridden methods ------------//
@@ -103,18 +69,8 @@ public class PuzzleFragment extends Fragment {
 
     public void initialize(int viewWidthPixels, int viewHeightPixels) {
         Resources r = getResources();
-//		DisplayMetrics displayMetrics = r.getDisplayMetrics();
-
-//		View view = getView();
-//		Configuration config = r.getConfiguration();
-//		int viewWidthPixels = displayMetrics.widthPixels;
-//		int viewHeightPixels = displayMetrics.heightPixels - actionBarHeightInPixels;
-//		int viewWidthPixels = view.getWidth();
-//		int viewHeightPixels = view.getHeight();
-
 
         // calculate number of pixels equivalent to 24dp (24dp allows 13 cells on smallest screen supported by Android (320dp width, 426dp height))
-//	    mPixelsPerCell = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, r.getDimension(R.dimen.cell_width), displayMetrics));
         mPixelsPerCell = Math.round(r.getDimension(R.dimen.cell_width));
 
         // set up grid
@@ -187,7 +143,6 @@ public class PuzzleFragment extends Fragment {
         int wordLength = mCurrentGameWord.getWord().length();
         int row = mCurrentGameWord.getRow();
         int col = mCurrentGameWord.getCol();
-//        int size = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, r.getDimension(R.dimen.cell_representation_width), r.getDisplayMetrics()));
         int size = Math.round(r.getDimension(R.dimen.cell_representation_width));
         float fontHeight = size * .75f;
         List<TextView> views = new ArrayList<TextView>();
@@ -324,7 +279,7 @@ public class PuzzleFragment extends Fragment {
                 GridCell gridCell = mCellGrid[row][col];
                 if (gridCell != null) {
                     // if cell is empty, then not complete
-                    if (gridCell.getDominantUserChar() == 0 || (correctly && gridCell.hasUserError())) {
+                    if (gridCell.getDominantUserChar() == null || (correctly && gridCell.hasUserError())) {
                         return false;
                     }
                 }
@@ -404,8 +359,8 @@ public class PuzzleFragment extends Fragment {
         fillTextView(gridCell.getView(), gridCell.getDominantUserChar(), gridCell.isDominantCharConfident());
     }
 
-    private void fillTextView(TextView textView, char dominantUserChar, boolean confident) {
-        if (dominantUserChar != 0) {
+    private void fillTextView(TextView textView, Character dominantUserChar, boolean confident) {
+        if (dominantUserChar != null) {
             textView.setTextColor(confident ? CONFIDENT_COLOR : TENTATIVE_COLOR);
             textView.setText(String.valueOf(dominantUserChar));
         } else {
@@ -417,7 +372,7 @@ public class PuzzleFragment extends Fragment {
         TextView textView = new TextView(getActivity());
         textView.setGravity(Gravity.CENTER);
         // need to create Drawable object for each TextView
-        textView.setBackgroundDrawable(r.getDrawable(R.drawable.cell_drawable));  // using deprecated method since setBackground() not supported until API level 16
+        textView.setBackground(r.getDrawable(R.drawable.cell_drawable));  // using deprecated method since setBackground() not supported until API level 16
         textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontHeight);
         textView.setWidth(size);
         textView.setHeight(size);

@@ -136,13 +136,14 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
             }
         }
 
-        val displayMetrics = resources.displayMetrics
 
         // get puzzle fragment
         mPuzzleFragment = supportFragmentManager.findFragmentById(R.id.puzzle_fragment) as PuzzleFragment
 
         // get answer fragment if present (this will be found only in dual pane mode)
         mAnswerFragment = supportFragmentManager.findFragmentById(R.id.answer_fragment) as AnswerFragment?
+
+        val displayMetrics = resources.displayMetrics
 
         // get action bar height
         val actionBarHeightInPixels = getActionBarHeightInPixels(displayMetrics)
@@ -194,7 +195,6 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
         super.onDestroy()
         mCompositeDisposable.clear()
 
-        // reset static variables since these may stick around after activity destroyed
         sPuzzleRepresentation = null
         sCurrentGameWord = null
         sDbHelper = null
@@ -413,7 +413,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
         mGame = sDbHelper?.currentGame
 
         // if on very first game, or if no saved game (due to an error), create a new one, otherwise open existing game
-        if (mGame == null || mGame!!.gameWords == null || mGame!!.gameWords.size == 0 || !mPuzzleFragment.doWordsFitInGrid(mGame!!.gameWords)) {
+        if (mGame?.gameWords == null || mGame!!.gameWords.isEmpty() || !mPuzzleFragment.doWordsFitInGrid(mGame!!.gameWords)) {
             setupNewGame()
         } else {
             restoreExistingGame()

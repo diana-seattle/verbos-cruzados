@@ -36,7 +36,7 @@ class DefinitionRetrieval {
                 // refreshed with more current definitions next time.
                 if (dbHelper.getNumWordsWithDefinitions() > MIN_WORDS_WITH_DEFS) {
                     val wordsNotNeedingDefinitions = dbHelper.getWordsNotNeedingDefinitions(quantity)  // keep the number low since we're not pausing between words
-                    if (wordsNotNeedingDefinitions.size > 0) {
+                    if (wordsNotNeedingDefinitions.isNotEmpty()) {
                         dbHelper.releaseDefinitions(wordsNotNeedingDefinitions)
                     }
                 }
@@ -66,7 +66,7 @@ class DefinitionRetrieval {
         }
 
         // persist to db
-        if (wordsWithDefs.size > 0) {
+        if (wordsWithDefs.isNotEmpty()) {
             dbHelper.saveWordDefinitions(wordsWithDefs, true)
         }
     }
