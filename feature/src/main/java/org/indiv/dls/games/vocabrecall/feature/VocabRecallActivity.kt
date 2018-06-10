@@ -55,6 +55,7 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.app.Activity
 import android.app.ProgressDialog
+import android.app.ProgressDialog.show
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.util.DisplayMetrics
@@ -67,6 +68,8 @@ import android.widget.Toast
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import org.indiv.dls.games.vocabrecall.feature.MyActionBarActivity.Companion.currentGameWord
+import org.indiv.dls.games.vocabrecall.feature.MyActionBarActivity.Companion.puzzleRepresentation
 
 /**
  * This is the main activity. It houses [PuzzleFragment], and optionally [AnswerFragment] when in landscape mode (on tablets).
@@ -81,8 +84,6 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
         private val RESULTCODE_ANSWER = 100
         const val ACTIVITYRESULT_ANSWER = "answer"
         const val ACTIVITYRESULT_CONFIDENT = "confident"
-
-        private var showingErrors = false
     }
 
     //endregion
@@ -101,6 +102,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
     private var progressDialog: ProgressDialog? = null
     private var timeProgressDialogShown: Long = 0
     private var helpShownYet = false
+    private var showingErrors = false
 
     // if no network is available networkInfo will be null, otherwise check if we are connected
     private val isNetworkAvailable: Boolean
@@ -173,15 +175,12 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
         puzzleFragment.initialize(puzzleWidthPixels, puzzleHeightPixels)
 
         // get database
-        dbHelper = ContentHelper(this)
-        dbHelper?.let {
-            compositeDisposable.add(dbSetup.ensureDbLoaded(this, it)
-                    .subscribeOn(Schedulers.computation())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(::onProgressDbSetup,
-                            { Toast.makeText(this, R.string.error_initial_setup_failure, Toast.LENGTH_SHORT).show() },
-                            this::onFinishDbSetup))
-        }
+        compositeDisposable.add(dbSetup.ensureDbLoaded(this, dbHelper)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(::onProgressDbSetup,
+                        { Toast.makeText(this, R.string.error_initial_setup_failure, Toast.LENGTH_SHORT).show() },
+                        this::onFinishDbSetup))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -197,7 +196,6 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
 
         puzzleRepresentation = null
         currentGameWord = null
-        dbHelper = null
         showingErrors = false
     }
 
@@ -300,7 +298,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
             puzzleFragment.updateUserTextInPuzzle(it)
 
             // update database with answer
-            Thread { dbHelper?.updateGameWordUserEntry(it) }.start()
+            Thread { dbHelper.updateGameWordUserEntry(it) }.start()
         }
 
         // update error indications
@@ -314,25 +312,21 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
             // if game not already marked complete, do so now (note that user may not start new game after being prompted to do so)
             if (currentGame?.isGameComplete == false) {
                 // save completion status to db
-                dbHelper?.let {
-                    try {
-                        it.markGameComplete(currentGame)
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Error marking game complete: " + e.message)
-                    }
+                try {
+                    dbHelper.markGameComplete(currentGame)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error marking game complete: " + e.message)
                 }
             }
 
             // prompt user with congrats and new game
             var extraMessage = resources.getString(R.string.dialog_startnewgame_congrats)
-            dbHelper?.let {
-                val gamesCompleted = it.gamesCompleted
-                val wordsCompleted = it.wordCountOfGamesCompleted
-                if (gamesCompleted > 1) {
-                    extraMessage += "\n\n" + resources.getString(R.string.dialog_startnewgame_congrats2)
-                            .replace("!games!", "" + gamesCompleted)
-                            .replace("!words!", "" + wordsCompleted)
-                }
+            val gamesCompleted = dbHelper.gamesCompleted
+            val wordsCompleted = dbHelper.wordCountOfGamesCompleted
+            if (gamesCompleted > 1) {
+                extraMessage += "\n\n" + resources.getString(R.string.dialog_startnewgame_congrats2)
+                        .replace("!games!", "" + gamesCompleted)
+                        .replace("!words!", "" + wordsCompleted)
             }
             promptForNewGame(extraMessage)
 
@@ -367,7 +361,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
         showErrors(false)
 
         // setup new game
-        compositeDisposable.add(gameSetup.newGame(dbHelper!!, puzzleFragment.cellGrid, newGameNo)
+        compositeDisposable.add(gameSetup.newGame(dbHelper, puzzleFragment.cellGrid, newGameNo)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -411,7 +405,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
     private fun loadNewOrExistingGame() {
 
         // get current game if any
-        currentGame = dbHelper?.currentGame
+        currentGame = dbHelper.currentGame
 
         // if on very first game, or if no saved game (due to an error), create a new one, otherwise open existing game
         if (currentGame?.gameWords == null || currentGame!!.gameWords.isEmpty() || !puzzleFragment.doWordsFitInGrid(currentGame!!.gameWords)) {
@@ -502,7 +496,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
     private fun retrieveNewDefinitions() {
         // Fetch a new set of definitions.
         if (isNetworkAvailable) {
-            compositeDisposable.add(definitionRetrieval.retrieveDefinitions(dbHelper!!, 10)
+            compositeDisposable.add(definitionRetrieval.retrieveDefinitions(dbHelper, 10)
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ }) { e -> })

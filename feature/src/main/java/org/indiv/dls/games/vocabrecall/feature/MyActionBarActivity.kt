@@ -1,5 +1,6 @@
 package org.indiv.dls.games.vocabrecall.feature
 
+import android.os.Bundle
 import org.indiv.dls.games.vocabrecall.feature.db.ContentHelper
 import org.indiv.dls.games.vocabrecall.feature.db.GameWord
 import org.indiv.dls.games.vocabrecall.feature.dialog.HelpDialogFragment
@@ -23,7 +24,6 @@ abstract class MyActionBarActivity : AppCompatActivity() {
     companion object {
         var currentGameWord: GameWord? = null
         var puzzleRepresentation: List<TextView>? = null
-        var dbHelper: ContentHelper? = null
     }
 
     //endregion
@@ -32,10 +32,16 @@ abstract class MyActionBarActivity : AppCompatActivity() {
 
     protected var optionsMenu: Menu? = null
     protected var toolbar: Toolbar? = null
+    protected lateinit var dbHelper: ContentHelper
 
     //endregion
 
     //region OVERRIDDEN FUNCTIONS ------------------------------------------------------------------
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        dbHelper = ContentHelper(this)
+    }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         currentGameWord?.let {
@@ -66,7 +72,7 @@ abstract class MyActionBarActivity : AppCompatActivity() {
             R.id.action_give3letters -> give3LetterHint()
             R.id.action_giveanswer -> giveAnswer()
             R.id.action_playagainsoon -> currentGameWord?.let {
-                Thread { MyActionBarActivity.dbHelper?.setWordPlaySoon(it.word, true) }.start()
+                Thread { dbHelper.setWordPlaySoon(it.word, true) }.start()
             }
             else -> return super.onOptionsItemSelected(item)
         }
@@ -83,7 +89,7 @@ abstract class MyActionBarActivity : AppCompatActivity() {
     protected open fun giveAnswer() {
         currentGameWord?.let {
             it.game.fullClues++
-            Thread { MyActionBarActivity.dbHelper?.saveFullClues(it.game) }.start()
+            Thread { dbHelper.saveFullClues(it.game) }.start()
         }
         // subclass handles the rest
     }
@@ -94,7 +100,7 @@ abstract class MyActionBarActivity : AppCompatActivity() {
     protected open fun give3LetterHint() {
         currentGameWord?.let {
             it.game.miniClues++
-            Thread { MyActionBarActivity.dbHelper?.saveMiniClues(it.game) }.start()
+            Thread { dbHelper.saveMiniClues(it.game) }.start()
         }
         // subclass handles the rest
     }
@@ -112,12 +118,10 @@ abstract class MyActionBarActivity : AppCompatActivity() {
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
     private fun showStatsDialog() {
-        dbHelper?.let {
-            val stats = it.wordsSolvedStats
-            val dlg = StatsDialogFragment()
-            dlg.setStats(it.gamesCompleted, it.wordCountOfGamesCompleted, stats)
-            dlg.show(supportFragmentManager, "fragment_showstats")
-        }
+        val stats = dbHelper.wordsSolvedStats
+        val dlg = StatsDialogFragment()
+        dlg.setStats(dbHelper.gamesCompleted, dbHelper.wordCountOfGamesCompleted, stats)
+        dlg.show(supportFragmentManager, "fragment_showstats")
     }
 
     //endregion
