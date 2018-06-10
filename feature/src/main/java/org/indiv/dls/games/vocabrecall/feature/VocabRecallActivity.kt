@@ -263,7 +263,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
     /*
      * implements PuzzleListener interface for callback from PuzzleFragment
      */
-    override fun onPuzzleClick(gameWord: GameWord) {
+    override fun onPuzzleClick(gameWord: GameWord?) {
         sCurrentGameWord = gameWord
         sPuzzleRepresentation = mPuzzleFragment.puzzleRepresentation
 
@@ -492,7 +492,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
 
 
     private fun createGrid() {
-        mPuzzleFragment.createGrid()
+        mPuzzleFragment.createGrid(this)
 
         sCurrentGameWord = mPuzzleFragment.currentGameWord
         sPuzzleRepresentation = mPuzzleFragment.puzzleRepresentation

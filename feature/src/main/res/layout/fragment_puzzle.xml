@@ -1,31 +1,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_gravity="center"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              
-              >
+              android:layout_height="match_parent">
 
-    <!-- android:orientation="vertical" -->          
-    
     <TableLayout
-        android:id="@+id/cellTable"
+        android:id="@+id/cell_table_layout"
         android:gravity="center"
         android:background="@drawable/cell_background_unused"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </TableLayout>
     
-<!--     
-    <TextView 
-        android:id="@+id/textview_stats"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left"
-        android:paddingLeft="3dp" android:paddingBottom="1dp"   
-        android:background="@drawable/cell_background_unused"
-        android:textColor="#666666"
-        android:textSize="12sp"
-    />
--->      
-
 </FrameLayout>

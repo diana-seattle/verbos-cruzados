@@ -2,13 +2,15 @@ package org.indiv.dls.games.vocabrecall.feature
 
 import org.indiv.dls.games.vocabrecall.feature.db.GameWord
 
-import android.view.View
 import android.widget.TextView
 
 /**
  * Represents a cell in the puzzle.
  */
 class GridCell(val char: Char) {
+
+    //region PUBLIC PROPERTIES ---------------------------------------------------------------------
+
     var gameWordAcross: GameWord? = null
     var gameWordDown: GameWord? = null
     var userCharAcross: Char? = null
@@ -36,10 +38,16 @@ class GridCell(val char: Char) {
         get() = userCharAcross != null && gameWordAcross!!.isConfident ||
                 userCharDown != null && gameWordDown!!.isConfident
 
+    //endregion
+
+    //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
+
     /**
      * Returns error if cell contains wrong value or empty.
      */
     fun hasUserError(): Boolean {
         return dominantUserChar != char
     }
+
+    //endregion
 }
