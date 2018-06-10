@@ -21,12 +21,9 @@ abstract class MyActionBarActivity : AppCompatActivity() {
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
     companion object {
-        var sCurrentGameWord: GameWord? = null
-        var sPuzzleRepresentation: List<TextView>? = null
-        var sDbHelper: ContentHelper? = null
-        var sDbSetupComplete = false
-        var sGamesCompleted = 0
-        var sWordsCompleted = 0
+        var currentGameWord: GameWord? = null
+        var puzzleRepresentation: List<TextView>? = null
+        var dbHelper: ContentHelper? = null
     }
 
     //endregion
@@ -41,7 +38,7 @@ abstract class MyActionBarActivity : AppCompatActivity() {
     //region OVERRIDDEN FUNCTIONS ------------------------------------------------------------------
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        sCurrentGameWord?.let {
+        currentGameWord?.let {
             // modify 3-letter clue menu item
             val menuItemMiniClue = optionsMenu?.findItem(R.id.action_give3letters)
             menuItemMiniClue?.apply {
@@ -68,8 +65,8 @@ abstract class MyActionBarActivity : AppCompatActivity() {
             R.id.action_showstats -> showStatsDialog()
             R.id.action_give3letters -> give3LetterHint()
             R.id.action_giveanswer -> giveAnswer()
-            R.id.action_playagainsoon -> sCurrentGameWord?.let {
-                Thread { MyActionBarActivity.sDbHelper?.setWordPlaySoon(it.word, true) }.start()
+            R.id.action_playagainsoon -> currentGameWord?.let {
+                Thread { MyActionBarActivity.dbHelper?.setWordPlaySoon(it.word, true) }.start()
             }
             else -> return super.onOptionsItemSelected(item)
         }
@@ -84,9 +81,9 @@ abstract class MyActionBarActivity : AppCompatActivity() {
      * override to display answer
      */
     protected open fun giveAnswer() {
-        sCurrentGameWord?.let {
+        currentGameWord?.let {
             it.game.fullClues++
-            Thread { MyActionBarActivity.sDbHelper?.saveFullClues(it.game) }.start()
+            Thread { MyActionBarActivity.dbHelper?.saveFullClues(it.game) }.start()
         }
         // subclass handles the rest
     }
@@ -95,9 +92,9 @@ abstract class MyActionBarActivity : AppCompatActivity() {
      * override to display 3 letter hint
      */
     protected open fun give3LetterHint() {
-        sCurrentGameWord?.let {
+        currentGameWord?.let {
             it.game.miniClues++
-            Thread { MyActionBarActivity.sDbHelper?.saveMiniClues(it.game) }.start()
+            Thread { MyActionBarActivity.dbHelper?.saveMiniClues(it.game) }.start()
         }
         // subclass handles the rest
     }
@@ -115,10 +112,10 @@ abstract class MyActionBarActivity : AppCompatActivity() {
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
     private fun showStatsDialog() {
-        sDbHelper?.let {
+        dbHelper?.let {
             val stats = it.wordsSolvedStats
             val dlg = StatsDialogFragment()
-            dlg.setStats(sGamesCompleted, sWordsCompleted, stats)
+            dlg.setStats(it.gamesCompleted, it.wordCountOfGamesCompleted, stats)
             dlg.show(supportFragmentManager, "fragment_showstats")
         }
     }
