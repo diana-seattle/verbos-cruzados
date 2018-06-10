@@ -90,7 +90,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
     private val compositeDisposable = CompositeDisposable()
-    private var mGame: Game? = null
+    private var currentGame: Game? = null
     private val gameSetup = GameSetup()
     private val dbSetup = DbSetup()
     private val definitionRetrieval = DefinitionRetrieval()
@@ -312,11 +312,11 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
         if (puzzleFragment.isPuzzleComplete(true)) {
 
             // if game not already marked complete, do so now (note that user may not start new game after being prompted to do so)
-            if (mGame?.isGameComplete == false) {
+            if (currentGame?.isGameComplete == false) {
                 // save completion status to db
                 dbHelper?.let {
                     try {
-                        it.markGameComplete(mGame)
+                        it.markGameComplete(currentGame)
                     } catch (e: Exception) {
                         Log.e(TAG, "Error marking game complete: " + e.message)
                     }
@@ -354,7 +354,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
     override fun setupNewGame() {
 
         // determine existing game no
-        val newGameNo = (mGame?.gameNo ?: 0) + 1
+        val newGameNo = (currentGame?.gameNo ?: 0) + 1
 
         // if dual pane, clear game word and hide answer fragment for now
         answerFragment?.let {
@@ -372,7 +372,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { game ->
-                            mGame = game
+                            currentGame = game
                             createGrid()
                             retrieveNewDefinitions()
                         },
@@ -411,10 +411,10 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
     private fun loadNewOrExistingGame() {
 
         // get current game if any
-        mGame = dbHelper?.currentGame
+        currentGame = dbHelper?.currentGame
 
         // if on very first game, or if no saved game (due to an error), create a new one, otherwise open existing game
-        if (mGame?.gameWords == null || mGame!!.gameWords.isEmpty() || !puzzleFragment.doWordsFitInGrid(mGame!!.gameWords)) {
+        if (currentGame?.gameWords == null || currentGame!!.gameWords.isEmpty() || !puzzleFragment.doWordsFitInGrid(currentGame!!.gameWords)) {
             setupNewGame()
         } else {
             restoreExistingGame()
@@ -426,7 +426,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
      */
     private fun restoreExistingGame() {
         // copy game words to cell grid
-        for (gameWord in mGame!!.gameWords) {
+        for (gameWord in currentGame!!.gameWords) {
             gameSetup.addToGrid(gameWord, puzzleFragment.cellGrid)
         }
         createGrid()
