@@ -202,10 +202,18 @@ class PuzzleFragment : Fragment() {
     fun selectNextErroredGameWord(): Boolean {
         for (row in 0 until gridHeight) {
             for (col in 0 until gridWidth) {
-                val gridCell = cellGrid[row][col]
-                if (gridCell != null && gridCell.hasUserError()) {
-                    currentGameWord = gridCell.gameWordAcross ?: gridCell.gameWordDown
-                    return true
+                cellGrid[row][col]?.let {
+                    when {
+                        it.hasUserErrorAcross() -> {
+                            currentGameWord = it.gameWordAcross
+                            return true
+                        }
+                        it.hasUserErrorDown() -> {
+                            currentGameWord = it.gameWordDown
+                            return true
+                        }
+                        else -> {}
+                    }
                 }
             }
         }

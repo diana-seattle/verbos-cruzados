@@ -49,5 +49,19 @@ class GridCell(val char: Char) {
         return dominantUserChar != char
     }
 
+    /**
+     * Returns error if cell contains wrong value for a word going across.
+     */
+    fun hasUserErrorAcross(): Boolean {
+        return gameWordAcross != null && userCharAcross != char
+    }
+
+    /**
+     * Returns error if cell contains wrong value for a word going down.
+     */
+    fun hasUserErrorDown(): Boolean {
+        return gameWordDown != null && userCharDown != char
+    }
+
     //endregion
 }
