@@ -21,9 +21,12 @@ abstract class MyActionBarActivity : AppCompatActivity() {
 
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
+    // TODO: get rid of static vars below
+
+
     companion object {
         var currentGameWord: GameWord? = null
-        var puzzleRepresentation: List<TextView>? = null
+        var puzzleRepresentation: List<GridCell?>? = null
     }
 
     //endregion

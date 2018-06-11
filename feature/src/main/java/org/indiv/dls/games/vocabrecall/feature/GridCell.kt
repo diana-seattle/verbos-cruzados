@@ -15,7 +15,7 @@ class GridCell(val char: Char) {
     var gameWordDown: GameWord? = null
     var userCharAcross: Char? = null
     var userCharDown: Char? = null
-    var view: TextView? = null
+    var view: PuzzleCellTextView? = null
 
     /**
      * Returns the dominant character of the two that the cell may contain (down or across).

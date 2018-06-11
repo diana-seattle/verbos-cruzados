@@ -45,7 +45,6 @@ import java.util.Date
 import org.indiv.dls.games.vocabrecall.feature.async.DbSetup
 import org.indiv.dls.games.vocabrecall.feature.async.DefinitionRetrieval
 import org.indiv.dls.games.vocabrecall.feature.async.GameSetup
-import org.indiv.dls.games.vocabrecall.feature.db.ContentHelper
 import org.indiv.dls.games.vocabrecall.feature.db.Game
 import org.indiv.dls.games.vocabrecall.feature.db.GameWord
 import org.indiv.dls.games.vocabrecall.feature.dialog.ConfirmStartNewGameDialogFragment
@@ -55,7 +54,6 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.app.Activity
 import android.app.ProgressDialog
-import android.app.ProgressDialog.show
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.util.DisplayMetrics
@@ -68,8 +66,6 @@ import android.widget.Toast
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import org.indiv.dls.games.vocabrecall.feature.MyActionBarActivity.Companion.currentGameWord
-import org.indiv.dls.games.vocabrecall.feature.MyActionBarActivity.Companion.puzzleRepresentation
 
 /**
  * This is the main activity. It houses [PuzzleFragment], and optionally [AnswerFragment] when in landscape mode (on tablets).

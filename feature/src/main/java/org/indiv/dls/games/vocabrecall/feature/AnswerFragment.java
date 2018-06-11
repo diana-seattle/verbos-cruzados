@@ -330,18 +330,45 @@ public class AnswerFragment extends Fragment {
 
     //region PRIVATE METHODS -----------------------------------------------------------------------
 
+    //                    val isAcross = it.isAcross
+//                    val textView = PuzzleRepresentationCellTextView(context!!)
+//                    cellGrid[row][col]?.let {
+//                        if (isAcross) {
+//                            if (it.gameWordDown != null) {
+//                                fillTextView(textView, it.userCharDown, it.gameWordDown!!.isConfident)
+//                            }
+//                            col++
+//                        } else {
+//                            if (it.gameWordAcross != null) {
+//                                fillTextView(textView, it.userCharAcross, it.gameWordAcross!!.isConfident)
+//                            }
+//                            row++
+//                        }
+//                    }
+
     private void updateGameWord() {
         GameWord gameWord = MyActionBarActivity.Companion.getCurrentGameWord();
         mWordLength = gameWord.getWord().length();
+        final boolean isAcross = gameWord.isAcross();
 
         // update puzzle representation
         mLayoutPuzzleRepresentation.removeAllViews();  // may have previous contents when displayed in dual pane 
-        for (TextView v : MyActionBarActivity.Companion.getPuzzleRepresentation()) {
-            mLayoutPuzzleRepresentation.addView(v);
-            if (v.getText() == null || v.getText().length() == 0) {
-                v.setTextColor(COLOR_ANSWER);
-            } else {
-//				v.setTextAppearance(mActivity, R.style.boldText);
+        for (GridCell gridCell : MyActionBarActivity.Companion.getPuzzleRepresentation()) {
+            PuzzleRepresentationCellTextView textView = new PuzzleRepresentationCellTextView(getContext());
+            mLayoutPuzzleRepresentation.addView(textView);
+            if (gridCell != null) {
+                if (isAcross) {
+                    if (gridCell.getGameWordDown() != null) {
+                        textView.fillTextView(gridCell.getUserCharDown(), gridCell.getGameWordDown().isConfident());
+                    }
+                } else {
+                    if (gridCell.getGameWordAcross() != null) {
+                        textView.fillTextView(gridCell.getUserCharAcross(), gridCell.getGameWordAcross().isConfident());
+                    }
+                }
+            }
+            if (textView.getText() == null || textView.getText().length() == 0) {
+                textView.setTextColor(COLOR_ANSWER);
             }
         }
         mPuzzleScrollView.fullScroll(ScrollView.FOCUS_LEFT);

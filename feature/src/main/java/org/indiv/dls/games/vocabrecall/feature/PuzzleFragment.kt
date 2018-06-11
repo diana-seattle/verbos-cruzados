@@ -6,20 +6,16 @@ import org.indiv.dls.games.vocabrecall.feature.db.GameWord
 
 
 import android.content.Context
-import android.content.res.Resources
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Vibrator
 import android.support.v4.app.Fragment
 import android.widget.Space
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.View.OnClickListener
 import android.widget.TableRow
-import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_puzzle.*
 
 
@@ -27,20 +23,6 @@ import kotlinx.android.synthetic.main.fragment_puzzle.*
  * Fragment containing the crossword puzzle.
  */
 class PuzzleFragment : Fragment() {
-
-    //region COMPANION OBJECT ----------------------------------------------------------------------
-
-    companion object {
-        private val TAG = PuzzleFragment::class.java.simpleName
-        private val TENTATIVE_COLOR = -0x555556 // Color.LTGRAY is 0xFFCCCCCC, Color.GRAY is 0xFF888888
-        private val CONFIDENT_COLOR = Color.BLACK // Color.LTGRAY is 0xFFCCCCCC, Color.GRAY is 0xFF888888
-        private val CELL_BKGD_LEVEL_NORMAL = 1
-        private val CELL_BKGD_LEVEL_ERRORED = 2
-        private val CELL_BKGD_LEVEL_SELECTED = 3
-        private val CELL_BKGD_LEVEL_ERRORED_SELECTED = 4
-    }
-
-    //endregion
 
     //region PUBLIC INTERFACES ---------------------------------------------------------------------
 
@@ -71,39 +53,24 @@ class PuzzleFragment : Fragment() {
             field = gameWord
         }
 
-    /*
-     * implements interface for receiving callback from AnswerFragment
-     */
-    val puzzleRepresentation: List<TextView>
+    val puzzleRepresentation: List<GridCell?>
         get() {
-            val views = ArrayList<TextView>()
+            val gridCells = ArrayList<GridCell?>()
             currentGameWord?.let {
-                val r = resources
                 val isAcross = it.isAcross
                 val wordLength = it.word.length
                 var row = it.row
                 var col = it.col
-                val size = Math.round(r.getDimension(R.dimen.cell_representation_width))
-                val fontHeight = size * .75f
                 for (charIndex in 0 until wordLength) {
-                    val textView = createCellTextView(r, fontHeight, size)
-                    views.add(textView)
-                    cellGrid[row][col]?.let {
-                        if (isAcross) {
-                            if (it.gameWordDown != null) {
-                                fillTextView(textView, it.userCharDown, it.gameWordDown!!.isConfident)
-                            }
-                            col++
-                        } else {
-                            if (it.gameWordAcross != null) {
-                                fillTextView(textView, it.userCharAcross, it.gameWordAcross!!.isConfident)
-                            }
-                            row++
-                        }
+                    gridCells.add(cellGrid[row][col])
+                    if (isAcross) {
+                        col++
+                    } else {
+                        row++
                     }
                 }
             }
-            return views
+            return gridCells
         }
 
     //endregion
@@ -188,9 +155,6 @@ class PuzzleFragment : Fragment() {
             }
         }
 
-        val res = resources
-        val fontHeight = pixelsPerCell * .75f
-
         // add views into table rows and columns
         var firstGameWord: GameWord? = null
         for (row in 0 until gridHeight) {
@@ -199,7 +163,7 @@ class PuzzleFragment : Fragment() {
             for (col in 0 until gridWidth) {
                 cellGrid[row][col]?.let {
                     // create text view for this row and column
-                    val textView = createCellTextView(res, fontHeight, pixelsPerCell)
+                    val textView = PuzzleCellTextView(context!!)
                     textView.setOnClickListener(onPuzzleClickListener)
                     tableRow.addView(textView, col)
                     it.view = textView
@@ -239,28 +203,17 @@ class PuzzleFragment : Fragment() {
      *
      * @param showErrors true if errors should be indicated, false if not.
      */
-    fun showErrors(showErrors: Boolean): Boolean {
-        var numErrors = 0
-
+    fun showErrors(showErrors: Boolean) {
         // update background of cells based on whether text is correct or not
         for (row in 0 until gridHeight) {
             for (col in 0 until gridWidth) {
                 // if cell is part of currently selected game word, adjust the level to set the background color
                 cellGrid[row][col]?.let {
                     val isSelected = currentGameWord == it.gameWordAcross || currentGameWord == it.gameWordDown
-                    val textView = it.view
-                    if (showErrors && it.hasUserError()) {
-                        numErrors++
-                        textView!!.background.level = if (isSelected) CELL_BKGD_LEVEL_ERRORED_SELECTED else CELL_BKGD_LEVEL_ERRORED // set error background
-                        textView.setTextColor(Color.RED)
-                    } else {
-                        textView!!.background.level = if (isSelected) CELL_BKGD_LEVEL_SELECTED else CELL_BKGD_LEVEL_NORMAL // set normal text cell background
-                        textView.setTextColor(if (it.isDominantCharConfident) CONFIDENT_COLOR else TENTATIVE_COLOR)
-                    }
+                    it.view?.setStyle(it.isDominantCharConfident, isSelected, showErrors && it.hasUserError())
                 }
             }
         }
-        return numErrors > 0
     }
 
     /**
@@ -290,7 +243,7 @@ class PuzzleFragment : Fragment() {
         // show answer in puzzle
         val userText = gameWord.userText
         val userTextLength = userText.length
-        val wordLength = gameWord!!.word.length
+        val wordLength = gameWord.word.length
         val isAcross = gameWord.isAcross
         var row = gameWord.row
         var col = gameWord.col
@@ -321,29 +274,10 @@ class PuzzleFragment : Fragment() {
      */
     private fun showAsSelected(gameWord: GameWord?, asSelected: Boolean) {
         if (gameWord != null) {
-
-//			int animationId = gameWord.isAcross()? R.anim.word_selection_horiz : R.anim.word_selection_vert;
-//			Animation selectionAnimation = asSelected? AnimationUtils.loadAnimation(getActivity(), animationId) : null;
-
-            var errorBackgroundLevels = listOf(CELL_BKGD_LEVEL_ERRORED, CELL_BKGD_LEVEL_ERRORED_SELECTED)
             var row = gameWord.row
             var col = gameWord.col
             for (i in 0 until gameWord.word.length) {
-                val gridCell = cellGrid[row][col]
-                gridCell?.view?.let {
-                    val showingError = it.background.level in errorBackgroundLevels
-                    it.background.level = when {
-                        asSelected && showingError -> CELL_BKGD_LEVEL_ERRORED_SELECTED
-                        !asSelected && showingError -> CELL_BKGD_LEVEL_ERRORED
-                        asSelected && !showingError -> CELL_BKGD_LEVEL_SELECTED
-                        else -> CELL_BKGD_LEVEL_NORMAL
-                    }
-                }
-
-//				if (selectionAnimation != null) {
-//					textView.startAnimation(selectionAnimation);
-//				}
-
+                cellGrid[row][col]?.view?.setSelection(asSelected)
                 if (gameWord.isAcross) {
                     col++
                 } else {
@@ -359,44 +293,7 @@ class PuzzleFragment : Fragment() {
      * @param gridCell the grid cell from which to get the textview and the user's answer.
      */
     private fun fillTextView(gridCell: GridCell) {
-        fillTextView(gridCell.view, gridCell.dominantUserChar, gridCell.isDominantCharConfident)
-    }
-
-    /**
-     * Fills puzzle textview with the character from the user's answer.
-     *
-     * @param textView the textview to fill.
-     * @param dominantUserChar the character to fill the textview with.
-     * @param confident true if confident color should be used, false otherwise.
-     */
-    private fun fillTextView(textView: TextView?, dominantUserChar: Char?, confident: Boolean) {
-        textView?.apply {
-            text = dominantUserChar?.toString()
-            setTextColor(if (confident) CONFIDENT_COLOR else TENTATIVE_COLOR)
-        }
-    }
-
-    /**
-     * Creates textview for the puzzle layout.
-     *
-     * @param res resources.
-     * @param fontHeight height of font in pixels.
-     * @param size height of textview in pizels.
-     * @return textview.
-     */
-    private fun createCellTextView(res: Resources, fontHeight: Float, size: Int): TextView {
-        val textView = TextView(activity)
-        textView.apply {
-            gravity = Gravity.CENTER
-            // need to create Drawable object for each TextView
-            background = res.getDrawable(R.drawable.cell_drawable)  // using deprecated method since setBackground() not supported until API level 16
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, fontHeight)
-            width = size
-            height = size
-            background.level = 1 // set normal text cell background (i.e. no error indication)
-            //		setSoundEffectsEnabled(false); // true by default, consider disabling since we're providing our own vibration (except not all devices have vibration)
-        }
-        return textView
+        gridCell.view?.fillTextView(gridCell.dominantUserChar, gridCell.isDominantCharConfident)
     }
 
     /**
