@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.RemoteException;
 
 public class ContentHelper {
@@ -26,32 +27,20 @@ public class ContentHelper {
 	public ContentHelper(Context context) {
         mContext = context;
     }
-    
+
 
     public boolean isDbLoaded() {
-
-    	// use this since min API level is less than 11
-        List<Object> list = queryDebug(VocabContentProvider.CONTENT_URI_WORDS, null, null, "limit 1");
-        return list.size() > 0;
-    	
-    	
-    	// use this when min API level is 11 and above
-//    	ContentResolver cr = mContext.getContentResolver();
-//    	Bundle b = cr.call(VocabContentProvider.CONTENT_URI, VocabContentProvider.METHOD_ISDBLOADED, null, null);
-//		return b.getBoolean(VocabContentProvider.METHOD_ISDBLOADED);
+    	ContentResolver cr = mContext.getContentResolver();
+    	Bundle b = cr.call(VocabContentProvider.CONTENT_URI, VocabContentProvider.METHOD_ISDBLOADED, null, null);
+		return b.getBoolean(VocabContentProvider.METHOD_ISDBLOADED);
 	}
 
-	public void setDbLoaded(boolean mDbLoaded) {
-    	
-    	// do nothing since min API level is less than 11
-    	
-    	
-    	// use this when min API level is 11 and above
-//    	ContentResolver cr = mContext.getContentResolver();
-//    	Bundle b = cr.call(VocabContentProvider.CONTENT_URI, VocabContentProvider.METHOD_SETDBLOADED, null, null);
-//    	if (!b.getBoolean(VocabContentProvider.METHOD_SETDBLOADED)) {
-//    		throw new RuntimeException("Unable to set DB loaded");
-//    	}
+	public void setDbLoaded() {
+    	ContentResolver cr = mContext.getContentResolver();
+    	Bundle b = cr.call(VocabContentProvider.CONTENT_URI, VocabContentProvider.METHOD_SETDBLOADED, null, null);
+    	if (!b.getBoolean(VocabContentProvider.METHOD_SETDBLOADED)) {
+    		throw new RuntimeException("Unable to set DB loaded");
+    	}
 	}
 	
 	

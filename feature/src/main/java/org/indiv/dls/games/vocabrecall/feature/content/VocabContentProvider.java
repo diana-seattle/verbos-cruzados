@@ -97,13 +97,11 @@ public class VocabContentProvider extends ContentProvider {
 	}
 	
 	
-	// un-comment when min api is >= 11
-	// check on whether close() should be called before or after super.shutdown()
-//	@Override
-//	public void shutdown() {
-//		super.shutdown();
-//		dbHelper.close();
-//	}
+	@Override
+	public void shutdown() {
+		super.shutdown();
+		dbHelper.close();
+	}
 
 
 
@@ -127,16 +125,16 @@ public class VocabContentProvider extends ContentProvider {
 	
 	@Override
 	public Bundle call(String method, String arg, Bundle extras) {
-		Bundle b = new Bundle();
+		Bundle bundle = new Bundle();
 		if (METHOD_ISDBLOADED.equals(method)) {
 			// open the db to cause onCreate or onOpen to get called which will determine if db tables loaded
 			SQLiteDatabase db = dbHelper.getWritableDatabase();
-			b.putBoolean(method, dbHelper.isDbLoaded());
+			bundle.putBoolean(method, dbHelper.isDbLoaded());
 		} else if (METHOD_SETDBLOADED.equals(method)) {
 			dbHelper.setDbLoaded(true);
-			b.putBoolean(method, true);
+			bundle.putBoolean(method, true);
 		}
-		return b;
+		return bundle;
 	}
 	
 	

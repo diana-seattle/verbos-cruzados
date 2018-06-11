@@ -31,7 +31,7 @@ class DbSetup {
             if (!dbHelper.isDbLoaded) {
                 try {
                     loadDbFromFile(emitter, context, dbHelper)
-                    dbHelper.isDbLoaded = true
+                    dbHelper.setDbLoaded()
                     emitter.onComplete()
                 } catch (e: IOException) {
                     Log.e(TAG, "error loading words from file")
@@ -84,12 +84,13 @@ class DbSetup {
             }
         } catch (e: Exception) {
             Log.e(TAG, "problem while loading words into database: " + e.message)
+            throw e
         } finally {
             reader.close()
         }
         Log.i(TAG, "DONE loading words from file")
 
-        // game will exist if we doing an upgrade
+        // game will exist if we are doing an upgrade
         //        boolean gameExists = mDbHelper.getTotalNumGameWords() > 0;
         val gameExists = false
 
@@ -132,6 +133,7 @@ class DbSetup {
             }
         } catch (e: Exception) {
             Log.e(TAG, "problem while loading definitions into database: " + e.message)
+            throw e
         } finally {
             reader.close()
         }
