@@ -53,16 +53,30 @@ class PuzzleFragment : Fragment() {
             field = gameWord
         }
 
-    val puzzleRepresentation: List<GridCell?>
+    /**
+     * List of cell values from opposing words of the the currently selected word.
+     */
+    val opposingPuzzleCellValues: ArrayList<PuzzleCellValue>
         get() {
-            val gridCells = ArrayList<GridCell?>()
+            val puzzleCellValues = ArrayList<PuzzleCellValue>()
             currentGameWord?.let {
                 val isAcross = it.isAcross
                 val wordLength = it.word.length
                 var row = it.row
                 var col = it.col
                 for (charIndex in 0 until wordLength) {
-                    gridCells.add(cellGrid[row][col])
+                    cellGrid[row][col]?.let {
+                        when {
+                            isAcross && it.userCharDown != null ->
+                                PuzzleCellValue(charIndex, it.userCharDown!!, it.gameWordDown!!.isConfident)
+                            !isAcross && it.userCharAcross != null ->
+                                PuzzleCellValue(charIndex, it.userCharAcross!!, it.gameWordAcross!!.isConfident)
+                            else -> null
+                        }
+                    }?.let {
+                        puzzleCellValues.add(it)
+                    }
+
                     if (isAcross) {
                         col++
                     } else {
@@ -70,7 +84,7 @@ class PuzzleFragment : Fragment() {
                     }
                 }
             }
-            return gridCells
+            return puzzleCellValues
         }
 
     //endregion

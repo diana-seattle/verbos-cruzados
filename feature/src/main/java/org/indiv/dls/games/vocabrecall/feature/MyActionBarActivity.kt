@@ -26,7 +26,6 @@ abstract class MyActionBarActivity : AppCompatActivity() {
 
     companion object {
         var currentGameWord: GameWord? = null
-        var puzzleRepresentation: List<GridCell?>? = null
     }
 
     //endregion

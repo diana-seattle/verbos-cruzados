@@ -190,7 +190,6 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
         super.onDestroy()
         compositeDisposable.clear()
 
-        puzzleRepresentation = null
         currentGameWord = null
         showingErrors = false
     }
@@ -258,16 +257,15 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
      */
     override fun onPuzzleClick(gameWord: GameWord?) {
         currentGameWord = gameWord
-        puzzleRepresentation = puzzleFragment.puzzleRepresentation
 
         // update answer fragment with current game word
         answerFragment?.let {
             // dual pane mode
-            it.setGameWord()
+            it.setGameWord(puzzleFragment.opposingPuzzleCellValues)
         } ?: run {
             // single pane mode
             if (!answerActivityLaunched) {
-                val intent = Intent(this, AnswerActivity::class.java)
+                val intent = AnswerActivity.getIntent(this, puzzleFragment.opposingPuzzleCellValues)
                 startActivityForResult(intent, RESULTCODE_ANSWER)
                 answerActivityLaunched = true
             }
@@ -427,9 +425,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
      * Handles completion of db setup.
      */
     private fun onFinishDbSetup() {
-        if (progressDialog != null) {
-            progressDialog!!.dismiss() // dismiss progress dialog
-        }
+        progressDialog?.dismiss()
         loadNewOrExistingGame()
     }
 
@@ -478,13 +474,12 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
         puzzleFragment.createGrid(this)
 
         currentGameWord = puzzleFragment.currentGameWord
-        puzzleRepresentation = puzzleFragment.puzzleRepresentation
 
         // if dual panel, update answer fragment with current game word
-        if (answerFragment != null) {
+        answerFragment?.let {
             if (currentGameWord != null) { // this extra check is necessary for case where setting up initial game and no words available in db
-                answerFragment!!.setGameWord()
-                answerFragment!!.isVisible = true // set answer dialog fragment visible now that puzzle drawn
+                it.setGameWord(puzzleFragment.opposingPuzzleCellValues)
+                it.isVisible = true // set answer dialog fragment visible now that puzzle drawn
             }
         }
     }

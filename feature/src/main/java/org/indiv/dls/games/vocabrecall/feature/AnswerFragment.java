@@ -1,7 +1,10 @@
 package org.indiv.dls.games.vocabrecall.feature;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import org.indiv.dls.games.vocabrecall.feature.db.Definition;
 import org.indiv.dls.games.vocabrecall.feature.db.GameWord;
@@ -15,7 +18,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,7 +33,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 
 // see: http://android-developers.blogspot.com/2012/05/using-dialogfragments.html
 
@@ -49,11 +50,11 @@ public class AnswerFragment extends Fragment {
     //region STATIC LOCAL CONSTANTS ----------------------------------------------------------------
 
     private static final String PREFERENCE_KEY_FONT = "fontSize";
-    public static final int FONT_EXTRA_SMALL = 16; // in SP
-    public static final int FONT_SMALL = 19;
-    public static final int FONT_MEDIUM = 22;
-    public static final int FONT_LARGE = 26;
-    public static final int FONT_EXTRA_LARGE = 30;
+    private static final int FONT_EXTRA_SMALL = 16; // in SP
+    private static final int FONT_SMALL = 19;
+    private static final int FONT_MEDIUM = 22;
+    private static final int FONT_LARGE = 26;
+    private static final int FONT_EXTRA_LARGE = 30;
 
     private final static int COLOR_ANSWER = 0xFF0099cc;  // a little darker than puzzle background
 
@@ -67,7 +68,7 @@ public class AnswerFragment extends Fragment {
 
     private EditText mTextEditorAnswer;
     private TextView mTextViewLetterCount;
-    private LinearLayout mLayoutPuzzleRepresentation;
+    private LinearLayout mPuzzleRepresentationLayout;
     private HorizontalScrollView mPuzzleScrollView;
     private int mWordLength;
     private View mFragmentView; // for some reason getView() sometimes returns null, so hold onto a copy of the view
@@ -97,8 +98,8 @@ public class AnswerFragment extends Fragment {
 
         // puzzle representation
         mPuzzleScrollView = mFragmentView.findViewById(R.id.puzzle_representation_scrollview);
-        mLayoutPuzzleRepresentation = mFragmentView.findViewById(R.id.puzzle_representation);
-        mLayoutPuzzleRepresentation.setOnClickListener(v -> showSoftKeyboardForAnswer());
+        mPuzzleRepresentationLayout = mFragmentView.findViewById(R.id.puzzle_representation);
+        mPuzzleRepresentationLayout.setOnClickListener(v -> showSoftKeyboardForAnswer());
 
         // text editor
         mTextEditorAnswer = mFragmentView.findViewById(R.id.txt_answer);
@@ -168,10 +169,6 @@ public class AnswerFragment extends Fragment {
             startActivity(new Intent(Intent.ACTION_VIEW, uri));
             return true;
         });
-
-        if (MyActionBarActivity.Companion.getCurrentGameWord() != null) {
-            updateGameWord();
-        }
 
         return mFragmentView;
     }
@@ -277,18 +274,18 @@ public class AnswerFragment extends Fragment {
     }
 
     // called by main activity in dual pane mode
-    public void setGameWord() {
+    public void setGameWord(List<PuzzleCellValue> opposingPuzzleCellValues) {
         // if dual pane mode, update game word, otherwise do it when fragment created
-        if (mLayoutPuzzleRepresentation != null) {
-            updateGameWord();
+        if (mPuzzleRepresentationLayout != null) {
+            updateGameWord(opposingPuzzleCellValues);
         }
     }
 
     // called by activity
     public void clearGameWord() {
         // if dual pane mode, update game word, otherwise do it when dialog done drawing itself
-        if (mLayoutPuzzleRepresentation != null) {
-            mLayoutPuzzleRepresentation.removeAllViews();
+        if (mPuzzleRepresentationLayout != null) {
+            mPuzzleRepresentationLayout.removeAllViews();
             mTextEditorAnswer.setText("");
             View view = mFragmentView;  // for some reason getView() sometimes returns null, so use cached copy of object
             ((TextView) view.findViewById(R.id.textview_definitions_ahd)).setText(""); // in dual panel mode, there may be existing text
@@ -308,28 +305,24 @@ public class AnswerFragment extends Fragment {
 
     //region PRIVATE METHODS -----------------------------------------------------------------------
 
-    private void updateGameWord() {
+    private void updateGameWord(List<PuzzleCellValue> opposingPuzzleCellValues) {
         GameWord gameWord = MyActionBarActivity.Companion.getCurrentGameWord();
         mWordLength = gameWord.getWord().length();
-        final boolean isAcross = gameWord.isAcross();
+
+        Map mapOpposingCellValues = new HashMap();
+        for (PuzzleCellValue v : opposingPuzzleCellValues) {
+            mapOpposingCellValues.put(v.getPosition(), v);
+        }
 
         // update puzzle representation
-        mLayoutPuzzleRepresentation.removeAllViews();  // may have previous contents when displayed in dual pane 
-        for (GridCell gridCell : MyActionBarActivity.Companion.getPuzzleRepresentation()) {
+        mPuzzleRepresentationLayout.removeAllViews();  // may have previous contents when displayed in dual pane
+        for (int i = 0; i < mWordLength; i++) {
             PuzzleRepresentationCellTextView textView = new PuzzleRepresentationCellTextView(getContext());
-            mLayoutPuzzleRepresentation.addView(textView);
-            if (gridCell != null) {
-                if (isAcross) {
-                    if (gridCell.getGameWordDown() != null) {
-                        textView.fillTextView(gridCell.getUserCharDown(), gridCell.getGameWordDown().isConfident());
-                    }
-                } else {
-                    if (gridCell.getGameWordAcross() != null) {
-                        textView.fillTextView(gridCell.getUserCharAcross(), gridCell.getGameWordAcross().isConfident());
-                    }
-                }
-            }
-            if (textView.getText() == null || textView.getText().length() == 0) {
+            mPuzzleRepresentationLayout.addView(textView);
+            if (mapOpposingCellValues.containsKey(i)) {
+                PuzzleCellValue puzzleCellValue = (PuzzleCellValue)mapOpposingCellValues.get(i);
+                textView.fillTextView(puzzleCellValue.getChar(), puzzleCellValue.getConfident());
+            } else {
                 textView.setTextColor(COLOR_ANSWER);
             }
         }
@@ -392,8 +385,8 @@ public class AnswerFragment extends Fragment {
     private void updatePuzzleRepresentation() {
         String answerText = getUserEntry().toUpperCase();
         int answerLength = answerText.length();
-        for (int i = 0; i < mLayoutPuzzleRepresentation.getChildCount(); i++) {
-            TextView v = (TextView) mLayoutPuzzleRepresentation.getChildAt(i);
+        for (int i = 0; i < mPuzzleRepresentationLayout.getChildCount(); i++) {
+            TextView v = (TextView) mPuzzleRepresentationLayout.getChildAt(i);
             if (COLOR_ANSWER == v.getTextColors().getDefaultColor()) {
                 v.setText(String.valueOf((i < answerLength) ? answerText.charAt(i) : ""));
             }
