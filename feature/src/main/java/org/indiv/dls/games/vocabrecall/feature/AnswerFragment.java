@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import org.indiv.dls.games.vocabrecall.feature.db.Definition;
 import org.indiv.dls.games.vocabrecall.feature.db.GameWord;
@@ -356,14 +355,14 @@ public class AnswerFragment extends Fragment {
         }
         // update definition views
         View view = mFragmentView;  // for some reason getView() sometimes returns null, so use cached copy of object
-        updateDefinitionViews(ahdDefinitions, (TextView) view.findViewById(R.id.textview_attribution_ahd),
-                (TextView) view.findViewById(R.id.textview_definitions_ahd));
-        updateDefinitionViews(wiktionaryDefinitions, (TextView) view.findViewById(R.id.textview_attribution_wiktionary),
-                (TextView) view.findViewById(R.id.textview_definitions_wiktionary));
-        updateDefinitionViews(centuryDefinitions, (TextView) view.findViewById(R.id.textview_attribution_century),
-                (TextView) view.findViewById(R.id.textview_definitions_century));
-        updateDefinitionViews(websterDefinitions, (TextView) view.findViewById(R.id.textview_attribution_webster),
-                (TextView) view.findViewById(R.id.textview_definitions_webster));
+        updateDefinitionViews(ahdDefinitions, view.findViewById(R.id.textview_attribution_ahd),
+                view.findViewById(R.id.textview_definitions_ahd));
+        updateDefinitionViews(wiktionaryDefinitions, view.findViewById(R.id.textview_attribution_wiktionary),
+                view.findViewById(R.id.textview_definitions_wiktionary));
+        updateDefinitionViews(centuryDefinitions, view.findViewById(R.id.textview_attribution_century),
+                view.findViewById(R.id.textview_definitions_century));
+        updateDefinitionViews(websterDefinitions, view.findViewById(R.id.textview_attribution_webster),
+                view.findViewById(R.id.textview_definitions_webster));
 
         // make sure definitions scrolled back up to the top
         mScrollViewDefinitions.fullScroll(ScrollView.FOCUS_UP);

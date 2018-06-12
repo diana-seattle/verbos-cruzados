@@ -46,19 +46,19 @@ abstract class MyActionBarActivity : AppCompatActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        currentGameWord?.let {
+        currentGameWord?.game?.let {
             // modify 3-letter clue menu item
             val menuItemMiniClue = optionsMenu?.findItem(R.id.action_give3letters)
             menuItemMiniClue?.apply {
-                title = resources.getString(R.string.action_give3letters) + it.game.miniCluesMenuText
-                isEnabled = it.game.isMiniClueRemaining
+                title = resources.getString(R.string.action_give3letters) + it.miniCluesMenuText
+                isEnabled = it.isMiniClueRemaining
             }
 
             // modify full-answer clue menu item
             val menuItemFullAnswer = optionsMenu?.findItem(R.id.action_giveanswer)
             menuItemFullAnswer?.apply {
-                title = resources.getString(R.string.action_giveanswer) + it.game.fullCluesMenuText
-                isEnabled = it.game.isFullClueRemaining
+                title = resources.getString(R.string.action_giveanswer) + it.fullCluesMenuText
+                isEnabled = it.isFullClueRemaining
             }
         }
         return true
@@ -73,8 +73,8 @@ abstract class MyActionBarActivity : AppCompatActivity() {
             R.id.action_showstats -> showStatsDialog()
             R.id.action_give3letters -> give3LetterHint()
             R.id.action_giveanswer -> giveAnswer()
-            R.id.action_playagainsoon -> currentGameWord?.let {
-                Thread { dbHelper.setWordPlaySoon(it.word, true) }.start()
+            R.id.action_playagainsoon -> currentGameWord?.word?.let {
+                Thread { dbHelper.setWordPlaySoon(it, true) }.start()
             }
             else -> return super.onOptionsItemSelected(item)
         }
@@ -89,9 +89,9 @@ abstract class MyActionBarActivity : AppCompatActivity() {
      * override to display answer
      */
     protected open fun giveAnswer() {
-        currentGameWord?.let {
-            it.game.fullClues++
-            Thread { dbHelper.saveFullClues(it.game) }.start()
+        currentGameWord?.game?.let {
+            it.fullClues++
+            Thread { dbHelper.saveFullClues(it) }.start()
         }
         // subclass handles the rest
     }
@@ -100,9 +100,9 @@ abstract class MyActionBarActivity : AppCompatActivity() {
      * override to display 3 letter hint
      */
     protected open fun give3LetterHint() {
-        currentGameWord?.let {
-            it.game.miniClues++
-            Thread { dbHelper.saveMiniClues(it.game) }.start()
+        currentGameWord?.game?.let {
+            it.miniClues++
+            Thread { dbHelper.saveMiniClues(it) }.start()
         }
         // subclass handles the rest
     }
