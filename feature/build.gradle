@@ -3,6 +3,10 @@ apply plugin: 'com.android.feature'
 apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
+androidExtensions {
+    // needed for use of @Parcelize annotation
+    experimental = true
+}
 
 android {
     // Java version compile options

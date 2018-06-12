@@ -45,7 +45,6 @@ import java.util.Date
 import org.indiv.dls.games.vocabrecall.feature.async.DbSetup
 import org.indiv.dls.games.vocabrecall.feature.async.DefinitionRetrieval
 import org.indiv.dls.games.vocabrecall.feature.async.GameSetup
-import org.indiv.dls.games.vocabrecall.feature.db.ContentHelper
 import org.indiv.dls.games.vocabrecall.feature.db.Game
 import org.indiv.dls.games.vocabrecall.feature.db.GameWord
 import org.indiv.dls.games.vocabrecall.feature.dialog.ConfirmStartNewGameDialogFragment
@@ -81,26 +80,25 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
         private val RESULTCODE_ANSWER = 100
         const val ACTIVITYRESULT_ANSWER = "answer"
         const val ACTIVITYRESULT_CONFIDENT = "confident"
-
-        private var sShowingErrors = false
     }
 
     //endregion
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
-    private val mCompositeDisposable = CompositeDisposable()
-    private var mGame: Game? = null
-    private val mGameSetup = GameSetup()
-    private val mDbSetup = DbSetup()
-    private val mDefinitionRetrieval = DefinitionRetrieval()
-    private lateinit var mPuzzleFragment: PuzzleFragment
-    private var mAnswerFragment: AnswerFragment? = null // for use in panel
-    private var mAnswerActivityLaunched = false // use this to load activity only once when puzzle double clicked on
+    private val compositeDisposable = CompositeDisposable()
+    private var currentGame: Game? = null
+    private val gameSetup = GameSetup()
+    private val dbSetup = DbSetup()
+    private val definitionRetrieval = DefinitionRetrieval()
+    private lateinit var puzzleFragment: PuzzleFragment
+    private var answerFragment: AnswerFragment? = null // for use in panel
+    private var answerActivityLaunched = false // use this to load activity only once when puzzle double clicked on
 
-    private var mProgressDialog: ProgressDialog? = null
+    private var progressDialog: ProgressDialog? = null
     private var timeProgressDialogShown: Long = 0
-    private var mHelpShownYet = false
+    private var helpShownYet = false
+    private var showingErrors = false
 
     // if no network is available networkInfo will be null, otherwise check if we are connected
     private val isNetworkAvailable: Boolean
@@ -125,24 +123,25 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
             // This is a special debug-build-only hack that allows the developer/tester to complete a game immediately.
             toolbar?.setOnLongClickListener { v ->
                 do {
-                    sCurrentGameWord = mPuzzleFragment.currentGameWord
-                    sCurrentGameWord?.let {
+                    currentGameWord = puzzleFragment.currentGameWord
+                    currentGameWord?.let {
                         it.word?.toLowerCase()?.let {
                             onFinishAnswerDialog(it, true)
                         }
                     }
-                } while (mPuzzleFragment.selectNextErroredGameWord() == true)
+                } while (puzzleFragment.selectNextErroredGameWord() == true)
                 true
             }
         }
 
-        val displayMetrics = resources.displayMetrics
 
         // get puzzle fragment
-        mPuzzleFragment = supportFragmentManager.findFragmentById(R.id.puzzle_fragment) as PuzzleFragment
+        puzzleFragment = supportFragmentManager.findFragmentById(R.id.puzzle_fragment) as PuzzleFragment
 
         // get answer fragment if present (this will be found only in dual pane mode)
-        mAnswerFragment = supportFragmentManager.findFragmentById(R.id.answer_fragment) as AnswerFragment?
+        answerFragment = supportFragmentManager.findFragmentById(R.id.answer_fragment) as AnswerFragment?
+
+        val displayMetrics = resources.displayMetrics
 
         // get action bar height
         val actionBarHeightInPixels = getActionBarHeightInPixels(displayMetrics)
@@ -151,7 +150,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
         var puzzleHeightPixels = 0
 
         // if answer fragment present (dual pane mode), use landscape orientation
-        mAnswerFragment?.let {
+        answerFragment?.let {
             it.isVisible = false // set invisible until puzzle shows up
 
             // this allows screen to rotate 180deg in landscape mode
@@ -169,18 +168,15 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
         }
 
         // initialize puzzle fragment after setting orientation so it knows its size
-        mPuzzleFragment.initialize(puzzleWidthPixels, puzzleHeightPixels)
+        puzzleFragment.initialize(puzzleWidthPixels, puzzleHeightPixels)
 
         // get database
-        sDbHelper = ContentHelper(this)
-        sDbHelper?.let {
-            mCompositeDisposable.add(mDbSetup.ensureDbLoaded(this, it)
-                    .subscribeOn(Schedulers.computation())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(::onProgressDbSetup,
-                            { Toast.makeText(this, R.string.error_initial_setup_failure, Toast.LENGTH_SHORT).show() },
-                            this::onFinishDbSetup))
-        }
+        compositeDisposable.add(dbSetup.ensureDbLoaded(this, dbHelper)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(::onProgressDbSetup,
+                        { Toast.makeText(this, R.string.error_initial_setup_failure, Toast.LENGTH_SHORT).show() },
+                        this::onFinishDbSetup))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -192,14 +188,10 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
 
     override fun onDestroy() {
         super.onDestroy()
-        mCompositeDisposable.clear()
+        compositeDisposable.clear()
 
-        // reset static variables since these may stick around after activity destroyed
-        sPuzzleRepresentation = null
-        sCurrentGameWord = null
-        sDbHelper = null
-        sShowingErrors = false
-        sDbSetupComplete = false
+        currentGameWord = null
+        showingErrors = false
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
@@ -212,7 +204,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
                 val confident = result.getBooleanExtra(VocabRecallActivity.ACTIVITYRESULT_CONFIDENT, false)
                 onFinishAnswerDialog(userText, confident)
             }
-            mAnswerActivityLaunched = false
+            answerActivityLaunched = false
         }
     }
 
@@ -221,7 +213,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_showerrors -> showErrors(!sShowingErrors)
+            R.id.action_showerrors -> showErrors(!showingErrors)
             R.id.action_startnewgame -> promptForNewGame(null)
             else -> return super.onOptionsItemSelected(item)
         }
@@ -233,12 +225,12 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
      */
     override fun giveAnswer() {
         super.giveAnswer()
-        mAnswerFragment?.let {
+        answerFragment?.let {
             // dual pane mode
             it.giveAnswer()
         } ?: run {
             // single pane mode
-            onFinishAnswerDialog(sCurrentGameWord!!.word, true)
+            onFinishAnswerDialog(currentGameWord!!.word, true)
         }
     }
 
@@ -247,12 +239,12 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
      */
     override fun give3LetterHint() {
         super.give3LetterHint()
-        mAnswerFragment?.let {
+        answerFragment?.let {
             // dual pane mode
             it.give3LetterHint()
         } ?: run {
             // single pane mode
-            onFinishAnswerDialog(sCurrentGameWord!!.get3LetterHint(), true)
+            onFinishAnswerDialog(currentGameWord!!.get3LetterHint(), true)
         }
     }
 
@@ -263,20 +255,19 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
     /*
      * implements PuzzleListener interface for callback from PuzzleFragment
      */
-    override fun onPuzzleClick(gameWord: GameWord) {
-        sCurrentGameWord = gameWord
-        sPuzzleRepresentation = mPuzzleFragment.puzzleRepresentation
+    override fun onPuzzleClick(gameWord: GameWord?) {
+        currentGameWord = gameWord
 
         // update answer fragment with current game word
-        mAnswerFragment?.let {
+        answerFragment?.let {
             // dual pane mode
-            it.setGameWord()
+            it.setGameWord(puzzleFragment.opposingPuzzleCellValues)
         } ?: run {
             // single pane mode
-            if (!mAnswerActivityLaunched) {
-                val intent = Intent(this, AnswerActivity::class.java)
+            if (!answerActivityLaunched) {
+                val intent = AnswerActivity.getIntent(this, puzzleFragment.opposingPuzzleCellValues)
                 startActivityForResult(intent, RESULTCODE_ANSWER)
-                mAnswerActivityLaunched = true
+                answerActivityLaunched = true
             }
         }
     }
@@ -291,52 +282,50 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
     override fun onFinishAnswerDialog(userText: String, confident: Boolean) {
 
         // in dual pane mode, this method may be called by answer dialog during setup (on text change)
-        if (mPuzzleFragment.currentGameWord == null) {
+        if (puzzleFragment.currentGameWord == null) {
             return
         }
 
-        mPuzzleFragment.currentGameWord?.let {
+        puzzleFragment.currentGameWord?.let {
             it.userText = userText.toUpperCase()
             it.isConfident = confident
-            mPuzzleFragment.updateUserTextInPuzzle(it)
+            puzzleFragment.updateUserTextInPuzzle(it)
 
             // update database with answer
-            Thread { sDbHelper?.updateGameWordUserEntry(it) }.start()
+            Thread { dbHelper.updateGameWordUserEntry(it) }.start()
         }
 
         // update error indications
-        if (sShowingErrors) {
-            showErrors(sShowingErrors)
+        if (showingErrors) {
+            showErrors(showingErrors)
         }
 
         // if puzzle is complete and correct
-        if (mPuzzleFragment.isPuzzleComplete(true)) {
+        if (puzzleFragment.isPuzzleComplete(true)) {
 
             // if game not already marked complete, do so now (note that user may not start new game after being prompted to do so)
-            if (mGame?.isGameComplete == false) {
+            if (currentGame?.isGameComplete == false) {
                 // save completion status to db
-                sDbHelper?.let {
-                    try {
-                        it.markGameComplete(mGame)
-                        sGamesCompleted = it.gamesCompleted
-                        sWordsCompleted = it.wordCountOfGamesCompleted
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Error marking game complete: " + e.message)
-                    }
+                try {
+                    dbHelper.markGameComplete(currentGame)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error marking game complete: " + e.message)
                 }
             }
 
             // prompt user with congrats and new game
             var extraMessage = resources.getString(R.string.dialog_startnewgame_congrats)
-            if (sGamesCompleted > 1) {
+            val gamesCompleted = dbHelper.gamesCompleted
+            val wordsCompleted = dbHelper.wordCountOfGamesCompleted
+            if (gamesCompleted > 1) {
                 extraMessage += "\n\n" + resources.getString(R.string.dialog_startnewgame_congrats2)
-                        .replace("!games!", "" + sGamesCompleted)
-                        .replace("!words!", "" + sWordsCompleted)
+                        .replace("!games!", "" + gamesCompleted)
+                        .replace("!words!", "" + wordsCompleted)
             }
             promptForNewGame(extraMessage)
 
             // else if puzzle is complete but not correct, show errors
-        } else if (!sShowingErrors && mPuzzleFragment.isPuzzleComplete(false)) {
+        } else if (!showingErrors && puzzleFragment.isPuzzleComplete(false)) {
             showErrors(true)
         }
 
@@ -353,25 +342,25 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
     override fun setupNewGame() {
 
         // determine existing game no
-        val newGameNo = (mGame?.gameNo ?: 0) + 1
+        val newGameNo = (currentGame?.gameNo ?: 0) + 1
 
         // if dual pane, clear game word and hide answer fragment for now
-        mAnswerFragment?.let {
+        answerFragment?.let {
             it.clearGameWord()
             it.isVisible = false // set invisible until puzzle shows up
         }
 
         // clear puzzle fragment of existing game if any
-        mPuzzleFragment.clearExistingGame()
+        puzzleFragment.clearExistingGame()
         showErrors(false)
 
         // setup new game
-        mCompositeDisposable.add(mGameSetup.newGame(sDbHelper!!, mPuzzleFragment.cellGrid, newGameNo)
+        compositeDisposable.add(gameSetup.newGame(dbHelper, puzzleFragment.cellGrid, newGameNo)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { game ->
-                            mGame = game
+                            currentGame = game
                             createGrid()
                             retrieveNewDefinitions()
                         },
@@ -392,9 +381,9 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
      * show/hide errors in puzzle
      */
     private fun showErrors(showErrors: Boolean) {
-        sShowingErrors = showErrors
-        setOptionsMenuText(R.id.action_showerrors, if (sShowingErrors) R.string.action_hideerrors else R.string.action_showerrors)
-        mPuzzleFragment.showErrors(showErrors)
+        showingErrors = showErrors
+        setOptionsMenuText(R.id.action_showerrors, if (showingErrors) R.string.action_hideerrors else R.string.action_showerrors)
+        puzzleFragment.showErrors(showErrors)
     }
 
     private fun promptForNewGame(extraMessage: String?) {
@@ -410,20 +399,13 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
     private fun loadNewOrExistingGame() {
 
         // get current game if any
-        mGame = sDbHelper?.currentGame
+        currentGame = dbHelper.currentGame
 
         // if on very first game, or if no saved game (due to an error), create a new one, otherwise open existing game
-        if (mGame == null || mGame!!.gameWords == null || mGame!!.gameWords.size == 0 || !mPuzzleFragment.doWordsFitInGrid(mGame!!.gameWords)) {
+        if (currentGame?.gameWords == null || currentGame!!.gameWords.isEmpty() || !puzzleFragment.doWordsFitInGrid(currentGame!!.gameWords)) {
             setupNewGame()
         } else {
             restoreExistingGame()
-            if (mGame!!.gameNo > 1) {
-                // if any games won yet, update stats
-                sGamesCompleted = sDbHelper!!.gamesCompleted
-                if (sGamesCompleted > 0) {
-                    sWordsCompleted = sDbHelper!!.wordCountOfGamesCompleted
-                }
-            }
         }
     }
 
@@ -432,8 +414,8 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
      */
     private fun restoreExistingGame() {
         // copy game words to cell grid
-        for (gameWord in mGame!!.gameWords) {
-            mGameSetup.addToGrid(gameWord, mPuzzleFragment.cellGrid)
+        for (gameWord in currentGame!!.gameWords) {
+            gameSetup.addToGrid(gameWord, puzzleFragment.cellGrid)
         }
         createGrid()
     }
@@ -443,10 +425,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
      * Handles completion of db setup.
      */
     private fun onFinishDbSetup() {
-        if (mProgressDialog != null) {
-            mProgressDialog!!.dismiss() // dismiss progress dialog
-        }
-        sDbSetupComplete = true
+        progressDialog?.dismiss()
         loadNewOrExistingGame()
     }
 
@@ -454,9 +433,9 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
      * Handles progress updates during db setup.
      */
     private fun onProgressDbSetup(progress: Int) {
-        if (mProgressDialog == null) {
-            mProgressDialog = ProgressDialog(this)
-            mProgressDialog?.apply {
+        if (progressDialog == null) {
+            progressDialog = ProgressDialog(this)
+            progressDialog?.apply {
                 setMessage("One time initialization...")
                 isIndeterminate = false
                 max = DbSetup.PROGRESS_RANGE
@@ -467,14 +446,14 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
                 show()
                 timeProgressDialogShown = Date().time
             }
-        } else if (!mHelpShownYet && Date().time > timeProgressDialogShown + 4000) {
+        } else if (!helpShownYet && Date().time > timeProgressDialogShown + 4000) {
             // now that progress dialog has been up a little, show help dialog on top of it
-            mHelpShownYet = true
+            helpShownYet = true
             showHelpDialog()
         }
 
         // update progress dialog with progress
-        mProgressDialog!!.progress = progress
+        progressDialog!!.progress = progress
     }
 
 
@@ -492,16 +471,15 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
 
 
     private fun createGrid() {
-        mPuzzleFragment.createGrid()
+        puzzleFragment.createGrid(this)
 
-        sCurrentGameWord = mPuzzleFragment.currentGameWord
-        sPuzzleRepresentation = mPuzzleFragment.puzzleRepresentation
+        currentGameWord = puzzleFragment.currentGameWord
 
         // if dual panel, update answer fragment with current game word
-        if (mAnswerFragment != null) {
-            if (sCurrentGameWord != null) { // this extra check is necessary for case where setting up initial game and no words available in db
-                mAnswerFragment!!.setGameWord()
-                mAnswerFragment!!.isVisible = true // set answer dialog fragment visible now that puzzle drawn
+        answerFragment?.let {
+            if (currentGameWord != null) { // this extra check is necessary for case where setting up initial game and no words available in db
+                it.setGameWord(puzzleFragment.opposingPuzzleCellValues)
+                it.isVisible = true // set answer dialog fragment visible now that puzzle drawn
             }
         }
     }
@@ -509,7 +487,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
     private fun retrieveNewDefinitions() {
         // Fetch a new set of definitions.
         if (isNetworkAvailable) {
-            mCompositeDisposable.add(mDefinitionRetrieval.retrieveDefinitions(sDbHelper!!, 10)
+            compositeDisposable.add(definitionRetrieval.retrieveDefinitions(dbHelper, 10)
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ }) { e -> })

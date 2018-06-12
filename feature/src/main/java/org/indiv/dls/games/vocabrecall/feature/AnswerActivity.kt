@@ -1,6 +1,8 @@
 package org.indiv.dls.games.vocabrecall.feature
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.Menu
@@ -10,6 +12,21 @@ import android.view.MenuItem
  * This activity houses the [AnswerFragment] when run in portrait mode (on non-tablet devices). Not used on tablets.
  */
 class AnswerActivity : MyActionBarActivity() {
+
+    //region COMPANION OBJECT ----------------------------------------------------------------------
+
+    companion object {
+        private val KEY_PUZZLE_CHARS = "KEY_PUZZLE_CHARS"
+
+        @JvmStatic
+        fun getIntent(context: Context, opposingPuzzleCellValues: ArrayList<PuzzleCellValue>): Intent {
+            val intent = Intent(context, AnswerActivity::class.java)
+            intent.putParcelableArrayListExtra(KEY_PUZZLE_CHARS, opposingPuzzleCellValues)
+            return intent
+        }
+    }
+
+    //endregion
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
@@ -33,6 +50,8 @@ class AnswerActivity : MyActionBarActivity() {
         // get answer fragment
         answerFragment = supportFragmentManager.findFragmentById(R.id.answer_fragment) as AnswerFragment
 
+        answerFragment?.setGameWord(getOpposingPuzzleCellValues())
+
         // enables back button (see http://stackoverflow.com/questions/10108774/android-actionbar-back-button)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -53,7 +72,7 @@ class AnswerActivity : MyActionBarActivity() {
                 finish()
                 return true
             }
-            // The remaining actions are common to both activities to call super to handle them.
+        // The remaining actions are common to both activities to call super to handle them.
             else -> return super.onOptionsItemSelected(item)
         }
     }
@@ -72,6 +91,17 @@ class AnswerActivity : MyActionBarActivity() {
     override fun give3LetterHint() {
         super.give3LetterHint()
         answerFragment?.give3LetterHint()
+    }
+
+    //endregion
+
+    //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
+
+    /**
+     * Gets data from the activity's intent.
+     */
+    private fun getOpposingPuzzleCellValues(): List<PuzzleCellValue> {
+        return intent.getParcelableArrayListExtra(KEY_PUZZLE_CHARS) ?: emptyList()
     }
 
     //endregion

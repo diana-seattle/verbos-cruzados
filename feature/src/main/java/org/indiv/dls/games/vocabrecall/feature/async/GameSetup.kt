@@ -42,14 +42,14 @@ class GameSetup {
 
             val numWords = Math.round((gridWidth * gridHeight / 5 + 20).toFloat())  // get more than we need to maximize density of layout
             val words = dbHelper.getNextWordsList(numWords)
-            if (words == null || words.size == 0) {
+            if (words == null || words.isEmpty()) {
                 throw Exception("Unable to get next words")
             }
 
             // determine layout
             val game = Game(gameNo)
             game.gameWords = layoutWords(cellGrid, words, gameNo)
-            if (game.getGameWords() == null || game.gameWords.size == 0) {
+            if (game.gameWords == null || game.gameWords.isEmpty()) {
                 throw Exception("Failure during words layout")
             }
 
@@ -83,11 +83,10 @@ class GameSetup {
         var charIndex = 0
         while (charIndex < wordLength) {
             if (cellGrid[row][col] == null) { // might exist already due to word in other direction
-                cellGrid[row][col] = GridCell()
+                cellGrid[row][col] = GridCell(w[charIndex])
             }
-            cellGrid[row][col]?.apply {
-                char = w[charIndex]
-                val userChar = if (userText != null && userText.length > charIndex) userText[charIndex] else 0.toChar()
+            cellGrid[row][col]!!.apply {
+                val userChar = if (userText != null && userText.length > charIndex) userText[charIndex] else null
                 if (gameWord.isAcross) {
                     gameWordAcross = gameWord
                     userCharAcross = userChar
@@ -109,7 +108,7 @@ class GameSetup {
     private fun layoutWords(cellGrid: Array<Array<GridCell?>>, words: MutableList<Word>, gameNo: Int): List<GameWord> {
 
         // sort so that longest words are first
-        Collections.sort(words) { lhs, rhs -> rhs.word.length - lhs.word.length }
+        words.sortWith(Comparator { lhs, rhs -> rhs.word.length - lhs.word.length })
 
         // place each word into character grid
         val gameWords = ArrayList<GameWord>()
