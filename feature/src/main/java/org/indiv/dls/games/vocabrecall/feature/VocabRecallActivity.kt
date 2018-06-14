@@ -54,6 +54,7 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.app.Activity
 import android.app.ProgressDialog
+import android.app.ProgressDialog.show
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.util.DisplayMetrics
@@ -66,6 +67,9 @@ import android.widget.Toast
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import org.indiv.dls.games.vocabrecall.feature.MyActionBarActivity.Companion.currentGameWord
+import org.indiv.dls.games.vocabrecall.feature.db.Definition
+import java.util.ArrayList
 
 /**
  * This is the main activity. It houses [PuzzleFragment], and optionally [AnswerFragment] when in landscape mode (on tablets).
@@ -255,17 +259,18 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
     /*
      * implements PuzzleListener interface for callback from PuzzleFragment
      */
-    override fun onPuzzleClick(gameWord: GameWord?) {
+    override fun onPuzzleClick(gameWord: GameWord) {
         currentGameWord = gameWord
+        val answerPresentation = createAnswerPresentation(gameWord)
 
         // update answer fragment with current game word
         answerFragment?.let {
             // dual pane mode
-            it.setGameWord(puzzleFragment.opposingPuzzleCellValues)
+            it.setGameWord(answerPresentation)
         } ?: run {
             // single pane mode
             if (!answerActivityLaunched) {
-                val intent = AnswerActivity.getIntent(this, puzzleFragment.opposingPuzzleCellValues)
+                val intent = AnswerActivity.getIntent(this, answerPresentation)
                 startActivityForResult(intent, RESULTCODE_ANSWER)
                 answerActivityLaunched = true
             }
@@ -377,6 +382,31 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
+    private fun createAnswerPresentation(gameWord: GameWord): AnswerPresentation {
+        gameWord.wordInfo?.definitions?.let {
+            // split definitions by source
+            val ahdDefinitions = it.filter { it.isSourceAhd }
+            val centuryDefinitions = it.filter { it.isSourceCentury }
+            val websterDefinitions = it.filter { it.isSourceWebster }
+            val wiktionaryDefinitions = it.filter { it.isSourceWiktionary }
+            return AnswerPresentation(gameWord.word, gameWord.get3LetterHint(), gameWord.userText,
+                    formatDefinitionText(ahdDefinitions),
+                    formatDefinitionText(centuryDefinitions),
+                    formatDefinitionText(websterDefinitions),
+                    formatDefinitionText(wiktionaryDefinitions),
+                    puzzleFragment.opposingPuzzleCellValues)
+        } ?: run {
+            return AnswerPresentation(gameWord.word, gameWord.get3LetterHint(), gameWord.userText, emptyList(), emptyList(), emptyList(), emptyList(),
+                    puzzleFragment.opposingPuzzleCellValues)
+        }
+        return AnswerPresentation("", "", null, emptyList(), emptyList(), emptyList(), emptyList(),
+                puzzleFragment.opposingPuzzleCellValues)
+    }
+
+    private fun formatDefinitionText(definitions: List<Definition>): List<String> {
+        return definitions.mapIndexed { index, definition -> definition.getFullText(index + 1) }
+    }
+
     /*
      * show/hide errors in puzzle
      */
@@ -478,7 +508,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
         // if dual panel, update answer fragment with current game word
         answerFragment?.let {
             if (currentGameWord != null) { // this extra check is necessary for case where setting up initial game and no words available in db
-                it.setGameWord(puzzleFragment.opposingPuzzleCellValues)
+                it.setGameWord(createAnswerPresentation(currentGameWord!!))
                 it.isVisible = true // set answer dialog fragment visible now that puzzle drawn
             }
         }

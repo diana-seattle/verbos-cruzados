@@ -1,12 +1,8 @@
 package org.indiv.dls.games.vocabrecall.feature;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.indiv.dls.games.vocabrecall.feature.db.Definition;
-import org.indiv.dls.games.vocabrecall.feature.db.GameWord;
 
 import android.app.Activity;
 import android.content.Context;
@@ -69,6 +65,8 @@ public class AnswerFragment extends Fragment {
     private TextView mTextViewLetterCount;
     private LinearLayout mPuzzleRepresentationLayout;
     private HorizontalScrollView mPuzzleScrollView;
+    private String mWord;
+    private String mWordHint;
     private int mWordLength;
     private View mFragmentView; // for some reason getView() sometimes returns null, so hold onto a copy of the view
     private DualPaneAnswerListener mDualPaneAnswerListener;
@@ -159,12 +157,10 @@ public class AnswerFragment extends Fragment {
             updateDualPaneActivityWithAnswer("", true);
         });
 
-
         // wordnik image
         View wordnikImg = mFragmentView.findViewById(R.id.image_wordnik);
         wordnikImg.setOnLongClickListener(v -> {
-            GameWord gameWord = MyActionBarActivity.Companion.getCurrentGameWord();
-            Uri uri = Uri.parse("https://www.wordnik.com/words/" + gameWord.getWord().toLowerCase());
+            Uri uri = Uri.parse("https://www.wordnik.com/words/" + mWord.toLowerCase());
             startActivity(new Intent(Intent.ACTION_VIEW, uri));
             return true;
         });
@@ -243,15 +239,13 @@ public class AnswerFragment extends Fragment {
     //region PUBLIC CLASS METHODS ------------------------------------------------------------------
 
     public void giveAnswer() {
-        String answer = MyActionBarActivity.Companion.getCurrentGameWord().getWord().toLowerCase();
-        mTextEditorAnswer.setText(answer);
-        updateDualPaneActivityWithAnswer(answer, true);
+        mTextEditorAnswer.setText(mWord.toLowerCase());
+        updateDualPaneActivityWithAnswer(mWord, true);
     }
 
     public void give3LetterHint() {
-        String hint = MyActionBarActivity.Companion.getCurrentGameWord().get3LetterHint().toLowerCase();
-        mTextEditorAnswer.setText(hint);
-        updateDualPaneActivityWithAnswer(hint, true);
+        mTextEditorAnswer.setText(mWordHint.toLowerCase());
+        updateDualPaneActivityWithAnswer(mWordHint, true);
     }
 
     public void updateFontSize(int fontSize) {
@@ -272,12 +266,13 @@ public class AnswerFragment extends Fragment {
         }
     }
 
-    // called by main activity in dual pane mode
-    public void setGameWord(List<PuzzleCellValue> opposingPuzzleCellValues) {
+    public void setGameWord(AnswerPresentation answerPresentation) {
         // if dual pane mode, update game word, otherwise do it when fragment created
         if (mPuzzleRepresentationLayout != null) {
-            updateGameWord(opposingPuzzleCellValues);
+            updateGameWord(answerPresentation);
         }
+        mWord = answerPresentation.getWord();
+        mWordHint = answerPresentation.getWordHint();
     }
 
     // called by activity
@@ -304,12 +299,11 @@ public class AnswerFragment extends Fragment {
 
     //region PRIVATE METHODS -----------------------------------------------------------------------
 
-    private void updateGameWord(List<PuzzleCellValue> opposingPuzzleCellValues) {
-        GameWord gameWord = MyActionBarActivity.Companion.getCurrentGameWord();
-        mWordLength = gameWord.getWord().length();
+    private void updateGameWord(AnswerPresentation answerPresentation) {
+        mWordLength = answerPresentation.getWord().length();
 
         Map mapOpposingCellValues = new HashMap();
-        for (PuzzleCellValue v : opposingPuzzleCellValues) {
+        for (PuzzleCellValue v : answerPresentation.getOpposingPuzzleCellValues()) {
             mapOpposingCellValues.put(v.getPosition(), v);
         }
 
@@ -330,51 +324,36 @@ public class AnswerFragment extends Fragment {
 
 
         // set text in editor (and puzzle representation and letter count via the editor's TextWatcher handler)
-        if (gameWord.getUserText() != null) {
-            mTextEditorAnswer.setText(gameWord.getUserText().toLowerCase());
+        if (answerPresentation.getUserText() != null) {
+            mTextEditorAnswer.setText(answerPresentation.getUserText().toLowerCase());
         } else {
             mTextEditorAnswer.setText("");
         }
 
-        // split definitions by source
-        List<Definition> definitions = gameWord.getWordInfo().getDefinitions();
-        List<Definition> ahdDefinitions = new ArrayList<Definition>();
-        List<Definition> wiktionaryDefinitions = new ArrayList<Definition>();
-        List<Definition> websterDefinitions = new ArrayList<Definition>();
-        List<Definition> centuryDefinitions = new ArrayList<Definition>();
-        for (Definition d : definitions) {
-            if (d.isSourceAhd()) {
-                ahdDefinitions.add(d);
-            } else if (d.isSourceWiktionary()) {
-                wiktionaryDefinitions.add(d);
-            } else if (d.isSourceWebster()) {
-                websterDefinitions.add(d);
-            } else if (d.isSourceCentury()) {
-                centuryDefinitions.add(d);
-            }
-        }
         // update definition views
         View view = mFragmentView;  // for some reason getView() sometimes returns null, so use cached copy of object
-        updateDefinitionViews(ahdDefinitions, view.findViewById(R.id.textview_attribution_ahd),
+        updateDefinitionViews(answerPresentation.getAhdDefinitions(), view.findViewById(R.id.textview_attribution_ahd),
                 view.findViewById(R.id.textview_definitions_ahd));
-        updateDefinitionViews(wiktionaryDefinitions, view.findViewById(R.id.textview_attribution_wiktionary),
+        updateDefinitionViews(answerPresentation.getWiktionaryDefinitions(), view.findViewById(R.id.textview_attribution_wiktionary),
                 view.findViewById(R.id.textview_definitions_wiktionary));
-        updateDefinitionViews(centuryDefinitions, view.findViewById(R.id.textview_attribution_century),
+        updateDefinitionViews(answerPresentation.getCenturyDefinitions(), view.findViewById(R.id.textview_attribution_century),
                 view.findViewById(R.id.textview_definitions_century));
-        updateDefinitionViews(websterDefinitions, view.findViewById(R.id.textview_attribution_webster),
+        updateDefinitionViews(answerPresentation.getWebsterDefinitions(), view.findViewById(R.id.textview_attribution_webster),
                 view.findViewById(R.id.textview_definitions_webster));
 
         // make sure definitions scrolled back up to the top
         mScrollViewDefinitions.fullScroll(ScrollView.FOCUS_UP);
     }
 
-    private void updateDefinitionViews(List<Definition> definitions, TextView textViewAttribution, TextView textViewDefinitions) {
+    private void updateDefinitionViews(List<String> definitions, TextView textViewAttribution, TextView textViewDefinitions) {
         // update definitions
-        textViewDefinitions.setText(""); // in dual panel mode, there may be existing text
+        StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < definitions.size(); i++) {
-            if (i > 0) textViewDefinitions.append("\n");
-            textViewDefinitions.append(definitions.get(i).getFullText(i + 1));
+            if (i > 0) buffer.append("\n");
+            buffer.append(definitions.get(i));
         }
+        textViewDefinitions.setText(buffer.toString());
+
         // show or hide attribution and definition views
         boolean showDefinitionViews = (definitions.size() > 0);
         textViewDefinitions.setVisibility(showDefinitionViews ? View.VISIBLE : View.GONE);

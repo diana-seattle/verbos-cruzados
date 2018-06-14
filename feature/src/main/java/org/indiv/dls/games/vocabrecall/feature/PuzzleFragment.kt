@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.view.View.OnClickListener
 import android.widget.TableRow
 import kotlinx.android.synthetic.main.fragment_puzzle.*
+import org.indiv.dls.games.vocabrecall.feature.R.id.cell_table_layout
 
 
 /**
@@ -28,7 +29,7 @@ class PuzzleFragment : Fragment() {
 
     // interface for activity to implement to receive touch event
     interface PuzzleListener {
-        fun onPuzzleClick(gameWord: GameWord?)
+        fun onPuzzleClick(gameWord: GameWord)
     }
 
     //endregion
@@ -165,7 +166,9 @@ class PuzzleFragment : Fragment() {
             getCellForView(v)?.let {
                 vibrator?.vibrate(25)
                 currentGameWord = it.gameWordDown ?: it.gameWordAcross
-                puzzleListener.onPuzzleClick(currentGameWord)
+                currentGameWord?.let {
+                    puzzleListener.onPuzzleClick(it)
+                }
             }
         }
 
