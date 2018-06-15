@@ -57,7 +57,6 @@ public class AnswerFragment extends Fragment {
 
     //region CLASS VARIABLES -----------------------------------------------------------------------
 
-    public static int sFontSize = FONT_MEDIUM;  // static variable so only has to be set once for all instances of activity
     private Menu mOptionsMenu;
 
 
@@ -147,8 +146,7 @@ public class AnswerFragment extends Fragment {
         mScrollViewDefinitions = mFragmentView.findViewById(R.id.scrollView_definitions);
 
         // get user preference for font
-        sFontSize = getFontSizeUserPreference();
-        updateFontSize(sFontSize);
+        updateFontSize(getFontSizeUserPreference());
 
         // deletion button
         ImageView deletionButton = mFragmentView.findViewById(R.id.imagebutton_delete);
@@ -182,7 +180,7 @@ public class AnswerFragment extends Fragment {
             //fontMenuItem.add
             int menuItemId = R.id.action_font_medium;
             int fontSizeDescId = R.string.action_font_medium;
-            switch (sFontSize) {
+            switch (getFontSizeUserPreference()) {
                 case FONT_EXTRA_SMALL:
                     menuItemId = R.id.action_font_extra_small;
                     fontSizeDescId = R.string.action_font_extra_small;
@@ -449,7 +447,6 @@ public class AnswerFragment extends Fragment {
 
 
     private void updateFontSize(int menuItemId, int fontSize, int fontSizeDescId) {
-        sFontSize = fontSize;
         updateFontMenuState(menuItemId, fontSizeDescId);
         updateFontSize(fontSize);
         setFontSizeUserPreference(fontSize);
