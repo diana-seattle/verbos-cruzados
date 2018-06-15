@@ -124,7 +124,7 @@ public class AnswerFragment extends Fragment {
             return false;
         });
 
-        // get letter count text view  
+        // get letter count text view
         mTextViewLetterCount = mFragmentView.findViewById(R.id.lbl_letter_count);
 
 
@@ -146,7 +146,7 @@ public class AnswerFragment extends Fragment {
         mScrollViewDefinitions = mFragmentView.findViewById(R.id.scrollView_definitions);
 
         // get user preference for font
-        updateFontSize(getFontSizeUserPreference());
+        updateViewFontSize(getFontSizeUserPreference());
 
         // deletion button
         ImageView deletionButton = mFragmentView.findViewById(R.id.imagebutton_delete);
@@ -244,16 +244,6 @@ public class AnswerFragment extends Fragment {
     public void give3LetterHint() {
         mTextEditorAnswer.setText(mWordHint.toLowerCase());
         updateDualPaneActivityWithAnswer(mWordHint, true);
-    }
-
-    public void updateFontSize(int fontSize) {
-        // update definition views
-        View view = mFragmentView;  // for some reason getView() sometimes returns null, so use cached copy of object
-        ((TextView) view.findViewById(R.id.txt_answer)).setTextSize(Math.max(fontSize, FONT_MEDIUM));
-        ((TextView) view.findViewById(R.id.textview_definitions_ahd)).setTextSize(fontSize);
-        ((TextView) view.findViewById(R.id.textview_definitions_wiktionary)).setTextSize(fontSize);
-        ((TextView) view.findViewById(R.id.textview_definitions_webster)).setTextSize(fontSize);
-        ((TextView) view.findViewById(R.id.textview_definitions_century)).setTextSize(fontSize);
     }
 
     public void setVisible(boolean visible) {
@@ -419,24 +409,6 @@ public class AnswerFragment extends Fragment {
 //	     mActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
-    private int getFontSizeUserPreference() {
-        SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
-        int fontSize = preferences.getInt(PREFERENCE_KEY_FONT, FONT_MEDIUM);
-        return fontSize;
-    }
-
-
-    private void setFontSizeUserPreference(int fontSize) {
-        SharedPreferences.Editor prefsEditor = getActivity().getPreferences(Context.MODE_PRIVATE).edit();
-        prefsEditor.putInt(PREFERENCE_KEY_FONT, fontSize); // save preference
-        prefsEditor.commit();
-    }
-
-    private void updateFontMenuState(int menuItemId, int fontSizeDescId) {
-        setOptionsMenuChecked(menuItemId, true);
-        setOptionsMenuText(R.id.action_setfont, getResources().getString(R.string.action_setfont) + " (" + getResources().getString(fontSizeDescId) + ")");
-    }
-
     protected void setOptionsMenuChecked(int menuItemId, boolean checked) {
         mOptionsMenu.findItem(menuItemId).setChecked(checked);
     }
@@ -445,13 +417,38 @@ public class AnswerFragment extends Fragment {
         mOptionsMenu.findItem(menuItemId).setTitle(text);
     }
 
+    private void updateFontMenuState(int menuItemId, int fontSizeDescId) {
+        setOptionsMenuChecked(menuItemId, true);
+        setOptionsMenuText(R.id.action_setfont, getResources().getString(R.string.action_setfont) + " (" + getResources().getString(fontSizeDescId) + ")");
+    }
 
     private void updateFontSize(int menuItemId, int fontSize, int fontSizeDescId) {
         updateFontMenuState(menuItemId, fontSizeDescId);
-        updateFontSize(fontSize);
+        updateViewFontSize(fontSize);
         setFontSizeUserPreference(fontSize);
     }
 
+    private void updateViewFontSize(int fontSize) {
+        // update definition views
+        View view = mFragmentView;  // for some reason getView() sometimes returns null, so use cached copy of object
+        ((TextView) view.findViewById(R.id.txt_answer)).setTextSize(Math.max(fontSize, FONT_MEDIUM));
+        ((TextView) view.findViewById(R.id.textview_definitions_ahd)).setTextSize(fontSize);
+        ((TextView) view.findViewById(R.id.textview_definitions_wiktionary)).setTextSize(fontSize);
+        ((TextView) view.findViewById(R.id.textview_definitions_webster)).setTextSize(fontSize);
+        ((TextView) view.findViewById(R.id.textview_definitions_century)).setTextSize(fontSize);
+    }
+
+    private int getFontSizeUserPreference() {
+        SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        return preferences.getInt(PREFERENCE_KEY_FONT, FONT_MEDIUM);
+    }
+
+    private void setFontSizeUserPreference(int fontSize) {
+        SharedPreferences.Editor prefsEditor = getActivity().getPreferences(Context.MODE_PRIVATE).edit();
+        prefsEditor.putInt(PREFERENCE_KEY_FONT, fontSize); // save preference
+        prefsEditor.commit();
+    }
+    
     //endregion
 
 }
