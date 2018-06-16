@@ -1,7 +1,5 @@
 package org.indiv.dls.games.vocabrecall.feature
 
-import java.util.ArrayList
-
 import org.indiv.dls.games.vocabrecall.feature.db.GameWord
 
 
@@ -17,7 +15,6 @@ import android.view.ViewGroup
 import android.view.View.OnClickListener
 import android.widget.TableRow
 import kotlinx.android.synthetic.main.fragment_puzzle.*
-import org.indiv.dls.games.vocabrecall.feature.R.id.cell_table_layout
 
 
 /**
@@ -57,9 +54,9 @@ class PuzzleFragment : Fragment() {
     /**
      * List of cell values from opposing words of the the currently selected word.
      */
-    val opposingPuzzleCellValues: ArrayList<PuzzleCellValue>
+    val opposingPuzzleCellValues: Map<Int, PuzzleCellValue>
         get() {
-            val puzzleCellValues = ArrayList<PuzzleCellValue>()
+            val puzzleCellValues = HashMap<Int, PuzzleCellValue>()
             currentGameWord?.let {
                 val isAcross = it.isAcross
                 val wordLength = it.word.length
@@ -69,13 +66,13 @@ class PuzzleFragment : Fragment() {
                     cellGrid[row][col]?.let {
                         when {
                             isAcross && it.userCharDown != null ->
-                                PuzzleCellValue(charIndex, it.userCharDown!!, it.gameWordDown!!.isConfident)
+                                PuzzleCellValue(it.userCharDown!!, it.gameWordDown!!.isConfident)
                             !isAcross && it.userCharAcross != null ->
-                                PuzzleCellValue(charIndex, it.userCharAcross!!, it.gameWordAcross!!.isConfident)
+                                PuzzleCellValue(it.userCharAcross!!, it.gameWordAcross!!.isConfident)
                             else -> null
                         }
                     }?.let {
-                        puzzleCellValues.add(it)
+                        puzzleCellValues.put(charIndex, it)
                     }
 
                     if (isAcross) {
@@ -93,17 +90,20 @@ class PuzzleFragment : Fragment() {
     //region OVERRIDDEN FUNCTIONS ------------------------------------------------------------------
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
         // inflate the view
         val view = inflater.inflate(R.layout.fragment_puzzle, container)
-
-        // Get instance of Vibrator from current Context
-        vibrator = activity!!.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
         // Note that database not set up yet at this point (happening in other thread).
         // When it completes, it will call onFinishDbSetup().
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Get instance of Vibrator from current Context
+        vibrator = activity!!.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     }
 
     //endregion

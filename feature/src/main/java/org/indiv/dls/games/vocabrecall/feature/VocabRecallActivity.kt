@@ -54,7 +54,6 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.app.Activity
 import android.app.ProgressDialog
-import android.app.ProgressDialog.show
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.util.DisplayMetrics
@@ -62,14 +61,13 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import org.indiv.dls.games.vocabrecall.feature.MyActionBarActivity.Companion.currentGameWord
 import org.indiv.dls.games.vocabrecall.feature.db.Definition
-import java.util.ArrayList
 
 /**
  * This is the main activity. It houses [PuzzleFragment], and optionally [AnswerFragment] when in landscape mode (on tablets).
@@ -155,7 +153,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
 
         // if answer fragment present (dual pane mode), use landscape orientation
         answerFragment?.let {
-            it.isVisible = false // set invisible until puzzle shows up
+            it.view?.visibility = View.GONE // set invisible until puzzle shows up
 
             // this allows screen to rotate 180deg in landscape mode
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
@@ -352,7 +350,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
         // if dual pane, clear game word and hide answer fragment for now
         answerFragment?.let {
             it.clearGameWord()
-            it.isVisible = false // set invisible until puzzle shows up
+            it.view?.visibility = View.GONE // set invisible until puzzle shows up
         }
 
         // clear puzzle fragment of existing game if any
@@ -509,7 +507,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
         answerFragment?.let {
             if (currentGameWord != null) { // this extra check is necessary for case where setting up initial game and no words available in db
                 it.setGameWord(createAnswerPresentation(currentGameWord!!))
-                it.isVisible = true // set answer dialog fragment visible now that puzzle drawn
+                it.view?.visibility = View.VISIBLE // set answer dialog fragment visible now that puzzle drawn
             }
         }
     }
