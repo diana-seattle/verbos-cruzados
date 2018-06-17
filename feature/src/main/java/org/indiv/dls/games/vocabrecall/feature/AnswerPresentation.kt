@@ -7,10 +7,10 @@ import kotlinx.android.parcel.Parcelize
 class AnswerPresentation(val word: String,
                          val wordHint: String,
                          val userText: String?,
-                         val ahdDefinitions: List<String>,
-                         val centuryDefinitions: List<String>,
-                         val websterDefinitions: List<String>,
-                         val wiktionaryDefinitions: List<String>,
+                         val ahdDefinitions: List<String> = emptyList(),
+                         val centuryDefinitions: List<String> = emptyList(),
+                         val websterDefinitions: List<String> = emptyList(),
+                         val wiktionaryDefinitions: List<String> = emptyList(),
                          val opposingPuzzleCellValues: Map<Int, PuzzleCellValue>) : Parcelable
 
 /**

@@ -383,22 +383,27 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
     private fun createAnswerPresentation(gameWord: GameWord): AnswerPresentation {
         gameWord.wordInfo?.definitions?.let {
             // split definitions by source
-            val ahdDefinitions = it.filter { it.isSourceAhd }
-            val centuryDefinitions = it.filter { it.isSourceCentury }
-            val websterDefinitions = it.filter { it.isSourceWebster }
-            val wiktionaryDefinitions = it.filter { it.isSourceWiktionary }
+            val ahdDefinitions = mutableListOf<Definition>()
+            val centuryDefinitions = mutableListOf<Definition>()
+            val websterDefinitions = mutableListOf<Definition>()
+            val wiktionaryDefinitions = mutableListOf<Definition>()
+            for (definition in it) {
+                when {
+                    definition.isSourceAhd -> ahdDefinitions.add(definition)
+                    definition.isSourceCentury -> centuryDefinitions.add(definition)
+                    definition.isSourceWebster -> websterDefinitions.add(definition)
+                    definition.isSourceWiktionary -> wiktionaryDefinitions.add(definition)
+                }
+            }
             return AnswerPresentation(gameWord.word, gameWord.get3LetterHint(), gameWord.userText,
                     formatDefinitionText(ahdDefinitions),
                     formatDefinitionText(centuryDefinitions),
                     formatDefinitionText(websterDefinitions),
                     formatDefinitionText(wiktionaryDefinitions),
                     puzzleFragment.opposingPuzzleCellValues)
-        } ?: run {
-            return AnswerPresentation(gameWord.word, gameWord.get3LetterHint(), gameWord.userText, emptyList(), emptyList(), emptyList(), emptyList(),
-                    puzzleFragment.opposingPuzzleCellValues)
         }
-        return AnswerPresentation("", "", null, emptyList(), emptyList(), emptyList(), emptyList(),
-                puzzleFragment.opposingPuzzleCellValues)
+        return AnswerPresentation(gameWord.word, gameWord.get3LetterHint(), gameWord.userText,
+                opposingPuzzleCellValues = puzzleFragment.opposingPuzzleCellValues)
     }
 
     private fun formatDefinitionText(definitions: List<Definition>): List<String> {
