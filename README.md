@@ -1,2 +1,2 @@
-# vocab-recall
-Vocab Recall android game
+# verbos-cruzados
+Verbos Cruzados - Spanish verb conjugation crossword puzzle game for Android.

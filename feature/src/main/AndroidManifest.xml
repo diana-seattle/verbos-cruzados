@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="org.indiv.dls.games.vocabrecall.feature"
+<manifest package="org.indiv.dls.games.verboscruzados.feature"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
         <activity
-            android:name=".VocabRecallActivity"
+            android:name=".MainActivity"
             android:configChanges="screenLayout|orientation|screenSize|smallestScreenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
@@ -44,7 +44,7 @@
 
         <provider
             android:name=".content.VocabContentProvider"
-            android:authorities="org.indiv.dls.games.vocabprovider"
+            android:authorities="org.indiv.dls.games.vocabproviderDELETE"
             android:exported="false">
         </provider>
 

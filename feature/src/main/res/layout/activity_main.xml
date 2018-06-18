@@ -20,11 +20,10 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <!-- answer fragment -->
-    <fragment android:id="@+id/answer_fragment"
-              class="org.indiv.dls.games.verboscruzados.feature.AnswerFragment"
+    <!-- puzzle fragment -->
+    <fragment android:id="@+id/puzzle_fragment"
+              class="org.indiv.dls.games.verboscruzados.feature.PuzzleFragment"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-    />
+              android:layout_height="match_parent"/>
 
 </LinearLayout>
