@@ -24,26 +24,9 @@ package org.indiv.dls.games.verboscruzados.feature
  * Play Store: https://play.google.com/store/apps/details?id=org.indiv.dls.games.verboscruzados
  */
 
-//TODO: new full set of initial definitions
-//TODO: optimize one-time initialization
-
-
-/*
-wordnik: http://developer.wordnik.com/docs.html#!/word/getDefinitions_get_2
-wordnik usage stats: http://api.wordnik.com/v4/account.json/apiTokenStatus?api_key=f4e5b019cbc525972530c0bf0a0088162bff83d8464c1883a
-
-similar to:
-http://www.makeuseof.com/tag/design-great-looking-crossword-puzzles-for-yourself-windows/
-
-http://dictionary-api.org/api - api.getDictionaries and api.getMorphologies returned nothing (also might be translation only)
-http://thesaurus.altervista.org/dictionary-android - returns only very long html format
-*/
-
-
 import java.util.Date
 
 import org.indiv.dls.games.verboscruzados.feature.async.DbSetup
-import org.indiv.dls.games.verboscruzados.feature.async.DefinitionRetrieval
 import org.indiv.dls.games.verboscruzados.feature.async.GameSetup
 import org.indiv.dls.games.verboscruzados.feature.db.Game
 import org.indiv.dls.games.verboscruzados.feature.db.GameWord
@@ -92,7 +75,6 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
     private var currentGame: Game? = null
     private val gameSetup = GameSetup()
     private val dbSetup = DbSetup()
-    private val definitionRetrieval = DefinitionRetrieval()
     private lateinit var puzzleFragment: PuzzleFragment
     private var answerFragment: AnswerFragment? = null // for use in panel
     private var answerActivityLaunched = false // use this to load activity only once when puzzle double clicked on
@@ -101,14 +83,6 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
     private var timeProgressDialogShown: Long = 0
     private var helpShownYet = false
     private var showingErrors = false
-
-    // if no network is available networkInfo will be null, otherwise check if we are connected
-    private val isNetworkAvailable: Boolean
-        get() {
-            val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            val networkInfo = cm.activeNetworkInfo
-            return networkInfo != null && networkInfo.isConnected
-        }
 
     //endregion
 
@@ -365,7 +339,6 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
                         { game ->
                             currentGame = game
                             createGrid()
-                            retrieveNewDefinitions()
                         },
                         { error ->
                             Toast.makeText(this, R.string.error_game_setup_failure, Toast.LENGTH_SHORT).show()
@@ -514,16 +487,6 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
                 it.setGameWord(createAnswerPresentation(currentGameWord!!))
                 it.view?.visibility = View.VISIBLE // set answer dialog fragment visible now that puzzle drawn
             }
-        }
-    }
-
-    private fun retrieveNewDefinitions() {
-        // Fetch a new set of definitions.
-        if (isNetworkAvailable) {
-            compositeDisposable.add(definitionRetrieval.retrieveDefinitions(dbHelper, 10)
-                    .subscribeOn(Schedulers.computation())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ }) { e -> })
         }
     }
 
