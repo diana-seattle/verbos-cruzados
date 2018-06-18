@@ -115,7 +115,6 @@ class GameSetup {
         var across = true
         var firstWord = true
         var lastGaspEffortTaken = false
-        //		int giveUpCount = 0;
         var i = 0
         while (i < words.size) {
             val word = words[i]
@@ -129,16 +128,6 @@ class GameSetup {
                 firstWord = false
                 lastGaspEffortTaken = false // since we found a word, continue on
             } else {
-                // a small optimization to speed things up - if first (and longest) word in list has been tried multiple times, give up on it
-                //				if (i == 0) {
-                //					giveUpCount++;
-                //					if (giveUpCount > 2  &&  word.getWord().length() > 6) {  // keep trying with the smaller words for the sake of density
-                //						words.remove(0);
-                //						giveUpCount = 0;
-                //						i = -1;
-                //					}
-                //				} else
-
                 // if we're about to give up, make one last effort with opposite direction
                 if (!lastGaspEffortTaken && i == words.size - 1) {
                     lastGaspEffortTaken = true

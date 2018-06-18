@@ -19,6 +19,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ScrollView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_answer.*
+import org.indiv.dls.games.vocabrecall.feature.R.id.txt_answer
 
 /**
  * Enum for user-specifiable font size for the answer fragment.
@@ -262,12 +263,11 @@ class AnswerFragment : Fragment() {
 
     private fun updateDefinitionViews(definitions: List<String>, textViewAttribution: TextView, textViewDefinitions: TextView) {
         // update definitions
-        val buffer = StringBuffer()
-        for (i in definitions.indices) {
-            if (i > 0) buffer.append("\n")
-            buffer.append(definitions[i])
+        val buffer = StringBuilder()
+        for (definition in definitions) {
+            buffer.append(definition).append("\n")
         }
-        textViewDefinitions.text = buffer.toString()
+        textViewDefinitions.text = buffer.toString().trim()
 
         // show or hide attribution and definition views
         textViewDefinitions.visibility = if (definitions.isNotEmpty()) View.VISIBLE else View.GONE

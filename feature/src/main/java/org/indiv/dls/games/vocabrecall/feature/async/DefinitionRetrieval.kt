@@ -117,43 +117,14 @@ class DefinitionRetrieval {
     }
 
     private fun getDictionaryRanking(d: Definition): Int {
-        if (d.isSourceAhd) {
-            return 1
-        } else if (d.isSourceWiktionary) {
-            return 2
-        } else if (d.isSourceCentury) {
-            return 3
-        } else if (d.isSourceWebster) {
-            return 4
-        } else if (d.isSourceWordnet) {
-            return 5
+        return when {
+            d.isSourceAhd -> 1
+            d.isSourceWiktionary -> 2
+            d.isSourceCentury -> 3
+            d.isSourceWebster -> 4
+            d.isSourceWordnet -> 5
+            else -> 99
         }
-        return 99
-    }
-
-    private fun readResponse(`in`: InputStream): String {
-        val buf = StringBuffer()
-        var reader: BufferedReader? = null
-        try {
-            reader = BufferedReader(InputStreamReader(`in`))
-            var line = reader.readLine()
-            while (line != null) {
-                buf.append(line)
-                line = reader.readLine()
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-
-            }
-        }
-        return buf.toString()
     }
 
     private fun convertToDefinition(w: WordnikDefinition, word: String): Definition? {
@@ -404,7 +375,7 @@ class DefinitionRetrieval {
 
 
     private fun getBlackout(length: Int): String {
-        val b = StringBuffer()
+        val b = StringBuilder()
         for (i in 0 until length) {
             b.append("*")
         }
