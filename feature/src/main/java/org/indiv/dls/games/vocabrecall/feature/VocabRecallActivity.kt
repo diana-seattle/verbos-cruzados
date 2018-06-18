@@ -61,11 +61,13 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import org.indiv.dls.games.vocabrecall.feature.db.Definition
 
 /**
  * This is the main activity. It houses [PuzzleFragment], and optionally [AnswerFragment] when in landscape mode (on tablets).
@@ -151,7 +153,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
 
         // if answer fragment present (dual pane mode), use landscape orientation
         answerFragment?.let {
-            it.isVisible = false // set invisible until puzzle shows up
+            it.view?.visibility = View.GONE // set invisible until puzzle shows up
 
             // this allows screen to rotate 180deg in landscape mode
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
@@ -255,17 +257,18 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
     /*
      * implements PuzzleListener interface for callback from PuzzleFragment
      */
-    override fun onPuzzleClick(gameWord: GameWord?) {
+    override fun onPuzzleClick(gameWord: GameWord) {
         currentGameWord = gameWord
+        val answerPresentation = createAnswerPresentation(gameWord)
 
         // update answer fragment with current game word
         answerFragment?.let {
             // dual pane mode
-            it.setGameWord(puzzleFragment.opposingPuzzleCellValues)
+            it.setGameWord(answerPresentation)
         } ?: run {
             // single pane mode
             if (!answerActivityLaunched) {
-                val intent = AnswerActivity.getIntent(this, puzzleFragment.opposingPuzzleCellValues)
+                val intent = AnswerActivity.getIntent(this, answerPresentation)
                 startActivityForResult(intent, RESULTCODE_ANSWER)
                 answerActivityLaunched = true
             }
@@ -347,7 +350,7 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
         // if dual pane, clear game word and hide answer fragment for now
         answerFragment?.let {
             it.clearGameWord()
-            it.isVisible = false // set invisible until puzzle shows up
+            it.view?.visibility = View.GONE // set invisible until puzzle shows up
         }
 
         // clear puzzle fragment of existing game if any
@@ -376,6 +379,36 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
     //endregion
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
+
+    private fun createAnswerPresentation(gameWord: GameWord): AnswerPresentation {
+        gameWord.wordInfo?.definitions?.let {
+            // split definitions by source
+            val ahdDefinitions = mutableListOf<Definition>()
+            val centuryDefinitions = mutableListOf<Definition>()
+            val websterDefinitions = mutableListOf<Definition>()
+            val wiktionaryDefinitions = mutableListOf<Definition>()
+            for (definition in it) {
+                when {
+                    definition.isSourceAhd -> ahdDefinitions.add(definition)
+                    definition.isSourceCentury -> centuryDefinitions.add(definition)
+                    definition.isSourceWebster -> websterDefinitions.add(definition)
+                    definition.isSourceWiktionary -> wiktionaryDefinitions.add(definition)
+                }
+            }
+            return AnswerPresentation(gameWord.word, gameWord.get3LetterHint(), gameWord.userText,
+                    formatDefinitionText(ahdDefinitions),
+                    formatDefinitionText(centuryDefinitions),
+                    formatDefinitionText(websterDefinitions),
+                    formatDefinitionText(wiktionaryDefinitions),
+                    puzzleFragment.opposingPuzzleCellValues)
+        }
+        return AnswerPresentation(gameWord.word, gameWord.get3LetterHint(), gameWord.userText,
+                opposingPuzzleCellValues = puzzleFragment.opposingPuzzleCellValues)
+    }
+
+    private fun formatDefinitionText(definitions: List<Definition>): List<String> {
+        return definitions.mapIndexed { index, definition -> definition.getFullText(index + 1) }
+    }
 
     /*
      * show/hide errors in puzzle
@@ -478,8 +511,8 @@ class VocabRecallActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFrag
         // if dual panel, update answer fragment with current game word
         answerFragment?.let {
             if (currentGameWord != null) { // this extra check is necessary for case where setting up initial game and no words available in db
-                it.setGameWord(puzzleFragment.opposingPuzzleCellValues)
-                it.isVisible = true // set answer dialog fragment visible now that puzzle drawn
+                it.setGameWord(createAnswerPresentation(currentGameWord!!))
+                it.view?.visibility = View.VISIBLE // set answer dialog fragment visible now that puzzle drawn
             }
         }
     }

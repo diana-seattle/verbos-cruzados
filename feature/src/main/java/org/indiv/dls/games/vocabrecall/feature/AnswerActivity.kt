@@ -16,12 +16,12 @@ class AnswerActivity : MyActionBarActivity() {
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
     companion object {
-        private val KEY_PUZZLE_CHARS = "KEY_PUZZLE_CHARS"
+        private val KEY_ANSWER_PRESENTATION = "KEY_ANSWER_PRESENTATION"
 
         @JvmStatic
-        fun getIntent(context: Context, opposingPuzzleCellValues: ArrayList<PuzzleCellValue>): Intent {
+        fun getIntent(context: Context, answerPresentation: AnswerPresentation): Intent {
             val intent = Intent(context, AnswerActivity::class.java)
-            intent.putParcelableArrayListExtra(KEY_PUZZLE_CHARS, opposingPuzzleCellValues)
+            intent.putExtra(KEY_ANSWER_PRESENTATION, answerPresentation)
             return intent
         }
     }
@@ -50,7 +50,10 @@ class AnswerActivity : MyActionBarActivity() {
         // get answer fragment
         answerFragment = supportFragmentManager.findFragmentById(R.id.answer_fragment) as AnswerFragment
 
-        answerFragment?.setGameWord(getOpposingPuzzleCellValues())
+        val answerPresentation: AnswerPresentation = intent.getParcelableExtra(KEY_ANSWER_PRESENTATION)
+        answerPresentation?.let {
+            answerFragment?.setGameWord(it)
+        }
 
         // enables back button (see http://stackoverflow.com/questions/10108774/android-actionbar-back-button)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -96,14 +99,6 @@ class AnswerActivity : MyActionBarActivity() {
     //endregion
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
-
-    /**
-     * Gets data from the activity's intent.
-     */
-    private fun getOpposingPuzzleCellValues(): List<PuzzleCellValue> {
-        return intent.getParcelableArrayListExtra(KEY_PUZZLE_CHARS) ?: emptyList()
-    }
-
     //endregion
 
 }
