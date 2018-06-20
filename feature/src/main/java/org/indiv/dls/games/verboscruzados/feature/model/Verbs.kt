@@ -19,26 +19,26 @@ enum class Irregularity {
     STEM_CHANGE_U_to_UE
 }
 
-enum class ConjugationType {
-    PRESENT,
-    PRETERIT,
-    IMPERFECT,
-    FUTURE,
-    CONDITIONAL,
-    IMPERATIVE,
-    SUBJUNCTIVE_PRESENT,
-    SUBJUNCTIVE_IMPERFECT,
-    GERUND,
-    PAST_PARTICIPLE
+enum class ConjugationType(val text: String) {
+    PRESENT("Present"),
+    PRETERIT("Preterit"),
+    IMPERFECT("Imperfect"),
+    FUTURE("Future"),
+    CONDITIONAL("Conditional"),
+    IMPERATIVE("Imperative"),
+    SUBJUNCTIVE_PRESENT("Subjunctive Present"),
+    SUBJUNCTIVE_IMPERFECT("Subjunctive Imperfect"),
+    GERUND("Gerund"),
+    PAST_PARTICIPLE("Past Participle")
 }
 
-enum class SubjectPronoun(val isThirdPerson: Boolean = false) {
-    YO,
-    TU,
-    EL_ELLA_USTED(true),
-    ELLOS_ELLAS_USTEDES(true),
-    NOSOTROS,
-    VOSOTROS
+enum class SubjectPronoun(val text: String, val isThirdPerson: Boolean = false) {
+    YO("Yo"),
+    TU("Tú"),
+    EL_ELLA_USTED("Él/Ella/Usted", true),
+    ELLOS_ELLAS_USTEDES("Ellos/Ellas/Ustedes", true),
+    NOSOTROS("Nosotros"),
+    VOSOTROS("Vosotros")
 }
 
 data class Verb(val infinitive: String,

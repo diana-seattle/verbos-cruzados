@@ -1,13 +1,21 @@
 package org.indiv.dls.games.verboscruzados.feature.conjugation
 
+import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
 
 interface Conjugator {
-    fun conjugate(verb: Verb,
-                  subjectPronoun: SubjectPronoun): String
+    fun conjugate(verb: Verb, subjectPronoun: SubjectPronoun): String
 }
+
+val conjugatorMap = mapOf(
+        ConjugationType.PRESENT to PresentConjugator(),
+        ConjugationType.PRETERIT to PreteritConjugator(),
+        ConjugationType.IMPERFECT to ImperfectConjugator(),
+        ConjugationType.CONDITIONAL to ConditionalConjugator(),
+        ConjugationType.FUTURE to FutureConjugator()
+)
 
 // Strong vowels form single-syllable dipthongs when combined with weak vowels
 internal val strongVowels = listOf("a", "e", "o")

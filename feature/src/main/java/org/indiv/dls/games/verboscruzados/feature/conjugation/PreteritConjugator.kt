@@ -17,18 +17,17 @@ class PreteritConjugator : Conjugator {
             SubjectPronoun.ELLOS_ELLAS_USTEDES to "aron",
             SubjectPronoun.NOSOTROS to "amos",
             SubjectPronoun.VOSOTROS to "asteis")
-    private val irSubjectSuffixMap = mapOf(
+    private val irErSubjectSuffixMap = mapOf(
             SubjectPronoun.YO to "í",
             SubjectPronoun.TU to "iste",
             SubjectPronoun.EL_ELLA_USTED to "ió",
             SubjectPronoun.ELLOS_ELLAS_USTEDES to "ieron",
             SubjectPronoun.NOSOTROS to "imos",
             SubjectPronoun.VOSOTROS to "isteis")
-    private val erSubjectSuffixMap = irSubjectSuffixMap
     private val mapOfSuffixMaps = mapOf(
             InfinitiveEnding.AR to arSubjectSuffixMap,
-            InfinitiveEnding.IR to irSubjectSuffixMap,
-            InfinitiveEnding.ER to erSubjectSuffixMap)
+            InfinitiveEnding.IR to irErSubjectSuffixMap,
+            InfinitiveEnding.ER to irErSubjectSuffixMap)
 
     override fun conjugate(verb: Verb, subjectPronoun: SubjectPronoun): String {
         return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.PRETERIT) ?: run {
@@ -48,7 +47,7 @@ class PreteritConjugator : Conjugator {
             return when(subjectPronoun) {
                 SubjectPronoun.YO -> "e"
                 SubjectPronoun.EL_ELLA_USTED -> "o"
-                else -> irSubjectSuffixMap[subjectPronoun]!! // even the AR verbs use the ir suffix for this case
+                else -> irErSubjectSuffixMap[subjectPronoun]!! // even the AR verbs use the ir suffix for this case
             }
         }
         return suffix
