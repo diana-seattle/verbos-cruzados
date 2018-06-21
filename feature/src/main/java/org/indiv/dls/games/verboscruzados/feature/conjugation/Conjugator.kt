@@ -14,7 +14,10 @@ val conjugatorMap = mapOf(
         ConjugationType.PRETERIT to PreteritConjugator(),
         ConjugationType.IMPERFECT to ImperfectConjugator(),
         ConjugationType.CONDITIONAL to ConditionalConjugator(),
-        ConjugationType.FUTURE to FutureConjugator()
+        ConjugationType.FUTURE to FutureConjugator(),
+        ConjugationType.IMPERATIVE to ImperativeConjugator(),
+        ConjugationType.SUBJUNCTIVE_PRESENT to SubjunctivePresentConjugator(),
+        ConjugationType.SUBJUNCTIVE_IMPERFECT to SubjunctiveImperfectConjugator()
 )
 
 // Strong vowels form single-syllable dipthongs when combined with weak vowels
@@ -52,7 +55,7 @@ internal fun getRootWithSpellingChange(root: String, infinitiveEnding: Infinitiv
 }
 
 /**
- * Replaces last occurrence of a character with a string. Used for stem changes.
+ * Replaces last occurrence of a character with a string
  */
 internal fun replaceLastOccurrence(source: String, char: Char, replacement: String): String {
     val index = source.lastIndexOf(char)

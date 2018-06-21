@@ -30,7 +30,7 @@ class ImperfectConjugator : Conjugator {
             InfinitiveEnding.ER to irErSubjectSuffixMap)
 
     override fun conjugate(verb: Verb, subjectPronoun: SubjectPronoun): String {
-        return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.PRESENT) ?: run {
+        return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.IMPERFECT) ?: run {
             val suffix = mapOfSuffixMaps[verb.infinitiveEnding]!![subjectPronoun]!!
             val root = verb.root
             return root + suffix

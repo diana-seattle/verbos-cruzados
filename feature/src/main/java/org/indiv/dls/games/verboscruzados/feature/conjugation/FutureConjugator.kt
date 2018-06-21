@@ -7,7 +7,7 @@ import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
 
 /**
- * Present tense conjugator
+ * Future tense conjugator
  */
 class FutureConjugator : Conjugator {
     private val subjectSuffixMap = mapOf(
@@ -19,7 +19,7 @@ class FutureConjugator : Conjugator {
             SubjectPronoun.VOSOTROS to "éis")
 
     override fun conjugate(verb: Verb, subjectPronoun: SubjectPronoun): String {
-        return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.PRESENT) ?: run {
+        return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.FUTURE) ?: run {
             val suffix = subjectSuffixMap[subjectPronoun]!!
             val root = verb.altInfinitiveRoot ?: verb.infinitive
             return root + suffix
