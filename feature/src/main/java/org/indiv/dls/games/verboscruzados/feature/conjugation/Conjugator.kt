@@ -20,9 +20,6 @@ val conjugatorMap = mapOf(
         ConjugationType.SUBJUNCTIVE_IMPERFECT to SubjunctiveImperfectConjugator()
 )
 
-// Strong vowels form single-syllable dipthongs when combined with weak vowels
-internal val strongVowels = listOf("a", "e", "o")
-
 /**
  * Gets root with spelling changes (e.g. llegar -> llegue and llegué).
  * For use with several conjugation types.

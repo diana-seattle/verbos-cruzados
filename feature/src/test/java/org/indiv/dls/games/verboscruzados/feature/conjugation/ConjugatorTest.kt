@@ -28,7 +28,7 @@ class ConjugatorTest {
     //region TESTS ---------------------------------------------------------------------------------
 
     @Test fun testOneVerb() {
-        printResult(irregularArVerbs[6])
+        printResult(irregularArVerbs[10])
     }
 
     @Test fun testRegular_ar() {

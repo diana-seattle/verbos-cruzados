@@ -51,10 +51,10 @@ data class Verb(val infinitive: String,
                 val altInfinitiveRoot: String? = null, // used in future, conditional (e.g. poder/podr)
                 val customConjugation: ((SubjectPronoun, ConjugationType) -> String?)? = null) {
     val infinitiveEnding = when {
-            infinitive.endsWith("ar") -> InfinitiveEnding.AR
-            infinitive.endsWith("er") -> InfinitiveEnding.ER
-            else -> InfinitiveEnding.IR // this includes "ír" as in "oír"
-        }
+        infinitive.endsWith("ar") -> InfinitiveEnding.AR
+        infinitive.endsWith("er") -> InfinitiveEnding.ER
+        else -> InfinitiveEnding.IR // this includes "ír" as in "oír"
+    }
     val root = infinitive.substring(0, infinitive.length - 2)
     val gerund = irregularGerund ?: when (infinitiveEnding) {
         InfinitiveEnding.AR -> root + "ando"
@@ -230,11 +230,25 @@ val irregularArVerbs = listOf(
         // Custom conjugation
         Verb("dar", "give", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
             when (conjugationType) {
-                ConjugationType.PRESENT -> if (subjectPronoun == SubjectPronoun.YO) "doy" else null
+                ConjugationType.PRESENT -> {
+                    when (subjectPronoun) {
+                        SubjectPronoun.YO -> "doy"
+                        SubjectPronoun.VOSOTROS -> "dais"
+                        else -> null
+                    }
+                }
                 ConjugationType.PRETERIT -> {
                     when (subjectPronoun) {
                         SubjectPronoun.YO -> "di"
                         SubjectPronoun.EL_ELLA_USTED -> "dio"
+                        else -> null
+                    }
+                }
+                ConjugationType.SUBJUNCTIVE_PRESENT -> {
+                    when (subjectPronoun) {
+                        SubjectPronoun.YO -> "dé"
+                        SubjectPronoun.EL_ELLA_USTED -> "dé"
+                        SubjectPronoun.VOSOTROS -> "deis"
                         else -> null
                     }
                 }
@@ -249,6 +263,15 @@ val irregularArVerbs = listOf(
                         SubjectPronoun.TU -> "estás"
                         SubjectPronoun.EL_ELLA_USTED -> "está"
                         SubjectPronoun.ELLOS_ELLAS_USTEDES -> "están"
+                        else -> null
+                    }
+                }
+                ConjugationType.SUBJUNCTIVE_PRESENT -> {
+                    when (subjectPronoun) {
+                        SubjectPronoun.YO -> "esté"
+                        SubjectPronoun.TU -> "estés"
+                        SubjectPronoun.EL_ELLA_USTED -> "esté"
+                        SubjectPronoun.ELLOS_ELLAS_USTEDES -> "estén"
                         else -> null
                     }
                 }

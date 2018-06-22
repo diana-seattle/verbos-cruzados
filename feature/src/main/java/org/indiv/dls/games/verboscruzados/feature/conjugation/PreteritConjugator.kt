@@ -29,6 +29,10 @@ class PreteritConjugator : Conjugator {
             InfinitiveEnding.IR to irErSubjectSuffixMap,
             InfinitiveEnding.ER to irErSubjectSuffixMap)
 
+    // Strong vowels form single-syllable dipthongs when combined with weak vowels
+    private val strongVowels = listOf("a", "e", "o")
+
+
     override fun conjugate(verb: Verb, subjectPronoun: SubjectPronoun): String {
         return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.PRETERIT) ?: run {
             val defaultSuffix = mapOfSuffixMaps[verb.infinitiveEnding]!![subjectPronoun]!!

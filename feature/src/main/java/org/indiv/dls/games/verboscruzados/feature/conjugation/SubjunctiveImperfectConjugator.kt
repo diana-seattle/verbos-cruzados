@@ -31,12 +31,17 @@ class SubjunctiveImperfectConjugator : Conjugator {
         val preteritForm = preteritConjugator.conjugate(verb, SubjectPronoun.ELLOS_ELLAS_USTEDES)
         var preteritRoot = preteritForm.substring(0, preteritForm.length - 3)
         if (subjectPronoun == SubjectPronoun.NOSOTROS) {
-            if (verb.infinitiveEnding == InfinitiveEnding.AR) {
-                preteritRoot = replaceLastOccurrence(preteritRoot, 'a', "á")
-            } else {
-                preteritRoot = replaceLastOccurrence(preteritRoot, 'e', "é")
-            }
+            val lastLetterOfRoot = addAccent(preteritRoot.last())
+            preteritRoot = preteritRoot.dropLast(1) + lastLetterOfRoot
         }
         return preteritRoot
+    }
+
+    private fun addAccent(char: Char): Char {
+        return when(char) {
+            'a' -> 'á'
+            'e' -> 'é'
+            else -> char
+        }
     }
 }
