@@ -23,8 +23,8 @@ enum class ConjugationType(val text: String) {
     PRESENT("Present"),
     PRETERIT("Preterit"),
     IMPERFECT("Imperfect"),
-    FUTURE("Future"),
     CONDITIONAL("Conditional"),
+    FUTURE("Future"),
     IMPERATIVE("Imperative"),
     SUBJUNCTIVE_PRESENT("Subjunctive Present"),
     SUBJUNCTIVE_IMPERFECT("Subjunctive Imperfect"),
@@ -35,8 +35,8 @@ enum class ConjugationType(val text: String) {
 enum class SubjectPronoun(val text: String, val isThirdPerson: Boolean = false) {
     YO("Yo"),
     TU("Tú"),
-    EL_ELLA_USTED("Él/Ella/Usted", true),
-    ELLOS_ELLAS_USTEDES("Ellos/Ellas/Ustedes", true),
+    EL_ELLA_USTED("Él/Ella/Ud.", true),
+    ELLOS_ELLAS_USTEDES("Ellos/Ellas/Uds.", true),
     NOSOTROS("Nosotros"),
     VOSOTROS("Vosotros")
 }
@@ -45,17 +45,25 @@ data class Verb(val infinitive: String,
                 val translation: String,
                 val requiresDirectObject: Boolean = false,
                 val irregularities: List<Irregularity> = emptyList(),
+                val irregularGerund: String? = null,
+                val irregularPastParticiple: String? = null,
                 val altPreteritRoot: String? = null, // e.g. supe, quepo
                 val altInfinitiveRoot: String? = null, // used in future, conditional (e.g. poder/podr)
                 val customConjugation: ((SubjectPronoun, ConjugationType) -> String?)? = null) {
-    val infinitiveEnding: InfinitiveEnding
-        get() = when {
+    val infinitiveEnding = when {
             infinitive.endsWith("ar") -> InfinitiveEnding.AR
             infinitive.endsWith("er") -> InfinitiveEnding.ER
             else -> InfinitiveEnding.IR // this includes "ír" as in "oír"
         }
-    val root: String
-        get() = infinitive.substring(0, infinitive.length - 2)
+    val root = infinitive.substring(0, infinitive.length - 2)
+    val gerund = irregularGerund ?: when (infinitiveEnding) {
+        InfinitiveEnding.AR -> root + "ando"
+        else -> root + "iendo"
+    }
+    val pastParticiple = irregularPastParticiple ?: when (infinitiveEnding) {
+        InfinitiveEnding.AR -> root + "ado"
+        else -> root + "ido"
+    }
 }
 
 val regularArVerbs = listOf(
@@ -264,7 +272,6 @@ val irregularIrVerbs = listOf(
         Verb("elegir", "choose", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC, Irregularity.STEM_CHANGE_E_to_I)),
 
 
-
         // Yo Go verbs
         Verb("oír", "hear", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
         Verb("salir", "go out, leave", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
@@ -275,13 +282,13 @@ val irregularIrVerbs = listOf(
         Verb("reducir", "reduce", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.SPELLING_CHANGE_PHONETIC, Irregularity.NO_ACCENT_ON_PRETERIT)),
 
         // Custom conjugations
-        Verb("decir", "say, tell", altPreteritRoot = "dij", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT))  { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
+        Verb("decir", "say, tell", altPreteritRoot = "dij", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
             when (conjugationType) {
                 ConjugationType.PRESENT -> if (subjectPronoun == SubjectPronoun.YO) "digo" else null
                 else -> null
             }
         },
-        Verb("ir", "go", altPreteritRoot = "fu", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT, Irregularity.SPELLING_CHANGE_PHONETIC, Irregularity.STEM_CHANGE_E_to_I))  { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
+        Verb("ir", "go", altPreteritRoot = "fu", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT, Irregularity.SPELLING_CHANGE_PHONETIC, Irregularity.STEM_CHANGE_E_to_I)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
             when (conjugationType) {
                 ConjugationType.PRESENT -> {
                     when (subjectPronoun) {

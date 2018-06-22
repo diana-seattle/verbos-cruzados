@@ -16,7 +16,7 @@ class ImperativeConjugator : SubjunctivePresentConjugator() {
         return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.IMPERATIVE) ?: run {
             when (subjectPronoun) {
                 SubjectPronoun.TU -> presentConjugator.conjugate(verb, SubjectPronoun.EL_ELLA_USTED)
-                SubjectPronoun.VOSOTROS -> presentConjugator.conjugate(verb, SubjectPronoun.EL_ELLA_USTED) + "d"
+                SubjectPronoun.VOSOTROS -> verb.root + "ad"
                 else -> super.conjugate(verb, subjectPronoun)
             }
         }

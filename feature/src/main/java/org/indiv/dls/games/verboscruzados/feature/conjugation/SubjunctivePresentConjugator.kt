@@ -32,11 +32,11 @@ open class SubjunctivePresentConjugator : Conjugator {
     override fun conjugate(verb: Verb, subjectPronoun: SubjectPronoun): String {
         return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.SUBJUNCTIVE_PRESENT) ?: run {
             val suffix = mapOfSuffixMaps[verb.infinitiveEnding]!![subjectPronoun]!!
-            val yoRoot = getYoRoot(verb, subjectPronoun)
-
-            // not nosotros or vos
-            
-            val root = getRootWithSpellingChange(yoRoot, verb.infinitiveEnding, suffix)
+            val subjunctiveRoot = when(subjectPronoun) {
+                SubjectPronoun.NOSOTROS, SubjectPronoun.VOSOTROS -> verb.root
+                else -> getYoRoot(verb, subjectPronoun)
+            }
+            val root = getRootWithSpellingChange(subjunctiveRoot, verb.infinitiveEnding, suffix)
             return root + suffix
         }
     }
