@@ -40,7 +40,7 @@ internal fun getRootWithSpellingChange(root: String, infinitiveEnding: Infinitiv
             }
         }
     } else if (infinitiveEnding != InfinitiveEnding.AR &&
-            suffix.startsWith("a") || suffix.startsWith("á") || suffix.startsWith("o")) {
+            (suffix.startsWith("a") || suffix.startsWith("á") || suffix.startsWith("o"))) {
         root.apply {
             return when {
                 endsWith("qu") -> substring(0, length - 2) + "c" // e.g. delinquir -> delincamos

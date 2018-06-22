@@ -14,10 +14,10 @@ class ImperativeConjugator : SubjunctivePresentConjugator() {
 
     override fun conjugate(verb: Verb, subjectPronoun: SubjectPronoun): String {
         return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.IMPERATIVE) ?: run {
-            if (subjectPronoun == SubjectPronoun.TU) {
-                presentConjugator.conjugate(verb, subjectPronoun)
-            } else {
-                super.conjugate(verb, subjectPronoun)
+            when (subjectPronoun) {
+                SubjectPronoun.TU -> presentConjugator.conjugate(verb, SubjectPronoun.EL_ELLA_USTED)
+                SubjectPronoun.VOSOTROS -> presentConjugator.conjugate(verb, SubjectPronoun.EL_ELLA_USTED) + "d"
+                else -> super.conjugate(verb, subjectPronoun)
             }
         }
     }
