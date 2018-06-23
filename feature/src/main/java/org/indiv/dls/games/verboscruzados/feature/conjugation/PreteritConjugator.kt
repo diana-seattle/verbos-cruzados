@@ -38,9 +38,9 @@ class PreteritConjugator : Conjugator {
             val defaultSuffix = mapOfSuffixMaps[verb.infinitiveEnding]!![subjectPronoun]!!
             val suffixWithCorrectedAccent = replaceSuffixAccentIfAppropriate(defaultSuffix, verb.irregularities, subjectPronoun)
             val suffix = getSuffixWithSpellingChanges(verb, suffixWithCorrectedAccent, subjectPronoun)
-            val root = getRootCorrectionForIrThirdPersonStemChange(verb, subjectPronoun)
-                    ?: getRootWithSpellingChange(verb.altPreteritRoot ?: verb.root,
-                            verb.infinitiveEnding, suffix)
+            val root = verb.altPreteritRoot
+                    ?: getRootCorrectionForIrThirdPersonStemChange(verb, subjectPronoun)
+                    ?: getRootWithSpellingChange(verb.root, verb.infinitiveEnding.ending, suffix)
             return root + suffix
         }
     }
@@ -48,7 +48,7 @@ class PreteritConjugator : Conjugator {
     private fun replaceSuffixAccentIfAppropriate(suffix: String, irregularities: List<Irregularity>,
                                                  subjectPronoun: SubjectPronoun): String {
         if (irregularities.contains(Irregularity.NO_ACCENT_ON_PRETERIT)) {
-            return when(subjectPronoun) {
+            return when (subjectPronoun) {
                 SubjectPronoun.YO -> "e"
                 SubjectPronoun.EL_ELLA_USTED -> "o"
                 else -> irErSubjectSuffixMap[subjectPronoun]!! // even the AR verbs use the ir suffix for this case
@@ -59,12 +59,7 @@ class PreteritConjugator : Conjugator {
 
     private fun getRootCorrectionForIrThirdPersonStemChange(verb: Verb, subjectPronoun: SubjectPronoun): String? {
         return if (verb.infinitiveEnding == InfinitiveEnding.IR && subjectPronoun.isThirdPerson) {
-            when {
-                verb.irregularities.contains(Irregularity.STEM_CHANGE_E_to_I) -> replaceLastOccurrence(verb.root, 'e', "i")
-                verb.irregularities.contains(Irregularity.STEM_CHANGE_E_to_IE) -> replaceLastOccurrence(verb.root, 'e', "i")
-                verb.irregularities.contains(Irregularity.STEM_CHANGE_O_to_UE) -> replaceLastOccurrence(verb.root, 'o', "u")
-                else -> verb.root
-            }
+            getIrAlteredRoot(verb.root, verb.irregularities)
         } else {
             null
         }
@@ -72,14 +67,15 @@ class PreteritConjugator : Conjugator {
 
     private fun getSuffixWithSpellingChanges(verb: Verb, suffix: String, subjectPronoun: SubjectPronoun): String {
         if (suffix.startsWith("i")) {
-            verb.root.apply {
+            (verb.altPreteritRoot ?: verb.root).apply {
                 val lastLetter = if (isNotEmpty()) last() else ""
                 if (lastLetter in strongVowels) {
                     // E.g. caer -> caímos, cayeron
                     val replacement = if (subjectPronoun.isThirdPerson) "y" else "í"
                     return replacement + suffix.substring(1)
-                } else if (subjectPronoun.isThirdPerson && (endsWith("ñ") || endsWith("ll"))) {
-                    // E.g. bullir -> bulló, tañer -> tañó
+                } else if (subjectPronoun.isThirdPerson &&
+                        (endsWith("ñ") || endsWith("ll") || endsWith("j"))) {
+                    // E.g. bullir -> bulló, tañer -> tañó, producir -> produjeron
                     return suffix.substring(1)
                 }
             }

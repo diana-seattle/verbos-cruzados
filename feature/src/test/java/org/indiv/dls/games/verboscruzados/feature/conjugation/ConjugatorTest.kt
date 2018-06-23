@@ -9,6 +9,7 @@ import org.indiv.dls.games.verboscruzados.feature.model.regularArVerbs
 import org.indiv.dls.games.verboscruzados.feature.model.regularErVerbs
 import org.indiv.dls.games.verboscruzados.feature.model.regularIrVerbs
 import org.junit.Test
+import kotlin.math.max
 
 class ConjugatorTest {
 
@@ -18,7 +19,6 @@ class ConjugatorTest {
     //region PROPERTIES ----------------------------------------------------------------------------
 
     private val firstColumnWidth = SubjectPronoun.ELLOS_ELLAS_USTEDES.text.length + 2
-    private val columnWidth = 20
 
     //endregion
 
@@ -31,15 +31,9 @@ class ConjugatorTest {
         printResult(irregularArVerbs[10])
     }
 
-    @Test fun testRegular_ar() {
+    @Test fun testRegular() {
         printResult(regularArVerbs[0])
-    }
-
-    @Test fun testRegular_ir() {
         printResult(regularIrVerbs[0])
-    }
-
-    @Test fun testRegular_er() {
         printResult(regularErVerbs[0])
     }
 
@@ -70,12 +64,13 @@ class ConjugatorTest {
                 createPronounLineBuilder(SubjectPronoun.YO),
                 createPronounLineBuilder(SubjectPronoun.TU),
                 createPronounLineBuilder(SubjectPronoun.EL_ELLA_USTED),
-                createPronounLineBuilder(SubjectPronoun.ELLOS_ELLAS_USTEDES),
                 createPronounLineBuilder(SubjectPronoun.NOSOTROS),
-                createPronounLineBuilder(SubjectPronoun.VOSOTROS))
+                createPronounLineBuilder(SubjectPronoun.VOSOTROS),
+                createPronounLineBuilder(SubjectPronoun.ELLOS_ELLAS_USTEDES))
         val labelBuilder = StringBuilder()
                 .append("\n${"".padEnd(firstColumnWidth)}")
         for ((conjugationType, conjugator) in conjugatorMap.entries) {
+            val columnWidth = max(conjugationType.text.length + 2, verb.infinitive.length + 7)
             labelBuilder.append("${conjugationType.text.toUpperCase().padEnd(columnWidth)}")
             for (subjectPronoun in SubjectPronoun.values()) {
                 val result = conjugator.conjugate(verb, subjectPronoun)

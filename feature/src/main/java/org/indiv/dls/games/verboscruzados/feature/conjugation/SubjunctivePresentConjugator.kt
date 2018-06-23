@@ -2,6 +2,7 @@ package org.indiv.dls.games.verboscruzados.feature.conjugation
 
 import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
+import org.indiv.dls.games.verboscruzados.feature.model.Irregularity
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
 
@@ -18,7 +19,7 @@ open class SubjunctivePresentConjugator : Conjugator {
             SubjectPronoun.NOSOTROS to "emos",
             SubjectPronoun.VOSOTROS to "éis")
     private val irErSubjectSuffixMap = mapOf(
-            SubjectPronoun.YO to "e",
+            SubjectPronoun.YO to "a",
             SubjectPronoun.TU to "as",
             SubjectPronoun.EL_ELLA_USTED to "a",
             SubjectPronoun.ELLOS_ELLAS_USTEDES to "an",
@@ -30,23 +31,23 @@ open class SubjunctivePresentConjugator : Conjugator {
             InfinitiveEnding.ER to irErSubjectSuffixMap)
 
     override fun conjugate(verb: Verb, subjectPronoun: SubjectPronoun): String {
-        return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.SUBJUNCTIVE_PRESENT) ?: run {
-            val suffix = mapOfSuffixMaps[verb.infinitiveEnding]!![subjectPronoun]!!
-            val subjunctiveRoot = when(subjectPronoun) {
-                SubjectPronoun.NOSOTROS, SubjectPronoun.VOSOTROS -> verb.root
-                else -> getYoRoot(verb, subjectPronoun)
-            }
-            val root = getRootWithSpellingChange(subjunctiveRoot, verb.infinitiveEnding, suffix)
-            return root + suffix
-        }
+        return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.SUBJUNCTIVE_PRESENT)
+                ?: run {
+                    val suffix = mapOfSuffixMaps[verb.infinitiveEnding]!![subjectPronoun]!!
+                    val isSpecialYoRoot = presentConjugator.isStemChangeAppliedToYoRoot(verb)
+                    val yoRoot = getYoRoot(verb)
+                    val subjunctiveRoot = if (!isSpecialYoRoot && subjectPronoun.isNosotrosOrVosotros)
+                        getIrAlteredRoot(yoRoot, verb.irregularities)
+                    else
+                        yoRoot
+                    val root = getRootWithSpellingChange(subjunctiveRoot, "o", suffix)
+                    return root + suffix
+                }
     }
 
-    private fun getYoRoot(verb: Verb, subjectPronoun: SubjectPronoun): String {
+    private fun getYoRoot(verb: Verb): String {
         val presentYoForm = presentConjugator.conjugate(verb, SubjectPronoun.YO)
-        return if (presentYoForm.endsWith("oy")) {
-            presentYoForm.substring(0, presentYoForm.length - 2)
-        } else {
-            presentYoForm.substring(0, presentYoForm.length -1)
-        }
+        return presentYoForm.dropLast(if (presentYoForm.endsWith("oy")) 2 else 1)
     }
+
 }

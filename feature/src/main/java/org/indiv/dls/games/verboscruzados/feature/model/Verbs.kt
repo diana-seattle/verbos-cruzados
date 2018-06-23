@@ -1,15 +1,15 @@
 package org.indiv.dls.games.verboscruzados.feature.model
 
-enum class InfinitiveEnding(ending: String) {
+import org.indiv.dls.games.verboscruzados.feature.conjugation.getIrAlteredRoot
+
+enum class InfinitiveEnding(val ending: String) {
     ER("er"),
     AR("ar"),
     IR("ir")
 }
 
 enum class Irregularity {
-    GERUND,
     NO_ACCENT_ON_PRETERIT, // pude/pudo, dije/dijo
-    PAST_PARTICIPLE,
     SPELLING_CHANGE_PHONETIC,
     SPELLING_CHANGE_YO_ZC,
     SPELLING_CHANGE_YO_GO,
@@ -38,7 +38,10 @@ enum class SubjectPronoun(val text: String, val isThirdPerson: Boolean = false) 
     EL_ELLA_USTED("Él/Ella/Ud.", true),
     ELLOS_ELLAS_USTEDES("Ellos/Ellas/Uds.", true),
     NOSOTROS("Nosotros"),
-    VOSOTROS("Vosotros")
+    VOSOTROS("Vosotros");
+
+    val isNosotrosOrVosotros
+        get() = (this == NOSOTROS || this == VOSOTROS)
 }
 
 data class Verb(val infinitive: String,
@@ -47,6 +50,7 @@ data class Verb(val infinitive: String,
                 val irregularities: List<Irregularity> = emptyList(),
                 val irregularGerund: String? = null,
                 val irregularPastParticiple: String? = null,
+                val irregularImperativeTu: String? = null,
                 val altPreteritRoot: String? = null, // e.g. supe, quepo
                 val altInfinitiveRoot: String? = null, // used in future, conditional (e.g. poder/podr)
                 val customConjugation: ((SubjectPronoun, ConjugationType) -> String?)? = null) {
@@ -55,14 +59,17 @@ data class Verb(val infinitive: String,
         infinitive.endsWith("er") -> InfinitiveEnding.ER
         else -> InfinitiveEnding.IR // this includes "ír" as in "oír"
     }
-    val root = infinitive.substring(0, infinitive.length - 2)
-    val gerund = irregularGerund ?: when (infinitiveEnding) {
-        InfinitiveEnding.AR -> root + "ando"
-        else -> root + "iendo"
-    }
+    val root = infinitive.dropLast(2)
     val pastParticiple = irregularPastParticiple ?: when (infinitiveEnding) {
         InfinitiveEnding.AR -> root + "ado"
         else -> root + "ido"
+    }
+    val gerund = irregularGerund ?: when (infinitiveEnding) {
+        InfinitiveEnding.AR -> root + "ando"
+        InfinitiveEnding.ER -> root + "iendo"
+        else -> {
+            getIrAlteredRoot(root, irregularities) + "iendo"
+        }
     }
 }
 
@@ -282,9 +289,9 @@ val irregularArVerbs = listOf(
 
 val irregularIrVerbs = listOf(
         // past participle only
-        Verb("abrir", "open", irregularities = listOf(Irregularity.PAST_PARTICIPLE)),
-        Verb("cubrir", "cover", irregularities = listOf(Irregularity.PAST_PARTICIPLE)),
-        Verb("escribir", "write", irregularities = listOf(Irregularity.PAST_PARTICIPLE)),
+        Verb("abrir", "open", irregularPastParticiple = "abierto"),
+        Verb("cubrir", "cover", irregularPastParticiple = "cubierto"),
+        Verb("escribir", "write", irregularPastParticiple = "escrito"),
 
         // spelling change - phonetic
         Verb("dirigir", "manage, direct", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
@@ -297,15 +304,15 @@ val irregularIrVerbs = listOf(
 
         // Yo Go verbs
         Verb("oír", "hear", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
-        Verb("salir", "go out, leave", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
-        Verb("venir", "come", altPreteritRoot = "vin", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("salir", "go out, leave", altInfinitiveRoot = "saldr", irregularImperativeTu = "sal", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
+        Verb("venir", "come", altPreteritRoot = "vin", altInfinitiveRoot = "vendr", irregularImperativeTu="ven", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
 
         // Yo zc
-        Verb("producir", "produce", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
-        Verb("reducir", "reduce", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.SPELLING_CHANGE_PHONETIC, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("producir", "produce", altPreteritRoot = "produj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("reducir", "reduce", altPreteritRoot = "reduj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.SPELLING_CHANGE_PHONETIC, Irregularity.NO_ACCENT_ON_PRETERIT)),
 
         // Custom conjugations
-        Verb("decir", "say, tell", altPreteritRoot = "dij", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
+        Verb("decir", "say, tell", altPreteritRoot = "dij", altInfinitiveRoot = "dir", irregularPastParticiple = "dicho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
             when (conjugationType) {
                 ConjugationType.PRESENT -> if (subjectPronoun == SubjectPronoun.YO) "digo" else null
                 else -> null
@@ -345,9 +352,10 @@ val irregularIrVerbs = listOf(
             }
         }
 )
+
 val irregularErVerbs = listOf(
         // past participle only
-        Verb("romper", "break", irregularities = listOf(Irregularity.PAST_PARTICIPLE)),
+        Verb("romper", "break", irregularPastParticiple = "roto"),
 
         // TODO
 

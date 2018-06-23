@@ -2,6 +2,7 @@ package org.indiv.dls.games.verboscruzados.feature.conjugation
 
 import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
+import org.indiv.dls.games.verboscruzados.feature.model.Irregularity
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
 
@@ -24,31 +25,40 @@ val conjugatorMap = mapOf(
  * Gets root with spelling changes (e.g. llegar -> llegue and llegué).
  * For use with several conjugation types.
  */
-internal fun getRootWithSpellingChange(root: String, infinitiveEnding: InfinitiveEnding, suffix: String): String {
-    if (infinitiveEnding == InfinitiveEnding.AR &&
-            suffix.startsWith("e") || suffix.startsWith("é")) {
+internal fun getRootWithSpellingChange(root: String, oldSuffix: String, newSuffix: String): String {
+    val hardOldSuffix = oldSuffix.startsWith("a") || oldSuffix.startsWith("o")
+    if (hardOldSuffix && (newSuffix.startsWith("e") || newSuffix.startsWith("é"))) {
         root.apply {
             return when {
-                endsWith("c") -> substring(0, length - 1) + "qu" // e.g. tocar -> toquemos
-                endsWith("z") -> substring(0, length - 1) + "c"  // e.g. gozar -> gocemos, alcanzar -> alcancé
-                endsWith("g") -> this + "u"                      // e.g. negar -> neguemos
-                endsWith("gu") -> substring(0, length - 1) + "ü" // e.g. averiguar -> averigüemos
+                endsWith("c") -> dropLast(1) + "qu" // e.g. tocar -> toquemos
+                endsWith("z") -> dropLast(1) + "c"  // e.g. gozar -> gocemos, alcanzar -> alcancé
+                endsWith("g") -> this + "u"            // e.g. negar -> neguemos
+                endsWith("gu") -> dropLast(1) + "ü" // e.g. averiguar -> averigüemos
                 else -> this
             }
         }
-    } else if (infinitiveEnding != InfinitiveEnding.AR &&
-            (suffix.startsWith("a") || suffix.startsWith("á") || suffix.startsWith("o"))) {
+    } else if (!hardOldSuffix &&
+            (newSuffix.startsWith("a") || newSuffix.startsWith("á") || newSuffix.startsWith("o"))) {
         root.apply {
             return when {
-                endsWith("qu") -> substring(0, length - 2) + "c" // e.g. delinquir -> delincamos
-                endsWith("c") -> substring(0, length - 1) + "z"  // e.g. vencer -> venzo, venzamos
-                endsWith("gu") -> substring(0, length - 1)       // e.g. distinguir -> distingo, distingamos
-                endsWith("g") -> substring(0, length - 1) + "j"  // e.g. proteger -> protejo, protejamos
+                endsWith("qu") -> dropLast(2) + "c" // e.g. delinquir -> delincamos
+                endsWith("c") -> dropLast(1) + "z"  // e.g. vencer -> venzo, venzamos
+                endsWith("gu") -> dropLast(1)       // e.g. distinguir -> distingo, distingamos
+                endsWith("g") -> dropLast(1) + "j"  // e.g. proteger -> protejo, protejamos
                 else -> this
             }
         }
     }
     return root
+}
+
+internal fun getIrAlteredRoot(root: String, irregularities: List<Irregularity>): String {
+    return when {
+        irregularities.contains(Irregularity.STEM_CHANGE_E_to_I) -> replaceLastOccurrence(root, 'e', "i")
+        irregularities.contains(Irregularity.STEM_CHANGE_E_to_IE) -> replaceLastOccurrence(root, 'e', "i")
+        irregularities.contains(Irregularity.STEM_CHANGE_O_to_UE) -> replaceLastOccurrence(root, 'o', "u")
+        else -> root
+    }
 }
 
 /**
@@ -57,9 +67,8 @@ internal fun getRootWithSpellingChange(root: String, infinitiveEnding: Infinitiv
 internal fun replaceLastOccurrence(source: String, char: Char, replacement: String): String {
     val index = source.lastIndexOf(char)
     if (index != -1) {
-        val start = source.substring(0, index)
-        val end = if (index < source.length - 1) source.subSequence(index + 1, source.length) else ""
-        return start + replacement + end
+        val end = if (index < source.length - 1) source.substring(index + 1, source.length) else ""
+        return source.substring(0, index) + replacement + end
     }
     return source
 }

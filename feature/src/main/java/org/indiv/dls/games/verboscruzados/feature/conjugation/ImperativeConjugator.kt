@@ -15,8 +15,10 @@ class ImperativeConjugator : SubjunctivePresentConjugator() {
     override fun conjugate(verb: Verb, subjectPronoun: SubjectPronoun): String {
         return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.IMPERATIVE) ?: run {
             when (subjectPronoun) {
-                SubjectPronoun.TU -> presentConjugator.conjugate(verb, SubjectPronoun.EL_ELLA_USTED)
-                SubjectPronoun.VOSOTROS -> verb.root + "ad"
+                SubjectPronoun.YO -> "-"
+                SubjectPronoun.TU -> verb.irregularImperativeTu
+                        ?: presentConjugator.conjugate(verb, SubjectPronoun.EL_ELLA_USTED)
+                SubjectPronoun.VOSOTROS -> verb.infinitive.dropLast(1) + "d"
                 else -> super.conjugate(verb, subjectPronoun)
             }
         }

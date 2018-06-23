@@ -40,10 +40,20 @@ class PresentConjugator : Conjugator {
         return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.PRESENT) ?: run {
             val suffix = mapOfSuffixMaps[verb.infinitiveEnding]!![subjectPronoun]!!
             val root = getSpecialYoRootIfAny(verb, subjectPronoun)
-                    ?: applyStemChange(getRootWithSpellingChange(verb.root, verb.infinitiveEnding, suffix),
+                    ?: applyStemChange(getRootWithSpellingChange(verb.root, verb.infinitiveEnding.ending, suffix),
                             subjectPronoun, verb.irregularities)
             return root + suffix
         }
+    }
+
+    fun isStemChangeAppliedToYoRoot(verb: Verb) {
+
+
+
+
+
+
+        
     }
 
     private fun applyStemChange(root: String, subjectPronoun: SubjectPronoun, irregularities: List<Irregularity>): String {
@@ -67,16 +77,17 @@ class PresentConjugator : Conjugator {
                     return when {
                         endsWith("l") || endsWith("n") || endsWith("s") -> this + "g" // e.g. salgo, tengo, asgo
                         endsWith("a") || endsWith("o") -> this + "ig"   // e.g. caer -> caigo, oír -> oigo
-                        endsWith("c") -> this.substring(0, length - 1) + "g"  // e.g. hacer -> hago
+                        endsWith("c") -> this.dropLast(1) + "g"  // e.g. hacer -> hago
                         else -> null
                     }
                 }
             } else if (verb.irregularities.contains(Irregularity.SPELLING_CHANGE_YO_ZC)) {
                 verb.root.apply {
-                    return this.substring(0, length - 1) + "zc"  // e.g. conocer -> conozco
+                    return this.dropLast(1) + "zc"  // e.g. conocer -> conozco
                 }
             }
         }
         return null
     }
+
 }

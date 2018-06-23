@@ -20,16 +20,17 @@ class SubjunctiveImperfectConjugator : Conjugator {
             SubjectPronoun.VOSOTROS to "rais")
 
     override fun conjugate(verb: Verb, subjectPronoun: SubjectPronoun): String {
-        return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.SUBJUNCTIVE_IMPERFECT) ?: run {
-            val suffix = subjectSuffixMap[subjectPronoun]!!
-            val root = getPreteritRoot(verb, subjectPronoun)
-            return root + suffix
-        }
+        return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.SUBJUNCTIVE_IMPERFECT)
+                ?: run {
+                    val suffix = subjectSuffixMap[subjectPronoun]!!
+                    val root = getPreteritRoot(verb, subjectPronoun)
+                    return root + suffix
+                }
     }
 
     private fun getPreteritRoot(verb: Verb, subjectPronoun: SubjectPronoun): String {
         val preteritForm = preteritConjugator.conjugate(verb, SubjectPronoun.ELLOS_ELLAS_USTEDES)
-        var preteritRoot = preteritForm.substring(0, preteritForm.length - 3)
+        var preteritRoot = preteritForm.dropLast(3) // dropping "ron" of "aron" or "ieron"
         if (subjectPronoun == SubjectPronoun.NOSOTROS) {
             val lastLetterOfRoot = addAccent(preteritRoot.last())
             preteritRoot = preteritRoot.dropLast(1) + lastLetterOfRoot
@@ -38,7 +39,7 @@ class SubjunctiveImperfectConjugator : Conjugator {
     }
 
     private fun addAccent(char: Char): Char {
-        return when(char) {
+        return when (char) {
             'a' -> 'á'
             'e' -> 'é'
             else -> char
