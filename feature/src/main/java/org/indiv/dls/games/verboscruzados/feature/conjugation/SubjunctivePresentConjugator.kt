@@ -34,10 +34,9 @@ open class SubjunctivePresentConjugator : Conjugator {
         return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.SUBJUNCTIVE_PRESENT)
                 ?: run {
                     val suffix = mapOfSuffixMaps[verb.infinitiveEnding]!![subjectPronoun]!!
-                    val isSpecialYoRoot = presentConjugator.isStemChangeAppliedToYoRoot(verb)
                     val yoRoot = getYoRoot(verb)
-                    val subjunctiveRoot = if (!isSpecialYoRoot && subjectPronoun.isNosotrosOrVosotros)
-                        getIrAlteredRoot(yoRoot, verb.irregularities)
+                    val subjunctiveRoot = if (subjectPronoun.isNosotrosOrVosotros)
+                        reverseAnyStemChanges(yoRoot, verb.infinitiveEnding == InfinitiveEnding.IR, verb.irregularities)
                     else
                         yoRoot
                     val root = getRootWithSpellingChange(subjunctiveRoot, "o", suffix)
@@ -48,6 +47,15 @@ open class SubjunctivePresentConjugator : Conjugator {
     private fun getYoRoot(verb: Verb): String {
         val presentYoForm = presentConjugator.conjugate(verb, SubjectPronoun.YO)
         return presentYoForm.dropLast(if (presentYoForm.endsWith("oy")) 2 else 1)
+    }
+
+    private fun reverseAnyStemChanges(yoRoot: String, forIrVerb: Boolean, irregularities: List<Irregularity>): String {
+        return when {
+            irregularities.contains(Irregularity.STEM_CHANGE_U_to_UE) -> yoRoot.replace("ue", "u")
+            irregularities.contains(Irregularity.STEM_CHANGE_O_to_UE) -> yoRoot.replace("ue", if (forIrVerb) "u" else "o")
+            irregularities.contains(Irregularity.STEM_CHANGE_E_to_IE) -> yoRoot.replace("ie", if (forIrVerb) "i" else "e")
+            else -> yoRoot
+        }
     }
 
 }

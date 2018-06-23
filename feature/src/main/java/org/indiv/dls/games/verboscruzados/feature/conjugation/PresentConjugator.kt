@@ -46,16 +46,6 @@ class PresentConjugator : Conjugator {
         }
     }
 
-    fun isStemChangeAppliedToYoRoot(verb: Verb) {
-
-
-
-
-
-
-        
-    }
-
     private fun applyStemChange(root: String, subjectPronoun: SubjectPronoun, irregularities: List<Irregularity>): String {
         if (subjectPronoun == SubjectPronoun.NOSOTROS || subjectPronoun == SubjectPronoun.VOSOTROS) {
             return root
