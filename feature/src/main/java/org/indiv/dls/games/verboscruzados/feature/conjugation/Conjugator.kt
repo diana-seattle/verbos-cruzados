@@ -1,7 +1,6 @@
 package org.indiv.dls.games.verboscruzados.feature.conjugation
 
 import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
-import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.feature.model.Irregularity
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
@@ -27,7 +26,10 @@ val conjugatorMap = mapOf(
  */
 internal fun getRootWithSpellingChange(root: String, oldSuffix: String, newSuffix: String): String {
     val hardOldSuffix = oldSuffix.startsWith("a") || oldSuffix.startsWith("o")
-    if (hardOldSuffix && (newSuffix.startsWith("e") || newSuffix.startsWith("é"))) {
+    if (root.takeLast(1) in listOf("o", "u") && oldSuffix.take(2) in listOf("ir", "ír") &&
+            newSuffix.take(1) !in listOf("i", "í", "y")) {
+        return root + "y"  // e.g. construir -> construyo, oír -> oyes
+    } else if (hardOldSuffix && (newSuffix.startsWith("e") || newSuffix.startsWith("é"))) {
         root.apply {
             return when {
                 endsWith("c") -> dropLast(1) + "qu" // e.g. tocar -> toquemos
@@ -54,22 +56,15 @@ internal fun getRootWithSpellingChange(root: String, oldSuffix: String, newSuffi
 
 internal fun getIrAlteredRoot(root: String, irregularities: List<Irregularity>): String {
     return when {
-        irregularities.contains(Irregularity.STEM_CHANGE_E_to_I) -> replaceLastOccurrence(root, 'e', "i")
-        irregularities.contains(Irregularity.STEM_CHANGE_E_to_IE) -> replaceLastOccurrence(root, 'e', "i")
-        irregularities.contains(Irregularity.STEM_CHANGE_O_to_UE) -> replaceLastOccurrence(root, 'o', "u")
+        irregularities.contains(Irregularity.STEM_CHANGE_E_to_I) -> replaceInLastSyllable(root, "e", "i")
+        irregularities.contains(Irregularity.STEM_CHANGE_E_to_IE) -> replaceInLastSyllable(root, "e", "i")
+        irregularities.contains(Irregularity.STEM_CHANGE_O_to_UE) -> replaceInLastSyllable(root, "o", "u")
         else -> root
     }
 }
 
-/**
- * Replaces last occurrence of a character with a string
- */
-internal fun replaceLastOccurrence(source: String, char: Char, replacement: String): String {
-    val index = source.lastIndexOf(char)
-    if (index != -1) {
-        val end = if (index < source.length - 1) source.substring(index + 1, source.length) else ""
-        return source.substring(0, index) + replacement + end
-    }
-    return source
+internal fun replaceInLastSyllable(text: String, old: String, new: String): String {
+    val textBeginning = text.dropLast(5) // drops min of 5 or length
+    val textEnd = text.substring(textBeginning.length)
+    return textBeginning + textEnd.replace(old, new)
 }
-

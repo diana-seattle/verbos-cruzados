@@ -51,9 +51,19 @@ open class SubjunctivePresentConjugator : Conjugator {
 
     private fun reverseAnyStemChanges(yoRoot: String, forIrVerb: Boolean, irregularities: List<Irregularity>): String {
         return when {
-            irregularities.contains(Irregularity.STEM_CHANGE_U_to_UE) -> yoRoot.replace("ue", "u")
-            irregularities.contains(Irregularity.STEM_CHANGE_O_to_UE) -> yoRoot.replace("ue", if (forIrVerb) "u" else "o")
-            irregularities.contains(Irregularity.STEM_CHANGE_E_to_IE) -> yoRoot.replace("ie", if (forIrVerb) "i" else "e")
+            irregularities.contains(Irregularity.STEM_CHANGE_U_to_UE) -> replaceInLastSyllable(yoRoot, "ue", "u")
+            irregularities.contains(Irregularity.STEM_CHANGE_O_to_UE) -> {
+                val changedStem = when {
+                    yoRoot.contains("güe") -> "üe"
+                    yoRoot.length <= 5 && yoRoot.startsWith("hue") -> "hue"
+                    else -> "ue"
+                }
+                replaceInLastSyllable(yoRoot, changedStem, if (forIrVerb) "u" else "o")
+            }
+            irregularities.contains(Irregularity.STEM_CHANGE_E_to_IE) -> {
+                val changedStem = if (yoRoot.length <= 5 && yoRoot.startsWith("ye")) "ye" else "ie"
+                replaceInLastSyllable(yoRoot, changedStem, if (forIrVerb) "i" else "e")
+            }
             else -> yoRoot
         }
     }

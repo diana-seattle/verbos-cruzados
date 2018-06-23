@@ -13,6 +13,7 @@ enum class Irregularity {
     SPELLING_CHANGE_PHONETIC,
     SPELLING_CHANGE_YO_ZC,
     SPELLING_CHANGE_YO_GO,
+    SPELLING_CHANGE_Y,
     STEM_CHANGE_E_to_I,
     STEM_CHANGE_E_to_IE,
     STEM_CHANGE_O_to_UE,
@@ -62,16 +63,26 @@ data class Verb(val infinitive: String,
     val root = infinitive.dropLast(2)
     val pastParticiple = irregularPastParticiple ?: when (infinitiveEnding) {
         InfinitiveEnding.AR -> root + "ado"
-        else -> root + "ido"
+        else -> {
+            val suffix = if (root.takeLast(1) in strongVowels) "ído" else "ido"
+            root + suffix
+        }
     }
     val gerund = irregularGerund ?: when (infinitiveEnding) {
         InfinitiveEnding.AR -> root + "ando"
-        InfinitiveEnding.ER -> root + "iendo"
-        else -> {
-            getIrAlteredRoot(root, irregularities) + "iendo"
+        InfinitiveEnding.ER, InfinitiveEnding.IR -> {
+            val alteredRoot = if (infinitiveEnding == InfinitiveEnding.IR)
+                getIrAlteredRoot(root, irregularities) else root
+            val suffix = if (alteredRoot.takeLast(1) in listOf("a", "e", "o", "u"))
+                "yendo" else "iendo"
+            root + suffix
         }
     }
 }
+
+// Strong vowels form single-syllable dipthongs when combined with weak vowels
+internal val strongVowels = listOf("a", "e", "o")
+
 
 val regularArVerbs = listOf(
         Verb("acabar", "finish"),
@@ -152,7 +163,7 @@ val regularArVerbs = listOf(
         Verb("preparar", "prepare"),
         Verb("prestar", "lend, borrow"),
         Verb("quedar", "stay, remain"),
-        Verb("quejarse", "complain"),
+        Verb("quejar", "complain"),
         Verb("quitar", "take away"),
         Verb("regresar", "return"),
         Verb("relajar", "relax, calm"),
@@ -228,8 +239,11 @@ val irregularArVerbs = listOf(
         // TODO
 
         Verb("acordar", "agree", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("avergonzar", "embarrass", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("errar", "miss, wander", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("nevar", "snow", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("jugar", "play", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_UE)),
+        Verb("sentar", "sit", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
 
         // no accent on preterit
         Verb("andar", "walk", altPreteritRoot = "anduv", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT)),
@@ -304,10 +318,12 @@ val irregularIrVerbs = listOf(
         // stem changes
         Verb("conseguir", "get", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("dormir", "sleep", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("sentir", "feel", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
 
+        Verb("construir", "build", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
 
         // Yo Go verbs
-        Verb("oír", "hear", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
+        Verb("oír", "hear", altInfinitiveRoot = "oir", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
         Verb("salir", "go out, leave", altInfinitiveRoot = "saldr", irregularImperativeTu = "sal", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
         Verb("venir", "come", altPreteritRoot = "vin", altInfinitiveRoot = "vendr", irregularImperativeTu = "ven", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
 
@@ -352,6 +368,16 @@ val irregularIrVerbs = listOf(
                         SubjectPronoun.VOSOTROS -> "ibais"
                     }
                 }
+                ConjugationType.SUBJUNCTIVE_PRESENT -> {
+                    when (subjectPronoun) {
+                        SubjectPronoun.YO -> "vaya"
+                        SubjectPronoun.TU -> "vayas"
+                        SubjectPronoun.EL_ELLA_USTED -> "vaya"
+                        SubjectPronoun.ELLOS_ELLAS_USTEDES -> "vayan"
+                        SubjectPronoun.NOSOTROS -> "vayamos"
+                        SubjectPronoun.VOSOTROS -> "vayáis"
+                    }
+                }
                 else -> null
             }
         }
@@ -364,7 +390,10 @@ val irregularErVerbs = listOf(
         // TODO
 
         // stem changes
+        Verb("oler", "smell", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("querer", "want", altPreteritRoot = "quis", altInfinitiveRoot = "querr", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
+
+        Verb("creer", "believe", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
 
 
         // no accent on preterit
@@ -372,8 +401,8 @@ val irregularErVerbs = listOf(
 
 
         // Yo Go verbs
-        Verb("caer", "fall", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
-        Verb("hacer", "make, do", altPreteritRoot = "hic", irregularImperativeTu="haz", irregularPastParticiple = "hecho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("caer", "fall", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.SPELLING_CHANGE_Y)),
+        Verb("hacer", "make, do", altPreteritRoot = "hic", irregularImperativeTu = "haz", irregularPastParticiple = "hecho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("poner", "put", altPreteritRoot = "pus", altInfinitiveRoot = "pondr", irregularPastParticiple = "puesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("tener", "have", altPreteritRoot = "tuv", altInfinitiveRoot = "tendr", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("traer", "bring", altPreteritRoot = "traj", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT, Irregularity.SPELLING_CHANGE_YO_GO)),
@@ -437,10 +466,91 @@ val irregularErVerbs = listOf(
                 }
                 else -> null
             }
+        },
+        Verb("ser", "be", altPreteritRoot = "fu", irregularImperativeTu = "sé", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
+            when (conjugationType) {
+                ConjugationType.PRESENT -> {
+                    when (subjectPronoun) {
+                        SubjectPronoun.YO -> "soy"
+                        SubjectPronoun.TU -> "eres"
+                        SubjectPronoun.EL_ELLA_USTED -> "es"
+                        SubjectPronoun.ELLOS_ELLAS_USTEDES -> "son"
+                        SubjectPronoun.NOSOTROS -> "somos"
+                        SubjectPronoun.VOSOTROS -> "sois"
+                    }
+                }
+                ConjugationType.PRETERIT -> {
+                    when (subjectPronoun) {
+                        SubjectPronoun.YO -> "fui"
+                        SubjectPronoun.EL_ELLA_USTED -> "fue"
+                        SubjectPronoun.ELLOS_ELLAS_USTEDES -> "fueron"
+                        else -> null
+                    }
+                }
+                ConjugationType.IMPERFECT -> {
+                    when (subjectPronoun) {
+                        SubjectPronoun.YO -> "era"
+                        SubjectPronoun.TU -> "eras"
+                        SubjectPronoun.EL_ELLA_USTED -> "era"
+                        SubjectPronoun.ELLOS_ELLAS_USTEDES -> "eran"
+                        SubjectPronoun.NOSOTROS -> "éramos"
+                        SubjectPronoun.VOSOTROS -> "erais"
+                    }
+                }
+                ConjugationType.SUBJUNCTIVE_PRESENT -> {
+                    when (subjectPronoun) {
+                        SubjectPronoun.YO -> "sea"
+                        SubjectPronoun.TU -> "seas"
+                        SubjectPronoun.EL_ELLA_USTED -> "sea"
+                        SubjectPronoun.ELLOS_ELLAS_USTEDES -> "sean"
+                        SubjectPronoun.NOSOTROS -> "seamos"
+                        SubjectPronoun.VOSOTROS -> "seáis"
+                    }
+                }
+                else -> null
+            }
+        },
+        Verb("ver", "see", irregularPastParticiple = "visto", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
+            when (conjugationType) {
+                ConjugationType.PRESENT -> {
+                    when (subjectPronoun) {
+                        SubjectPronoun.YO -> "veo"
+                        SubjectPronoun.VOSOTROS -> "veis"
+                        else -> null
+                    }
+                }
+                ConjugationType.PRETERIT -> {
+                    when (subjectPronoun) {
+                        SubjectPronoun.YO -> "vi"
+                        SubjectPronoun.EL_ELLA_USTED -> "vio"
+                        else -> null
+                    }
+                }
+                ConjugationType.IMPERFECT -> {
+                    when (subjectPronoun) {
+                        SubjectPronoun.YO -> "veía"
+                        SubjectPronoun.TU -> "veías"
+                        SubjectPronoun.EL_ELLA_USTED -> "veía"
+                        SubjectPronoun.ELLOS_ELLAS_USTEDES -> "veían"
+                        SubjectPronoun.NOSOTROS -> "veíamos"
+                        SubjectPronoun.VOSOTROS -> "veíais"
+                    }
+                }
+                ConjugationType.SUBJUNCTIVE_PRESENT -> {
+                    when (subjectPronoun) {
+                        SubjectPronoun.YO -> "vea"
+                        SubjectPronoun.TU -> "veas"
+                        SubjectPronoun.EL_ELLA_USTED -> "vea"
+                        SubjectPronoun.ELLOS_ELLAS_USTEDES -> "vean"
+                        SubjectPronoun.NOSOTROS -> "veamos"
+                        SubjectPronoun.VOSOTROS -> "veáis"
+                    }
+                }
+                else -> null
+            }
         }
 
-
-        )
+)
 
 
 /*
@@ -450,14 +560,19 @@ https://en.wikipedia.org/wiki/Spanish_irregular_verbs
 Stem Changes
 ------------
 
-In word-initial position, *ie- is written ye- (errar > yerro) and *ue- is written hue- (oler > huele). Also, the -ue- diphthong is written -üe- after g, with the diaeresis to indicate that the letter is not silent (avergonzarse > me avergüenzo).
-
 Verbs ending in -uir and -oír
-All verbs ending in -uir (e.g. construir, disminuir, distribuir) add a medial -y- before all endings not starting with i: construyo, construyes, construya... Taking into account that these verbs also undergo the change of unstressed intervocalic i to y (see orthographic changes above), they have many forms containing y.
+
+All verbs ending in -uir (e.g. construir, disminuir, distribuir) add a medial -y- before all endings
+not starting with i: construyo, construyes, construya...
+Taking into account that these verbs also undergo the change of unstressed intervocalic i to y
+(see orthographic changes above), they have many forms containing y.
 
 This also applies to the forms of oír and desoír that do not undergo the -ig- change: oyes, oye, oyen
 
-Again, note that some regular forms of fluir, fruir and huir are written without stress mark if considered monosyllabic, but may bear it if pronounced as bisyllabic: vosotros huis or huís (present), yo hui or huí (preterite).
+Again, note that some regular forms of fluir, fruir and huir are written without stress mark if considered
+monosyllabic, but may bear it if pronounced as bisyllabic: vosotros huis or huís (present), yo hui or huí (preterite).
+
+
 
 G-verbs
 Before o (in the first person singular of the indicative present tense) and a (that is, in all persons of the present subjunctive), the so-called G-verbs (sometimes "go-verbs" or "yo-go" verbs) add a medial -g- after l and n (also after s in asir), add -ig- when the root ends in a vowel, or substitute -g- for -c-. Note that this change overrides diphthongization (tener, venir) but combines with vowel-raising (decir). Many of these verbs are also irregular in other ways. For example:

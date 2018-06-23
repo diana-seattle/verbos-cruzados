@@ -51,10 +51,20 @@ class PresentConjugator : Conjugator {
             return root
         } else {
             return when {
-                irregularities.contains(Irregularity.STEM_CHANGE_E_to_I) -> replaceLastOccurrence(root, 'e', "i")
-                irregularities.contains(Irregularity.STEM_CHANGE_E_to_IE) -> replaceLastOccurrence(root, 'e', "ie")
-                irregularities.contains(Irregularity.STEM_CHANGE_O_to_UE) -> replaceLastOccurrence(root, 'o', "ue")
-                irregularities.contains(Irregularity.STEM_CHANGE_U_to_UE) -> replaceLastOccurrence(root, 'u', "ue")
+                irregularities.contains(Irregularity.STEM_CHANGE_E_to_I) -> replaceInLastSyllable(root, "e", "i")
+                irregularities.contains(Irregularity.STEM_CHANGE_U_to_UE) -> replaceInLastSyllable(root, "u", "ue")
+                irregularities.contains(Irregularity.STEM_CHANGE_O_to_UE) -> {
+                    val replacement = when {
+                        root.length <=5 && root.startsWith("o") -> "hue"  // oler -> huele
+                        root.takeLast(5).contains("go") -> "üe"        // avergonzar -> avergüenzo
+                        else -> "ue"
+                    }
+                    replaceInLastSyllable(root, "o", replacement)
+                }
+                irregularities.contains(Irregularity.STEM_CHANGE_E_to_IE) -> {
+                    val replacement = if (root.length <=5 && root.startsWith("e")) "ye" else "ie"  // errar -> yerro
+                    replaceInLastSyllable(root, "e", replacement)
+                }
                 else -> root
             }
         }

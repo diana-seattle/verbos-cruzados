@@ -5,6 +5,7 @@ import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.feature.model.Irregularity
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
+import org.indiv.dls.games.verboscruzados.feature.model.strongVowels
 
 /**
  * Preterit tense conjugator
@@ -28,10 +29,6 @@ class PreteritConjugator : Conjugator {
             InfinitiveEnding.AR to arSubjectSuffixMap,
             InfinitiveEnding.IR to irErSubjectSuffixMap,
             InfinitiveEnding.ER to irErSubjectSuffixMap)
-
-    // Strong vowels form single-syllable dipthongs when combined with weak vowels
-    private val strongVowels = listOf("a", "e", "o")
-
 
     override fun conjugate(verb: Verb, subjectPronoun: SubjectPronoun): String {
         return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.PRETERIT) ?: run {
@@ -76,8 +73,11 @@ class PreteritConjugator : Conjugator {
                     return replacement + suffix.substring(1)
                 } else if (subjectPronoun.isThirdPerson &&
                         (endsWith("ñ") || endsWith("ll") || endsWith("j"))) {
-                    // E.g. bullir -> bulló, tañer -> tañó, producir -> produjeron
-                    return suffix.substring(1)
+                    // E.g. tañer -> tañó, bullir -> bulló, producir -> produjeron
+                    return suffix.drop(1)
+                } else if (subjectPronoun.isThirdPerson && (takeLast(1) in listOf("a", "e", "o", "u"))) {
+                    // e.g. caer -> cayeron, creer -> creyeron, oír -> oyeron, construir -> construyeron
+                    return "y" + suffix.drop(1)
                 }
             }
         }
