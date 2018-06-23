@@ -64,13 +64,8 @@ class PreteritConjugator : Conjugator {
     }
 
     private fun getSuffixWithSpellingChanges(verb: Verb, suffix: String, subjectPronoun: SubjectPronoun): String {
-
-//        val suffix = if (defaultSuffix.startsWith("i") && root.takeLast(1) in strongVowels)
-//            "í" + defaultSuffix.drop(1) else defaultSuffix
-
-
-        if (suffix.startsWith("i")) {
-            (verb.altPreteritRoot ?: verb.root).apply {
+        (verb.altPreteritRoot ?: verb.root).apply {
+            if (suffix.startsWith("i")) {
                 if (takeLast(1) in strongVowels) {
                     // E.g. caer -> caímos, cayeron
                     val replacement = if (subjectPronoun.isThirdPerson) "y" else "í"
@@ -83,6 +78,8 @@ class PreteritConjugator : Conjugator {
                     // e.g. caer -> cayeron, creer -> creyeron, oír -> oyeron, construir -> construyeron
                     return "y" + suffix.drop(1)
                 }
+            } else if (suffix.startsWith("í") && takeLast(1) == "u" && !anyVowels(dropLast(1))) {
+                return "i" + suffix.drop(1) // no accent because single syllable, e.g. fluir -> flui, huir -> hui
             }
         }
         return suffix

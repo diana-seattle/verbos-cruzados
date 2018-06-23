@@ -2,6 +2,10 @@ package org.indiv.dls.games.verboscruzados.feature.model
 
 import org.indiv.dls.games.verboscruzados.feature.conjugation.getIrAlteredRoot
 
+//
+// See conjugation rules: https://en.wikipedia.org/wiki/Spanish_irregular_verbs
+//
+
 enum class InfinitiveEnding(val ending: String) {
     ER("er"),
     AR("ar"),
@@ -322,9 +326,11 @@ val irregularIrVerbs = listOf(
 
         Verb("construir", "build", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
         Verb("fluir", "flow", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
+        Verb("huir", "escape, flee", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
 
         // Yo Go verbs
         Verb("oír", "hear", altInfinitiveRoot = "oir", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
+        Verb("desoír", "ignore", altInfinitiveRoot = "desoir", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
         Verb("salir", "go out, leave", altInfinitiveRoot = "saldr", irregularImperativeTu = "sal", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
         Verb("venir", "come", altPreteritRoot = "vin", altInfinitiveRoot = "vendr", irregularImperativeTu = "ven", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
 
@@ -394,6 +400,9 @@ val irregularErVerbs = listOf(
         Verb("oler", "smell", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("querer", "want", altPreteritRoot = "quis", altInfinitiveRoot = "querr", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
 
+
+        Verb("volver", "return", irregularPastParticiple = "vuelto", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+
         Verb("creer", "believe", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
 
 
@@ -403,9 +412,9 @@ val irregularErVerbs = listOf(
 
         // Yo Go verbs
         Verb("caer", "fall", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.SPELLING_CHANGE_Y)),
-        Verb("hacer", "make, do", altPreteritRoot = "hic", irregularImperativeTu = "haz", irregularPastParticiple = "hecho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("poner", "put", altPreteritRoot = "pus", altInfinitiveRoot = "pondr", irregularPastParticiple = "puesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("tener", "have", altPreteritRoot = "tuv", altInfinitiveRoot = "tendr", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("hacer", "make, do", altPreteritRoot = "hic", altInfinitiveRoot = "har", irregularImperativeTu = "haz", irregularPastParticiple = "hecho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("poner", "put", altPreteritRoot = "pus", altInfinitiveRoot = "pondr", irregularImperativeTu = "pon", irregularPastParticiple = "puesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("tener", "have", altPreteritRoot = "tuv", altInfinitiveRoot = "tendr", irregularImperativeTu = "ten", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("traer", "bring", altPreteritRoot = "traj", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT, Irregularity.SPELLING_CHANGE_YO_GO)),
         Verb("valer", "be worth, cost", altInfinitiveRoot = "valdr", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
 
@@ -552,87 +561,3 @@ val irregularErVerbs = listOf(
         }
 
 )
-
-
-/*
-
-https://en.wikipedia.org/wiki/Spanish_irregular_verbs
-
-Stem Changes
-------------
-
-Verbs ending in -uir and -oír
-
-All verbs ending in -uir (e.g. construir, disminuir, distribuir) add a medial -y- before all endings
-not starting with i: construyo, construyes, construya...
-Taking into account that these verbs also undergo the change of unstressed intervocalic i to y
-(see orthographic changes above), they have many forms containing y.
-
-This also applies to the forms of oír and desoír that do not undergo the -ig- change: oyes, oye, oyen
-
-Again, note that some regular forms of fluir, fruir and huir are written without stress mark if considered
-monosyllabic, but may bear it if pronounced as bisyllabic: vosotros huis or huís (present), yo hui or huí (preterite).
-
-
-
-G-verbs
-Before o (in the first person singular of the indicative present tense) and a (that is, in all persons of the present subjunctive), the so-called G-verbs (sometimes "go-verbs" or "yo-go" verbs) add a medial -g- after l and n (also after s in asir), add -ig- when the root ends in a vowel, or substitute -g- for -c-. Note that this change overrides diphthongization (tener, venir) but combines with vowel-raising (decir). Many of these verbs are also irregular in other ways. For example:
-
-salir: yo salgo, tú sales...
-valer: yo valgo, tú vales...
-poner: yo pongo, tú pones...
-tener: yo tengo, tú tienes...
-venir: yo vengo , tú vienes...
-caer: yo caigo, tú caes...
-traer: yo traigo, tú traes...
-oír: yo oigo, tú oyes...
-hacer: yo hago, tú haces...
-decir: yo digo, tú dices...
-asir: yo asgo, tú ases...
-ZC-verbs
-This group of verbs—which originated in the Latin inchoative verbs but now includes other verbs as well— substitute -zc- for stem-final -c- before o and a. The group includes nearly all verbs ending in -acer (except hacer and derived verbs), -ecer (except mecer and remecer), -ocer (except cocer and derived verbs), and -ucir. For example:
-
-nacer: yo nazco, tú naces...
-crecer: yo crezco, tú creces...
-conocer: yo conozco, tú conoces...
-producir: yo produzco, tú produces...
-Yacer may alternatively be conjugated with -zc- (yazco), -g- (yago) or a compromise -zg- (yazgo).
-
-Irregular forms in the future, conditional and imperative
-Some -er and -ir verbs (most G-verbs plus haber, saber, poder and querer) also change their stem in the future and conditional tenses. This involves:
-
-Just dropping the infinitive e: haber → habr-..., saber → sabr-..., poder → podr-..., querer → querr-...
-Dropping the infinitive e/i and padding the resulting *-lr-/*-nr- with a -d-: tener → tendr-..., poner → pondr-..., venir → vendr-..., valer → valdr-..., salir → saldr-...
-Dropping the infinitive -ce- or -ec-: hacer → har-..., deshacer → deshar-..., decir → dir-... Predecir, contradecir and desdecir may share this irregularity (predir-...) or, more commonly, use the regular forms (predecir-). For bendecir and maldecir only the regular forms are used (bendecir-...).
-Many of these verbs also have shortened tú imperative forms: tener → ten, contener → contén, poner → pon, disponer → dispón, venir → ven, salir → sal, hacer → haz, decir → di. However, all verbs derived from decir are regular in this form: bendice, maldice, desdícete, predice, contradice.
-
-Anomalous stems in the preterite and derived tenses:
-
-estar → estuv-: yo estuve, tú/vos estuviste(s), él estuvo..., ellos estuvieron; yo estuviera...
-andar → anduv-: yo anduve, tú/vos anduviste(s), él anduvo..., ellos anduvieron; yo anduviera...
-tener → tuv-: yo tuve, tú/vos tuviste(s), él tuvo..., ellos tuvieron; yo tuviera...
-haber → hub-: yo hube, tú/vos hubiste(s), él hubo..., ellos hubieron; yo hubiera...
-caber → cup-: yo cupe, tú/vos cupiste(s), él cupo..., ellos cupieron; yo cupiera...
-saber → sup-: yo supe, tú/vos supiste(s), él supo..., ellos supieron; yo supiera...
-venir → vin-: yo vine, tú/vos viniste(s), él vino..., ellos vinieron; yo viniera...
-poder → pud-: yo pude, tú/vos pudiste(s), él pudo..., ellos pudieron; yo pudiera...
-poner → pus-: yo puse, tú/vos pusiste(s), él puso..., ellos pusieron; yo pusiera...
-hacer → hic-/hiz-: yo hice, tú/vos hiciste(s), él hizo..., ellos hicieron; yo hiciera...
-reducir → reduj-: yo reduje, tu/vos redujiste(s), él redujo.., ellos condujeron; yo condujera...
-decir → dij-: yo dije, tú/vos dijiste(s), él dijo..., ellos dijeron; yo dijera...
-
-Irregular past participles
-A number of verbs have irregular past participles, sometimes called "strong" because the change is in the root, rather than an ending. This includes verbs which are irregular in many other ways, as poner and decir, but for some other verbs this is their only irregularity (e.g. abrir, romper), while some very irregular verbs (as ser and ir) have regular past participles. Examples:
-
-abrir → abierto, morir → muerto, volver → vuelto, devolver → devuelto...
-romper → roto, escribir → escrito...
-ver → visto, prever → previsto, poner → puesto, componer → compuesto...
-hacer → hecho, rehacer → rehecho, decir → dicho, predecir → predicho (but bendecir → bendecido, maldecir → maldecido)...
-pudrir → podrido.
-There are three verbs that have both a regular and an irregular past participle. Both forms may be used when conjugating the compound tenses and the passive voice with the auxiliary verbs haber and ser, but the irregular form is generally the only one used as an adjective:
-
-freír → he freído or he frito, but papas fritas.
-imprimir → he imprimido or he impreso, but papeles impresos.
-proveer → he proveído or he provisto, una despensa bien provista far more usual than una despensa bien proveída.
-
-*/

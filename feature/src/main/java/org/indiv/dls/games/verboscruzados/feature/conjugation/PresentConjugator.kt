@@ -43,8 +43,12 @@ class PresentConjugator : Conjugator {
             val root = getSpecialYoRootIfAny(verb, subjectPronoun)
                     ?: applyStemChange(getRootWithSpellingChange(verb.root, verb.infinitiveEnding.ending, defaultSuffix),
                             subjectPronoun, verb.irregularities)
-            val suffix = if (defaultSuffix.startsWith("i") && root.takeLast(1) in strongVowels)
-                "í" + defaultSuffix.drop(1) else defaultSuffix
+            val suffix = when {
+                defaultSuffix.startsWith("i") && root.takeLast(1) in strongVowels -> "í" + defaultSuffix.drop(1)
+                defaultSuffix.startsWith("í") && root.takeLast(1) == "u" && !anyVowels(root.dropLast(1)) ->
+                    "i" + defaultSuffix.drop(1) // no accent because single syllable, e.g. fluir -> flui, huir -> hui
+                else -> defaultSuffix
+            }
             return root + suffix
         }
     }
@@ -58,14 +62,14 @@ class PresentConjugator : Conjugator {
                 irregularities.contains(Irregularity.STEM_CHANGE_U_to_UE) -> replaceInLastSyllable(root, "u", "ue")
                 irregularities.contains(Irregularity.STEM_CHANGE_O_to_UE) -> {
                     val replacement = when {
-                        root.length <=5 && root.startsWith("o") -> "hue"  // oler -> huele
+                        root.length <= 5 && root.startsWith("o") -> "hue"  // oler -> huele
                         root.takeLast(5).contains("go") -> "üe"        // avergonzar -> avergüenzo
                         else -> "ue"
                     }
                     replaceInLastSyllable(root, "o", replacement)
                 }
                 irregularities.contains(Irregularity.STEM_CHANGE_E_to_IE) -> {
-                    val replacement = if (root.length <=5 && root.startsWith("e")) "ye" else "ie"  // errar -> yerro
+                    val replacement = if (root.length <= 5 && root.startsWith("e")) "ye" else "ie"  // errar -> yerro
                     replaceInLastSyllable(root, "e", replacement)
                 }
                 else -> root
@@ -92,5 +96,4 @@ class PresentConjugator : Conjugator {
         }
         return null
     }
-
 }

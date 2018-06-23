@@ -68,3 +68,7 @@ internal fun replaceInLastSyllable(text: String, old: String, new: String): Stri
     val textEnd = text.substring(textBeginning.length)
     return textBeginning + textEnd.replace(old, new)
 }
+
+internal fun anyVowels(text: String): Boolean {
+    return text.matches(Regex(".*[aeiouáéíóú]+.*"))
+}
