@@ -64,13 +64,17 @@ class PreteritConjugator : Conjugator {
     }
 
     private fun getSuffixWithSpellingChanges(verb: Verb, suffix: String, subjectPronoun: SubjectPronoun): String {
+
+//        val suffix = if (defaultSuffix.startsWith("i") && root.takeLast(1) in strongVowels)
+//            "í" + defaultSuffix.drop(1) else defaultSuffix
+
+
         if (suffix.startsWith("i")) {
             (verb.altPreteritRoot ?: verb.root).apply {
-                val lastLetter = if (isNotEmpty()) last() else ""
-                if (lastLetter in strongVowels) {
+                if (takeLast(1) in strongVowels) {
                     // E.g. caer -> caímos, cayeron
                     val replacement = if (subjectPronoun.isThirdPerson) "y" else "í"
-                    return replacement + suffix.substring(1)
+                    return replacement + suffix.drop(1)
                 } else if (subjectPronoun.isThirdPerson &&
                         (endsWith("ñ") || endsWith("ll") || endsWith("j"))) {
                     // E.g. tañer -> tañó, bullir -> bulló, producir -> produjeron

@@ -321,6 +321,7 @@ val irregularIrVerbs = listOf(
         Verb("sentir", "feel", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
 
         Verb("construir", "build", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
+        Verb("fluir", "flow", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
 
         // Yo Go verbs
         Verb("oír", "hear", altInfinitiveRoot = "oir", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),

@@ -25,7 +25,7 @@ val conjugatorMap = mapOf(
  * For use with several conjugation types.
  */
 internal fun getRootWithSpellingChange(root: String, oldSuffix: String, newSuffix: String): String {
-    val hardOldSuffix = oldSuffix.startsWith("a") || oldSuffix.startsWith("o")
+    val hardOldSuffix = oldSuffix.take(1) in listOf("a", "o")
     if (root.takeLast(1) in listOf("o", "u") && oldSuffix.take(2) in listOf("ir", "ír") &&
             newSuffix.take(1) !in listOf("i", "í", "y")) {
         return root + "y"  // e.g. construir -> construyo, oír -> oyes

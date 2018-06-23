@@ -5,6 +5,7 @@ import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.feature.model.Irregularity
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
+import org.indiv.dls.games.verboscruzados.feature.model.strongVowels
 
 /**
  * Present tense conjugator
@@ -38,10 +39,12 @@ class PresentConjugator : Conjugator {
 
     override fun conjugate(verb: Verb, subjectPronoun: SubjectPronoun): String {
         return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.PRESENT) ?: run {
-            val suffix = mapOfSuffixMaps[verb.infinitiveEnding]!![subjectPronoun]!!
+            val defaultSuffix = mapOfSuffixMaps[verb.infinitiveEnding]!![subjectPronoun]!!
             val root = getSpecialYoRootIfAny(verb, subjectPronoun)
-                    ?: applyStemChange(getRootWithSpellingChange(verb.root, verb.infinitiveEnding.ending, suffix),
+                    ?: applyStemChange(getRootWithSpellingChange(verb.root, verb.infinitiveEnding.ending, defaultSuffix),
                             subjectPronoun, verb.irregularities)
+            val suffix = if (defaultSuffix.startsWith("i") && root.takeLast(1) in strongVowels)
+                "í" + defaultSuffix.drop(1) else defaultSuffix
             return root + suffix
         }
     }
