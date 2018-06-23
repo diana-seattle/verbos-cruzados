@@ -38,9 +38,10 @@ class PreteritConjugator : Conjugator {
             val defaultSuffix = mapOfSuffixMaps[verb.infinitiveEnding]!![subjectPronoun]!!
             val suffixWithCorrectedAccent = replaceSuffixAccentIfAppropriate(defaultSuffix, verb.irregularities, subjectPronoun)
             val suffix = getSuffixWithSpellingChanges(verb, suffixWithCorrectedAccent, subjectPronoun)
-            val root = verb.altPreteritRoot
+            val initialRoot = verb.altPreteritRoot
                     ?: getRootCorrectionForIrThirdPersonStemChange(verb, subjectPronoun)
-                    ?: getRootWithSpellingChange(verb.root, verb.infinitiveEnding.ending, suffix)
+                    ?: verb.root
+            val root = getRootWithSpellingChange(initialRoot, verb.infinitiveEnding.ending, suffix)
             return root + suffix
         }
     }

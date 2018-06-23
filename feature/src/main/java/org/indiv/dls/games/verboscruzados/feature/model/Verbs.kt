@@ -309,7 +309,7 @@ val irregularIrVerbs = listOf(
         // Yo Go verbs
         Verb("oír", "hear", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
         Verb("salir", "go out, leave", altInfinitiveRoot = "saldr", irregularImperativeTu = "sal", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
-        Verb("venir", "come", altPreteritRoot = "vin", altInfinitiveRoot = "vendr", irregularImperativeTu="ven", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("venir", "come", altPreteritRoot = "vin", altInfinitiveRoot = "vendr", irregularImperativeTu = "ven", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
 
         // Yo zc
         Verb("producir", "produce", altPreteritRoot = "produj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
@@ -364,29 +364,83 @@ val irregularErVerbs = listOf(
         // TODO
 
         // stem changes
-        Verb("querer", "want", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("querer", "want", altPreteritRoot = "quis", altInfinitiveRoot = "querr", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
 
 
         // no accent on preterit
-        Verb("caber", "fit", altPreteritRoot = "cup", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("haber", "have, exist", altPreteritRoot = "hub", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("poder", "can, be able to", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT, Irregularity.STEM_CHANGE_O_to_UE)),
-        Verb("saber", "know", altPreteritRoot = "sup", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("poder", "can, be able to", altPreteritRoot = "pud", altInfinitiveRoot = "podr", irregularGerund = "pudiendo", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT, Irregularity.STEM_CHANGE_O_to_UE)),
 
 
         // Yo Go verbs
         Verb("caer", "fall", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
-        Verb("hacer", "make, do", altPreteritRoot = "hic", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("poner", "put", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("tener", "have", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("hacer", "make, do", altPreteritRoot = "hic", irregularImperativeTu="haz", irregularPastParticiple = "hecho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("poner", "put", altPreteritRoot = "pus", altInfinitiveRoot = "pondr", irregularPastParticiple = "puesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("tener", "have", altPreteritRoot = "tuv", altInfinitiveRoot = "tendr", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("traer", "bring", altPreteritRoot = "traj", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT, Irregularity.SPELLING_CHANGE_YO_GO)),
-        Verb("valer", "be worth, cost", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
+        Verb("valer", "be worth, cost", altInfinitiveRoot = "valdr", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
 
         // Yo zc
         Verb("conocer", "know, meet", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
         Verb("crecer", "grow", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
-        Verb("nacer", "be born", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC))
-)
+        Verb("nacer", "be born", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
+
+
+        // Custom conjugations
+        Verb("caber", "fit", altPreteritRoot = "cup", altInfinitiveRoot = "cabr", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
+            when (conjugationType) {
+                ConjugationType.PRESENT -> if (subjectPronoun == SubjectPronoun.YO) "quepo" else null
+                else -> null
+            }
+        },
+        Verb("haber", "have, exist", altPreteritRoot = "hub", altInfinitiveRoot = "habr", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
+            when (conjugationType) {
+                ConjugationType.PRESENT -> {
+                    when (subjectPronoun) {
+                        SubjectPronoun.YO -> "he"
+                        SubjectPronoun.TU -> "has"
+                        SubjectPronoun.EL_ELLA_USTED -> "ha"
+                        SubjectPronoun.ELLOS_ELLAS_USTEDES -> "han"
+                        SubjectPronoun.NOSOTROS -> "hemos"
+                        SubjectPronoun.VOSOTROS -> "habéis"
+                    }
+                }
+                ConjugationType.SUBJUNCTIVE_PRESENT -> {
+                    when (subjectPronoun) {
+                        SubjectPronoun.YO -> "haya"
+                        SubjectPronoun.TU -> "hayas"
+                        SubjectPronoun.EL_ELLA_USTED -> "haya"
+                        SubjectPronoun.ELLOS_ELLAS_USTEDES -> "hayan"
+                        SubjectPronoun.NOSOTROS -> "hayamos"
+                        SubjectPronoun.VOSOTROS -> "hayáis"
+                    }
+                }
+                else -> null
+            }
+        },
+        Verb("saber", "know", altPreteritRoot = "sup", altInfinitiveRoot = "sabr", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
+            when (conjugationType) {
+                ConjugationType.PRESENT -> {
+                    when (subjectPronoun) {
+                        SubjectPronoun.YO -> "sé"
+                        else -> null
+                    }
+                }
+                ConjugationType.SUBJUNCTIVE_PRESENT -> {
+                    when (subjectPronoun) {
+                        SubjectPronoun.YO -> "sepa"
+                        SubjectPronoun.TU -> "sepas"
+                        SubjectPronoun.EL_ELLA_USTED -> "sepa"
+                        SubjectPronoun.ELLOS_ELLAS_USTEDES -> "sepan"
+                        SubjectPronoun.NOSOTROS -> "sepamos"
+                        SubjectPronoun.VOSOTROS -> "sepáis"
+                    }
+                }
+                else -> null
+            }
+        }
+
+
+        )
 
 
 /*
