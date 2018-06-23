@@ -64,9 +64,13 @@ internal fun getIrAlteredRoot(root: String, irregularities: List<Irregularity>):
 }
 
 internal fun replaceInLastSyllable(text: String, old: String, new: String): String {
-    val textBeginning = text.dropLast(5) // drops min of 5 or length
-    val textEnd = text.substring(textBeginning.length)
-    return textBeginning + textEnd.replace(old, new)
+    val index = text.lastIndexOf(old)
+    if (index != -1) {
+        val textBeginning = text.substring(0, index) // drops all but the ending containing the stem
+        val textEnd = text.substring(textBeginning.length)
+        return textBeginning + textEnd.replace(old, new)
+    }
+    return text
 }
 
 internal fun anyVowels(text: String): Boolean {
