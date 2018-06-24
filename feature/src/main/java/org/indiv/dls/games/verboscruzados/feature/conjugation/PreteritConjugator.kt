@@ -74,7 +74,8 @@ class PreteritConjugator : Conjugator {
                         (endsWith("ñ") || endsWith("ll") || endsWith("j"))) {
                     // E.g. tañer -> tañó, bullir -> bulló, producir -> produjeron
                     return suffix.drop(1)
-                } else if (subjectPronoun.isThirdPerson && (takeLast(1) in listOf("a", "e", "o", "u"))) {
+                } else if (subjectPronoun.isThirdPerson && takeLast(1) in listOf("a", "e", "o", "u")
+                        && takeLast(2) !in listOf("qu", "gu")) {
                     // e.g. caer -> cayeron, creer -> creyeron, oír -> oyeron, construir -> construyeron
                     return "y" + suffix.drop(1)
                 }

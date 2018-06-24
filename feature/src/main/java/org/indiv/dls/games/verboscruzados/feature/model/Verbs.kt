@@ -77,7 +77,8 @@ data class Verb(val infinitive: String,
         InfinitiveEnding.ER, InfinitiveEnding.IR -> {
             val alteredRoot = if (infinitiveEnding == InfinitiveEnding.IR)
                 getIrAlteredRoot(root, irregularities) else root
-            val suffix = if (alteredRoot.isEmpty() || alteredRoot.takeLast(1) in listOf("a", "e", "o", "u"))
+            val suffix = if (alteredRoot.isEmpty() || (alteredRoot.takeLast(1) in listOf("a", "e", "o", "u")  &&
+                            alteredRoot.takeLast(2) !in listOf("qu", "gu")))
                 "yendo" else "iendo"
             alteredRoot + suffix
 
@@ -370,7 +371,7 @@ val irregularIrVerbs = listOf(
         Verb("elegir", "choose", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC, Irregularity.STEM_CHANGE_E_to_I)),
 
         // stem changes e -> i
-        Verb("conseguir", "get", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I, Irregularity.SPELLING_CHANGE_YO_GO)),
+        Verb("conseguir", "get", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("elegir", "choose", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("gemir", "groan", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("impedir", "impede", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
@@ -378,7 +379,7 @@ val irregularIrVerbs = listOf(
         Verb("pedir", "ask", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("reír", "laugh", altInfinitiveRoot = "reir", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("repetir", "repeat", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
-        Verb("seguir", "follow", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I, Irregularity.SPELLING_CHANGE_YO_GO)),
+        Verb("seguir", "follow", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("servir", "serve", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("sonreír", "smile", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("vestir", "dress, wear", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),

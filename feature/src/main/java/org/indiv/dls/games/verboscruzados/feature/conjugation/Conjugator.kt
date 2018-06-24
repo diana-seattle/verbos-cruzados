@@ -26,7 +26,9 @@ val conjugatorMap = mapOf(
  */
 internal fun getRootWithSpellingChange(root: String, oldSuffix: String, newSuffix: String): String {
     val hardOldSuffix = oldSuffix.take(1) in listOf("a", "o")
-    if (root.takeLast(1) in listOf("o", "u") && oldSuffix.take(2) in listOf("ir", "ír") &&
+    if (root.takeLast(1) in listOf("o", "u") &&
+            root.takeLast(2) !in listOf("gu", "qu") &&
+            oldSuffix.take(2) in listOf("ir", "ír") &&
             newSuffix.take(1) !in listOf("i", "í", "y")) {
         return root + "y"  // e.g. construir -> construyo, oír -> oyes
     } else if (hardOldSuffix && (newSuffix.startsWith("e") || newSuffix.startsWith("é"))) {
