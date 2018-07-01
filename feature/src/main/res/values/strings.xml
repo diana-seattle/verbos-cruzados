@@ -60,7 +60,7 @@
 
 
     <!-- dialog text for answer dialog-->
-    <string name="dialog_submit">Submit</string>
+    <string name="dialog_okay">OK</string>
     <string name="dialog_across">Across</string>
     <string name="dialog_down">Down</string>
     <string name="dialog_otheroptions">Other options</string>

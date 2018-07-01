@@ -96,12 +96,12 @@ class GameSetup {
 
         return irregularArVerbs.map {
             WordCandidate(word = presentConjugator.conjugate(it, subjectPronoun).toUpperCase(),
-                    clue = getClue(it, subjectPronoun, conjugationType),
-                    secondaryClue = getSecondaryClue(it.infinitive, it.translation))
+                    sentenceClue = getSentenceClue(it, subjectPronoun, conjugationType),
+                    infinitiveClue = getInfinitiveClue(it.infinitive, it.translation))
         }
     }
 
-    private fun getClue(verb: Verb, subjectPronoun: SubjectPronoun, conjugationType: ConjugationType): String {
+    private fun getSentenceClue(verb: Verb, subjectPronoun: SubjectPronoun, conjugationType: ConjugationType): String {
         val directObjectPronoun = if (verb.requiresDirectObject) "lo " else ""
         return conjugationType.clueTemplate
                 .replace("()", "(${subjectPronoun.text})")
@@ -110,8 +110,8 @@ class GameSetup {
                 .plus(" (${conjugationType.text.toLowerCase()})")
     }
 
-    private fun getSecondaryClue(infinitive: String, translation: String): String {
-        return "$infinitive\n$translation"
+    private fun getInfinitiveClue(infinitive: String, translation: String): String {
+        return "$infinitive ($translation)"
     }
 
     private fun layoutWords(cellGrid: Array<Array<GridCell?>>, wordCandidates: MutableList<WordCandidate>, gameNo: Int): List<GameWord> {
@@ -127,7 +127,7 @@ class GameSetup {
         var i = 0
         while (i < wordCandidates.size) {
             val word = wordCandidates[i]
-            val gameWord = placeInGrid(cellGrid, gameWords, word, gameNo, across, firstWord)
+            val gameWord = placeInGrid(cellGrid, gameWords, word, across, firstWord)
 
             if (gameWord != null) {
                 gameWords.add(gameWord)
@@ -153,7 +153,6 @@ class GameSetup {
     private fun placeInGrid(cellGrid: Array<Array<GridCell?>>,
                             gameWords: List<GameWord>,
                             wordCandidate: WordCandidate,
-                            gameNo: Int,
                             across: Boolean,
                             firstWord: Boolean): GameWord? {
         var gameWord: GameWord? = null
@@ -208,7 +207,7 @@ class GameSetup {
         }
 
         if (locationFound) {
-            gameWord = GameWord(word, wordCandidate.clue, wordCandidate.secondaryClue, gameNo, row, col, across)
+            gameWord = GameWord(word, wordCandidate.sentenceClue, wordCandidate.infinitiveClue, row, col, across)
             addToGrid(gameWord, cellGrid)
         }
 
@@ -286,7 +285,7 @@ class GameSetup {
 
     //endregion
 
-    private class WordCandidate(val word: String, val clue: String, val secondaryClue: String) {
+    private class WordCandidate(val word: String, val sentenceClue: String, val infinitiveClue: String) {
         // variables used by word placement algorithm to place word in puzzle
         private var lastAcrossPositionTried = -1
         private var lastDownPositionTried = -1

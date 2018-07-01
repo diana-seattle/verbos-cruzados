@@ -33,16 +33,16 @@ enum class Irregularity {
  * represents the answer.
  */
 enum class ConjugationType(val text: String, val clueTemplate: String) {
-    PRESENT("Present", "() []_ hoy"),
-    PRETERIT("Preterit", "() []_ ayer"),
-    IMPERFECT("Imperfect", "() []_ cuando yo era joven"),
-    CONDITIONAL("Conditional", "() []_ pero no es posible"),
-    FUTURE("Future", "() []_ tomorrow"),
-    IMPERATIVE("Imperative", "() _[] ahora, por favor"),
-    SUBJUNCTIVE_PRESENT("Subjunctive Present", "Es importante que () []_"),
-    SUBJUNCTIVE_IMPERFECT("Subjunctive Imperfect", "Me iría si () []_"),
-    GERUND("Gerund", "Yo []estoy _ ahora"),
-    PAST_PARTICIPLE("Past Participle", "Ya []he _")
+    PRESENT("Present", "() []_ hoy."),
+    PRETERIT("Preterit", "() []_ ayer."),
+    IMPERFECT("Imperfect", "() []_ cuando yo era joven."),
+    CONDITIONAL("Conditional", "() []_ pero no es posible."),
+    FUTURE("Future", "() []_ tomorrow."),
+    IMPERATIVE("Imperative", "() _[] ahora, por favor."),
+    SUBJUNCTIVE_PRESENT("Subjunctive Present", "Es importante que () []_."),
+    SUBJUNCTIVE_IMPERFECT("Subjunctive Imperfect", "Me iría si () []_."),
+    GERUND("Gerund", "Yo []estoy _ ahora."),
+    PAST_PARTICIPLE("Past Participle", "Ya []he _.")
 }
 
 enum class SubjectPronoun(val text: String, val isThirdPerson: Boolean = false) {

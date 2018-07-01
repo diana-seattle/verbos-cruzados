@@ -186,8 +186,8 @@ class AnswerFragment : Fragment() {
     fun clearGameWord() {
         puzzle_representation.removeAllViews()
         txt_answer.setText("")
-        textview_clue.text = "" // in dual panel mode, there may be existing text
-        textview_secondary_clue.text = ""
+        textview_sentence_clue.text = "" // in dual panel mode, there may be existing text
+        textview_infinitive_clue.text = ""
     }
 
     fun hideSoftKeyboardForAnswer() {
@@ -223,8 +223,8 @@ class AnswerFragment : Fragment() {
         txt_answer.setText(answerPresentation.userText?.toLowerCase() ?: "")
 
         // update clue views
-        textview_clue.text = answerPresentation.clue
-        textview_secondary_clue.text = answerPresentation.secondaryClue
+        textview_sentence_clue.text = answerPresentation.sentenceClue
+        textview_infinitive_clue.text = answerPresentation.infinitiveClue
     }
 
     private fun updatePuzzleRepresentation() {

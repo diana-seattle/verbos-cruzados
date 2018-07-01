@@ -7,14 +7,6 @@
               android:background="#FFFFFF"
               android:orientation="vertical">
 
-    <!-- confirmation button -->
-    <Button
-        android:id="@+id/button_submit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:text="@string/dialog_submit"/>
-
     <!-- puzzle's word representation and letter count indicator
      (note that using wrap_content on the layout_width of the scrollview causes the width of the fragment in dual pane
       mode to expand and contract, but using match_parent causes a black area when shorter word chosen)
@@ -22,7 +14,8 @@
     <HorizontalScrollView
         android:id="@+id/puzzle_representation_scrollview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/quarter_margin">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -30,7 +23,7 @@
             android:orientation="horizontal"
             android:paddingEnd="@dimen/half_margin"
             android:paddingStart="@dimen/half_margin"
-            android:paddingTop="@dimen/quarter_margin">
+            android:paddingTop="@dimen/half_margin">
 
             <LinearLayout
                 android:id="@+id/puzzle_representation"
@@ -92,17 +85,28 @@
                    android:contentDescription="@string/dialog_deletetext"
                    android:src="@drawable/ic_delete_24px"/>
 
+        <!-- confirmation button -->
+        <Button
+            android:id="@+id/button_submit"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="@dimen/default_margin"
+            android:singleLine="true"
+            android:text="@string/dialog_okay"/>
+
     </LinearLayout>
 
-
-    <!-- Clues -->
-    <TextView android:id="@+id/textview_clue"
+    <TextView android:id="@+id/textview_infinitive_clue"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:layout_marginStart="@dimen/half_margin"
               android:textSize="@dimen/large"/>
-    <TextView android:id="@+id/textview_secondary_clue"
+
+    <TextView android:id="@+id/textview_sentence_clue"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:layout_marginTop="@dimen/default_margin"
+              android:layout_marginStart="@dimen/half_margin"
               android:textSize="@dimen/large"/>
 
 </LinearLayout>

@@ -271,7 +271,7 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
 
     private fun createAnswerPresentation(gameWord: GameWord): AnswerPresentation {
         return AnswerPresentation(gameWord.word, gameWord.userText,
-                gameWord.clue, gameWord.secondaryClue, puzzleFragment.opposingPuzzleCellValues)
+                gameWord.sentenceClue, gameWord.infinitiveClue, puzzleFragment.opposingPuzzleCellValues)
     }
 
     /*
