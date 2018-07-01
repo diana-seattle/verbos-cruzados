@@ -42,12 +42,6 @@
                  automatically when activity opened -->
         </activity>
 
-        <provider
-            android:name=".content.VocabContentProvider"
-            android:authorities="org.indiv.dls.games.vocabproviderDELETE"
-            android:exported="false">
-        </provider>
-
     </application>
 
 </manifest>

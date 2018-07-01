@@ -81,22 +81,6 @@ class AnswerActivity : MyActionBarActivity() {
         }
     }
 
-    /*
-     * overriding to display answer
-     */
-    override fun giveAnswer() {
-        super.giveAnswer()
-        answerFragment?.giveAnswer()
-    }
-
-    /*
-     * overriding to display hint
-     */
-    override fun give3LetterHint() {
-        super.give3LetterHint()
-        answerFragment?.give3LetterHint()
-    }
-
     //endregion
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------

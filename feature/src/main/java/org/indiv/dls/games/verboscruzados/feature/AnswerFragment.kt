@@ -3,7 +3,6 @@ package org.indiv.dls.games.verboscruzados.feature
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
@@ -135,13 +134,6 @@ class AnswerFragment : Fragment() {
             txt_answer.setText("")
             updateDualPaneActivityWithAnswer("", true)
         }
-
-        // wordnik image
-        image_wordnik.setOnLongClickListener {
-            val uri = Uri.parse("https://www.wordnik.com/words/" + word!!.toLowerCase())
-            startActivity(Intent(Intent.ACTION_VIEW, uri))
-            true
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -159,7 +151,6 @@ class AnswerFragment : Fragment() {
                 FontSize.FONT_MEDIUM -> R.id.action_font_medium
                 FontSize.FONT_LARGE -> R.id.action_font_large
                 FontSize.FONT_EXTRA_LARGE -> R.id.action_font_extra_large
-                else -> R.id.action_font_medium
             }
             updateFontMenuState(menuItemId, fontSize.nameResId)
         }
@@ -188,20 +179,6 @@ class AnswerFragment : Fragment() {
 
     //region PUBLIC CLASS FUNCTIONS ----------------------------------------------------------------
 
-    fun giveAnswer() {
-        word?.let {
-            txt_answer.setText(it.toLowerCase())
-            updateDualPaneActivityWithAnswer(it, true)
-        }
-    }
-
-    fun give3LetterHint() {
-        wordHint?.let {
-            txt_answer.setText(it.toLowerCase())
-            updateDualPaneActivityWithAnswer(it, true)
-        }
-    }
-
     fun setGameWord(answerPresentation: AnswerPresentation) {
         updateGameWord(answerPresentation)
         word = answerPresentation.word
@@ -212,10 +189,8 @@ class AnswerFragment : Fragment() {
     fun clearGameWord() {
         puzzle_representation.removeAllViews()
         txt_answer.setText("")
-        textview_definitions_ahd.text = "" // in dual panel mode, there may be existing text
-        textview_definitions_wiktionary.text = ""
-        textview_definitions_century.text = ""
-        textview_definitions_webster.text = ""
+        textview_clue.text = "" // in dual panel mode, there may be existing text
+        textview_secondary_clue.text = ""
     }
 
     fun hideSoftKeyboardForAnswer() {
@@ -250,27 +225,9 @@ class AnswerFragment : Fragment() {
         // set text in editor (and puzzle representation and letter count via the editor's TextWatcher handler)
         txt_answer.setText(answerPresentation.userText?.toLowerCase() ?: "")
 
-        // update definition views
-        updateDefinitionViews(answerPresentation.ahdDefinitions, textview_attribution_ahd, textview_definitions_ahd)
-        updateDefinitionViews(answerPresentation.wiktionaryDefinitions, textview_attribution_wiktionary, textview_definitions_wiktionary)
-        updateDefinitionViews(answerPresentation.centuryDefinitions, textview_attribution_century, textview_definitions_century)
-        updateDefinitionViews(answerPresentation.websterDefinitions, textview_attribution_webster, textview_definitions_webster)
-
-        // make sure definitions scrolled back up to the top
-        scrollView_definitions.fullScroll(ScrollView.FOCUS_UP)
-    }
-
-    private fun updateDefinitionViews(definitions: List<String>, textViewAttribution: TextView, textViewDefinitions: TextView) {
-        // update definitions
-        val buffer = StringBuilder()
-        for (definition in definitions) {
-            buffer.append(definition).append("\n")
-        }
-        textViewDefinitions.text = buffer.toString().trim()
-
-        // show or hide attribution and definition views
-        textViewDefinitions.visibility = if (definitions.isNotEmpty()) View.VISIBLE else View.GONE
-        textViewAttribution.visibility = if (definitions.isNotEmpty()) View.VISIBLE else View.GONE
+        // update clue views
+        textview_clue.text = answerPresentation.clue
+        textview_secondary_clue.text = answerPresentation.secondaryClue
     }
 
     private fun updatePuzzleRepresentation() {
@@ -357,10 +314,6 @@ class AnswerFragment : Fragment() {
     private fun updateViewFontSize(sizeInSp: Int) {
         txt_answer.textSize = Math.max(sizeInSp, FontSize.FONT_MEDIUM.sizeInSp).toFloat()
         val size = sizeInSp.toFloat()
-        textview_definitions_ahd.textSize = size
-        textview_definitions_wiktionary.textSize = size
-        textview_definitions_webster.textSize = size
-        textview_definitions_century.textSize = size
     }
 
     //endregion

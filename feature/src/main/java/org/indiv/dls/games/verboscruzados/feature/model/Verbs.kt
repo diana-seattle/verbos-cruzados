@@ -24,17 +24,25 @@ enum class Irregularity {
     STEM_CHANGE_U_to_UE
 }
 
-enum class ConjugationType(val text: String) {
-    PRESENT("Present"),
-    PRETERIT("Preterit"),
-    IMPERFECT("Imperfect"),
-    CONDITIONAL("Conditional"),
-    FUTURE("Future"),
-    IMPERATIVE("Imperative"),
-    SUBJUNCTIVE_PRESENT("Subjunctive Present"),
-    SUBJUNCTIVE_IMPERFECT("Subjunctive Imperfect"),
-    GERUND("Gerund"),
-    PAST_PARTICIPLE("Past Participle")
+/**
+ * Conjugation type enum
+ *
+ * @param text name of the conjugation type
+ * @param clueTemplate template for the clue. Parentheses represent the subject pronoun, square
+ * brackets represent the optional direct object (typically followed by a space), and the underscore
+ * represents the answer.
+ */
+enum class ConjugationType(val text: String, val clueTemplate: String) {
+    PRESENT("Present", "() []_ hoy"),
+    PRETERIT("Preterit", "() []_ ayer"),
+    IMPERFECT("Imperfect", "() []_ cuando yo era joven"),
+    CONDITIONAL("Conditional", "() []_ pero no es posible"),
+    FUTURE("Future", "() []_ tomorrow"),
+    IMPERATIVE("Imperative", "() _[] ahora, por favor"),
+    SUBJUNCTIVE_PRESENT("Subjunctive Present", "Es importante que () []_"),
+    SUBJUNCTIVE_IMPERFECT("Subjunctive Imperfect", "Me iría si () []_"),
+    GERUND("Gerund", "Yo []estoy _ ahora"),
+    PAST_PARTICIPLE("Past Participle", "Ya []he _")
 }
 
 enum class SubjectPronoun(val text: String, val isThirdPerson: Boolean = false) {
@@ -81,16 +89,6 @@ data class Verb(val infinitive: String,
                             alteredRoot.takeLast(2) !in listOf("qu", "gu")))
                 "yendo" else "iendo"
             alteredRoot + suffix
-
-
-
-
-            //
-            //
-            //
-            // TODO: fix consiguiendo, siguyendo
-
-
         }
     }
 }

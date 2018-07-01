@@ -3,6 +3,10 @@ package org.indiv.dls.games.verboscruzados.feature.db;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType;
+import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun;
+import org.indiv.dls.games.verboscruzados.feature.model.Verb;
+
 public class GameWord {
     public static final String TABLE_NAME = "GAME_WORD";
     public static final String WORD = "WORD"; // PK, FK
@@ -30,39 +34,40 @@ public class GameWord {
     
     public static final String FK_INDEX_CREATE = "CREATE INDEX GW_WORD_FK_I ON " + TABLE_NAME + " (" + WORD + ")";
     
-    private String word; // PK, FK
-    private int gameNo; 
-    private int row; 
+    private String word;
+    private String clue;
+    private String secondaryClue;
+    private int row;
     private int col; 
     private boolean across; 
     private String userText; 
     private boolean confident;
-    private Word wordInfo;
-    private Game game;
-    
-    // constructor
-	public GameWord() {}
-	
-    // constructor
-	public GameWord(String word) {
-		this.word = word;
-	}
-	
-    // constructor
-	public GameWord(Word word, int gameNo, int row, int col, boolean across) {
+
+    /**
+     * Constructor
+     *
+     * @param word conjugated verb used in the puzzle.
+     * @param clue clue given to user (e.g. "(Yo) ___________ yesterday (preterit)").
+     * @param secondaryClue secondary clue (e.g. "hablar (to speak)").
+     * @param gameNo
+     * @param row
+     * @param col
+     * @param across
+     */
+	public GameWord(String word, String clue, String secondaryClue, int gameNo, int row, int col, boolean across) {
 		super();
-		this.wordInfo = word;
-		this.word = word.getWord();
-		this.gameNo = gameNo;
+		this.word = word;
+		this.clue = clue;
+		this.secondaryClue = secondaryClue;
 		this.row = row;
 		this.col = col;
 		this.across = across;
 	}
 
+
     // constructor
     public GameWord(Cursor c) {
     	this.setWord(c);
-    	this.setGameNo(c);
         this.setRow(c);
         this.setCol(c);
         this.setAcross(c);
@@ -73,7 +78,6 @@ public class GameWord {
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
         values.put(WORD, getWord());
-        values.put(GAME_NO, getGameNo());
         values.put(ROW, getRow());
         values.put(COL, getCol());
         values.put(ACROSS, isAcross());
@@ -101,16 +105,13 @@ public class GameWord {
 		int i = c.getColumnIndex(WORD);
 		if (i != -1) { setWord(c.getString(i)); }
 	}
-	
-	public int getGameNo() {
-		return gameNo;
+
+	public String getClue() {
+		return clue;
 	}
-	public void setGameNo(int gameNo) {
-		this.gameNo = gameNo;
-	}
-	public void setGameNo(Cursor c) {
-		int i = c.getColumnIndex(GAME_NO);
-    	if (i != -1) { setGameNo(c.getInt(i)); }
+
+	public String getSecondaryClue() {
+		return secondaryClue;
 	}
 
 	public int getRow() {
@@ -167,21 +168,6 @@ public class GameWord {
 		int i = c.getColumnIndex(CONFIDENT);
 		if (i != -1) { setConfident(c.getInt(i)==1); }
 	}
-
-	public Word getWordInfo() {
-		return wordInfo;
-	}
-	public void setWordInfo(Word wordInfo) {
-		this.wordInfo = wordInfo;
-	}
-
-	public Game getGame() {
-		return game;
-	}
-	public void setGame(Game game) {
-		this.game = game;
-	}
-
 
 	public String get3LetterHint() {
 		return word.substring(0, Math.min(3, word.length()));

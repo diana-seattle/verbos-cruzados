@@ -14,12 +14,6 @@
           android:icon="@drawable/ic_help_24px"
           android:title="@string/action_help" 
           app:showAsAction="ifRoom|withText" />
-    <item android:id="@+id/action_give3letters"
-          android:title="@string/action_give3letters" />
-    <item android:id="@+id/action_giveanswer"
-          android:title="@string/action_giveanswer" />
-    <item android:id="@+id/action_playagainsoon"
-          android:title="@string/action_playagainsoon" />    
     <item android:id="@+id/action_showstats"
           android:title="@string/action_showstats" />
 </menu>

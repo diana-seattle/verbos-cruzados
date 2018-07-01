@@ -33,29 +33,10 @@
     </LinearLayout>
 
 
-    <!-- puzzle's word representation and letter count indicator  
-     (note that using wrap_content on the layout_width of the scrollview causes the width of the fragment in dual pane 
+    <!-- puzzle's word representation and letter count indicator
+     (note that using wrap_content on the layout_width of the scrollview causes the width of the fragment in dual pane
       mode to expand and contract, but using match_parent causes a black area when shorter word chosen)
     -->
-    <!-- 
-    <HorizontalScrollView
-	    android:id="@+id/puzzle_representation_scrollview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:paddingStart="@dimen/quarter_margin"
-        android:paddingEnd="@dimen/quarter_margin"
-        android:paddingTop="@dimen/quarter_margin" >
-        <LinearLayout 
-		    android:id="@+id/puzzle_representation"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-            android:background="@drawable/cell_background_unused"
-	        android:paddingStart="2dp" android:paddingEnd="2dp"
-	        android:paddingTop="2dp" android:paddingBottom="2dp"   
-		    android:orientation="horizontal" 
-	    />
-	</HorizontalScrollView>
-   -->
     <HorizontalScrollView
         android:id="@+id/puzzle_representation_scrollview"
         android:layout_width="match_parent"
@@ -132,85 +113,15 @@
     </LinearLayout>
 
 
-    <!-- scrolling definitions -->
-    <ScrollView
-        android:id="@+id/scrollView_definitions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:id="@+id/layout_definition_panel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/quarter_margin"
-            android:paddingEnd="@dimen/half_margin"
-            android:paddingStart="@dimen/half_margin"
-            android:paddingTop="@dimen/half_margin">
-
-            <TextView android:id="@+id/textview_attribution_ahd"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:paddingTop="@dimen/quarter_margin"
-                      android:text="@string/attribution_ahd"
-                      android:textColor="@color/dark_gray"
-                      android:textSize="@dimen/small"
-                      android:textStyle="italic"/>
-            <TextView android:id="@+id/textview_definitions_ahd"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:textSize="@dimen/large"/>
-
-            <TextView android:id="@+id/textview_attribution_wiktionary"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:paddingTop="@dimen/half_margin"
-                      android:text="@string/attribution_wiktionary"
-                      android:textColor="@color/dark_gray"
-                      android:textSize="@dimen/small"
-                      android:textStyle="italic"/>
-            <TextView android:id="@+id/textview_definitions_wiktionary"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:textSize="@dimen/large"/>
-
-            <TextView android:id="@+id/textview_attribution_century"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:paddingTop="@dimen/half_margin"
-                      android:text="@string/attribution_century"
-                      android:textColor="@color/dark_gray"
-                      android:textSize="@dimen/small"
-                      android:textStyle="italic"/>
-            <TextView android:id="@+id/textview_definitions_century"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:textSize="@dimen/large"/>
-
-            <TextView android:id="@+id/textview_attribution_webster"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:paddingTop="@dimen/half_margin"
-                      android:text="@string/attribution_webster"
-                      android:textColor="@color/dark_gray"
-                      android:textSize="@dimen/small"
-                      android:textStyle="italic"/>
-            <TextView android:id="@+id/textview_definitions_webster"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
-                      android:textSize="@dimen/large"/>
-
-            <!-- hyperlinked wordnik image (as per requirements) -->
-            <ImageView android:id="@+id/image_wordnik"
-                       android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       android:layout_gravity="center|bottom"
-                       android:layout_marginBottom="@dimen/quarter_margin"
-                       android:layout_marginTop="@dimen/large_margin"
-                       android:contentDescription="@string/attribution_wordnik"
-                       android:src="@drawable/wordnik_badge_a2"/>
-        </LinearLayout>
-    </ScrollView>
+    <!-- Clues -->
+    <TextView android:id="@+id/textview_clue"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:textSize="@dimen/large"/>
+    <TextView android:id="@+id/textview_secondary_clue"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:textSize="@dimen/large"/>
 
 </LinearLayout>
 

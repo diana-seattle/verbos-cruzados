@@ -1,8 +1,6 @@
 package org.indiv.dls.games.verboscruzados.feature.dialog;
 
 import org.indiv.dls.games.verboscruzados.feature.R;
-import org.indiv.dls.games.verboscruzados.feature.db.ContentHelper;
-import org.indiv.dls.games.verboscruzados.feature.db.DictionaryDbOpenHelper;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -17,7 +15,6 @@ public class StatsDialogFragment extends DialogFragment {
 
     private int mGamesCompleted;
     private int mWordsCompleted;
-    ContentHelper.WordsSolvedStats mOtherStats;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -37,11 +34,6 @@ public class StatsDialogFragment extends DialogFragment {
         // fill in stats
         appendTextToView((TextView) frameView.findViewById(R.id.textview_gamescompleted), " " + mGamesCompleted);
         appendTextToView((TextView) frameView.findViewById(R.id.textview_wordscompleted), " " + mWordsCompleted);
-        appendTextToView((TextView) frameView.findViewById(R.id.textview_notyetsolved), " " + mOtherStats.wordsNotYetSolved);
-        appendTextToView((TextView) frameView.findViewById(R.id.textview_solvedonce), " " + mOtherStats.wordsSolvedOnce);
-        appendTextToView((TextView) frameView.findViewById(R.id.textview_solvedtwice), " " + mOtherStats.wordsSolvedTwice);
-        appendTextToView((TextView) frameView.findViewById(R.id.textview_solved3times), " " + mOtherStats.wordsSolved3Times);
-        appendTextToView((TextView) frameView.findViewById(R.id.textview_solvedmorethan3times), " " + mOtherStats.wordsSolvedMoreThan3Times);
 
         return dialog;
     }
@@ -52,10 +44,9 @@ public class StatsDialogFragment extends DialogFragment {
     //---------------------------------------------------//
 
 
-    public void setStats(int gamesCompleted, int wordsCompleted, ContentHelper.WordsSolvedStats otherStats) {
+    public void setStats(int gamesCompleted, int wordsCompleted) {
         mGamesCompleted = gamesCompleted;
         mWordsCompleted = wordsCompleted;
-        mOtherStats = otherStats;
     }
 
     private void appendTextToView(TextView textView, String text) {

@@ -26,9 +26,9 @@ public class Game {
     
   
     private int gameNo; // PK
-    private int miniClues; 
-    private int fullClues; 
-    private int totalWords; 
+    private int miniClues;
+    private int fullClues;
+    private int totalWords;
     private int solvedWords; 
     private List<GameWord> gameWords; 
     
@@ -80,9 +80,6 @@ public class Game {
 		this.gameWords = gameWords;
 		if (gameWords != null) {
 			this.totalWords = gameWords.size();  // note that this doesn't handle case where calling method gets list and adds to it
-			for (GameWord gw : gameWords) {
-				gw.setGame(this);
-			}
 		} else {
 			this.totalWords = 0;
 		}

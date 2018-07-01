@@ -93,9 +93,6 @@ class PuzzleFragment : Fragment() {
         // inflate the view
         val view = inflater.inflate(R.layout.fragment_puzzle, container)
 
-        // Note that database not set up yet at this point (happening in other thread).
-        // When it completes, it will call onFinishDbSetup().
-
         return view
     }
 

@@ -44,51 +44,6 @@
             android:textColor="@color/light_gray"
             android:textSize="@dimen/large"/>
 
-        <!-- words solved once -->
-        <TextView
-            android:id="@+id/textview_solvedonce"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dialog_stats_solvedonce"
-            android:textColor="@color/light_gray"
-            android:textSize="@dimen/large"/>
-
-        <!-- words solved twice -->
-        <TextView
-            android:id="@+id/textview_solvedtwice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dialog_stats_solvedtwice"
-            android:textColor="@color/light_gray"
-            android:textSize="@dimen/large"/>
-
-        <!-- words solved 3 times -->
-        <TextView
-            android:id="@+id/textview_solved3times"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dialog_stats_solved3times"
-            android:textColor="@color/light_gray"
-            android:textSize="@dimen/large"/>
-
-        <!-- words solved >3 times -->
-        <TextView
-            android:id="@+id/textview_solvedmorethan3times"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dialog_stats_solvedmorethan3times"
-            android:textColor="@color/light_gray"
-            android:textSize="@dimen/large"/>
-
-        <!-- words not yet solved -->
-        <TextView
-            android:id="@+id/textview_notyetsolved"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dialog_stats_notyetsolved"
-            android:textColor="@color/light_gray"
-            android:textSize="@dimen/large"/>
-
     </LinearLayout>
 </ScrollView>
 

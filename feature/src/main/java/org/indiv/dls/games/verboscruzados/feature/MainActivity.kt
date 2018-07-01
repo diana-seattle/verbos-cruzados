@@ -1,39 +1,14 @@
 package org.indiv.dls.games.verboscruzados.feature
 
 /*
- * Over 4000/5000 words (such as ...), helps improve recall of commonly used vocabulary which is often heard and read
- * but which may be occasionally difficult to recall at the appropriate time due to infrequent personal use.
- * (the focus is on words you tend to already know but may occasionally struggle to recall due to infrequent use)
- * Definitions as clues aren't perfect. Some are too easy and some too hard, but I've done my best to programmatically
- * redact text that gives away the answer. The emphasis is not on trying to stump you, but on giving you practice
- * recalling words so it will become easier during natural conversation. A limited number of hints are available per
- * game for those last few words that are difficult to get.
- *
- * Words such as perpetuate, propagate, legacy, blemish, exacerbate, infiltrate, prolong, endorse, advocate, traipse, reconvene
- *
- * Wordnik: As a game is completed, definitions used in that game are flushed from the the cache and definitions
- * of new words are retrieved to replace them.
- *
- * A crossword puzzle game for strengthening your vocabulary recall ability.
- * We all encounter a rich vocabulary of words heard and read in the media we consume. However, our word recognition is often much stronger than our word recall due to less frequent personal use of those words. Often mid-sentence, we discover that the precise word needed to complete the thought isn't going to materialize, and we have to substitute less descriptive ones.
- * This game takes the form of a crossword puzzle, with dictionary entries as clues. The emphasis is not on trying to stump you, but on giving you practice recalling words so it will become easier during natural conversation. A limited number of extra hints are available per game for those last few words that are difficult to get.
- * Definitions are provided by American Heritage� Dictionary, Wiktionary, The Century Dictionary, and the GNU version of the Collaborative International Dictionary of English. When the word or a portion of the word is included in the definition, asterisks are substituted in place of the word.
- * Examples of words include perpetuate, propagate, legacy, blemish, exacerbate, infiltrate, prolong, endorse, advocate, traipse, reconvene.
- * This game may be played offline. However, playing with an active network connection will provide a greater variety of words.
- *
  * Play Store: https://play.google.com/store/apps/details?id=org.indiv.dls.games.verboscruzados
  */
 
-import java.util.Date
-
-import org.indiv.dls.games.verboscruzados.feature.async.DbSetup
 import org.indiv.dls.games.verboscruzados.feature.async.GameSetup
 import org.indiv.dls.games.verboscruzados.feature.db.Game
 import org.indiv.dls.games.verboscruzados.feature.db.GameWord
 import org.indiv.dls.games.verboscruzados.feature.dialog.ConfirmStartNewGameDialogFragment
 
-import android.content.Context
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.app.Activity
 import android.app.ProgressDialog
@@ -50,7 +25,6 @@ import android.widget.Toast
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import org.indiv.dls.games.verboscruzados.feature.db.Definition
 
 /**
  * This is the main activity. It houses [PuzzleFragment], and optionally [AnswerFragment] when in landscape mode (on tablets).
@@ -74,7 +48,6 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
     private val compositeDisposable = CompositeDisposable()
     private var currentGame: Game? = null
     private val gameSetup = GameSetup()
-    private val dbSetup = DbSetup()
     private lateinit var puzzleFragment: PuzzleFragment
     private var answerFragment: AnswerFragment? = null // for use in panel
     private var answerActivityLaunched = false // use this to load activity only once when puzzle double clicked on
@@ -101,7 +74,7 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
                 do {
                     currentGameWord = puzzleFragment.currentGameWord
                     currentGameWord?.let {
-                        it.word?.toLowerCase()?.let {
+                        it.word?.let {
                             onFinishAnswerDialog(it, true)
                         }
                     }
@@ -146,13 +119,12 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
         // initialize puzzle fragment after setting orientation so it knows its size
         puzzleFragment.initialize(puzzleWidthPixels, puzzleHeightPixels)
 
-        // get database
-        compositeDisposable.add(dbSetup.ensureDbLoaded(this, dbHelper)
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(::onProgressDbSetup,
-                        { Toast.makeText(this, R.string.error_initial_setup_failure, Toast.LENGTH_SHORT).show() },
-                        this::onFinishDbSetup))
+        loadNewOrExistingGame()
+
+        if (!helpShownYet) {
+            helpShownYet = true
+            showHelpDialog()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -194,34 +166,6 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
             else -> return super.onOptionsItemSelected(item)
         }
         return true
-    }
-
-    /*
-     * Overriding to display answer
-     */
-    override fun giveAnswer() {
-        super.giveAnswer()
-        answerFragment?.let {
-            // dual pane mode
-            it.giveAnswer()
-        } ?: run {
-            // single pane mode
-            onFinishAnswerDialog(currentGameWord!!.word, true)
-        }
-    }
-
-    /*
-     * Overriding to display hint
-     */
-    override fun give3LetterHint() {
-        super.give3LetterHint()
-        answerFragment?.let {
-            // dual pane mode
-            it.give3LetterHint()
-        } ?: run {
-            // single pane mode
-            onFinishAnswerDialog(currentGameWord!!.get3LetterHint(), true)
-        }
     }
 
     //endregion
@@ -269,7 +213,7 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
             puzzleFragment.updateUserTextInPuzzle(it)
 
             // update database with answer
-            Thread { dbHelper.updateGameWordUserEntry(it) }.start()
+            Thread { mDbHelper.persistUserEntry(it) }.start()
         }
 
         // update error indications
@@ -280,25 +224,8 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
         // if puzzle is complete and correct
         if (puzzleFragment.isPuzzleComplete(true)) {
 
-            // if game not already marked complete, do so now (note that user may not start new game after being prompted to do so)
-            if (currentGame?.isGameComplete == false) {
-                // save completion status to db
-                try {
-                    dbHelper.markGameComplete(currentGame)
-                } catch (e: Exception) {
-                    Log.e(TAG, "Error marking game complete: " + e.message)
-                }
-            }
-
             // prompt user with congrats and new game
             var extraMessage = resources.getString(R.string.dialog_startnewgame_congrats)
-            val gamesCompleted = dbHelper.gamesCompleted
-            val wordsCompleted = dbHelper.wordCountOfGamesCompleted
-            if (gamesCompleted > 1) {
-                extraMessage += "\n\n" + resources.getString(R.string.dialog_startnewgame_congrats2)
-                        .replace("!games!", "" + gamesCompleted)
-                        .replace("!words!", "" + wordsCompleted)
-            }
             promptForNewGame(extraMessage)
 
             // else if puzzle is complete but not correct, show errors
@@ -332,12 +259,13 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
         showErrors(false)
 
         // setup new game
-        compositeDisposable.add(gameSetup.newGame(dbHelper, puzzleFragment.cellGrid, newGameNo)
+        compositeDisposable.add(gameSetup.newGame(puzzleFragment.cellGrid, newGameNo)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { game ->
                             currentGame = game
+                            mDbHelper.persistGame(game.gameWords)
                             createGrid()
                         },
                         { error ->
@@ -354,33 +282,8 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
     private fun createAnswerPresentation(gameWord: GameWord): AnswerPresentation {
-        gameWord.wordInfo?.definitions?.let {
-            // split definitions by source
-            val ahdDefinitions = mutableListOf<Definition>()
-            val centuryDefinitions = mutableListOf<Definition>()
-            val websterDefinitions = mutableListOf<Definition>()
-            val wiktionaryDefinitions = mutableListOf<Definition>()
-            for (definition in it) {
-                when {
-                    definition.isSourceAhd -> ahdDefinitions.add(definition)
-                    definition.isSourceCentury -> centuryDefinitions.add(definition)
-                    definition.isSourceWebster -> websterDefinitions.add(definition)
-                    definition.isSourceWiktionary -> wiktionaryDefinitions.add(definition)
-                }
-            }
-            return AnswerPresentation(gameWord.word, gameWord.get3LetterHint(), gameWord.userText,
-                    formatDefinitionText(ahdDefinitions),
-                    formatDefinitionText(centuryDefinitions),
-                    formatDefinitionText(websterDefinitions),
-                    formatDefinitionText(wiktionaryDefinitions),
-                    puzzleFragment.opposingPuzzleCellValues)
-        }
         return AnswerPresentation(gameWord.word, gameWord.get3LetterHint(), gameWord.userText,
-                opposingPuzzleCellValues = puzzleFragment.opposingPuzzleCellValues)
-    }
-
-    private fun formatDefinitionText(definitions: List<Definition>): List<String> {
-        return definitions.mapIndexed { index, definition -> definition.getFullText(index + 1) }
+                gameWord.clue, gameWord.secondaryClue, puzzleFragment.opposingPuzzleCellValues)
     }
 
     /*
@@ -405,10 +308,11 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
     private fun loadNewOrExistingGame() {
 
         // get current game if any
-        currentGame = dbHelper.currentGame
+        currentGame = Game(1)
+        currentGame!!.gameWords = mDbHelper.currentGame
 
         // if on very first game, or if no saved game (due to an error), create a new one, otherwise open existing game
-        if (currentGame?.gameWords == null || currentGame!!.gameWords.isEmpty() || !puzzleFragment.doWordsFitInGrid(currentGame!!.gameWords)) {
+        if (currentGame!!.gameWords.isEmpty() || !puzzleFragment.doWordsFitInGrid(currentGame!!.gameWords)) {
             setupNewGame()
         } else {
             restoreExistingGame()
@@ -425,43 +329,6 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
         }
         createGrid()
     }
-
-
-    /*
-     * Handles completion of db setup.
-     */
-    private fun onFinishDbSetup() {
-        progressDialog?.dismiss()
-        loadNewOrExistingGame()
-    }
-
-    /*
-     * Handles progress updates during db setup.
-     */
-    private fun onProgressDbSetup(progress: Int) {
-        if (progressDialog == null) {
-            progressDialog = ProgressDialog(this)
-            progressDialog?.apply {
-                setMessage("One time initialization...")
-                isIndeterminate = false
-                max = DbSetup.PROGRESS_RANGE
-                setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
-                setCancelable(false)
-
-                // show the progress dialog
-                show()
-                timeProgressDialogShown = Date().time
-            }
-        } else if (!helpShownYet && Date().time > timeProgressDialogShown + 4000) {
-            // now that progress dialog has been up a little, show help dialog on top of it
-            helpShownYet = true
-            showHelpDialog()
-        }
-
-        // update progress dialog with progress
-        progressDialog!!.progress = progress
-    }
-
 
     // note that with api level 13 and above we can use getResources().getConfiguration().screenHeightDp/screenWidthDp to get available screen size
     private fun getActionBarHeightInPixels(displayMetrics: DisplayMetrics): Int {

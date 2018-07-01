@@ -221,7 +221,7 @@ public class DictionaryDbOpenHelper extends SQLiteOpenHelper {
 //     * update a word in the dictionary.
 //     * @return number of rows updated
 //     */
-//    public long updateGameWordUserEntry(GameWord gameWord) {
+//    public long persistUserEntry(GameWord gameWord) {
 //    	String[] args = { gameWord.getWord() };
 //        return mDatabase.update(GameWord.TABLE_NAME, gameWord.getUserEntryContentValues(),
 //        						GameWord.WORD + "=?", args);
