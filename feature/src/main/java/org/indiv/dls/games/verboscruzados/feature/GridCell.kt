@@ -22,21 +22,10 @@ class GridCell(val char: Char) {
      */
     val dominantUserChar: Char?
         get() = if (userCharAcross != null && userCharDown != null) {
-            if (gameWordAcross!!.isConfident && !gameWordDown!!.isConfident) {
-                userCharAcross
-            } else {
-                userCharDown
-            }
+            userCharDown
         } else {
             userCharAcross ?: userCharDown
         }
-
-    /**
-     * @return true if the word of the dominant character has been marked confident.
-     */
-    val isDominantCharConfident: Boolean
-        get() = userCharAcross != null && gameWordAcross!!.isConfident ||
-                userCharDown != null && gameWordDown!!.isConfident
 
     //endregion
 

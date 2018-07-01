@@ -7,31 +7,13 @@
               android:background="#FFFFFF"
               android:orientation="vertical">
 
-    <!-- confirmation buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- confirmation button -->
+    <Button
+        android:id="@+id/button_submit"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="fill_horizontal"
-        android:orientation="horizontal"
-        android:paddingEnd="@dimen/quarter_margin"
-        android:paddingStart="@dimen/quarter_margin"
-        android:paddingTop="@dimen/quarter_margin">
-        <Button
-            android:id="@+id/button_tentative"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:singleLine="true"
-            android:text="@string/dialog_tentative"/>
-        <Button
-            android:id="@+id/button_confident"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:singleLine="true"
-            android:text="@string/dialog_confident"/>
-    </LinearLayout>
-
+        android:singleLine="true"
+        android:text="@string/dialog_submit"/>
 
     <!-- puzzle's word representation and letter count indicator
      (note that using wrap_content on the layout_width of the scrollview causes the width of the fragment in dual pane

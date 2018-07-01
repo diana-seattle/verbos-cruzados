@@ -34,7 +34,6 @@
     <string name="dialog_help_title">Game Instructions</string>
     <string name="dialog_help_step1">1. Touch the puzzle for clues</string>
     <string name="dialog_help_step2">2. Enter your answer</string>
-    <string name="dialog_help_step3">3. Press Tentative or Confident (for \"pencil\" or \"pen\")</string>
     <string name="dialog_help_actions">Menu Actions</string>
     <string name="dialog_help_showhelp">Help</string>
     <string name="dialog_help_startnewgame">Start New Game</string>
@@ -61,8 +60,7 @@
 
 
     <!-- dialog text for answer dialog-->
-    <string name="dialog_tentative">Tentative</string>
-    <string name="dialog_confident">Confident</string>
+    <string name="dialog_submit">Submit</string>
     <string name="dialog_across">Across</string>
     <string name="dialog_down">Down</string>
     <string name="dialog_otheroptions">Other options</string>

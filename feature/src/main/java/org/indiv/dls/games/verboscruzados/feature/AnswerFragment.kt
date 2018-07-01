@@ -60,7 +60,6 @@ class AnswerFragment : Fragment() {
     private var optionsMenu: Menu? = null
 
     private var word: String? = null
-    private var wordHint: String? = null
     private var wordLength: Int = 0
 
     private val userEntry: String
@@ -81,7 +80,7 @@ class AnswerFragment : Fragment() {
 
     // interface for activity to implement to receive result
     interface DualPaneAnswerListener {
-        fun onFinishAnswerDialog(userText: String, confident: Boolean)
+        fun onFinishAnswerDialog(userText: String)
     }
 
     //endregion
@@ -117,14 +116,13 @@ class AnswerFragment : Fragment() {
         txt_answer.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 // doing this on text change results in keyboard being prematurely dismissed
-                updateDualPaneActivityWithAnswer(userEntry, true)
+                updateDualPaneActivityWithAnswer(userEntry)
             }
             false
         }
 
-        // confirmation buttons
-        button_tentative.setOnClickListener { updateActivityWithAnswer(false) }
-        button_confident.setOnClickListener { updateActivityWithAnswer(true) }
+        // confirmation button
+        button_submit.setOnClickListener { updateActivityWithAnswer() }
 
         // get user preference for font
         updateViewFontSize(fontSizeUserPreference)
@@ -132,7 +130,7 @@ class AnswerFragment : Fragment() {
         // deletion button
         imagebutton_delete.setOnClickListener {
             txt_answer.setText("")
-            updateDualPaneActivityWithAnswer("", true)
+            updateDualPaneActivityWithAnswer("")
         }
     }
 
@@ -182,7 +180,6 @@ class AnswerFragment : Fragment() {
     fun setGameWord(answerPresentation: AnswerPresentation) {
         updateGameWord(answerPresentation)
         word = answerPresentation.word
-        wordHint = answerPresentation.wordHint
     }
 
     // called by activity
@@ -213,7 +210,7 @@ class AnswerFragment : Fragment() {
             val textView = PuzzleRepresentationCellTextView(context!!)
             puzzle_representation.addView(textView)
             answerPresentation.opposingPuzzleCellValues[i]?.let {
-                textView.fillTextView(it.char, it.confident)
+                textView.fillTextView(it)
             } ?: run {
                 textView.setTextColor(COLOR_ANSWER)
             }
@@ -241,7 +238,7 @@ class AnswerFragment : Fragment() {
         }
     }
 
-    private fun updateActivityWithAnswer(confident: Boolean) {
+    private fun updateActivityWithAnswer() {
 
         // Return input text to activity
         var answerText = userEntry
@@ -251,12 +248,11 @@ class AnswerFragment : Fragment() {
 
         // if dual pane
         if (activity is DualPaneAnswerListener) {
-            updateDualPaneActivityWithAnswer(answerText, confident)
+            updateDualPaneActivityWithAnswer(answerText)
         } else {
             // set result for single pane mode
             val result = Intent()
             result.putExtra(MainActivity.ACTIVITYRESULT_ANSWER, answerText)
-            result.putExtra(MainActivity.ACTIVITYRESULT_CONFIDENT, confident)
             activity?.setResult(Activity.RESULT_OK, result)
             activity?.finish()
 
@@ -264,10 +260,10 @@ class AnswerFragment : Fragment() {
         }
     }
 
-    private fun updateDualPaneActivityWithAnswer(answerText: String, confident: Boolean) {
+    private fun updateDualPaneActivityWithAnswer(answerText: String) {
         activity?.let {
             if (it is DualPaneAnswerListener) {
-                it.onFinishAnswerDialog(answerText, confident)
+                it.onFinishAnswerDialog(answerText)
                 hideSoftKeyboardForAnswer()
             }
         }

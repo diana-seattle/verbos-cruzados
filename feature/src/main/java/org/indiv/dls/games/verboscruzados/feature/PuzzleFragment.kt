@@ -54,9 +54,9 @@ class PuzzleFragment : Fragment() {
     /**
      * List of cell values from opposing words of the the currently selected word.
      */
-    val opposingPuzzleCellValues: Map<Int, PuzzleCellValue>
+    val opposingPuzzleCellValues: Map<Int, Char>
         get() {
-            val puzzleCellValues = HashMap<Int, PuzzleCellValue>()
+            val puzzleCellValues = HashMap<Int, Char>()
             currentGameWord?.let {
                 val isAcross = it.isAcross
                 val wordLength = it.word.length
@@ -65,10 +65,8 @@ class PuzzleFragment : Fragment() {
                 for (charIndex in 0 until wordLength) {
                     cellGrid[row][col]?.let {
                         when {
-                            isAcross && it.userCharDown != null ->
-                                PuzzleCellValue(it.userCharDown!!, it.gameWordDown!!.isConfident)
-                            !isAcross && it.userCharAcross != null ->
-                                PuzzleCellValue(it.userCharAcross!!, it.gameWordAcross!!.isConfident)
+                            isAcross && it.userCharDown != null -> it.userCharDown
+                            !isAcross && it.userCharAcross != null -> it.userCharAcross
                             else -> null
                         }
                     }?.let {
@@ -212,7 +210,8 @@ class PuzzleFragment : Fragment() {
                             currentGameWord = it.gameWordDown
                             return true
                         }
-                        else -> {}
+                        else -> {
+                        }
                     }
                 }
             }
@@ -232,7 +231,7 @@ class PuzzleFragment : Fragment() {
                 // if cell is part of currently selected game word, adjust the level to set the background color
                 cellGrid[row][col]?.let {
                     val isSelected = currentGameWord == it.gameWordAcross || currentGameWord == it.gameWordDown
-                    it.view?.setStyle(it.isDominantCharConfident, isSelected, showErrors && it.hasUserError())
+                    it.view?.setStyle(isSelected, showErrors && it.hasUserError())
                 }
             }
         }
@@ -315,7 +314,7 @@ class PuzzleFragment : Fragment() {
      * @param gridCell the grid cell from which to get the textview and the user's answer.
      */
     private fun fillTextView(gridCell: GridCell) {
-        gridCell.view?.fillTextView(gridCell.dominantUserChar, gridCell.isDominantCharConfident)
+        gridCell.view?.fillTextView(gridCell.dominantUserChar)
     }
 
     /**

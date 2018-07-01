@@ -11,7 +11,6 @@ import org.indiv.dls.games.verboscruzados.feature.dialog.ConfirmStartNewGameDial
 
 import android.os.Bundle
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.util.DisplayMetrics
@@ -38,7 +37,6 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
         private val TAG = MainActivity::class.java.simpleName
         private val RESULTCODE_ANSWER = 100
         const val ACTIVITYRESULT_ANSWER = "answer"
-        const val ACTIVITYRESULT_CONFIDENT = "confident"
     }
 
     //endregion
@@ -52,9 +50,6 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
     private var answerFragment: AnswerFragment? = null // for use in panel
     private var answerActivityLaunched = false // use this to load activity only once when puzzle double clicked on
 
-    private var progressDialog: ProgressDialog? = null
-    private var timeProgressDialogShown: Long = 0
-    private var helpShownYet = false
     private var showingErrors = false
 
     //endregion
@@ -75,7 +70,7 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
                     currentGameWord = puzzleFragment.currentGameWord
                     currentGameWord?.let {
                         it.word?.let {
-                            onFinishAnswerDialog(it, true)
+                            onFinishAnswerDialog(it)
                         }
                     }
                 } while (puzzleFragment.selectNextErroredGameWord() == true)
@@ -120,11 +115,6 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
         puzzleFragment.initialize(puzzleWidthPixels, puzzleHeightPixels)
 
         loadNewOrExistingGame()
-
-        if (!helpShownYet) {
-            helpShownYet = true
-            showHelpDialog()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -149,8 +139,7 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
         if (requestCode == RESULTCODE_ANSWER) {
             if (resultCode == Activity.RESULT_OK && result != null) {
                 val userText = result.getStringExtra(MainActivity.ACTIVITYRESULT_ANSWER)
-                val confident = result.getBooleanExtra(MainActivity.ACTIVITYRESULT_CONFIDENT, false)
-                onFinishAnswerDialog(userText, confident)
+                onFinishAnswerDialog(userText)
             }
             answerActivityLaunched = false
         }
@@ -200,7 +189,7 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
     /*
      * implements interface for receiving callback from AnswerFragment
      */
-    override fun onFinishAnswerDialog(userText: String, confident: Boolean) {
+    override fun onFinishAnswerDialog(userText: String) {
 
         // in dual pane mode, this method may be called by answer dialog during setup (on text change)
         if (puzzleFragment.currentGameWord == null) {
@@ -209,7 +198,6 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
 
         puzzleFragment.currentGameWord?.let {
             it.userText = userText.toUpperCase()
-            it.isConfident = confident
             puzzleFragment.updateUserTextInPuzzle(it)
 
             // update database with answer
@@ -282,7 +270,7 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
     private fun createAnswerPresentation(gameWord: GameWord): AnswerPresentation {
-        return AnswerPresentation(gameWord.word, gameWord.get3LetterHint(), gameWord.userText,
+        return AnswerPresentation(gameWord.word, gameWord.userText,
                 gameWord.clue, gameWord.secondaryClue, puzzleFragment.opposingPuzzleCellValues)
     }
 

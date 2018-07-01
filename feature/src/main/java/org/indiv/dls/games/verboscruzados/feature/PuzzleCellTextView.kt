@@ -36,8 +36,6 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
 
     companion object {
         private val FONT_SIZE_FRACTION = .74f
-        private val TENTATIVE_COLOR = -0x555556 // Color.LTGRAY is 0xFFCCCCCC, Color.GRAY is 0xFF888888
-        private val CONFIDENT_COLOR = Color.BLACK // Color.LTGRAY is 0xFFCCCCCC, Color.GRAY is 0xFF888888
 
         private val CELL_BKGD_LEVEL_NORMAL = 1
         private val CELL_BKGD_LEVEL_ERRORED = 2
@@ -54,28 +52,22 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
      * Fills [TextView] with the character from the user's answer.
      *
      * @param userChar the character to fill the textview with.
-     * @param confident true if confident color should be used, false otherwise.
      */
-    fun fillTextView(userChar: Char?, confident: Boolean) {
+    fun fillTextView(userChar: Char?) {
         text = userChar?.toString()
-        setTextColor(if (confident) CONFIDENT_COLOR else TENTATIVE_COLOR)
-    }
-
-
-    fun setTextColorConfidence(confident: Boolean) {
-        setTextColor(if (confident) CONFIDENT_COLOR else TENTATIVE_COLOR)
+        setTextColor(Color.BLACK)
     }
 
     /**
      * Sets background and text colors according to specified state.
      */
-    fun setStyle(isConfident: Boolean, isSelected: Boolean, indicateError: Boolean) {
+    fun setStyle(isSelected: Boolean, indicateError: Boolean) {
         if (indicateError) {
             background.level = if (isSelected) CELL_BKGD_LEVEL_ERRORED_SELECTED else CELL_BKGD_LEVEL_ERRORED
             setTextColor(Color.RED)
         } else {
             background.level = if (isSelected) CELL_BKGD_LEVEL_SELECTED else CELL_BKGD_LEVEL_NORMAL // set normal text cell background
-            setTextColor(if (isConfident) CONFIDENT_COLOR else TENTATIVE_COLOR)
+            setTextColor(Color.BLACK)
         }
     }
 
