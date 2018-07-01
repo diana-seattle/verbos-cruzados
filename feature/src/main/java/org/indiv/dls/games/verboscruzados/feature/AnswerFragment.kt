@@ -100,6 +100,14 @@ class AnswerFragment : Fragment() {
         // puzzle representation
         puzzle_representation.setOnClickListener { showSoftKeyboardForAnswer() }
 
+        val specialLetterListener = { v: View -> insertLetter(v as TextView) }
+        button_accented_a.setOnClickListener(specialLetterListener)
+        button_accented_e.setOnClickListener(specialLetterListener)
+        button_accented_i.setOnClickListener(specialLetterListener)
+        button_accented_o.setOnClickListener(specialLetterListener)
+        button_umlaut_u.setOnClickListener(specialLetterListener)
+        button_tilde_n.setOnClickListener(specialLetterListener)
+
         // text editor
         txt_answer.setTextColor(COLOR_ANSWER)
 
@@ -310,6 +318,14 @@ class AnswerFragment : Fragment() {
     private fun updateViewFontSize(sizeInSp: Int) {
         txt_answer.textSize = Math.max(sizeInSp, FontSize.FONT_MEDIUM.sizeInSp).toFloat()
         val size = sizeInSp.toFloat()
+    }
+
+    private fun insertLetter(letterView: TextView) {
+        // Note that selection may happen in the backward direction causing end to be larger than start.
+        val selectionStart = minOf(txt_answer.selectionStart, txt_answer.selectionEnd)
+        val selectionEnd = maxOf(txt_answer.selectionStart, txt_answer.selectionEnd)
+        txt_answer.text.replace(selectionStart, selectionEnd, letterView.text)
+        txt_answer.setSelection(selectionStart + 1)
     }
 
     //endregion
