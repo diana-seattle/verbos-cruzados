@@ -3,8 +3,7 @@ package org.indiv.dls.games.verboscruzados.feature.async
 import io.reactivex.Single
 import org.indiv.dls.games.verboscruzados.feature.GridCell
 import org.indiv.dls.games.verboscruzados.feature.conjugation.conjugatorMap
-import org.indiv.dls.games.verboscruzados.feature.db.Game
-import org.indiv.dls.games.verboscruzados.feature.db.GameWord
+import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
@@ -25,7 +24,7 @@ class GameSetup {
     /**
      * Creates a new game.
      */
-    fun newGame(cellGrid: Array<Array<GridCell?>>, gameNo: Int): Single<Game> {
+    fun newGame(cellGrid: Array<Array<GridCell?>>): Single<List<GameWord>> {
         return Single.fromCallable {
 
             // retrieve random list of words
@@ -36,14 +35,13 @@ class GameSetup {
             val wordCandidates = getWordCandidates(numWords).toMutableList()
 
             // determine layout
-            val game = Game(gameNo)
-            game.gameWords = layoutWords(cellGrid, wordCandidates, gameNo)
-            if (game.gameWords == null || game.gameWords.isEmpty()) {
+            val gameWords = layoutWords(cellGrid, wordCandidates)
+            if (gameWords.isEmpty()) {
                 throw Exception("Failure during words layout")
             }
 
             // return game
-            game
+            gameWords
         }
     }
 
@@ -114,7 +112,7 @@ class GameSetup {
         return "$infinitive ($translation)"
     }
 
-    private fun layoutWords(cellGrid: Array<Array<GridCell?>>, wordCandidates: MutableList<WordCandidate>, gameNo: Int): List<GameWord> {
+    private fun layoutWords(cellGrid: Array<Array<GridCell?>>, wordCandidates: MutableList<WordCandidate>): List<GameWord> {
 
         // sort so that longest words are first
         wordCandidates.sortWith(Comparator { lhs, rhs -> rhs.word.length - lhs.word.length })

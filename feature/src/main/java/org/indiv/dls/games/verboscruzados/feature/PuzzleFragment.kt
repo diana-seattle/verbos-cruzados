@@ -1,6 +1,6 @@
 package org.indiv.dls.games.verboscruzados.feature
 
-import org.indiv.dls.games.verboscruzados.feature.db.GameWord
+import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 
 
 import android.content.Context

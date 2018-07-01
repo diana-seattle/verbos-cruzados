@@ -1,8 +1,8 @@
 package org.indiv.dls.games.verboscruzados.feature
 
 import android.os.Bundle
-import org.indiv.dls.games.verboscruzados.feature.db.PersistenceHelper
-import org.indiv.dls.games.verboscruzados.feature.db.GameWord
+import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
+import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 import org.indiv.dls.games.verboscruzados.feature.dialog.HelpDialogFragment
 import org.indiv.dls.games.verboscruzados.feature.dialog.StatsDialogFragment
 

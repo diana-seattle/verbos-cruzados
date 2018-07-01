@@ -1,4 +1,4 @@
-package org.indiv.dls.games.verboscruzados.feature.db;
+package org.indiv.dls.games.verboscruzados.feature.game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ public class PersistenceHelper {
      *
      * @return list
      */
-    public List<GameWord> getCurrentGame() {
+    public List<GameWord> getCurrentGameWords() {
         List<GameWord> gameWords = new ArrayList<>();
         Map<String, ?> map = getGameWordPrefs().getAll();
         for (String key : map.keySet()) {

@@ -5,8 +5,7 @@ package org.indiv.dls.games.verboscruzados.feature
  */
 
 import org.indiv.dls.games.verboscruzados.feature.async.GameSetup
-import org.indiv.dls.games.verboscruzados.feature.db.Game
-import org.indiv.dls.games.verboscruzados.feature.db.GameWord
+import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 import org.indiv.dls.games.verboscruzados.feature.dialog.ConfirmStartNewGameDialogFragment
 
 import android.os.Bundle
@@ -44,7 +43,7 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
     private val compositeDisposable = CompositeDisposable()
-    private var currentGame: Game? = null
+    private var currentGameWords: List<GameWord> = emptyList()
     private val gameSetup = GameSetup()
     private lateinit var puzzleFragment: PuzzleFragment
     private var answerFragment: AnswerFragment? = null // for use in panel
@@ -232,10 +231,6 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
      * implements interface for receiving callback from ConfirmStartNewGameDialogFragment
      */
     override fun setupNewGame() {
-
-        // determine existing game no
-        val newGameNo = (currentGame?.gameNo ?: 0) + 1
-
         // if dual pane, clear game word and hide answer fragment for now
         answerFragment?.let {
             it.clearGameWord()
@@ -247,13 +242,13 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
         showErrors(false)
 
         // setup new game
-        compositeDisposable.add(gameSetup.newGame(puzzleFragment.cellGrid, newGameNo)
+        compositeDisposable.add(gameSetup.newGame(puzzleFragment.cellGrid)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { game ->
-                            currentGame = game
-                            mDbHelper.persistGame(game.gameWords)
+                        { gameWords ->
+                            currentGameWords = gameWords
+                            mDbHelper.persistGame(gameWords)
                             createGrid()
                         },
                         { error ->
@@ -296,11 +291,10 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
     private fun loadNewOrExistingGame() {
 
         // get current game if any
-        currentGame = Game(1)
-        currentGame!!.gameWords = mDbHelper.currentGame
+        currentGameWords = mDbHelper.currentGameWords
 
         // if on very first game, or if no saved game (due to an error), create a new one, otherwise open existing game
-        if (currentGame!!.gameWords.isEmpty() || !puzzleFragment.doWordsFitInGrid(currentGame!!.gameWords)) {
+        if (currentGameWords.isEmpty() || !puzzleFragment.doWordsFitInGrid(currentGameWords)) {
             setupNewGame()
         } else {
             restoreExistingGame()
@@ -312,7 +306,7 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
      */
     private fun restoreExistingGame() {
         // copy game words to cell grid
-        for (gameWord in currentGame!!.gameWords) {
+        for (gameWord in currentGameWords) {
             gameSetup.addToGrid(gameWord, puzzleFragment.cellGrid)
         }
         createGrid()

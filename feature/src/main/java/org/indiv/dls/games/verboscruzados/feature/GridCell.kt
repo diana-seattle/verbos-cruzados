@@ -1,8 +1,6 @@
 package org.indiv.dls.games.verboscruzados.feature
 
-import org.indiv.dls.games.verboscruzados.feature.db.GameWord
-
-import android.widget.TextView
+import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 
 /**
  * Represents a cell in the puzzle.

@@ -1,4 +1,4 @@
-package org.indiv.dls.games.verboscruzados.feature.db;
+package org.indiv.dls.games.verboscruzados.feature.game;
 
 import java.util.List;
 
