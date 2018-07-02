@@ -164,7 +164,8 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
     override fun onUpdateAnswer(userText: String) {
 
         // This method may be called by answer dialog during setup (on text change)
-        if (puzzleFragment.currentGameWord == null || userText.isEmpty()) {
+        if (puzzleFragment.currentGameWord == null || userText.isEmpty() ||
+                puzzleFragment.currentGameWord?.userText == userText.toUpperCase()) {
             return
         }
 

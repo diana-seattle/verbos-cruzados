@@ -91,7 +91,10 @@ class AnswerFragment : Fragment() {
         word = answerPresentation.word
         infinitive = answerPresentation.infinitive
 
-        showSoftKeyboardForAnswer()
+        // If answer not yet correct, show keyboard
+        if (userEntry.toLowerCase() != word.toLowerCase()) {
+            showSoftKeyboardForAnswer()
+        }
     }
 
     // called by activity
@@ -99,13 +102,6 @@ class AnswerFragment : Fragment() {
         txt_answer.setText("")
         txt_answer_layout.hint = ""
         txt_answer_layout.error = ""
-    }
-
-    fun hideSoftKeyboardForAnswer() {
-        // this works when called from onClick, but not from onCreateView
-        activity?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let {
-            (it as InputMethodManager).hideSoftInputFromWindow(txt_answer.windowToken, 0)
-        }
     }
 
     //endregion
@@ -125,7 +121,6 @@ class AnswerFragment : Fragment() {
     }
 
     private fun updateActivityWithAnswer() {
-
         // Return input text to activity
         var answerText = userEntry
         if (answerText.length > wordLength) {
@@ -133,6 +128,14 @@ class AnswerFragment : Fragment() {
         }
 
         (activity as? AnswerListener)?.onUpdateAnswer(answerText)
+    }
+
+    private fun insertText(text: String) {
+        // Note that selection may happen in the backward direction causing end to be larger than start.
+        val selectionStart = minOf(txt_answer.selectionStart, txt_answer.selectionEnd)
+        val selectionEnd = maxOf(txt_answer.selectionStart, txt_answer.selectionEnd)
+        txt_answer.text.replace(selectionStart, selectionEnd, text)
+        txt_answer.setSelection(selectionStart + text.length)
     }
 
     private fun showSoftKeyboardForAnswer() {
@@ -145,12 +148,11 @@ class AnswerFragment : Fragment() {
         //	     activity?.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
-    private fun insertText(text: String) {
-        // Note that selection may happen in the backward direction causing end to be larger than start.
-        val selectionStart = minOf(txt_answer.selectionStart, txt_answer.selectionEnd)
-        val selectionEnd = maxOf(txt_answer.selectionStart, txt_answer.selectionEnd)
-        txt_answer.text.replace(selectionStart, selectionEnd, text)
-        txt_answer.setSelection(selectionStart + text.length)
+    private fun hideSoftKeyboardForAnswer() {
+        // this works when called from onClick, but not from onCreateView
+        activity?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let {
+            (it as InputMethodManager).hideSoftInputFromWindow(txt_answer.windowToken, 0)
+        }
     }
 
     //endregion
