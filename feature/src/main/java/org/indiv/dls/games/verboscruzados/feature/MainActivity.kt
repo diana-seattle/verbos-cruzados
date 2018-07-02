@@ -237,8 +237,7 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
 
     private fun createAnswerPresentation(gameWord: GameWord): AnswerPresentation {
         return AnswerPresentation(gameWord.word, gameWord.userText, gameWord.conjugationTypeLabel,
-                gameWord.pronounLabel, gameWord.infinitiveClue,
-                puzzleFragment.opposingPuzzleCellValues)
+                gameWord.pronounLabel, gameWord.infinitive, gameWord.translation)
     }
 
     /*

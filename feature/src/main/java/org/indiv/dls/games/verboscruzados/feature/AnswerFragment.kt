@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ScrollView
 import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_answer.*
 
@@ -28,7 +27,8 @@ class AnswerFragment : Fragment() {
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
-    private var word: String? = null
+    private var infinitive: String = ""
+    private var word: String = ""
     private var wordLength: Int = 0
 
     private val userEntry: String
@@ -54,13 +54,14 @@ class AnswerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val specialLetterListener = { v: View -> insertLetter(v as TextView) }
+        val specialLetterListener = { v: View -> insertText((v as TextView).text.toString()) }
         button_accented_a.setOnClickListener(specialLetterListener)
         button_accented_e.setOnClickListener(specialLetterListener)
         button_accented_i.setOnClickListener(specialLetterListener)
         button_accented_o.setOnClickListener(specialLetterListener)
         button_umlaut_u.setOnClickListener(specialLetterListener)
         button_tilde_n.setOnClickListener(specialLetterListener)
+        button_infinitive.setOnClickListener { _: View -> insertText(infinitive) }
 
         // text editor
         txt_answer.setTextColor(COLOR_ANSWER)
@@ -71,9 +72,12 @@ class AnswerFragment : Fragment() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable) {
-                updateLetterCount()
-                updatePuzzleRepresentation()
                 updateActivityWithAnswer()
+
+                // If user text matches answer, dismiss keyboard
+                if (userEntry.toLowerCase() == word.toLowerCase()) {
+                    hideSoftKeyboardForAnswer()
+                }
             }
         })
     }
@@ -85,15 +89,15 @@ class AnswerFragment : Fragment() {
     fun setGameWord(answerPresentation: AnswerPresentation) {
         updateGameWord(answerPresentation)
         word = answerPresentation.word
+        infinitive = answerPresentation.infinitive
 
         showSoftKeyboardForAnswer()
     }
 
     // called by activity
     fun clearGameWord() {
-        puzzle_representation.removeAllViews()
         txt_answer.setText("")
-        textview_sentence_clue_beginning.text = "" // there may be existing text
+        textview_pronoun_label.text = ""
         txt_answer_layout.hint = ""
         txt_answer_layout.error = ""
     }
@@ -112,40 +116,14 @@ class AnswerFragment : Fragment() {
     private fun updateGameWord(answerPresentation: AnswerPresentation) {
         wordLength = answerPresentation.word.length
 
-        // update puzzle representation
-        puzzle_representation.removeAllViews()  // may have previous contents
-        for (i in 0 until wordLength) {
-            val textView = PuzzleRepresentationCellTextView(context!!)
-            puzzle_representation.addView(textView)
-            answerPresentation.opposingPuzzleCellValues[i]?.let {
-                textView.fillTextView(it)
-            } ?: run {
-                textView.setTextColor(COLOR_ANSWER)
-            }
-        }
-        puzzle_representation_scrollview.fullScroll(ScrollView.FOCUS_LEFT)
-        puzzle_representation_scrollview.postInvalidate() // doing this to fix issue where resizing puzzle representation sometimes leaves black
-
-
         // set text in editor
         txt_answer.setText(answerPresentation.userText?.toLowerCase() ?: "")
         txt_answer.setSelection(answerPresentation.userText?.length ?: 0)
 
         // update clue views
         txt_answer_layout.hint = answerPresentation.conjugationTypeLabel
-        txt_answer_layout.error = answerPresentation.infinitiveClue
-        textview_sentence_clue_beginning.text = answerPresentation.pronounLabel
-    }
-
-    private fun updatePuzzleRepresentation() {
-        val answerText = userEntry.toUpperCase()
-        val answerLength = answerText.length
-        for (i in 0 until puzzle_representation.childCount) {
-            val textView = puzzle_representation.getChildAt(i) as TextView
-            if (COLOR_ANSWER == textView.textColors.defaultColor) {
-                textView.text = if (i < answerLength) answerText[i].toString() else ""
-            }
-        }
+        txt_answer_layout.error = "${answerPresentation.infinitive} (${answerPresentation.translation})"
+        textview_pronoun_label.text = answerPresentation.pronounLabel
     }
 
     private fun updateActivityWithAnswer() {
@@ -156,18 +134,7 @@ class AnswerFragment : Fragment() {
             answerText = answerText.substring(0, wordLength)
         }
 
-        (activity as? AnswerListener)?.let {
-            it.onUpdateAnswer(answerText)
-            if (answerText.length == wordLength) {
-                hideSoftKeyboardForAnswer()
-            }
-        }
-    }
-
-    private fun updateLetterCount() {
-        val letterCount = userEntry.length
-        val letterCountText = letterCount.toString() + " / " + wordLength
-        letter_count.text = letterCountText
+        (activity as? AnswerListener)?.onUpdateAnswer(answerText)
     }
 
     private fun showSoftKeyboardForAnswer() {
@@ -180,12 +147,12 @@ class AnswerFragment : Fragment() {
         //	     activity?.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
-    private fun insertLetter(letterView: TextView) {
+    private fun insertText(text: String) {
         // Note that selection may happen in the backward direction causing end to be larger than start.
         val selectionStart = minOf(txt_answer.selectionStart, txt_answer.selectionEnd)
         val selectionEnd = maxOf(txt_answer.selectionStart, txt_answer.selectionEnd)
-        txt_answer.text.replace(selectionStart, selectionEnd, letterView.text)
-        txt_answer.setSelection(selectionStart + 1)
+        txt_answer.text.replace(selectionStart, selectionEnd, text)
+        txt_answer.setSelection(selectionStart + text.length)
     }
 
     //endregion

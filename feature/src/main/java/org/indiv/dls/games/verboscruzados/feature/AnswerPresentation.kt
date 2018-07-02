@@ -8,5 +8,5 @@ class AnswerPresentation(val word: String,
                          val userText: String?,
                          val conjugationTypeLabel: String,
                          val pronounLabel: String,
-                         val infinitiveClue: String,
-                         val opposingPuzzleCellValues: Map<Int, Char>) : Parcelable
+                         val infinitive: String,
+                         val translation: String) : Parcelable

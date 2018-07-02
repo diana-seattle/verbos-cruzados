@@ -16,7 +16,7 @@
         android:paddingStart="@dimen/quarter_margin"
         android:paddingTop="@dimen/quarter_margin">
 
-        <TextView android:id="@+id/textview_sentence_clue_beginning"
+        <TextView android:id="@+id/textview_pronoun_label"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:layout_gravity="top"
@@ -53,85 +53,28 @@
                   android:layout_marginStart="@dimen/half_margin"
                   android:orientation="horizontal">
         <Button android:id="@+id/button_accented_a"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginRight="@dimen/quarter_margin"
-                android:text="á"
-                android:textAllCaps="false"/>
+                style="@style/answerLetterButton"
+                android:text="á"/>
         <Button android:id="@+id/button_accented_e"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginRight="@dimen/quarter_margin"
-                android:text="é"
-                android:textAllCaps="false"/>
+                style="@style/answerLetterButton"
+                android:text="é"/>
         <Button android:id="@+id/button_accented_i"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginRight="@dimen/quarter_margin"
-                android:text="í"
-                android:textAllCaps="false"/>
+                style="@style/answerLetterButton"
+                android:text="í"/>
         <Button android:id="@+id/button_accented_o"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginRight="@dimen/quarter_margin"
-                android:text="ó"
-                android:textAllCaps="false"/>
+                style="@style/answerLetterButton"
+                android:text="ó"/>
         <Button android:id="@+id/button_umlaut_u"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginRight="@dimen/quarter_margin"
-                android:text="ü"
-                android:textAllCaps="false"/>
+                style="@style/answerLetterButton"
+                android:text="ü"/>
         <Button android:id="@+id/button_tilde_n"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginRight="@dimen/quarter_margin"
-                android:text="ñ"
-                android:textAllCaps="false"/>
+                style="@style/answerLetterButton"
+                android:text="ñ"/>
+        <Button android:id="@+id/button_infinitive"
+                style="@style/answerLetterButton"
+                android:layout_width="90dp"
+                android:text="@string/button_infinitive"/>
     </LinearLayout>
-
-
-    <!-- puzzle's word representation and letter count indicator
-(note that using wrap_content on the layout_width of the scrollview causes the width of the fragment in dual pane
-mode to expand and contract, but using match_parent causes a black area when shorter word chosen)
--->
-    <HorizontalScrollView
-        android:id="@+id/puzzle_representation_scrollview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/quarter_margin"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingEnd="@dimen/half_margin"
-            android:paddingStart="@dimen/half_margin"
-            android:paddingTop="@dimen/half_margin">
-
-            <LinearLayout
-                android:id="@+id/puzzle_representation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/cell_background_unused"
-                android:orientation="horizontal"
-                android:paddingBottom="2dp"
-                android:paddingEnd="2dp"
-                android:paddingStart="2dp"
-                android:paddingTop="2dp"/>
-
-            <TextView
-                android:id="@+id/letter_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left|center_vertical"
-                android:width="70dp"
-                android:paddingStart="8dp"/>
-
-        </LinearLayout>
-    </HorizontalScrollView>
-
 
 </LinearLayout>
 

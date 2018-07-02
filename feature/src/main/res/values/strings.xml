@@ -59,10 +59,9 @@
     <string name="dialog_stats_notyetsolved">Words not yet solved:</string>
 
 
-    <!-- dialog text for answer dialog-->
-    <string name="dialog_across">Across</string>
-    <string name="dialog_down">Down</string>
-    <string name="dialog_otheroptions">Other options</string>
+    <!--button text for answer fragment-->
+    <string name="button_infinitive">infinitive</string>
+
 
 
     <!-- toast text-->

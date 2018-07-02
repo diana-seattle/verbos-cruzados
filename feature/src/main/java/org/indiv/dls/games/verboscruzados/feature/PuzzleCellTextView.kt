@@ -96,21 +96,3 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
 
     //endregion
 }
-
-/**
- * Styled [TextView] used in puzzle representation.
- */
-class PuzzleRepresentationCellTextView @JvmOverloads constructor(context: Context,
-                                                                 attrs: AttributeSet? = null,
-                                                                 defStyleAttr: Int = 0)
-    : PuzzleCellTextView(context, attrs, defStyleAttr) {
-
-    //region INITIALIZER ---------------------------------------------------------------------------
-
-    init {
-        val size = Math.round(resources.getDimension(R.dimen.cell_representation_width))
-        updateSize(size)
-    }
-
-    //endregion
-}

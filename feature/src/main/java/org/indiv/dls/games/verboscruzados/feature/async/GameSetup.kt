@@ -98,7 +98,8 @@ class GameSetup {
             WordCandidate(word = presentConjugator.conjugate(it, subjectPronoun).toUpperCase(),
                     conjugationTypeLabel = conjugationType.text,
                     pronounLabel = "(${subjectPronoun.text})",
-                    infinitiveClue = getInfinitiveClue(it.infinitive, it.translation))
+                    infinitive = it.infinitive,
+                    translation = it.translation)
         }
     }
 
@@ -107,10 +108,6 @@ class GameSetup {
         return conjugationType.clueTemplate
                 .replace("()", "(${subjectPronoun.text})")
                 .replace("[]", directObjectPronoun)
-    }
-
-    private fun getInfinitiveClue(infinitive: String, translation: String): String {
-        return "$infinitive ($translation)"
     }
 
     private fun layoutWords(cellGrid: Array<Array<GridCell?>>, wordCandidates: MutableList<WordCandidate>): List<GameWord> {
@@ -206,9 +203,8 @@ class GameSetup {
         }
 
         if (locationFound) {
-            gameWord = GameWord(word, wordCandidate.conjugationTypeLabel,
-                    wordCandidate.pronounLabel, wordCandidate.infinitiveClue,
-                    row, col, across)
+            gameWord = GameWord(word, wordCandidate.conjugationTypeLabel, wordCandidate.pronounLabel,
+                    wordCandidate.infinitive, wordCandidate.translation, row, col, across)
             addToGrid(gameWord, cellGrid)
         }
 
@@ -289,7 +285,8 @@ class GameSetup {
     private class WordCandidate(val word: String,
                                 val conjugationTypeLabel: String,
                                 val pronounLabel: String,
-                                val infinitiveClue: String) {
+                                val infinitive: String,
+                                val translation: String) {
         // variables used by word placement algorithm to place word in puzzle
         private var lastAcrossPositionTried = -1
         private var lastDownPositionTried = -1
