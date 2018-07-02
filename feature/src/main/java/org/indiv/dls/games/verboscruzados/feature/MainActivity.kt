@@ -75,9 +75,7 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
                 do {
                     currentGameWord = puzzleFragment.currentGameWord
                     currentGameWord?.let {
-                        it.word?.let {
-                            onUpdateAnswer(it)
-                        }
+                        onUpdateAnswer(it.word)
                     }
                 } while (puzzleFragment.selectNextErroredGameWord() == true)
                 true
@@ -92,7 +90,7 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
 
         // calculate available space for the puzzle
         val displayMetrics = resources.displayMetrics
-        val marginInPixels = resources.getDimension(R.dimen.default_margin)
+        val marginInPixels = resources.getDimension(R.dimen.puzzle_margin)
         val screenWidthPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 resources.configuration.screenWidthDp.toFloat(), displayMetrics)
         val screenHeightPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
@@ -166,7 +164,7 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
     override fun onUpdateAnswer(userText: String) {
 
         // This method may be called by answer dialog during setup (on text change)
-        if (puzzleFragment.currentGameWord == null) {
+        if (puzzleFragment.currentGameWord == null || userText.isEmpty()) {
             return
         }
 
@@ -238,8 +236,9 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
     private fun createAnswerPresentation(gameWord: GameWord): AnswerPresentation {
-        return AnswerPresentation(gameWord.word, gameWord.userText,
-                gameWord.sentenceClue, gameWord.infinitiveClue, puzzleFragment.opposingPuzzleCellValues)
+        return AnswerPresentation(gameWord.word, gameWord.userText, gameWord.sentenceClueBeginning,
+                gameWord.sentenceClueEnd, gameWord.infinitiveClue, gameWord.conjugationTypeLabel,
+                puzzleFragment.opposingPuzzleCellValues)
     }
 
     /*

@@ -3,6 +3,20 @@
     <!-- bold text -->
     <style name="boldText">
         <item name="android:textStyle">bold</item>
-    </style>    
-    
+    </style>
+
+    <style name="answerStyle">
+        <item name="android:textSize">@dimen/x_large</item>
+    </style>
+
+    <style name="answerHintStyle">
+        <item name="android:textSize">@dimen/large_fixed</item>
+        <item name="android:textColor">@color/dark_gray</item>
+    </style>
+
+    <style name="answerSubStyle">
+        <item name="android:textSize">@dimen/medium</item>
+        <item name="android:textColor">@color/dark_gray</item>
+    </style>
+
 </resources>

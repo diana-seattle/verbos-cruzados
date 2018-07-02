@@ -4,6 +4,7 @@
     <!-- Margins -->
     <dimen name="quarter_margin">4dp</dimen>
     <dimen name="half_margin">8dp</dimen>
+    <dimen name="three_quarter_margin">12dp</dimen>
     <dimen name="default_margin">16dp</dimen>
     <dimen name="large_margin">24dp</dimen>
     <dimen name="double_margin">32dp</dimen>
@@ -15,5 +16,16 @@
     <dimen name="large">18sp</dimen>
     <dimen name="x_large">20sp</dimen>
     <dimen name="xx_large">24sp</dimen>
+
+    <!-- Text sizes - fixed -->
+    <dimen name="x_small_fixed">12dp</dimen>
+    <dimen name="small_fixed">14dp</dimen>
+    <dimen name="medium_fixed">16dp</dimen>
+    <dimen name="large_fixed">18dp</dimen>
+    <dimen name="x_large_fixed">20dp</dimen>
+    <dimen name="xx_large_fixed">24dp</dimen>
+
+    <!-- offset for top margin of clue text in the answer fragment -->
+    <dimen name="answer_clue_offset">28dp</dimen>
 
 </resources>

@@ -2,12 +2,14 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <!-- height of answer fragment panel -->
-    <dimen name="fragment_answer_height">250dp</dimen>
+    <dimen name="fragment_answer_height">180dp</dimen>
 
     <!-- width of individual cell -->
     <dimen name="cell_width">25dp</dimen>
 
     <!-- width of individual cell in puzzle representation in answer dialog -->
     <dimen name="cell_representation_width">22dp</dimen>
+
+    <dimen name="puzzle_margin">16dp</dimen>
 
 </resources>

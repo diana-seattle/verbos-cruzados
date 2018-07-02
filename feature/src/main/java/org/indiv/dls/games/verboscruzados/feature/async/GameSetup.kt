@@ -93,9 +93,13 @@ class GameSetup {
         val presentConjugator = conjugatorMap[conjugationType]!!
 
         return irregularArVerbs.map {
+            val sentenceClue = getSentenceClue(it, subjectPronoun, conjugationType)
+            sentenceClue.substringBefore("_")
             WordCandidate(word = presentConjugator.conjugate(it, subjectPronoun).toUpperCase(),
-                    sentenceClue = getSentenceClue(it, subjectPronoun, conjugationType),
-                    infinitiveClue = getInfinitiveClue(it.infinitive, it.translation))
+                    sentenceClueBeginning = sentenceClue.substringBefore("_"),
+                    sentenceClueEnd = sentenceClue.substringAfter("_"),
+                    infinitiveClue = getInfinitiveClue(it.infinitive, it.translation),
+                    conjugationTypeLabel = conjugationType.text)
         }
     }
 
@@ -104,8 +108,6 @@ class GameSetup {
         return conjugationType.clueTemplate
                 .replace("()", "(${subjectPronoun.text})")
                 .replace("[]", directObjectPronoun)
-                .replace("_", "_________________")
-                .plus(" (${conjugationType.text.toLowerCase()})")
     }
 
     private fun getInfinitiveClue(infinitive: String, translation: String): String {
@@ -205,7 +207,9 @@ class GameSetup {
         }
 
         if (locationFound) {
-            gameWord = GameWord(word, wordCandidate.sentenceClue, wordCandidate.infinitiveClue, row, col, across)
+            gameWord = GameWord(word, wordCandidate.sentenceClueBeginning, wordCandidate.sentenceClueEnd,
+                    wordCandidate.infinitiveClue, wordCandidate.conjugationTypeLabel,
+                    row, col, across)
             addToGrid(gameWord, cellGrid)
         }
 
@@ -283,7 +287,11 @@ class GameSetup {
 
     //endregion
 
-    private class WordCandidate(val word: String, val sentenceClue: String, val infinitiveClue: String) {
+    private class WordCandidate(val word: String,
+                                val sentenceClueBeginning: String,
+                                val sentenceClueEnd: String,
+                                val infinitiveClue: String,
+                                val conjugationTypeLabel: String) {
         // variables used by word placement algorithm to place word in puzzle
         private var lastAcrossPositionTried = -1
         private var lastDownPositionTried = -1
