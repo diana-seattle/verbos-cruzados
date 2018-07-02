@@ -236,8 +236,8 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
     private fun createAnswerPresentation(gameWord: GameWord): AnswerPresentation {
-        return AnswerPresentation(gameWord.word, gameWord.userText, gameWord.conjugationTypeLabel,
-                gameWord.pronounLabel, gameWord.infinitive, gameWord.translation)
+        return AnswerPresentation(gameWord.word, gameWord.userText, gameWord.conjugationLabel,
+                gameWord.infinitive, gameWord.translation)
     }
 
     /*

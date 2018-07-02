@@ -84,15 +84,5 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
         }
     }
 
-    /**
-     * Updates size of the text view.
-     */
-    fun updateSize(size: Int) {
-        val fontHeight = size * FONT_SIZE_FRACTION
-        setTextSize(TypedValue.COMPLEX_UNIT_PX, fontHeight)
-        width = size
-        height = size
-    }
-
     //endregion
 }

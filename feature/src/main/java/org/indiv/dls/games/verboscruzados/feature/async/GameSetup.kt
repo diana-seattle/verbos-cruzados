@@ -8,6 +8,11 @@ import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
 import org.indiv.dls.games.verboscruzados.feature.model.irregularArVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.irregularErVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.irregularIrVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.regularArVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.regularErVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.regularIrVerbs
 import java.util.*
 
 /**
@@ -87,27 +92,49 @@ class GameSetup {
 
         // TODO: get these based on user options
 
+        val verbs = getVerbs()
+        val candidates = mutableListOf<WordCandidate>()
 
-        val subjectPronoun = SubjectPronoun.YO
-        val conjugationType = ConjugationType.PRESENT
-        val presentConjugator = conjugatorMap[conjugationType]!!
-
-        return irregularArVerbs.map {
-            val sentenceClue = getSentenceClue(it, subjectPronoun, conjugationType)
-            sentenceClue.substringBefore("_")
-            WordCandidate(word = presentConjugator.conjugate(it, subjectPronoun).toUpperCase(),
-                    conjugationTypeLabel = conjugationType.text,
-                    pronounLabel = "(${subjectPronoun.text})",
-                    infinitive = it.infinitive,
-                    translation = it.translation)
+        ConjugationType.values().forEach {
+            val conjugationType = it
+            when (conjugationType) {
+                ConjugationType.GERUND -> {
+                    candidates.addAll(verbs.map {
+                        WordCandidate(it.gerund.toUpperCase(), "${conjugationType.text}",
+                                it.infinitive, it.translation)
+                    })
+                }
+                ConjugationType.PAST_PARTICIPLE -> {
+                    candidates.addAll(verbs.map {
+                        WordCandidate(it.pastParticiple.toUpperCase(), "${conjugationType.text}",
+                                it.infinitive, it.translation)
+                    })
+                }
+                else -> {
+                    val conjugator = conjugatorMap[it]!!
+                    SubjectPronoun.values().forEach {
+                        val subjectPronoun = it
+                        candidates.addAll(verbs.map {
+                            WordCandidate(conjugator.conjugate(it, subjectPronoun).toUpperCase(),
+                                    "${subjectPronoun.text} - ${conjugationType.text}",
+                                    it.infinitive, it.translation)
+                        })
+                    }
+                }
+            }
         }
+        return candidates
     }
 
-    private fun getSentenceClue(verb: Verb, subjectPronoun: SubjectPronoun, conjugationType: ConjugationType): String {
-        val directObjectPronoun = if (verb.requiresDirectObject) "lo " else ""
-        return conjugationType.clueTemplate
-                .replace("()", "(${subjectPronoun.text})")
-                .replace("[]", directObjectPronoun)
+    private fun getVerbs(): List<Verb> {
+        val verbs = mutableListOf<Verb>()
+        verbs.addAll(regularArVerbs)
+        verbs.addAll(regularErVerbs)
+        verbs.addAll(regularIrVerbs)
+        verbs.addAll(irregularArVerbs)
+        verbs.addAll(irregularErVerbs)
+        verbs.addAll(irregularIrVerbs)
+        return verbs
     }
 
     private fun layoutWords(cellGrid: Array<Array<GridCell?>>, wordCandidates: MutableList<WordCandidate>): List<GameWord> {
@@ -203,8 +230,8 @@ class GameSetup {
         }
 
         if (locationFound) {
-            gameWord = GameWord(word, wordCandidate.conjugationTypeLabel, wordCandidate.pronounLabel,
-                    wordCandidate.infinitive, wordCandidate.translation, row, col, across)
+            gameWord = GameWord(word, wordCandidate.conjugationLabel, wordCandidate.infinitive,
+                    wordCandidate.translation, row, col, across)
             addToGrid(gameWord, cellGrid)
         }
 
@@ -280,11 +307,10 @@ class GameSetup {
         return crossingFound
     }
 
-    //endregion
+//endregion
 
     private class WordCandidate(val word: String,
-                                val conjugationTypeLabel: String,
-                                val pronounLabel: String,
+                                val conjugationLabel: String,
                                 val infinitive: String,
                                 val translation: String) {
         // variables used by word placement algorithm to place word in puzzle

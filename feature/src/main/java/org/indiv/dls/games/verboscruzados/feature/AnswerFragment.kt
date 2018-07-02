@@ -20,7 +20,7 @@ class AnswerFragment : Fragment() {
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
     companion object {
-        private val COLOR_ANSWER = -0xff6634  // a little darker than puzzle background
+        private const val COLOR_ANSWER = -0xff6634  // a little darker than puzzle background
     }
 
     //endregion
@@ -97,7 +97,6 @@ class AnswerFragment : Fragment() {
     // called by activity
     fun clearGameWord() {
         txt_answer.setText("")
-        textview_pronoun_label.text = ""
         txt_answer_layout.hint = ""
         txt_answer_layout.error = ""
     }
@@ -121,9 +120,8 @@ class AnswerFragment : Fragment() {
         txt_answer.setSelection(answerPresentation.userText?.length ?: 0)
 
         // update clue views
-        txt_answer_layout.hint = answerPresentation.conjugationTypeLabel
+        txt_answer_layout.hint = answerPresentation.conjugationLabel
         txt_answer_layout.error = "${answerPresentation.infinitive} (${answerPresentation.translation})"
-        textview_pronoun_label.text = answerPresentation.pronounLabel
     }
 
     private fun updateActivityWithAnswer() {

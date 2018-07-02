@@ -32,17 +32,17 @@ enum class Irregularity {
  * brackets represent the optional direct object (typically followed by a space), and the underscore
  * represents the answer.
  */
-enum class ConjugationType(val text: String, val clueTemplate: String) {
-    PRESENT("Present", "() []_hoy"),
-    PRETERIT("Preterit", "() []_ayer"),
-    IMPERFECT("Imperfect", "() []_cuando yo era joven"),
-    CONDITIONAL("Conditional", "() []_pero no es posible"),
-    FUTURE("Future", "()[]_tomorrow"),
-    IMPERATIVE("Imperative", "() _[] ahora, por favor"),
-    SUBJUNCTIVE_PRESENT("Subjunctive Present", "Es importante que () []_"),
-    SUBJUNCTIVE_IMPERFECT("Subjunctive Imperfect", "Me iría si () []_"),
-    GERUND("Gerund", "Yo []estoy_ahora"),
-    PAST_PARTICIPLE("Past Participle", "Ya []he_")
+enum class ConjugationType(val text: String) {
+    PRESENT("Present"),
+    PRETERIT("Preterit"),
+    IMPERFECT("Imperfect"),
+    CONDITIONAL("Conditional"),
+    FUTURE("Future"),
+    IMPERATIVE("Imperative"),
+    SUBJUNCTIVE_PRESENT("Subjunctive Present"),
+    SUBJUNCTIVE_IMPERFECT("Subjunctive Imperfect"),
+    GERUND("Gerund"),
+    PAST_PARTICIPLE("Past Participle")
 }
 
 enum class SubjectPronoun(val text: String, val isThirdPerson: Boolean = false) {
