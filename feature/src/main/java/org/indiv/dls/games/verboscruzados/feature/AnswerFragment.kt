@@ -1,8 +1,6 @@
 package org.indiv.dls.games.verboscruzados.feature
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
@@ -79,7 +77,7 @@ class AnswerFragment : Fragment() {
     //region PUBLIC INTERFACES ---------------------------------------------------------------------
 
     // interface for activity to implement to receive result
-    interface DualPaneAnswerListener {
+    interface AnswerListener {
         fun onFinishAnswerDialog(userText: String)
     }
 
@@ -124,7 +122,7 @@ class AnswerFragment : Fragment() {
         txt_answer.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 // doing this on text change results in keyboard being prematurely dismissed
-                updateDualPaneActivityWithAnswer(userEntry)
+                updateActivityWithAnswer(userEntry)
             }
             false
         }
@@ -138,7 +136,7 @@ class AnswerFragment : Fragment() {
         // deletion button
         imagebutton_delete.setOnClickListener {
             txt_answer.setText("")
-            updateDualPaneActivityWithAnswer("")
+            updateActivityWithAnswer("")
         }
     }
 
@@ -194,7 +192,7 @@ class AnswerFragment : Fragment() {
     fun clearGameWord() {
         puzzle_representation.removeAllViews()
         txt_answer.setText("")
-        textview_sentence_clue.text = "" // in dual panel mode, there may be existing text
+        textview_sentence_clue.text = "" // there may be existing text
         textview_infinitive_clue.text = ""
     }
 
@@ -213,7 +211,7 @@ class AnswerFragment : Fragment() {
         wordLength = answerPresentation.word.length
 
         // update puzzle representation
-        puzzle_representation.removeAllViews()  // may have previous contents when displayed in dual pane
+        puzzle_representation.removeAllViews()  // may have previous contents
         for (i in 0 until wordLength) {
             val textView = PuzzleRepresentationCellTextView(context!!)
             puzzle_representation.addView(textView)
@@ -224,7 +222,7 @@ class AnswerFragment : Fragment() {
             }
         }
         puzzle_representation_scrollview.fullScroll(ScrollView.FOCUS_LEFT)
-        puzzle_representation_scrollview.postInvalidate() // doing this to fix issue where resizing puzzle representation sometimes leaves black in dual pane mode
+        puzzle_representation_scrollview.postInvalidate() // doing this to fix issue where resizing puzzle representation sometimes leaves black
 
 
         // set text in editor (and puzzle representation and letter count via the editor's TextWatcher handler)
@@ -254,23 +252,12 @@ class AnswerFragment : Fragment() {
             answerText = answerText.substring(0, wordLength)
         }
 
-        // if dual pane
-        if (activity is DualPaneAnswerListener) {
-            updateDualPaneActivityWithAnswer(answerText)
-        } else {
-            // set result for single pane mode
-            val result = Intent()
-            result.putExtra(MainActivity.ACTIVITYRESULT_ANSWER, answerText)
-            activity?.setResult(Activity.RESULT_OK, result)
-            activity?.finish()
-
-            hideSoftKeyboardForAnswer()
-        }
+        updateActivityWithAnswer(answerText)
     }
 
-    private fun updateDualPaneActivityWithAnswer(answerText: String) {
+    private fun updateActivityWithAnswer(answerText: String) {
         activity?.let {
-            if (it is DualPaneAnswerListener) {
+            if (it is AnswerListener) {
                 it.onFinishAnswerDialog(answerText)
                 hideSoftKeyboardForAnswer()
             }
@@ -317,7 +304,6 @@ class AnswerFragment : Fragment() {
      */
     private fun updateViewFontSize(sizeInSp: Int) {
         txt_answer.textSize = Math.max(sizeInSp, FontSize.FONT_MEDIUM.sizeInSp).toFloat()
-        val size = sizeInSp.toFloat()
     }
 
     private fun insertLetter(letterView: TextView) {

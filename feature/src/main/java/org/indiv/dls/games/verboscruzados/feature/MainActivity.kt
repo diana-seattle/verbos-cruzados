@@ -9,37 +9,34 @@ import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 import org.indiv.dls.games.verboscruzados.feature.dialog.ConfirmStartNewGameDialogFragment
 
 import android.os.Bundle
-import android.app.Activity
-import android.content.Intent
-import android.content.pm.ActivityInfo
-import android.support.v4.app.ActivityCompat.startActivityForResult
-import android.util.DisplayMetrics
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.Toast
 
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import org.indiv.dls.games.verboscruzados.feature.MyActionBarActivity.Companion.currentGameWord
-import kotlin.math.round
+import org.indiv.dls.games.verboscruzados.feature.dialog.HelpDialogFragment
+import org.indiv.dls.games.verboscruzados.feature.dialog.StatsDialogFragment
+import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
 
 /**
  * This is the main activity. It houses [PuzzleFragment], and optionally [AnswerFragment] when in landscape mode (on tablets).
  */
-class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.StartNewGameDialogListener,
-        AnswerFragment.DualPaneAnswerListener, PuzzleFragment.PuzzleListener {
+class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.StartNewGameDialogListener,
+        AnswerFragment.AnswerListener, PuzzleFragment.PuzzleListener {
 
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
     companion object {
         private val TAG = MainActivity::class.java.simpleName
-        private val RESULTCODE_ANSWER = 100
-        const val ACTIVITYRESULT_ANSWER = "answer"
+
+        var currentGameWord: GameWord? = null
     }
 
     //endregion
@@ -50,8 +47,11 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
     private var currentGameWords: List<GameWord> = emptyList()
     private val gameSetup = GameSetup()
     private lateinit var puzzleFragment: PuzzleFragment
-    private var answerFragment: AnswerFragment? = null // for use in panel
-    private var answerActivityLaunched = false // use this to load activity only once when puzzle double clicked on
+    private lateinit var answerFragment: AnswerFragment
+
+    private var optionsMenu: Menu? = null
+    private var toolbar: Toolbar? = null
+    private lateinit var mDbHelper: PersistenceHelper
 
     private var showingErrors = false
 
@@ -62,6 +62,8 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        mDbHelper = PersistenceHelper(this)
 
         // Set up toolbar
         toolbar = findViewById(R.id.toolbar)
@@ -85,15 +87,12 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
         // get puzzle fragment
         puzzleFragment = supportFragmentManager.findFragmentById(R.id.puzzle_fragment) as PuzzleFragment
 
-        // get answer fragment if present (this will be found only in dual pane mode)
-        answerFragment = supportFragmentManager.findFragmentById(R.id.answer_fragment) as AnswerFragment?
+        // get answer fragment
+        answerFragment = supportFragmentManager.findFragmentById(R.id.answer_fragment) as AnswerFragment
 
         val displayMetrics = resources.displayMetrics
 
-        // if answer fragment present (dual pane mode), use landscape orientation
-        answerFragment?.let {
-            it.view?.visibility = View.GONE // set invisible until puzzle shows up
-        }
+        answerFragment.view?.visibility = View.GONE // set invisible until puzzle shows up
 
         // calculate available space for the puzzle
         val screenHeightPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
@@ -111,28 +110,6 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
             puzzleFragment.initialize(gridWidth, gridHeight)
             loadNewOrExistingGame()
         }
-
-//        puzzleFragment.view?.viewTreeObserver?.addOnGlobalLayoutListener {
-//            if (answerFragment?.view?.height ?: 0 > 0 && !puzzleFragment.initialized) {
-//                val puzzleWidthPixels = puzzleFragment.view?.width ?: 0
-//                val puzzleHeightPixels = puzzleFragment.view?.height ?: 0
-//                val smallestScreenWidthPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-//                        resources.configuration.smallestScreenWidthDp.toFloat(), displayMetrics)
-//                val screenHeightPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-//                        resources.configuration.screenHeightDp.toFloat(), displayMetrics)
-//
-//
-//                val gridHeight = puzzleHeightPixels / pixelsPerCell - 2 // subtract 2 because subtracting action bar height doesn't seem to be enough
-//                val gridWidth = puzzleWidthPixels / pixelsPerCell - 1   // subtract 1 to give margin for consistency with height
-////            val gridHeight = round(puzzleHeightPixels / pixelsPerCell - 2).toInt() // subtract 2 because subtracting action bar height doesn't seem to be enough
-////            val gridWidth = round(puzzleWidthPixels / pixelsPerCell - 1).toInt()  // subtract 1 to give margin for consistency with height
-//
-//                if (puzzleWidthPixels > 0) {
-//                    puzzleFragment.initialize(gridWidth, gridHeight)
-//                    loadNewOrExistingGame()
-//                }
-//            }
-//        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -150,19 +127,6 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
         showingErrors = false
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
-        super.onActivityResult(requestCode, resultCode, result)
-
-        // if response from answer activity
-        if (requestCode == RESULTCODE_ANSWER) {
-            if (resultCode == Activity.RESULT_OK && result != null) {
-                val userText = result.getStringExtra(MainActivity.ACTIVITYRESULT_ANSWER)
-                onFinishAnswerDialog(userText)
-            }
-            answerActivityLaunched = false
-        }
-    }
-
     /**
      * Handles presses on the action bar items.
      */
@@ -170,6 +134,8 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
         when (item.itemId) {
             R.id.action_showerrors -> showErrors(!showingErrors)
             R.id.action_startnewgame -> promptForNewGame(null)
+            R.id.action_help -> showHelpDialog()
+            R.id.action_showstats -> showStatsDialog()
             else -> return super.onOptionsItemSelected(item)
         }
         return true
@@ -187,29 +153,19 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
         val answerPresentation = createAnswerPresentation(gameWord)
 
         // update answer fragment with current game word
-        answerFragment?.let {
-            // dual pane mode
-            it.setGameWord(answerPresentation)
-        } ?: run {
-            // single pane mode
-            if (!answerActivityLaunched) {
-                val intent = AnswerActivity.getIntent(this, answerPresentation)
-                startActivityForResult(intent, RESULTCODE_ANSWER)
-                answerActivityLaunched = true
-            }
-        }
+        answerFragment.setGameWord(answerPresentation)
     }
 
     //endregion
 
-    //region INTERFACE FUNCTIONS (AnswerFragment.DualPaneAnswerListener) ---------------------------
+    //region INTERFACE FUNCTIONS (AnswerFragment.AnswerListener) ---------------------------
 
     /*
      * implements interface for receiving callback from AnswerFragment
      */
     override fun onFinishAnswerDialog(userText: String) {
 
-        // in dual pane mode, this method may be called by answer dialog during setup (on text change)
+        // This method may be called by answer dialog during setup (on text change)
         if (puzzleFragment.currentGameWord == null) {
             return
         }
@@ -250,11 +206,9 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
      * implements interface for receiving callback from ConfirmStartNewGameDialogFragment
      */
     override fun setupNewGame() {
-        // if dual pane, clear game word and hide answer fragment for now
-        answerFragment?.let {
-            it.clearGameWord()
-            it.view?.visibility = View.GONE // set invisible until puzzle shows up
-        }
+        // Clear game word and hide answer fragment for now
+        answerFragment.clearGameWord()
+        answerFragment.view?.visibility = View.GONE // set invisible until puzzle shows up
 
         // clear puzzle fragment of existing game if any
         puzzleFragment.clearExistingGame()
@@ -336,13 +290,25 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
 
         currentGameWord = puzzleFragment.currentGameWord
 
-        // if dual panel, update answer fragment with current game word
-        answerFragment?.let {
-            if (currentGameWord != null) { // this extra check is necessary for case where setting up initial game and no words available in db
-                it.setGameWord(createAnswerPresentation(currentGameWord!!))
-                it.view?.visibility = View.VISIBLE // set answer dialog fragment visible now that puzzle drawn
-            }
+        // Update answer fragment with current game word
+        if (currentGameWord != null) { // this extra check is necessary for case where setting up initial game and no words available in db
+            answerFragment.setGameWord(createAnswerPresentation(currentGameWord!!))
+            answerFragment.view?.visibility = View.VISIBLE // set answer dialog fragment visible now that puzzle drawn
         }
+    }
+
+    private fun setOptionsMenuText(menuItemId: Int, textId: Int) {
+        optionsMenu?.findItem(menuItemId)?.setTitle(textId)
+    }
+
+    private fun showHelpDialog() {
+        HelpDialogFragment().show(supportFragmentManager, "fragment_showhelp")
+    }
+
+    private fun showStatsDialog() {
+        val dlg = StatsDialogFragment()
+        dlg.setStats(0, 0)
+        dlg.show(supportFragmentManager, "fragment_showstats")
     }
 
     //endregion
