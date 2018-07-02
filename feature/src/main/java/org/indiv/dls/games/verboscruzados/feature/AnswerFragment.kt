@@ -6,9 +6,6 @@ import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -18,28 +15,6 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_answer.*
 
 /**
- * Enum for user-specifiable font size for the answer fragment.
- */
-enum class FontSize(val sizeInSp: Int, val nameResId: Int) {
-    FONT_EXTRA_SMALL(16, R.string.action_font_extra_small),
-    FONT_SMALL(19, R.string.action_font_small),
-    FONT_MEDIUM(22, R.string.action_font_medium),
-    FONT_LARGE(26, R.string.action_font_large),
-    FONT_EXTRA_LARGE(30, R.string.action_font_extra_large);
-
-    companion object {
-        fun getFontForSize(sizeInSp: Int): FontSize {
-            for (value in values()) {
-                if (value.sizeInSp == sizeInSp) {
-                    return value
-                }
-            }
-            return FONT_MEDIUM
-        }
-    }
-}
-
-/**
  * Fragment containing the clues and answer entry.
  */
 class AnswerFragment : Fragment() {
@@ -47,7 +22,6 @@ class AnswerFragment : Fragment() {
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
     companion object {
-        private val PREFERENCE_KEY_FONT = "fontSize"
         private val COLOR_ANSWER = -0xff6634  // a little darker than puzzle background
     }
 
@@ -55,22 +29,11 @@ class AnswerFragment : Fragment() {
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
-    private var optionsMenu: Menu? = null
-
     private var word: String? = null
     private var wordLength: Int = 0
 
     private val userEntry: String
         get() = txt_answer.text.toString().trim { it <= ' ' }
-
-    private var fontSizeUserPreference: Int
-        get() = activity?.getPreferences(Context.MODE_PRIVATE)?.getInt(PREFERENCE_KEY_FONT, FontSize.FONT_MEDIUM.sizeInSp)
-                ?: FontSize.FONT_MEDIUM.sizeInSp
-        set(fontSize) {
-            activity?.getPreferences(Context.MODE_PRIVATE)?.edit()
-                    ?.putInt(PREFERENCE_KEY_FONT, fontSize)
-                    ?.apply()
-        }
 
     //endregion
 
@@ -91,9 +54,6 @@ class AnswerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // enable to add font submenu item
-        setHasOptionsMenu(true)
 
         // puzzle representation
         puzzle_representation.setOnClickListener { showSoftKeyboardForAnswer() }
@@ -130,53 +90,11 @@ class AnswerFragment : Fragment() {
         // confirmation button
         button_submit.setOnClickListener { updateActivityWithAnswer() }
 
-        // get user preference for font
-        updateViewFontSize(fontSizeUserPreference)
-
         // deletion button
         imagebutton_delete.setOnClickListener {
             txt_answer.setText("")
             updateActivityWithAnswer("")
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        optionsMenu = menu
-
-        // Inflate the menu; this adds items to the action bar if it is present.
-        inflater?.inflate(R.menu.answerfragment_fontoptions, menu)
-
-        // if font menu is present, initialize it to current font setting and update UI
-        menu?.findItem(R.id.action_setfont)?.let {
-            val fontSize = FontSize.getFontForSize(fontSizeUserPreference)
-            val menuItemId = when (fontSize) {
-                FontSize.FONT_EXTRA_SMALL -> R.id.action_font_extra_small
-                FontSize.FONT_SMALL -> R.id.action_font_small
-                FontSize.FONT_MEDIUM -> R.id.action_font_medium
-                FontSize.FONT_LARGE -> R.id.action_font_large
-                FontSize.FONT_EXTRA_LARGE -> R.id.action_font_extra_large
-            }
-            updateFontMenuState(menuItemId, fontSize.nameResId)
-        }
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    /**
-     * Handles presses on the action bar items
-     */
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_font_extra_small -> FontSize.FONT_EXTRA_SMALL
-            R.id.action_font_small -> FontSize.FONT_SMALL
-            R.id.action_font_medium -> FontSize.FONT_MEDIUM
-            R.id.action_font_large -> FontSize.FONT_LARGE
-            R.id.action_font_extra_large -> FontSize.FONT_EXTRA_LARGE
-            else -> null
-        }?.let {
-            updateFontSize(item.itemId, it)
-            return true
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     //endregion
@@ -278,32 +196,6 @@ class AnswerFragment : Fragment() {
         // this works when called from onCreateView, but not from onClick
         //	     mTextEditorAnswer.requestFocus();
         //	     activity?.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-    }
-
-    private fun setOptionsMenuChecked(menuItemId: Int, checked: Boolean) {
-        optionsMenu?.findItem(menuItemId)?.isChecked = checked
-    }
-
-    private fun setOptionsMenuText(menuItemId: Int, text: String) {
-        optionsMenu?.findItem(menuItemId)?.title = text
-    }
-
-    private fun updateFontMenuState(menuItemId: Int, fontSizeDescId: Int) {
-        setOptionsMenuChecked(menuItemId, true)
-        setOptionsMenuText(R.id.action_setfont, resources.getString(R.string.action_setfont) + " (" + resources.getString(fontSizeDescId) + ")")
-    }
-
-    private fun updateFontSize(menuItemId: Int, fontSize: FontSize) {
-        updateFontMenuState(menuItemId, fontSize.nameResId)
-        updateViewFontSize(fontSize.sizeInSp)
-        fontSizeUserPreference = fontSize.sizeInSp
-    }
-
-    /**
-     * Updates font size of answer and definition views
-     */
-    private fun updateViewFontSize(sizeInSp: Int) {
-        txt_answer.textSize = Math.max(sizeInSp, FontSize.FONT_MEDIUM.sizeInSp).toFloat()
     }
 
     private fun insertLetter(letterView: TextView) {

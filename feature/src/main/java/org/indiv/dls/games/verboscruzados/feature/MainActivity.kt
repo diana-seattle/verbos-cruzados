@@ -11,6 +11,7 @@ import org.indiv.dls.games.verboscruzados.feature.dialog.ConfirmStartNewGameDial
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
@@ -83,30 +84,29 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
             }
         }
 
-
-        // get puzzle fragment
+        // get puzzle and answer fragments
         puzzleFragment = supportFragmentManager.findFragmentById(R.id.puzzle_fragment) as PuzzleFragment
-
-        // get answer fragment
         answerFragment = supportFragmentManager.findFragmentById(R.id.answer_fragment) as AnswerFragment
 
-        val displayMetrics = resources.displayMetrics
-
-        answerFragment.view?.visibility = View.GONE // set invisible until puzzle shows up
+        answerFragment.view?.visibility = View.GONE // set answer fragment invisible until puzzle shows up
 
         // calculate available space for the puzzle
+        val displayMetrics = resources.displayMetrics
+        val marginInPixels = resources.getDimension(R.dimen.default_margin)
+        val screenWidthPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                resources.configuration.screenWidthDp.toFloat(), displayMetrics)
         val screenHeightPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 resources.configuration.screenHeightDp.toFloat(), displayMetrics)
-        val puzzleHeightPixels = screenHeightPixels - Math.round(resources.getDimension(R.dimen.fragment_answer_height))
-        val puzzleWidthPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                resources.configuration.smallestScreenWidthDp.toFloat(), displayMetrics)
+        val puzzleHeightPixels = screenHeightPixels - resources.getDimension(R.dimen.fragment_answer_height) -
+                getActionBarHeightInPixels(displayMetrics) - marginInPixels
+        val puzzleWidthPixels = screenWidthPixels - marginInPixels
 
         // calculate number of pixels equivalent to 24dp (24dp allows 13 cells on smallest screen supported by Android (320dp width, 426dp height))
-        val pixelsPerCell = Math.round(resources.getDimension(R.dimen.cell_width))
-        val gridHeight = (puzzleHeightPixels / pixelsPerCell - 2).toInt() // subtract 2 because subtracting action bar height doesn't seem to be enough
-        val gridWidth = (puzzleWidthPixels / pixelsPerCell - 1).toInt()   // subtract 1 to give margin for consistency with height
+        val pixelsPerCell = resources.getDimension(R.dimen.cell_width)
+        val gridHeight = (puzzleHeightPixels / pixelsPerCell).toInt()
+        val gridWidth = (puzzleWidthPixels / pixelsPerCell).toInt()
 
-        if (puzzleWidthPixels > 0) {
+        if (gridWidth > 0 && gridHeight > 0) {
             puzzleFragment.initialize(gridWidth, gridHeight)
             loadNewOrExistingGame()
         }
@@ -117,14 +117,6 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
         menuInflater.inflate(R.menu.main_options, menu)
         optionsMenu = menu
         return true
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        compositeDisposable.clear()
-
-        currentGameWord = null
-        showingErrors = false
     }
 
     /**
@@ -139,6 +131,14 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
             else -> return super.onOptionsItemSelected(item)
         }
         return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.clear()
+
+        currentGameWord = null
+        showingErrors = false
     }
 
     //endregion
@@ -309,6 +309,18 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
         val dlg = StatsDialogFragment()
         dlg.setStats(0, 0)
         dlg.show(supportFragmentManager, "fragment_showstats")
+    }
+
+    // note that with api level 13 and above we can use getResources().getConfiguration().screenHeightDp/screenWidthDp to get available screen size
+    private fun getActionBarHeightInPixels(displayMetrics: DisplayMetrics): Int {
+        // actionBar.getHeight() returns zero in onCreate (i.e. before it is shown)
+        // for the following solution, see: http://stackoverflow.com/questions/12301510/how-to-get-the-actionbar-height/13216807#13216807
+        var actionBarHeight = 0  // actionBar.getHeight() returns zero in onCreate
+        val tv = TypedValue()
+        if (theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, displayMetrics)
+        }
+        return actionBarHeight
     }
 
     //endregion
