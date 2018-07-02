@@ -96,10 +96,9 @@ class GameSetup {
             val sentenceClue = getSentenceClue(it, subjectPronoun, conjugationType)
             sentenceClue.substringBefore("_")
             WordCandidate(word = presentConjugator.conjugate(it, subjectPronoun).toUpperCase(),
-                    sentenceClueBeginning = sentenceClue.substringBefore("_"),
-                    sentenceClueEnd = sentenceClue.substringAfter("_"),
-                    infinitiveClue = getInfinitiveClue(it.infinitive, it.translation),
-                    conjugationTypeLabel = conjugationType.text)
+                    conjugationTypeLabel = conjugationType.text,
+                    pronounLabel = "(${subjectPronoun.text})",
+                    infinitiveClue = getInfinitiveClue(it.infinitive, it.translation))
         }
     }
 
@@ -207,8 +206,8 @@ class GameSetup {
         }
 
         if (locationFound) {
-            gameWord = GameWord(word, wordCandidate.sentenceClueBeginning, wordCandidate.sentenceClueEnd,
-                    wordCandidate.infinitiveClue, wordCandidate.conjugationTypeLabel,
+            gameWord = GameWord(word, wordCandidate.conjugationTypeLabel,
+                    wordCandidate.pronounLabel, wordCandidate.infinitiveClue,
                     row, col, across)
             addToGrid(gameWord, cellGrid)
         }
@@ -288,10 +287,9 @@ class GameSetup {
     //endregion
 
     private class WordCandidate(val word: String,
-                                val sentenceClueBeginning: String,
-                                val sentenceClueEnd: String,
-                                val infinitiveClue: String,
-                                val conjugationTypeLabel: String) {
+                                val conjugationTypeLabel: String,
+                                val pronounLabel: String,
+                                val infinitiveClue: String) {
         // variables used by word placement algorithm to place word in puzzle
         private var lastAcrossPositionTried = -1
         private var lastDownPositionTried = -1

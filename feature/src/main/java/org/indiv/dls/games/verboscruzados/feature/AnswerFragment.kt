@@ -94,7 +94,6 @@ class AnswerFragment : Fragment() {
         puzzle_representation.removeAllViews()
         txt_answer.setText("")
         textview_sentence_clue_beginning.text = "" // there may be existing text
-        textview_sentence_clue_end.text = "" // there may be existing text
         txt_answer_layout.hint = ""
         txt_answer_layout.error = ""
     }
@@ -135,8 +134,7 @@ class AnswerFragment : Fragment() {
         // update clue views
         txt_answer_layout.hint = answerPresentation.conjugationTypeLabel
         txt_answer_layout.error = answerPresentation.infinitiveClue
-        textview_sentence_clue_beginning.text = answerPresentation.sentenceClueBeginning
-        textview_sentence_clue_end.text = answerPresentation.sentenceClueEnd
+        textview_sentence_clue_beginning.text = answerPresentation.pronounLabel
     }
 
     private fun updatePuzzleRepresentation() {

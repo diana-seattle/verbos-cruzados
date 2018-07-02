@@ -11,22 +11,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
+        android:layout_marginTop="@dimen/quarter_margin"
         android:orientation="horizontal"
-        android:paddingEnd="@dimen/quarter_margin"
         android:paddingStart="@dimen/quarter_margin"
-        android:paddingTop="@dimen/half_margin">
+        android:paddingTop="@dimen/quarter_margin">
 
         <TextView android:id="@+id/textview_sentence_clue_beginning"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:layout_gravity="top"
+                  android:layout_marginEnd="@dimen/quarter_margin"
                   android:layout_marginStart="@dimen/half_margin"
                   android:layout_marginTop="@dimen/answer_clue_offset"
                   android:textSize="@dimen/large"/>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/txt_answer_layout"
-            android:layout_width="200dp"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             app:errorTextAppearance="@style/answerSubStyle"
             app:hintTextAppearance="@style/answerHintStyle">
@@ -38,67 +39,56 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:imeOptions="actionGo"
-                android:inputType="text"
+                android:inputType="textNoSuggestions"
                 android:maxLines="1"
                 android:textAppearance="@style/answerStyle"/>
 
         </android.support.design.widget.TextInputLayout>
-
-
-        <TextView android:id="@+id/textview_sentence_clue_end"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_gravity="top"
-                  android:layout_marginStart="@dimen/quarter_margin"
-                  android:layout_marginEnd="@dimen/quarter_margin"
-                  android:layout_marginTop="@dimen/answer_clue_offset"
-                  android:textSize="@dimen/large"/>
 
     </LinearLayout>
 
     <!-- buttons for accented letters -->
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:layout_marginStart="@dimen/three_quarter_margin"
+                  android:layout_marginStart="@dimen/half_margin"
                   android:orientation="horizontal">
         <Button android:id="@+id/button_accented_a"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_margin="@dimen/quarter_margin"
+                android:layout_marginRight="@dimen/quarter_margin"
                 android:text="á"
                 android:textAllCaps="false"/>
         <Button android:id="@+id/button_accented_e"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_margin="@dimen/quarter_margin"
+                android:layout_marginRight="@dimen/quarter_margin"
                 android:text="é"
                 android:textAllCaps="false"/>
         <Button android:id="@+id/button_accented_i"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_margin="@dimen/quarter_margin"
+                android:layout_marginRight="@dimen/quarter_margin"
                 android:text="í"
                 android:textAllCaps="false"/>
         <Button android:id="@+id/button_accented_o"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_margin="@dimen/quarter_margin"
+                android:layout_marginRight="@dimen/quarter_margin"
                 android:text="ó"
                 android:textAllCaps="false"/>
         <Button android:id="@+id/button_umlaut_u"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_margin="@dimen/quarter_margin"
+                android:layout_marginRight="@dimen/quarter_margin"
                 android:text="ü"
                 android:textAllCaps="false"/>
         <Button android:id="@+id/button_tilde_n"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_margin="@dimen/quarter_margin"
+                android:layout_marginRight="@dimen/quarter_margin"
                 android:text="ñ"
                 android:textAllCaps="false"/>
     </LinearLayout>
-
 
 
     <!-- puzzle's word representation and letter count indicator
@@ -109,8 +99,8 @@ mode to expand and contract, but using match_parent causes a black area when sho
         android:id="@+id/puzzle_representation_scrollview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginTop="@dimen/quarter_margin">
+        android:layout_marginTop="@dimen/quarter_margin"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -141,7 +131,6 @@ mode to expand and contract, but using match_parent causes a black area when sho
 
         </LinearLayout>
     </HorizontalScrollView>
-
 
 
 </LinearLayout>
