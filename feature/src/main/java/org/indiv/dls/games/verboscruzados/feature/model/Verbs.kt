@@ -24,6 +24,13 @@ enum class Irregularity {
     STEM_CHANGE_U_to_UE
 }
 
+enum class IrregularityCategory(val text: String) {
+    REGULAR("Regular"),
+    SPELLING_CHANGE("Spelling Change"),
+    STEM_CHANGE("Stem Change"),
+    IRREGULAR("Irregular")
+}
+
 /**
  * Conjugation type enum
  *
@@ -59,7 +66,6 @@ enum class SubjectPronoun(val text: String, val isThirdPerson: Boolean = false) 
 
 data class Verb(val infinitive: String,
                 val translation: String,
-                val requiresDirectObject: Boolean = false,
                 val irregularities: List<Irregularity> = emptyList(),
                 val irregularGerund: String? = null,
                 val irregularPastParticiple: String? = null,

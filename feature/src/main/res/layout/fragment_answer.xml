@@ -18,7 +18,7 @@
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/txt_answer_layout"
-            android:layout_width="320dp"
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
             app:errorTextAppearance="@style/answerSubStyle"
             app:hintTextAppearance="@style/answerHintStyle">

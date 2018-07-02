@@ -5,6 +5,8 @@ import org.indiv.dls.games.verboscruzados.feature.GridCell
 import org.indiv.dls.games.verboscruzados.feature.conjugation.conjugatorMap
 import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
+import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
+import org.indiv.dls.games.verboscruzados.feature.model.IrregularityCategory
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
 import org.indiv.dls.games.verboscruzados.feature.model.irregularArVerbs
@@ -29,7 +31,7 @@ class GameSetup {
     /**
      * Creates a new game.
      */
-    fun newGame(cellGrid: Array<Array<GridCell?>>): Single<List<GameWord>> {
+    fun newGame(cellGrid: Array<Array<GridCell?>>, gameOptions: Map<String, Boolean>): Single<List<GameWord>> {
         return Single.fromCallable {
 
             // retrieve random list of words
@@ -37,7 +39,7 @@ class GameSetup {
             val gridWidth = cellGrid[0].size
 
             val numWords = Math.round((gridWidth * gridHeight / 5 + 20).toFloat())  // get more than we need to maximize density of layout
-            val wordCandidates = getWordCandidates(numWords).toMutableList()
+            val wordCandidates = getWordCandidates(numWords, gameOptions).toMutableList()
 
             // determine layout
             val gameWords = layoutWords(cellGrid, wordCandidates)
@@ -87,15 +89,15 @@ class GameSetup {
     /**
      * Gets list of words that are candidates for the next puzzle.
      */
-    private fun getWordCandidates(numWords: Int): List<WordCandidate> {
+    private fun getWordCandidates(numWords: Int, gameOptions: Map<String, Boolean>): List<WordCandidate> {
 
 
         // TODO: get these based on user options
 
-        val verbs = getVerbs()
+        val verbs = getQualifyingVerbs(gameOptions)
         val candidates = mutableListOf<WordCandidate>()
 
-        ConjugationType.values().forEach {
+        getQualifyingConjugationTypes(gameOptions).forEach {
             val conjugationType = it
             when (conjugationType) {
                 ConjugationType.GERUND -> {
@@ -112,7 +114,7 @@ class GameSetup {
                 }
                 else -> {
                     val conjugator = conjugatorMap[it]!!
-                    SubjectPronoun.values().forEach {
+                    getQualifyingSubjectPronouns(gameOptions).forEach {
                         val subjectPronoun = it
                         candidates.addAll(verbs.map {
                             WordCandidate(conjugator.conjugate(it, subjectPronoun).toUpperCase(),
@@ -123,18 +125,72 @@ class GameSetup {
                 }
             }
         }
-        return candidates
+        return randomSelection(candidates, numWords)
     }
 
-    private fun getVerbs(): List<Verb> {
+    private fun getQualifyingVerbs(gameOptions: Map<String, Boolean>): List<Verb> {
         val verbs = mutableListOf<Verb>()
-        verbs.addAll(regularArVerbs)
-        verbs.addAll(regularErVerbs)
-        verbs.addAll(regularIrVerbs)
-        verbs.addAll(irregularArVerbs)
-        verbs.addAll(irregularErVerbs)
-        verbs.addAll(irregularIrVerbs)
+
+        val infinitiveEndings = getQualifyingInfinitiveEndings(gameOptions)
+        val irregularityCategories = getQualifyingIrregularityCategories(gameOptions)
+
+        when {
+            infinitiveEndings.contains(InfinitiveEnding.AR) -> {
+                when {
+                    irregularityCategories.contains(IrregularityCategory.REGULAR) -> verbs.addAll(regularArVerbs)
+//                    irregularityCategories.contains(IrregularityCategory.SPELLING_CHANGE) -> verbs.addAll(irregularArVerbs)
+//                    irregularityCategories.contains(IrregularityCategory.STEM_CHANGE) -> verbs.addAll(irregularArVerbs)
+                    irregularityCategories.contains(IrregularityCategory.IRREGULAR) -> verbs.addAll(irregularArVerbs)
+                }
+            }
+            infinitiveEndings.contains(InfinitiveEnding.IR) -> {
+                when {
+                    irregularityCategories.contains(IrregularityCategory.REGULAR) -> verbs.addAll(regularIrVerbs)
+//                    irregularityCategories.contains(IrregularityCategory.SPELLING_CHANGE) -> verbs.addAll(irregularIrVerbs)
+//                    irregularityCategories.contains(IrregularityCategory.STEM_CHANGE) -> verbs.addAll(irregularIrVerbs)
+                    irregularityCategories.contains(IrregularityCategory.IRREGULAR) -> verbs.addAll(irregularIrVerbs)
+                }
+            }
+            infinitiveEndings.contains(InfinitiveEnding.ER) -> {
+                when {
+                    irregularityCategories.contains(IrregularityCategory.REGULAR) -> verbs.addAll(regularErVerbs)
+//                    irregularityCategories.contains(IrregularityCategory.SPELLING_CHANGE) -> verbs.addAll(irregularErVerbs)
+//                    irregularityCategories.contains(IrregularityCategory.STEM_CHANGE) -> verbs.addAll(irregularErVerbs)
+                    irregularityCategories.contains(IrregularityCategory.IRREGULAR) -> verbs.addAll(irregularErVerbs)
+                }
+            }
+        }
+
         return verbs
+    }
+
+    private fun getQualifyingConjugationTypes(gameOptions: Map<String, Boolean>): List<ConjugationType> {
+        return ConjugationType.values()
+                .filter { gameOptions[it.name] ?: false }
+    }
+
+    private fun getQualifyingInfinitiveEndings(gameOptions: Map<String, Boolean>): List<InfinitiveEnding> {
+        return InfinitiveEnding.values()
+                .filter { gameOptions[it.name] ?: false }
+    }
+
+    private fun getQualifyingIrregularityCategories(gameOptions: Map<String, Boolean>): List<IrregularityCategory> {
+        return IrregularityCategory.values()
+                .filter { gameOptions[it.name] ?: false }
+    }
+
+    private fun getQualifyingSubjectPronouns(gameOptions: Map<String, Boolean>): List<SubjectPronoun> {
+        return SubjectPronoun.values()
+                .filter { gameOptions[it.name] ?: false }
+    }
+
+    private fun randomSelection(verbs: List<WordCandidate>, numWords: Int): List<WordCandidate> {
+        val randomList = verbs.toMutableList()
+        while (randomList.size > numWords) {
+            val randomIndex = (Math.random() * (randomList.size - 1)).toInt()
+            randomList.removeAt(randomIndex)
+        }
+        return randomList
     }
 
     private fun layoutWords(cellGrid: Array<Array<GridCell?>>, wordCandidates: MutableList<WordCandidate>): List<GameWord> {

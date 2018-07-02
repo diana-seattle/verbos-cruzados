@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
 
     private var optionsMenu: Menu? = null
     private var toolbar: Toolbar? = null
-    private lateinit var mDbHelper: PersistenceHelper
+    private lateinit var persistenceHelper: PersistenceHelper
 
     private var showingErrors = false
 
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mDbHelper = PersistenceHelper(this)
+        persistenceHelper = PersistenceHelper(this)
 
         // Set up toolbar
         toolbar = findViewById(R.id.toolbar)
@@ -174,7 +174,7 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
             puzzleFragment.updateUserTextInPuzzle(it)
 
             // update database with answer
-            Thread { mDbHelper.persistUserEntry(it) }.start()
+            Thread { persistenceHelper.persistUserEntry(it) }.start()
         }
 
         // update error indications
@@ -214,13 +214,13 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
         showErrors(false)
 
         // setup new game
-        compositeDisposable.add(gameSetup.newGame(puzzleFragment.cellGrid)
+        compositeDisposable.add(gameSetup.newGame(puzzleFragment.cellGrid, persistenceHelper.currentGameOptions)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { gameWords ->
                             currentGameWords = gameWords
-                            mDbHelper.persistGame(gameWords)
+                            persistenceHelper.persistGame(gameWords)
                             createGrid()
                         },
                         { error ->
@@ -263,7 +263,7 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
     private fun loadNewOrExistingGame() {
 
         // get current game if any
-        currentGameWords = mDbHelper.currentGameWords
+        currentGameWords = persistenceHelper.currentGameWords
 
         // if on very first game, or if no saved game (due to an error), create a new one, otherwise open existing game
         if (currentGameWords.isEmpty() || !puzzleFragment.doWordsFitInGrid(currentGameWords)) {
