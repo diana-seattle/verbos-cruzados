@@ -289,11 +289,8 @@ val irregularArVerbs = listOf(
         Verb("recomendar", "recommend", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("sentar", "sit", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
 
-
-
+        // stem change u -> ue
         Verb("jugar", "play", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_UE)),
-        Verb("sentar", "sit", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
-
 
         // no accent on preterit
         Verb("andar", "walk", altPreteritRoot = "anduv", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT)),

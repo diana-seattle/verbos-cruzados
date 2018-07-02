@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
                     currentGameWord = puzzleFragment.currentGameWord
                     currentGameWord?.let {
                         it.word?.let {
-                            onFinishAnswerDialog(it)
+                            onUpdateAnswer(it)
                         }
                     }
                 } while (puzzleFragment.selectNextErroredGameWord() == true)
@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
     /*
      * implements interface for receiving callback from AnswerFragment
      */
-    override fun onFinishAnswerDialog(userText: String) {
+    override fun onUpdateAnswer(userText: String) {
 
         // This method may be called by answer dialog during setup (on text change)
         if (puzzleFragment.currentGameWord == null) {

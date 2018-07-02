@@ -8,7 +8,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ScrollView
 import android.widget.TextView
@@ -41,7 +40,7 @@ class AnswerFragment : Fragment() {
 
     // interface for activity to implement to receive result
     interface AnswerListener {
-        fun onFinishAnswerDialog(userText: String)
+        fun onUpdateAnswer(userText: String)
     }
 
     //endregion
@@ -54,9 +53,6 @@ class AnswerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // puzzle representation
-        puzzle_representation.setOnClickListener { showSoftKeyboardForAnswer() }
 
         val specialLetterListener = { v: View -> insertLetter(v as TextView) }
         button_accented_a.setOnClickListener(specialLetterListener)
@@ -77,24 +73,9 @@ class AnswerFragment : Fragment() {
             override fun afterTextChanged(s: Editable) {
                 updateLetterCount()
                 updatePuzzleRepresentation()
+                updateActivityWithAnswer()
             }
         })
-        txt_answer.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                // doing this on text change results in keyboard being prematurely dismissed
-                updateActivityWithAnswer(userEntry)
-            }
-            false
-        }
-
-        // confirmation button
-        button_submit.setOnClickListener { updateActivityWithAnswer() }
-
-        // deletion button
-        imagebutton_delete.setOnClickListener {
-            txt_answer.setText("")
-            updateActivityWithAnswer("")
-        }
     }
 
     //endregion
@@ -104,6 +85,8 @@ class AnswerFragment : Fragment() {
     fun setGameWord(answerPresentation: AnswerPresentation) {
         updateGameWord(answerPresentation)
         word = answerPresentation.word
+
+        showSoftKeyboardForAnswer()
     }
 
     // called by activity
@@ -143,8 +126,9 @@ class AnswerFragment : Fragment() {
         puzzle_representation_scrollview.postInvalidate() // doing this to fix issue where resizing puzzle representation sometimes leaves black
 
 
-        // set text in editor (and puzzle representation and letter count via the editor's TextWatcher handler)
+        // set text in editor
         txt_answer.setText(answerPresentation.userText?.toLowerCase() ?: "")
+        txt_answer.setSelection(answerPresentation.userText?.length ?: 0)
 
         // update clue views
         textview_sentence_clue.text = answerPresentation.sentenceClue
@@ -170,13 +154,9 @@ class AnswerFragment : Fragment() {
             answerText = answerText.substring(0, wordLength)
         }
 
-        updateActivityWithAnswer(answerText)
-    }
-
-    private fun updateActivityWithAnswer(answerText: String) {
-        activity?.let {
-            if (it is AnswerListener) {
-                it.onFinishAnswerDialog(answerText)
+        (activity as? AnswerListener)?.let {
+            it.onUpdateAnswer(answerText)
+            if (answerText.length == wordLength) {
                 hideSoftKeyboardForAnswer()
             }
         }
