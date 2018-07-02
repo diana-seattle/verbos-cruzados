@@ -12,17 +12,21 @@ import android.os.Bundle
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.support.v4.app.ActivityCompat.startActivityForResult
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewTreeObserver
 import android.widget.Toast
 
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import org.indiv.dls.games.verboscruzados.feature.MyActionBarActivity.Companion.currentGameWord
+import kotlin.math.round
 
 /**
  * This is the main activity. It houses [PuzzleFragment], and optionally [AnswerFragment] when in landscape mode (on tablets).
@@ -86,34 +90,49 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
 
         val displayMetrics = resources.displayMetrics
 
-        // get action bar height
-        val actionBarHeightInPixels = getActionBarHeightInPixels(displayMetrics)
-
-        var puzzleWidthPixels = 0
-        var puzzleHeightPixels = 0
-
         // if answer fragment present (dual pane mode), use landscape orientation
         answerFragment?.let {
             it.view?.visibility = View.GONE // set invisible until puzzle shows up
-
-            // this allows screen to rotate 180deg in landscape mode
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-
-            // determine puzzle dimensions
-            val answerPanelWidthPixels = Math.round(resources.getDimension(R.dimen.fragment_answer_width))
-            puzzleWidthPixels = Math.max(displayMetrics.widthPixels, displayMetrics.heightPixels) - answerPanelWidthPixels
-            puzzleHeightPixels = Math.min(displayMetrics.widthPixels, displayMetrics.heightPixels) - actionBarHeightInPixels
-        } ?: run {
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            // determine puzzle dimensions
-            puzzleWidthPixels = Math.min(displayMetrics.widthPixels, displayMetrics.heightPixels)
-            puzzleHeightPixels = Math.max(displayMetrics.widthPixels, displayMetrics.heightPixels) - actionBarHeightInPixels
         }
 
-        // initialize puzzle fragment after setting orientation so it knows its size
-        puzzleFragment.initialize(puzzleWidthPixels, puzzleHeightPixels)
+        // calculate available space for the puzzle
+        val screenHeightPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                resources.configuration.screenHeightDp.toFloat(), displayMetrics)
+        val puzzleHeightPixels = screenHeightPixels - Math.round(resources.getDimension(R.dimen.fragment_answer_height))
+        val puzzleWidthPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                resources.configuration.smallestScreenWidthDp.toFloat(), displayMetrics)
 
-        loadNewOrExistingGame()
+        // calculate number of pixels equivalent to 24dp (24dp allows 13 cells on smallest screen supported by Android (320dp width, 426dp height))
+        val pixelsPerCell = Math.round(resources.getDimension(R.dimen.cell_width))
+        val gridHeight = (puzzleHeightPixels / pixelsPerCell - 2).toInt() // subtract 2 because subtracting action bar height doesn't seem to be enough
+        val gridWidth = (puzzleWidthPixels / pixelsPerCell - 1).toInt()   // subtract 1 to give margin for consistency with height
+
+        if (puzzleWidthPixels > 0) {
+            puzzleFragment.initialize(gridWidth, gridHeight)
+            loadNewOrExistingGame()
+        }
+
+//        puzzleFragment.view?.viewTreeObserver?.addOnGlobalLayoutListener {
+//            if (answerFragment?.view?.height ?: 0 > 0 && !puzzleFragment.initialized) {
+//                val puzzleWidthPixels = puzzleFragment.view?.width ?: 0
+//                val puzzleHeightPixels = puzzleFragment.view?.height ?: 0
+//                val smallestScreenWidthPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+//                        resources.configuration.smallestScreenWidthDp.toFloat(), displayMetrics)
+//                val screenHeightPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+//                        resources.configuration.screenHeightDp.toFloat(), displayMetrics)
+//
+//
+//                val gridHeight = puzzleHeightPixels / pixelsPerCell - 2 // subtract 2 because subtracting action bar height doesn't seem to be enough
+//                val gridWidth = puzzleWidthPixels / pixelsPerCell - 1   // subtract 1 to give margin for consistency with height
+////            val gridHeight = round(puzzleHeightPixels / pixelsPerCell - 2).toInt() // subtract 2 because subtracting action bar height doesn't seem to be enough
+////            val gridWidth = round(puzzleWidthPixels / pixelsPerCell - 1).toInt()  // subtract 1 to give margin for consistency with height
+//
+//                if (puzzleWidthPixels > 0) {
+//                    puzzleFragment.initialize(gridWidth, gridHeight)
+//                    loadNewOrExistingGame()
+//                }
+//            }
+//        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -311,19 +330,6 @@ class MainActivity : MyActionBarActivity(), ConfirmStartNewGameDialogFragment.St
         }
         createGrid()
     }
-
-    // note that with api level 13 and above we can use getResources().getConfiguration().screenHeightDp/screenWidthDp to get available screen size
-    private fun getActionBarHeightInPixels(displayMetrics: DisplayMetrics): Int {
-        // actionBar.getHeight() returns zero in onCreate (i.e. before it is shown)
-        // for the following solution, see: http://stackoverflow.com/questions/12301510/how-to-get-the-actionbar-height/13216807#13216807
-        var actionBarHeight = 0  // actionBar.getHeight() returns zero in onCreate
-        val tv = TypedValue()
-        if (theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, displayMetrics)
-        }
-        return actionBarHeight
-    }
-
 
     private fun createGrid() {
         puzzleFragment.createGrid(this)

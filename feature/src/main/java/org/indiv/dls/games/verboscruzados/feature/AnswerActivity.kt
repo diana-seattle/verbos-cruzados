@@ -45,9 +45,6 @@ class AnswerActivity : MyActionBarActivity() {
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        // set to portrait mode
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
         // get answer fragment
         answerFragment = supportFragmentManager.findFragmentById(R.id.answer_fragment) as AnswerFragment
 

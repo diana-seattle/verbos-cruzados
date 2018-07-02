@@ -7,6 +7,7 @@
             android:name=".MainActivity"
             android:configChanges="screenLayout|orientation|screenSize|smallestScreenSize"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustNothing">
 
@@ -35,6 +36,7 @@
             android:name=".AnswerActivity"
             android:configChanges="screenLayout|orientation|screenSize|smallestScreenSize"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustNothing">  <!-- needed by ActionBarActivity -->
 

@@ -1,6 +1,0 @@
-<resources>
-    
-    <!-- width of answer fragment panel -->
-    <dimen name="fragment_answer_width">400dp</dimen>
-    
-</resources>

@@ -35,13 +35,13 @@ class PuzzleFragment : Fragment() {
 
     private var gridWidth: Int = 0
     private var gridHeight: Int = 0
-    private var pixelsPerCell: Int = 0
     private var vibrator: Vibrator? = null
 
     //endregion
 
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
 
+    var initialized = false
     lateinit var cellGrid: Array<Array<GridCell?>>
 
     var currentGameWord: GameWord? = null
@@ -88,10 +88,7 @@ class PuzzleFragment : Fragment() {
     //region OVERRIDDEN FUNCTIONS ------------------------------------------------------------------
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // inflate the view
-        val view = inflater.inflate(R.layout.fragment_puzzle, container)
-
-        return view
+        return inflater.inflate(R.layout.fragment_puzzle, container)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -105,16 +102,11 @@ class PuzzleFragment : Fragment() {
 
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
 
-    fun initialize(viewWidthPixels: Int, viewHeightPixels: Int) {
-
-        val r = resources
-
-        // calculate number of pixels equivalent to 24dp (24dp allows 13 cells on smallest screen supported by Android (320dp width, 426dp height))
-        pixelsPerCell = Math.round(r.getDimension(R.dimen.cell_width))
+    fun initialize(gridWidth: Int, gridHeight: Int) {
+        this.gridWidth = gridWidth
+        this.gridHeight = gridHeight
 
         // set up grid
-        gridHeight = viewHeightPixels / pixelsPerCell - 2  // subtract 2 because subtracting action bar height doesn't seem to be enough
-        gridWidth = viewWidthPixels / pixelsPerCell - 1  // subtract 1 to give margin for consistency with height
         cellGrid = Array(gridHeight) { arrayOfNulls<GridCell>(gridWidth) }
 
         // create table rows
@@ -123,6 +115,8 @@ class PuzzleFragment : Fragment() {
             tableRow.gravity = Gravity.CENTER
             cell_table_layout.addView(tableRow)
         }
+
+        initialized = true
     }
 
     fun doWordsFitInGrid(gameWords: List<GameWord>): Boolean {

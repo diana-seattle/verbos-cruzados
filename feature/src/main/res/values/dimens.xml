@@ -1,8 +1,8 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
 
-    <!-- width of answer fragment panel -->
-    <dimen name="fragment_answer_width">325dp</dimen>
+    <!-- height of answer fragment panel -->
+    <dimen name="fragment_answer_height">250dp</dimen>
 
     <!-- width of individual cell -->
     <dimen name="cell_width">25dp</dimen>

@@ -5,6 +5,7 @@
               android:layout_height="match_parent"
               android:orientation="vertical"
               tools:context=".MainActivity">
+    <!-- using this above for better performance: android:baselineAligned="false" -->
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -20,10 +21,27 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <!-- puzzle fragment -->
-    <fragment android:id="@+id/puzzle_fragment"
-              class="org.indiv.dls.games.verboscruzados.feature.PuzzleFragment"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"/>
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="@drawable/cell_background_unused"
+                  android:baselineAligned="false"
+                  android:orientation="vertical"
+                  tools:context=".MainActivity">
 
+        <!-- answer fragment -->
+        <fragment android:id="@+id/answer_fragment"
+                  class="org.indiv.dls.games.verboscruzados.feature.AnswerFragment"
+                  android:layout_width="match_parent"
+                  android:layout_height="@dimen/fragment_answer_height"
+        />
+
+        <!-- puzzle fragment -->
+        <fragment android:id="@+id/puzzle_fragment"
+                  class="org.indiv.dls.games.verboscruzados.feature.PuzzleFragment"
+                  android:layout_width="match_parent"
+                  android:layout_height="0dp"
+                  android:layout_weight="1"
+        />
+
+    </LinearLayout>
 </LinearLayout>
