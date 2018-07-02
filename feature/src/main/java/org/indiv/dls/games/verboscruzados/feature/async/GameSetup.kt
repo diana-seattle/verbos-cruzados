@@ -90,10 +90,6 @@ class GameSetup {
      * Gets list of words that are candidates for the next puzzle.
      */
     private fun getWordCandidates(numWords: Int, gameOptions: Map<String, Boolean>): List<WordCandidate> {
-
-
-        // TODO: get these based on user options
-
         val verbs = getQualifyingVerbs(gameOptions)
         val candidates = mutableListOf<WordCandidate>()
 
@@ -133,6 +129,10 @@ class GameSetup {
 
         val infinitiveEndings = getQualifyingInfinitiveEndings(gameOptions)
         val irregularityCategories = getQualifyingIrregularityCategories(gameOptions)
+
+
+        // TODO: fix these
+
 
         when {
             infinitiveEndings.contains(InfinitiveEnding.AR) -> {

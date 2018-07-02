@@ -130,10 +130,6 @@ class PuzzleFragment : Fragment() {
         return true
     }
 
-    /**
-     * create new game (called first time app run, or when user starts new game)
-     * implements interface for receiving callback from ConfirmStartNewGameDialogFragment
-     */
     fun clearExistingGame() {
         // clear out any existing data
         currentGameWord = null

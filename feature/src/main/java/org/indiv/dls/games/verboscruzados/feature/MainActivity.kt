@@ -4,11 +4,22 @@ package org.indiv.dls.games.verboscruzados.feature
  * Play Store: https://play.google.com/store/apps/details?id=org.indiv.dls.games.verboscruzados
  */
 
+// TODO: options UI
+// TODO: applying options
+// TODO: change fragments into components
+// TODO: more verbs, fix conjugations
+// TODO: fix dialogs
+// TODO: backgrounds, icons, answer styling refinements
+// TODO: help screen
+// TODO: stats screen
+// TODO: instant app
+
+
 import org.indiv.dls.games.verboscruzados.feature.async.GameSetup
 import org.indiv.dls.games.verboscruzados.feature.game.GameWord
-import org.indiv.dls.games.verboscruzados.feature.dialog.ConfirmStartNewGameDialogFragment
 
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.DisplayMetrics
@@ -27,10 +38,9 @@ import org.indiv.dls.games.verboscruzados.feature.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
 
 /**
- * This is the main activity. It houses [PuzzleFragment], and optionally [AnswerFragment] when in landscape mode (on tablets).
+ * This is the main activity. It houses [PuzzleFragment], and [AnswerFragment].
  */
-class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.StartNewGameDialogListener,
-        AnswerFragment.AnswerListener, PuzzleFragment.PuzzleListener {
+class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleFragment.PuzzleListener {
 
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
@@ -198,39 +208,6 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
 
     //endregion
 
-    //region INTERFACE METHODS (ConfirmStartNewGameDialogFragment.StartNewGameDialogListener) ------
-
-    /**
-     * create new game (called first time app run, or when user starts new game)
-     * implements interface for receiving callback from ConfirmStartNewGameDialogFragment
-     */
-    override fun setupNewGame() {
-        // Clear game word and hide answer fragment for now
-        answerFragment.clearGameWord()
-        answerFragment.view?.visibility = View.GONE // set invisible until puzzle shows up
-
-        // clear puzzle fragment of existing game if any
-        puzzleFragment.clearExistingGame()
-        showErrors(false)
-
-        // setup new game
-        compositeDisposable.add(gameSetup.newGame(puzzleFragment.cellGrid, persistenceHelper.currentGameOptions)
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { gameWords ->
-                            currentGameWords = gameWords
-                            persistenceHelper.persistGame(gameWords)
-                            createGrid()
-                        },
-                        { error ->
-                            Toast.makeText(this, R.string.error_game_setup_failure, Toast.LENGTH_SHORT).show()
-                            Log.e(TAG, "Error setting up game: " + error.message)
-                        }))
-    }
-
-    //endregion
-
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
     //endregion
 
@@ -251,10 +228,13 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
     }
 
     private fun promptForNewGame(extraMessage: String?) {
-        val dlg = ConfirmStartNewGameDialogFragment()
-        dlg.setExtraMessage(extraMessage)
-        dlg.showDlg(this as ConfirmStartNewGameDialogFragment.StartNewGameDialogListener,
-                supportFragmentManager, "fragment_startnewgame")
+        val message = (if (extraMessage != null) extraMessage + "\n\n" else "") +
+                resources.getString(R.string.dialog_startnewgame_prompt)
+        AlertDialog.Builder(this)
+                .setTitle(message)
+                .setPositiveButton(R.string.dialog_startnewgame_yes) { _, _ -> setupNewGame() }
+                .setNegativeButton(R.string.dialog_startnewgame_no) { _, _ -> }
+                .show()
     }
 
     /**
@@ -282,6 +262,34 @@ class MainActivity : AppCompatActivity(), ConfirmStartNewGameDialogFragment.Star
             gameSetup.addToGrid(gameWord, puzzleFragment.cellGrid)
         }
         createGrid()
+    }
+
+    /**
+     * Creates new game (called first time app run, or when user starts new game)
+     */
+    private fun setupNewGame() {
+        // Clear game word and hide answer fragment for now
+        answerFragment.clearGameWord()
+        answerFragment.view?.visibility = View.GONE // set invisible until puzzle shows up
+
+        // clear puzzle fragment of existing game if any
+        puzzleFragment.clearExistingGame()
+        showErrors(false)
+
+        // setup new game
+        compositeDisposable.add(gameSetup.newGame(puzzleFragment.cellGrid, persistenceHelper.currentGameOptions)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { gameWords ->
+                            currentGameWords = gameWords
+                            persistenceHelper.persistGame(gameWords)
+                            createGrid()
+                        },
+                        { error ->
+                            Toast.makeText(this, R.string.error_game_setup_failure, Toast.LENGTH_SHORT).show()
+                            Log.e(TAG, "Error setting up game: " + error.message)
+                        }))
     }
 
     private fun createGrid() {
