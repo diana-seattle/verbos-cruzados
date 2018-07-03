@@ -16,8 +16,9 @@
     <string name="dialog_startnewgame_congrats">Congratulations! You win!</string>
     <string name="dialog_startnewgame_congrats2">You have completed !games! games, !words! words!</string>
     <string name="dialog_startnewgame_prompt">Start a new game?</string>
-    <string name="dialog_startnewgame_yes">Start New Game</string>
-    <string name="dialog_startnewgame_no">Keep This Game</string>
+    <string name="dialog_startnewgame_yes">Yes</string>
+    <string name="dialog_startnewgame_yes_with_options">Game Options</string>
+    <string name="dialog_startnewgame_no">No</string>
 
     <!-- shared dialog text for help and stats dialogs -->
     <string name="dialog_ok">OK</string>
@@ -44,6 +45,11 @@
     <!-- toast text-->
     <string name="toast_noerrorsfound">No errors</string>
 
+    <!-- dialog text for game options prompt-->
+    <string name="dialog_options_newgame">New Game</string>
+    <string name="dialog_options_okay">Okay</string>
+    <string name="dialog_options_cancel">Cancel</string>
+
     <!--game options - regularity-->
     <string name="option_title_regularity">Regularity</string>
     <string name="option_regularity_regular">Regular</string>
@@ -52,7 +58,7 @@
     <string name="option_regularity_other_irregular">Other Irregular</string>
 
     <!--game options - infinitive endings -->
-    <string name="option_title_infinitive_endings">Subject Pronouns</string>
+    <string name="option_title_infinitive_endings">Infinitive Endings</string>
     <string name="option_infinitive_ending_ar">-ar</string>
     <string name="option_infinitive_ending_ir">-ir</string>
     <string name="option_infinitive_ending_er">-er</string>

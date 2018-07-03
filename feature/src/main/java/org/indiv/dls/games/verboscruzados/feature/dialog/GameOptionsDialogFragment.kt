@@ -28,7 +28,9 @@ class GameOptionsDialogFragment : DialogFragment() {
         val view = inflater.inflate(R.layout.fragment_game_options_dialog, null)
 
         val dialog = AlertDialog.Builder(activity!!)
-                .setPositiveButton(R.string.dialog_ok) { dialog, id -> }
+                .setNeutralButton(R.string.dialog_options_newgame) { _, _ ->  }
+                .setPositiveButton(R.string.dialog_options_okay) { _, _ ->  }
+                .setNegativeButton(R.string.dialog_options_cancel) { _, _ -> }
                 .setView(view)
                 .create()
 

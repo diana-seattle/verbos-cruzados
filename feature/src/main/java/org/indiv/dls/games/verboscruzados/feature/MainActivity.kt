@@ -233,7 +233,8 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
                 resources.getString(R.string.dialog_startnewgame_prompt)
         AlertDialog.Builder(this)
                 .setTitle(message)
-                .setPositiveButton(R.string.dialog_startnewgame_yes) { _, _ -> setupNewGame() }
+                .setNeutralButton(R.string.dialog_startnewgame_yes) { _, _ -> setupNewGame() }
+                .setPositiveButton(R.string.dialog_startnewgame_yes_with_options) { _, _ -> showGameOptionsDialog() }
                 .setNegativeButton(R.string.dialog_startnewgame_no) { _, _ -> }
                 .show()
     }
