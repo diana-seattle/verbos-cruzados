@@ -20,7 +20,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
             <TextView
-                android:id="@+id/option_regularity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/quarter_margin"
@@ -59,9 +58,7 @@
             android:orientation="vertical"
             app:layout_constraintStart_toEndOf="@+id/bottom_left_quadrant"
             app:layout_constraintTop_toTopOf="parent">
-
             <TextView
-                android:id="@+id/option_infinitive_endings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/quarter_margin"
@@ -99,9 +96,7 @@
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/top_left_quadrant">
-
             <TextView
-                android:id="@+id/option_tense_mood"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/quarter_margin"
@@ -178,7 +173,6 @@
             app:layout_constraintStart_toEndOf="@id/bottom_left_quadrant"
             app:layout_constraintTop_toTopOf="@id/bottom_left_quadrant">
             <TextView
-                android:id="@+id/option_subject_pronouns"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/quarter_margin"

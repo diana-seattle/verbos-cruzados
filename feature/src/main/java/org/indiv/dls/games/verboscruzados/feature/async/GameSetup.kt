@@ -165,23 +165,27 @@ class GameSetup {
     }
 
     private fun getQualifyingConjugationTypes(gameOptions: Map<String, Boolean>): List<ConjugationType> {
-        return ConjugationType.values()
-                .filter { gameOptions[it.name] ?: false }
+        var allValues = ConjugationType.values()
+        var filteredValues = allValues.filter { gameOptions[it.name] ?: false }
+        return if (filteredValues.isEmpty()) allValues.toList() else filteredValues
     }
 
     private fun getQualifyingInfinitiveEndings(gameOptions: Map<String, Boolean>): List<InfinitiveEnding> {
-        return InfinitiveEnding.values()
-                .filter { gameOptions[it.name] ?: false }
+        var allValues = InfinitiveEnding.values()
+        var filteredValues = allValues.filter { gameOptions[it.name] ?: false }
+        return if (filteredValues.isEmpty()) allValues.toList() else filteredValues
     }
 
     private fun getQualifyingIrregularityCategories(gameOptions: Map<String, Boolean>): List<IrregularityCategory> {
-        return IrregularityCategory.values()
-                .filter { gameOptions[it.name] ?: false }
+        var allValues = IrregularityCategory.values()
+        var filteredValues = allValues.filter { gameOptions[it.name] ?: false }
+        return if (filteredValues.isEmpty()) allValues.toList() else filteredValues
     }
 
     private fun getQualifyingSubjectPronouns(gameOptions: Map<String, Boolean>): List<SubjectPronoun> {
-        return SubjectPronoun.values()
-                .filter { gameOptions[it.name] ?: false }
+        var allValues = SubjectPronoun.values()
+        var filteredValues = allValues.filter { gameOptions[it.name] ?: false }
+        return if (filteredValues.isEmpty()) allValues.toList() else filteredValues
     }
 
     private fun randomSelection(verbs: List<WordCandidate>, numWords: Int): List<WordCandidate> {

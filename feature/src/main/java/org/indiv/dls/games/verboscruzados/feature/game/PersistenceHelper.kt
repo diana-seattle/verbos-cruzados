@@ -108,6 +108,18 @@ class PersistenceHelper constructor(private val mContext: Context) {
                 .apply()
     }
 
+    /**
+     * Persists the game options. Keys should be of of the following:
+     * InfinitiveEnding.name, IrregularityCategory.name, SubjectPronoun.name, ConjugationType.name
+     */
+    fun persistGameOptions(optionsMap: Map<String, Boolean>) {
+        val editor = gameOptionPrefs.edit()
+        for (key in optionsMap.keys) {
+            editor.putBoolean(key, optionsMap[key] ?: false)
+        }
+        editor.apply()
+    }
+
     //endregion
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
