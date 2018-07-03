@@ -33,6 +33,7 @@ import android.widget.Toast
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import org.indiv.dls.games.verboscruzados.feature.dialog.GameOptionsDialogFragment
 import org.indiv.dls.games.verboscruzados.feature.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
 
@@ -135,6 +136,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
             R.id.action_startnewgame -> promptForNewGame(null)
             R.id.action_help -> showHelpDialog()
             R.id.action_showstats -> showStatsDialog()
+            R.id.action_showgameoptions -> showGameOptionsDialog()
             else -> return super.onOptionsItemSelected(item)
         }
         return true
@@ -318,6 +320,11 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         val dlg = StatsDialogFragment()
         dlg.setStats(0, 0)
         dlg.show(supportFragmentManager, "fragment_showstats")
+    }
+
+    private fun showGameOptionsDialog() {
+        val dlg = GameOptionsDialogFragment()
+        dlg.show(supportFragmentManager, "fragment_showoptions")
     }
 
     // note that with api level 13 and above we can use getResources().getConfiguration().screenHeightDp/screenWidthDp to get available screen size

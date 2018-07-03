@@ -117,6 +117,7 @@ class PersistenceHelper constructor(private val mContext: Context) {
         InfinitiveEnding.values().forEach { editor.putBoolean(it.name, true) }
         IrregularityCategory.values().forEach { editor.putBoolean(it.name, true) }
         SubjectPronoun.values().forEach { editor.putBoolean(it.name, true) }
+        editor.putBoolean(SubjectPronoun.VOSOTROS.name, false)
         editor.putBoolean(ConjugationType.PRESENT.name, true)
         editor.putBoolean(ConjugationType.PRETERIT.name, true)
         editor.putBoolean(ConjugationType.FUTURE.name, true)

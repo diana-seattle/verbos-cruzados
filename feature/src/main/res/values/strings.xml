@@ -7,15 +7,7 @@
     <string name="action_hideerrors">Hide Errors</string>
     <string name="action_help">Help</string>
     <string name="action_showstats">Game Statistics</string>
-    <string name="action_setfont">Font Size</string>
-    <string name="action_font_extra_small">extra small</string>
-    <string name="action_font_small">small</string>
-    <string name="action_font_medium">medium</string>
-    <string name="action_font_large">large</string>
-    <string name="action_font_extra_large">extra large</string>
-    <string name="action_give3letters">HINT: starting letters</string>
-    <string name="action_giveanswer">HINT: full answer</string>
-    <string name="action_playagainsoon">Play word again soon</string>
+    <string name="action_showgameoptions">Game Options</string>
 
     <!--  status text -->
     <string name="status_network_not_avail">Network must be available when setting up a new game. Please try again later.</string>
@@ -39,41 +31,53 @@
     <string name="dialog_help_startnewgame">Start New Game</string>
     <string name="dialog_help_showerrors">Show/Hide errors</string>
     <string name="dialog_help_menu">Other Menu Actions</string>
-    <!--
-        <string name="dialog_help_menu1">Game Statistics - of completed games</string>
-        <string name="dialog_help_menu2">Font Size - for definitions text</string>
-        <string name="dialog_help_menu3">HINT: starting letters - only 3 per game</string>
-        <string name="dialog_help_menu4">HINT: full answer - only 1 per game</string>
-        <string name="dialog_help_menu5">Play word again soon - in a subsequent game</string>
-     -->
     <string name="dialog_help_offline">This game may be played offline. However, playing with an active network connection will provide a greater variety of words.</string>
 
     <!-- dialog text for stats dialog-->
     <string name="dialog_stats_heading">Completed Game Stats</string>
     <string name="dialog_stats_gamescompleted">Games:</string>
     <string name="dialog_stats_wordscompleted">Words:</string>
-    <string name="dialog_stats_solvedonce">Words solved 1 time:</string>
-    <string name="dialog_stats_solvedtwice">Words solved 2 times:</string>
-    <string name="dialog_stats_solved3times">Words solved 3 times:</string>
-    <string name="dialog_stats_solvedmorethan3times">Words solved >3 times:</string>
-    <string name="dialog_stats_notyetsolved">Words not yet solved:</string>
-
 
     <!--button text for answer fragment-->
     <string name="button_infinitive">infinitive</string>
 
-
-
     <!-- toast text-->
     <string name="toast_noerrorsfound">No errors</string>
 
-    <!-- dictionary attributions -->
-    <string name="attribution_ahd">from The American Heritage® Dictionary of the English Language, 4th Edition</string>
-    <string name="attribution_webster">from the GNU version of the Collaborative International Dictionary of English</string>
-    <string name="attribution_century">from The Century Dictionary and Cyclopedia</string>
-    <string name="attribution_wiktionary">from Wiktionary, Creative Commons Attribution/Share-Alike License</string>
-    <string name="attribution_wordnet">from WordNet 3.0 Copyright 2006 by Princeton University. All rights reserved.</string>
-    <string name="attribution_wordnik">Go to Wordnik definitions page</string>
+    <!--game options - regularity-->
+    <string name="option_title_regularity">Regularity</string>
+    <string name="option_regularity_regular">Regular</string>
+    <string name="option_regularity_spelling_change">Spelling Change</string>
+    <string name="option_regularity_stem_change">Stem Change</string>
+    <string name="option_regularity_other_irregular">Other Irregular</string>
+
+    <!--game options - infinitive endings -->
+    <string name="option_title_infinitive_endings">Subject Pronouns</string>
+    <string name="option_infinitive_ending_ar">-ar</string>
+    <string name="option_infinitive_ending_ir">-ir</string>
+    <string name="option_infinitive_ending_er">-er</string>
+
+    <!--game options - tense/mood -->
+    <string name="option_title_tense_mood">Tense/Mood</string>
+    <string name="option_tense_present">Present</string>
+    <string name="option_tense_preterit">Preterit</string>
+    <string name="option_tense_imperfect">Imperfect</string>
+    <string name="option_tense_conditional">Conditional</string>
+    <string name="option_tense_future">Future</string>
+    <string name="option_tense_imperative">Imperative</string>
+    <string name="option_tense_subjunctive_present">Subjunctive Present</string>
+    <string name="option_tense_subjunctive_imperfect">Subjunctive Imperfect</string>
+    <string name="option_tense_gerund">Gerund</string>
+    <string name="option_tense_past_participle">Past Participle</string>
+
+    <!--game options - subject pronouns -->
+    <string name="option_title_subject_pronouns">Subject Pronouns</string>
+    <string name="option_subject_pronoun_yo">Yo</string>
+    <string name="option_subject_pronoun_tu">Tú</string>
+    <string name="option_subject_pronoun_el_ella_ud">Él/Ella/Ud.</string>
+    <string name="option_subject_pronoun_ellos_ellas_uds">Ellos/Ellas/Uds.</string>
+    <string name="option_subject_pronoun_nosotros">Nosotros</string>
+    <string name="option_subject_pronoun_vosotros">Vosotros</string>
 
 
     <!-- error messages -->

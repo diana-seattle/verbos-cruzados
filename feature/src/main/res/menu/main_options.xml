@@ -16,4 +16,6 @@
           app:showAsAction="ifRoom|withText" />
     <item android:id="@+id/action_showstats"
           android:title="@string/action_showstats" />
+    <item android:id="@+id/action_showgameoptions"
+          android:title="@string/action_showgameoptions" />
 </menu>

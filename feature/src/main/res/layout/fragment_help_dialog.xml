@@ -104,50 +104,6 @@
             android:textColor="@color/soft_black"
             android:textSize="@dimen/large"/>
 
-        <!-- menu - font -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_dot_24dp"
-            android:drawablePadding="@dimen/half_margin"
-            android:gravity="center"
-            android:text="@string/action_setfont"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/large"/>
-
-        <!-- menu - 3 letter hint -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_dot_24dp"
-            android:drawablePadding="@dimen/half_margin"
-            android:gravity="center"
-            android:text="@string/action_give3letters"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/large"/>
-
-        <!-- menu - full hint -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_dot_24dp"
-            android:drawablePadding="@dimen/half_margin"
-            android:gravity="center"
-            android:text="@string/action_giveanswer"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/large"/>
-
-        <!-- menu - play again soon -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_dot_24dp"
-            android:drawablePadding="@dimen/half_margin"
-            android:gravity="center"
-            android:text="@string/action_playagainsoon"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/large"/>
-
         <!-- note about offline play -->
         <TextView
             android:layout_width="wrap_content"
