@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/half_margin"
             android:text="@string/dialog_help_title"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/xx_large"/>
 
         <!-- step 1 -->
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dialog_help_step1"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/large"/>
 
         <!-- step 2 -->
@@ -37,7 +37,7 @@
             android:drawableRight="@drawable/ic_keyboard_24px_white"
             android:gravity="center_vertical"
             android:text="@string/dialog_help_step2"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/large"/>
 
         <!-- actions heading -->
@@ -47,7 +47,7 @@
             android:paddingBottom="@dimen/half_margin"
             android:paddingTop="@dimen/default_margin"
             android:text="@string/dialog_help_actions"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/xx_large"/>
 
         <!-- starting new game -->
@@ -58,7 +58,7 @@
             android:drawablePadding="4dp"
             android:gravity="center"
             android:text="@string/dialog_help_startnewgame"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/large"/>
 
         <!-- showing errors -->
@@ -69,7 +69,7 @@
             android:drawablePadding="4dp"
             android:gravity="center"
             android:text="@string/dialog_help_showerrors"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/large"/>
 
         <!-- showing help -->
@@ -80,7 +80,7 @@
             android:drawablePadding="4dp"
             android:gravity="center"
             android:text="@string/dialog_help_showhelp"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/large"/>
 
         <!-- menu heading -->
@@ -90,7 +90,7 @@
             android:paddingBottom="@dimen/half_margin"
             android:paddingTop="@dimen/default_margin"
             android:text="@string/dialog_help_menu"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/xx_large"/>
 
         <!-- menu - stats -->
@@ -101,7 +101,7 @@
             android:drawablePadding="@dimen/half_margin"
             android:gravity="center"
             android:text="@string/action_showstats"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/large"/>
 
         <!-- menu - font -->
@@ -112,7 +112,7 @@
             android:drawablePadding="@dimen/half_margin"
             android:gravity="center"
             android:text="@string/action_setfont"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/large"/>
 
         <!-- menu - 3 letter hint -->
@@ -123,7 +123,7 @@
             android:drawablePadding="@dimen/half_margin"
             android:gravity="center"
             android:text="@string/action_give3letters"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/large"/>
 
         <!-- menu - full hint -->
@@ -134,7 +134,7 @@
             android:drawablePadding="@dimen/half_margin"
             android:gravity="center"
             android:text="@string/action_giveanswer"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/large"/>
 
         <!-- menu - play again soon -->
@@ -145,7 +145,7 @@
             android:drawablePadding="@dimen/half_margin"
             android:gravity="center"
             android:text="@string/action_playagainsoon"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/large"/>
 
         <!-- note about offline play -->
@@ -155,7 +155,7 @@
             android:maxWidth="600dp"
             android:paddingTop="@dimen/default_margin"
             android:text="@string/dialog_help_offline"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/large"
             android:textStyle="italic"/>
 

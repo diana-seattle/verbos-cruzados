@@ -2,13 +2,12 @@ package org.indiv.dls.games.verboscruzados.feature.dialog;
 
 import org.indiv.dls.games.verboscruzados.feature.R;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.view.ContextThemeWrapper;
-import android.widget.FrameLayout;
+import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TextView;
 
 public class StatsDialogFragment extends DialogFragment {
@@ -19,21 +18,20 @@ public class StatsDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.fragment_stats_dialog, null);
+
         // use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), android.R.style.Theme_Dialog)); // wrap activity with ContextThemeWrapper to get better dialog styling
-        builder.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) { /* nothing to do but close */ }
-        });
-        final FrameLayout frameView = new FrameLayout(getActivity());
-        builder.setView(frameView);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                .setPositiveButton(R.string.dialog_ok, (dialog, id) -> { })
+                .setView(view);
 
         // create the AlertDialog object 
         Dialog dialog = builder.create();
-        dialog.getLayoutInflater().inflate(R.layout.fragment_stats_dialog, frameView);
 
         // fill in stats
-        appendTextToView((TextView) frameView.findViewById(R.id.textview_gamescompleted), " " + mGamesCompleted);
-        appendTextToView((TextView) frameView.findViewById(R.id.textview_wordscompleted), " " + mWordsCompleted);
+        appendTextToView(view.findViewById(R.id.textview_gamescompleted), " " + mGamesCompleted);
+        appendTextToView(view.findViewById(R.id.textview_wordscompleted), " " + mWordsCompleted);
 
         return dialog;
     }

@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/default_margin"
             android:text="@string/dialog_stats_heading"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/xx_large"/>
 
         <!-- games completed -->
@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dialog_stats_gamescompleted"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/large"/>
 
         <!-- words of games completed -->
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/default_margin"
             android:text="@string/dialog_stats_wordscompleted"
-            android:textColor="@color/light_gray"
+            android:textColor="@color/soft_black"
             android:textSize="@dimen/large"/>
 
     </LinearLayout>

@@ -33,7 +33,6 @@ import android.widget.Toast
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import org.indiv.dls.games.verboscruzados.feature.dialog.HelpDialogFragment
 import org.indiv.dls.games.verboscruzados.feature.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
 
@@ -309,7 +308,10 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
     }
 
     private fun showHelpDialog() {
-        HelpDialogFragment().show(supportFragmentManager, "fragment_showhelp")
+        AlertDialog.Builder(this)
+                .setView(R.layout.fragment_help_dialog)
+                .setPositiveButton(R.string.dialog_ok) { _, _ -> }
+                .show()
     }
 
     private fun showStatsDialog() {
