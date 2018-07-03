@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
+import android.support.v7.view.ContextThemeWrapper
 import android.widget.CheckBox
 import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
 import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
@@ -61,6 +62,8 @@ class GameOptionsDialogFragment : DialogFragment() {
         val inflater = activity!!.layoutInflater
         val view = inflater.inflate(R.layout.fragment_game_options_dialog, null)
 
+        // wrap activity with ContextThemeWrapper to get better dialog styling
+//        val dialog = AlertDialog.Builder(ContextThemeWrapper(activity, android.R.style.Theme_Dialog))
         val dialog = AlertDialog.Builder(activity!!)
                 .setNeutralButton(R.string.dialog_options_newgame) { _, _ ->
                     saveOptions()
@@ -117,62 +120,62 @@ class GameOptionsDialogFragment : DialogFragment() {
         val persistenceHelper = PersistenceHelper(activity!!)
         val map = persistenceHelper.currentGameOptions
 
-        optionRegularityRegularCheckbox.isSelected = map[IrregularityCategory.REGULAR.name] ?: false
-        optionRegularitySpellingChangeCheckbox.isSelected = map[IrregularityCategory.SPELLING_CHANGE.name] ?: false
-        optionRegularityStemChangeCheckbox.isSelected = map[IrregularityCategory.STEM_CHANGE.name] ?: false
-        optionRegularityOtherIrregularCheckbox.isSelected = map[IrregularityCategory.IRREGULAR.name] ?: false
+        optionRegularityRegularCheckbox.isChecked = map[IrregularityCategory.REGULAR.name] ?: false
+        optionRegularitySpellingChangeCheckbox.isChecked = map[IrregularityCategory.SPELLING_CHANGE.name] ?: false
+        optionRegularityStemChangeCheckbox.isChecked = map[IrregularityCategory.STEM_CHANGE.name] ?: false
+        optionRegularityOtherIrregularCheckbox.isChecked = map[IrregularityCategory.IRREGULAR.name] ?: false
 
-        optionInfinitiveEndingArCheckbox.isSelected = map[InfinitiveEnding.AR.name] ?: false
-        optionInfinitiveEndingIrCheckbox.isSelected = map[InfinitiveEnding.IR.name] ?: false
-        optionInfinitiveEndingErCheckbox.isSelected = map[InfinitiveEnding.ER.name] ?: false
+        optionInfinitiveEndingArCheckbox.isChecked = map[InfinitiveEnding.AR.name] ?: false
+        optionInfinitiveEndingIrCheckbox.isChecked = map[InfinitiveEnding.IR.name] ?: false
+        optionInfinitiveEndingErCheckbox.isChecked = map[InfinitiveEnding.ER.name] ?: false
 
-        optionTenseModePresentCheckbox.isSelected = map[ConjugationType.PRESENT.name] ?: false
-        optionTenseModePreteritCheckbox.isSelected = map[ConjugationType.PRETERIT.name] ?: false
-        optionTenseModeImperfectCheckbox.isSelected = map[ConjugationType.IMPERFECT.name] ?: false
-        optionTenseModeConditionalCheckbox.isSelected = map[ConjugationType.CONDITIONAL.name] ?: false
-        optionTenseModeFutureCheckbox.isSelected = map[ConjugationType.FUTURE.name] ?: false
-        optionTenseModeImperativeCheckbox.isSelected = map[ConjugationType.IMPERATIVE.name] ?: false
-        optionTenseModeSubjunctivePresentCheckbox.isSelected = map[ConjugationType.SUBJUNCTIVE_PRESENT.name] ?: false
-        optionTenseModeSubjunctiveImperfectCheckbox.isSelected = map[ConjugationType.SUBJUNCTIVE_IMPERFECT.name] ?: false
-        optionTenseModeGerundCheckbox.isSelected = map[ConjugationType.GERUND.name] ?: false
-        optionTenseModePastParticipleCheckbox.isSelected = map[ConjugationType.PAST_PARTICIPLE.name] ?: false
+        optionTenseModePresentCheckbox.isChecked = map[ConjugationType.PRESENT.name] ?: false
+        optionTenseModePreteritCheckbox.isChecked = map[ConjugationType.PRETERIT.name] ?: false
+        optionTenseModeImperfectCheckbox.isChecked = map[ConjugationType.IMPERFECT.name] ?: false
+        optionTenseModeConditionalCheckbox.isChecked = map[ConjugationType.CONDITIONAL.name] ?: false
+        optionTenseModeFutureCheckbox.isChecked = map[ConjugationType.FUTURE.name] ?: false
+        optionTenseModeImperativeCheckbox.isChecked = map[ConjugationType.IMPERATIVE.name] ?: false
+        optionTenseModeSubjunctivePresentCheckbox.isChecked = map[ConjugationType.SUBJUNCTIVE_PRESENT.name] ?: false
+        optionTenseModeSubjunctiveImperfectCheckbox.isChecked = map[ConjugationType.SUBJUNCTIVE_IMPERFECT.name] ?: false
+        optionTenseModeGerundCheckbox.isChecked = map[ConjugationType.GERUND.name] ?: false
+        optionTenseModePastParticipleCheckbox.isChecked = map[ConjugationType.PAST_PARTICIPLE.name] ?: false
 
-        optionSubjectPronounYoCheckbox.isSelected = map[SubjectPronoun.YO.name] ?: false
-        optionSubjectPronounTuCheckbox.isSelected = map[SubjectPronoun.TU.name] ?: false
-        optionSubjectPronounElEllaUdCheckbox.isSelected = map[SubjectPronoun.EL_ELLA_USTED.name] ?: false
-        optionSubjectPronounEllosEllasUdsCheckbox.isSelected = map[SubjectPronoun.ELLOS_ELLAS_USTEDES.name] ?: false
-        optionSubjectPronounNosotrosCheckbox.isSelected = map[SubjectPronoun.NOSOTROS.name] ?: false
-        optionSubjectPronounVosotrosCheckbox.isSelected = map[SubjectPronoun.VOSOTROS.name] ?: false
+        optionSubjectPronounYoCheckbox.isChecked = map[SubjectPronoun.YO.name] ?: false
+        optionSubjectPronounTuCheckbox.isChecked = map[SubjectPronoun.TU.name] ?: false
+        optionSubjectPronounElEllaUdCheckbox.isChecked = map[SubjectPronoun.EL_ELLA_USTED.name] ?: false
+        optionSubjectPronounEllosEllasUdsCheckbox.isChecked = map[SubjectPronoun.ELLOS_ELLAS_USTEDES.name] ?: false
+        optionSubjectPronounNosotrosCheckbox.isChecked = map[SubjectPronoun.NOSOTROS.name] ?: false
+        optionSubjectPronounVosotrosCheckbox.isChecked = map[SubjectPronoun.VOSOTROS.name] ?: false
     }
 
     private fun saveOptions() {
         val map = mutableMapOf<String, Boolean>()
-        map[IrregularityCategory.REGULAR.name] = optionRegularityRegularCheckbox.isSelected
-        map[IrregularityCategory.SPELLING_CHANGE.name] = optionRegularitySpellingChangeCheckbox.isSelected
-        map[IrregularityCategory.STEM_CHANGE.name] = optionRegularityStemChangeCheckbox.isSelected
-        map[IrregularityCategory.IRREGULAR.name] = optionRegularityOtherIrregularCheckbox.isSelected
+        map[IrregularityCategory.REGULAR.name] = optionRegularityRegularCheckbox.isChecked
+        map[IrregularityCategory.SPELLING_CHANGE.name] = optionRegularitySpellingChangeCheckbox.isChecked
+        map[IrregularityCategory.STEM_CHANGE.name] = optionRegularityStemChangeCheckbox.isChecked
+        map[IrregularityCategory.IRREGULAR.name] = optionRegularityOtherIrregularCheckbox.isChecked
 
-        map[InfinitiveEnding.AR.name] = optionInfinitiveEndingArCheckbox.isSelected
-        map[InfinitiveEnding.IR.name] = optionInfinitiveEndingIrCheckbox.isSelected
-        map[InfinitiveEnding.ER.name] = optionInfinitiveEndingErCheckbox.isSelected
+        map[InfinitiveEnding.AR.name] = optionInfinitiveEndingArCheckbox.isChecked
+        map[InfinitiveEnding.IR.name] = optionInfinitiveEndingIrCheckbox.isChecked
+        map[InfinitiveEnding.ER.name] = optionInfinitiveEndingErCheckbox.isChecked
 
-        map[ConjugationType.PRESENT.name] = optionTenseModePresentCheckbox.isSelected
-        map[ConjugationType.PRETERIT.name] = optionTenseModePreteritCheckbox.isSelected
-        map[ConjugationType.IMPERFECT.name] = optionTenseModeImperfectCheckbox.isSelected
-        map[ConjugationType.CONDITIONAL.name] = optionTenseModeConditionalCheckbox.isSelected
-        map[ConjugationType.FUTURE.name] = optionTenseModeFutureCheckbox.isSelected
-        map[ConjugationType.IMPERATIVE.name] = optionTenseModeImperativeCheckbox.isSelected
-        map[ConjugationType.SUBJUNCTIVE_PRESENT.name] = optionTenseModeSubjunctivePresentCheckbox.isSelected
-        map[ConjugationType.SUBJUNCTIVE_IMPERFECT.name] = optionTenseModeSubjunctiveImperfectCheckbox.isSelected
-        map[ConjugationType.GERUND.name] = optionTenseModeGerundCheckbox.isSelected
-        map[ConjugationType.PAST_PARTICIPLE.name] = optionTenseModePastParticipleCheckbox.isSelected
+        map[ConjugationType.PRESENT.name] = optionTenseModePresentCheckbox.isChecked
+        map[ConjugationType.PRETERIT.name] = optionTenseModePreteritCheckbox.isChecked
+        map[ConjugationType.IMPERFECT.name] = optionTenseModeImperfectCheckbox.isChecked
+        map[ConjugationType.CONDITIONAL.name] = optionTenseModeConditionalCheckbox.isChecked
+        map[ConjugationType.FUTURE.name] = optionTenseModeFutureCheckbox.isChecked
+        map[ConjugationType.IMPERATIVE.name] = optionTenseModeImperativeCheckbox.isChecked
+        map[ConjugationType.SUBJUNCTIVE_PRESENT.name] = optionTenseModeSubjunctivePresentCheckbox.isChecked
+        map[ConjugationType.SUBJUNCTIVE_IMPERFECT.name] = optionTenseModeSubjunctiveImperfectCheckbox.isChecked
+        map[ConjugationType.GERUND.name] = optionTenseModeGerundCheckbox.isChecked
+        map[ConjugationType.PAST_PARTICIPLE.name] = optionTenseModePastParticipleCheckbox.isChecked
 
-        map[SubjectPronoun.YO.name] = optionSubjectPronounYoCheckbox.isSelected
-        map[SubjectPronoun.TU.name] = optionSubjectPronounTuCheckbox.isSelected
-        map[SubjectPronoun.EL_ELLA_USTED.name] = optionSubjectPronounElEllaUdCheckbox.isSelected
-        map[SubjectPronoun.ELLOS_ELLAS_USTEDES.name] = optionSubjectPronounEllosEllasUdsCheckbox.isSelected
-        map[SubjectPronoun.NOSOTROS.name] = optionSubjectPronounNosotrosCheckbox.isSelected
-        map[SubjectPronoun.VOSOTROS.name] = optionSubjectPronounVosotrosCheckbox.isSelected
+        map[SubjectPronoun.YO.name] = optionSubjectPronounYoCheckbox.isChecked
+        map[SubjectPronoun.TU.name] = optionSubjectPronounTuCheckbox.isChecked
+        map[SubjectPronoun.EL_ELLA_USTED.name] = optionSubjectPronounElEllaUdCheckbox.isChecked
+        map[SubjectPronoun.ELLOS_ELLAS_USTEDES.name] = optionSubjectPronounEllosEllasUdsCheckbox.isChecked
+        map[SubjectPronoun.NOSOTROS.name] = optionSubjectPronounNosotrosCheckbox.isChecked
+        map[SubjectPronoun.VOSOTROS.name] = optionSubjectPronounVosotrosCheckbox.isChecked
 
         val persistenceHelper = PersistenceHelper(activity!!)
         persistenceHelper.persistGameOptions(map)
