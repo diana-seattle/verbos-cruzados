@@ -325,6 +325,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
     private fun showGameOptionsDialog() {
         val dlg = GameOptionsDialogFragment()
+        dlg.startNewGameListener = { setupNewGame() }
         dlg.show(supportFragmentManager, "fragment_showoptions")
     }
 

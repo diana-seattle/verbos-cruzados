@@ -3,10 +3,10 @@ package org.indiv.dls.games.verboscruzados.feature.dialog
 import org.indiv.dls.games.verboscruzados.feature.R
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
-import android.support.v7.view.ContextThemeWrapper
 import android.widget.CheckBox
 import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
 import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
@@ -20,6 +20,9 @@ import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 class GameOptionsDialogFragment : DialogFragment() {
 
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
+
+    var startNewGameListener: (() -> Unit)? = null
+
     //endregion
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
@@ -53,9 +56,6 @@ class GameOptionsDialogFragment : DialogFragment() {
 
     //endregion
 
-    //region PUBLIC INTERFACES ---------------------------------------------------------------------
-    //endregion
-
     //region OVERRIDDEN FUNCTIONS ------------------------------------------------------------------
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -63,19 +63,21 @@ class GameOptionsDialogFragment : DialogFragment() {
         val view = inflater.inflate(R.layout.fragment_game_options_dialog, null)
 
         // wrap activity with ContextThemeWrapper to get better dialog styling
-//        val dialog = AlertDialog.Builder(ContextThemeWrapper(activity, android.R.style.Theme_Dialog))
         val dialog = AlertDialog.Builder(activity!!)
                 .setNeutralButton(R.string.dialog_options_newgame) { _, _ ->
                     saveOptions()
-
-
-                    // todo call listener
-
+                    startNewGameListener?.invoke()
                 }
                 .setPositiveButton(R.string.dialog_options_okay) { _, _ -> saveOptions() }
                 .setNegativeButton(R.string.dialog_options_cancel) { _, _ -> }
                 .setView(view)
                 .create()
+
+        dialog.setOnShowListener {
+            val textColor = resources.getColor(R.color.colorAccent)
+            dialog.getButton(DialogInterface.BUTTON_NEUTRAL)?.setTextColor(textColor)
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE)?.setTextColor(textColor)
+        }
 
         optionRegularityRegularCheckbox = view.findViewById(R.id.option_regularity_regular)
         optionRegularitySpellingChangeCheckbox = view.findViewById(R.id.option_regularity_spelling_change)
