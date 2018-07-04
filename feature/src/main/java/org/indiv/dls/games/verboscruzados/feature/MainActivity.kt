@@ -4,14 +4,13 @@ package org.indiv.dls.games.verboscruzados.feature
  * Play Store: https://play.google.com/store/apps/details?id=org.indiv.dls.games.verboscruzados
  */
 
-// TODO: options UI
 // TODO: applying options
+// TODO: fix conjugations
+// TODO: more verbs
 // TODO: change fragments into components
-// TODO: more verbs, fix conjugations
-// TODO: fix dialogs
+// TODO: stats screen
 // TODO: backgrounds, icons, answer styling refinements
 // TODO: help screen
-// TODO: stats screen
 // TODO: instant app
 
 
@@ -233,8 +232,8 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
                 resources.getString(R.string.dialog_startnewgame_prompt)
         AlertDialog.Builder(this)
                 .setTitle(message)
-                .setNeutralButton(R.string.dialog_startnewgame_yes) { _, _ -> setupNewGame() }
-                .setPositiveButton(R.string.dialog_startnewgame_yes_with_options) { _, _ -> showGameOptionsDialog() }
+                .setNeutralButton(R.string.dialog_startnewgame_yes_with_options) { _, _ -> showGameOptionsDialog() }
+                .setPositiveButton(R.string.dialog_startnewgame_yes) { _, _ -> setupNewGame() }
                 .setNegativeButton(R.string.dialog_startnewgame_no) { _, _ -> }
                 .show()
     }

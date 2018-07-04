@@ -6,6 +6,7 @@ import org.indiv.dls.games.verboscruzados.feature.conjugation.conjugatorMap
 import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
+import org.indiv.dls.games.verboscruzados.feature.model.Irregularity
 import org.indiv.dls.games.verboscruzados.feature.model.IrregularityCategory
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
@@ -15,6 +16,12 @@ import org.indiv.dls.games.verboscruzados.feature.model.irregularIrVerbs
 import org.indiv.dls.games.verboscruzados.feature.model.regularArVerbs
 import org.indiv.dls.games.verboscruzados.feature.model.regularErVerbs
 import org.indiv.dls.games.verboscruzados.feature.model.regularIrVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.spellingChangeArVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.spellingChangeErVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.spellingChangeIrVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.stemChangeArVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.stemChangeErVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.stemChangeIrVerbs
 import java.util.*
 
 /**
@@ -98,30 +105,40 @@ class GameSetup {
             when (conjugationType) {
                 ConjugationType.GERUND -> {
                     candidates.addAll(verbs.map {
-                        WordCandidate(it.gerund.toUpperCase(), "${conjugationType.text}",
-                                it.infinitive, it.translation)
+                        createWordCandidate(it, it.gerund.toUpperCase(), conjugationType, null)
                     })
                 }
                 ConjugationType.PAST_PARTICIPLE -> {
                     candidates.addAll(verbs.map {
-                        WordCandidate(it.pastParticiple.toUpperCase(), "${conjugationType.text}",
-                                it.infinitive, it.translation)
+                        createWordCandidate(it, it.pastParticiple.toUpperCase(), conjugationType, null)
                     })
                 }
                 else -> {
                     val conjugator = conjugatorMap[it]!!
                     getQualifyingSubjectPronouns(gameOptions).forEach {
                         val subjectPronoun = it
-                        candidates.addAll(verbs.map {
-                            WordCandidate(conjugator.conjugate(it, subjectPronoun).toUpperCase(),
-                                    "${subjectPronoun.text} - ${conjugationType.text}",
-                                    it.infinitive, it.translation)
-                        })
+                        // Avoid the Yo - Imperative form
+                        if (conjugationType != ConjugationType.IMPERATIVE || subjectPronoun != SubjectPronoun.YO) {
+                            candidates.addAll(verbs.map {
+                                createWordCandidate(it, conjugator.conjugate(it, subjectPronoun).toUpperCase(),
+                                        conjugationType, subjectPronoun)
+                            })
+                        }
                     }
                 }
             }
         }
         return randomSelection(candidates, numWords)
+    }
+
+    private fun createWordCandidate(verb: Verb, word: String, conjugationType: ConjugationType,
+                                    subjectPronoun: SubjectPronoun?): WordCandidate {
+        // Conjugated verb can be duplicate between imperative and subjunctive or between sentar and sentir.
+        val uniqueKey = "${verb.infinitive}|${conjugationType.name}|${subjectPronoun?.name ?: "na"}"
+        val conjugationLabel = subjectPronoun?.let {
+            "${it.text} - ${conjugationType.text}"
+        } ?: conjugationType.text
+        return WordCandidate(uniqueKey, word, conjugationLabel, verb.infinitive, verb.translation)
     }
 
     private fun getQualifyingVerbs(gameOptions: Map<String, Boolean>): List<Verb> {
@@ -130,37 +147,24 @@ class GameSetup {
         val infinitiveEndings = getQualifyingInfinitiveEndings(gameOptions)
         val irregularityCategories = getQualifyingIrregularityCategories(gameOptions)
 
-
-        // TODO: fix these
-
-
-        when {
-            infinitiveEndings.contains(InfinitiveEnding.AR) -> {
-                when {
-                    irregularityCategories.contains(IrregularityCategory.REGULAR) -> verbs.addAll(regularArVerbs)
-//                    irregularityCategories.contains(IrregularityCategory.SPELLING_CHANGE) -> verbs.addAll(irregularArVerbs)
-//                    irregularityCategories.contains(IrregularityCategory.STEM_CHANGE) -> verbs.addAll(irregularArVerbs)
-                    irregularityCategories.contains(IrregularityCategory.IRREGULAR) -> verbs.addAll(irregularArVerbs)
-                }
-            }
-            infinitiveEndings.contains(InfinitiveEnding.IR) -> {
-                when {
-                    irregularityCategories.contains(IrregularityCategory.REGULAR) -> verbs.addAll(regularIrVerbs)
-//                    irregularityCategories.contains(IrregularityCategory.SPELLING_CHANGE) -> verbs.addAll(irregularIrVerbs)
-//                    irregularityCategories.contains(IrregularityCategory.STEM_CHANGE) -> verbs.addAll(irregularIrVerbs)
-                    irregularityCategories.contains(IrregularityCategory.IRREGULAR) -> verbs.addAll(irregularIrVerbs)
-                }
-            }
-            infinitiveEndings.contains(InfinitiveEnding.ER) -> {
-                when {
-                    irregularityCategories.contains(IrregularityCategory.REGULAR) -> verbs.addAll(regularErVerbs)
-//                    irregularityCategories.contains(IrregularityCategory.SPELLING_CHANGE) -> verbs.addAll(irregularErVerbs)
-//                    irregularityCategories.contains(IrregularityCategory.STEM_CHANGE) -> verbs.addAll(irregularErVerbs)
-                    irregularityCategories.contains(IrregularityCategory.IRREGULAR) -> verbs.addAll(irregularErVerbs)
-                }
-            }
+        if (infinitiveEndings.contains(InfinitiveEnding.AR)) {
+            if (irregularityCategories.contains(IrregularityCategory.REGULAR)) verbs.addAll(regularArVerbs)
+            if (irregularityCategories.contains(IrregularityCategory.SPELLING_CHANGE)) verbs.addAll(spellingChangeArVerbs)
+            if (irregularityCategories.contains(IrregularityCategory.STEM_CHANGE)) verbs.addAll(stemChangeArVerbs)
+            if (irregularityCategories.contains(IrregularityCategory.IRREGULAR)) verbs.addAll(irregularArVerbs)
         }
-
+        if (infinitiveEndings.contains(InfinitiveEnding.IR)) {
+            if (irregularityCategories.contains(IrregularityCategory.REGULAR)) verbs.addAll(regularIrVerbs)
+            if (irregularityCategories.contains(IrregularityCategory.SPELLING_CHANGE)) verbs.addAll(spellingChangeIrVerbs)
+            if (irregularityCategories.contains(IrregularityCategory.STEM_CHANGE)) verbs.addAll(stemChangeIrVerbs)
+            if (irregularityCategories.contains(IrregularityCategory.IRREGULAR)) verbs.addAll(irregularIrVerbs)
+        }
+        if (infinitiveEndings.contains(InfinitiveEnding.ER)) {
+            if (irregularityCategories.contains(IrregularityCategory.REGULAR)) verbs.addAll(regularErVerbs)
+            if (irregularityCategories.contains(IrregularityCategory.SPELLING_CHANGE)) verbs.addAll(spellingChangeErVerbs)
+            if (irregularityCategories.contains(IrregularityCategory.STEM_CHANGE)) verbs.addAll(stemChangeErVerbs)
+            if (irregularityCategories.contains(IrregularityCategory.IRREGULAR)) verbs.addAll(irregularErVerbs)
+        }
         return verbs
     }
 
@@ -232,7 +236,6 @@ class GameSetup {
         return gameWords
     }
 
-
     private fun placeInGrid(cellGrid: Array<Array<GridCell?>>,
                             gameWords: List<GameWord>,
                             wordCandidate: WordCandidate,
@@ -290,8 +293,8 @@ class GameSetup {
         }
 
         if (locationFound) {
-            gameWord = GameWord(word, wordCandidate.conjugationLabel, wordCandidate.infinitive,
-                    wordCandidate.translation, row, col, across)
+            gameWord = GameWord(wordCandidate.uniqueKey, word, wordCandidate.conjugationLabel,
+                    wordCandidate.infinitive, wordCandidate.translation, row, col, across)
             addToGrid(gameWord, cellGrid)
         }
 
@@ -367,9 +370,12 @@ class GameSetup {
         return crossingFound
     }
 
-//endregion
+    //endregion
 
-    private class WordCandidate(val word: String,
+    //region INNER CLASSES -------------------------------------------------------------------------
+
+    private class WordCandidate(val uniqueKey: String,
+                                val word: String,
                                 val conjugationLabel: String,
                                 val infinitive: String,
                                 val translation: String) {
@@ -390,4 +396,7 @@ class GameSetup {
             }
         }
     }
+
+    //endregion
+
 }

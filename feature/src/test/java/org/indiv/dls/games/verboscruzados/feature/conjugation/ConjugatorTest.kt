@@ -1,5 +1,6 @@
 package org.indiv.dls.games.verboscruzados.feature.conjugation
 
+import org.indiv.dls.games.verboscruzados.feature.model.Irregularity
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
 import org.indiv.dls.games.verboscruzados.feature.model.irregularArVerbs
@@ -8,6 +9,13 @@ import org.indiv.dls.games.verboscruzados.feature.model.irregularIrVerbs
 import org.indiv.dls.games.verboscruzados.feature.model.regularArVerbs
 import org.indiv.dls.games.verboscruzados.feature.model.regularErVerbs
 import org.indiv.dls.games.verboscruzados.feature.model.regularIrVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.spellingChangeArVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.spellingChangeErVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.spellingChangeIrVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.stemChangeArVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.stemChangeErVerbs
+import org.indiv.dls.games.verboscruzados.feature.model.stemChangeIrVerbs
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import kotlin.math.max
 
@@ -27,8 +35,27 @@ class ConjugatorTest {
 
     //region TESTS ---------------------------------------------------------------------------------
 
+    @Test fun ensureNoDuplicates() {
+        val allVerbs = mutableListOf<Verb>()
+        allVerbs.addAll(regularArVerbs)
+        allVerbs.addAll(regularIrVerbs)
+        allVerbs.addAll(regularErVerbs)
+        allVerbs.addAll(spellingChangeArVerbs)
+        allVerbs.addAll(spellingChangeIrVerbs)
+        allVerbs.addAll(spellingChangeErVerbs)
+        allVerbs.addAll(stemChangeArVerbs)
+        allVerbs.addAll(stemChangeIrVerbs)
+        allVerbs.addAll(stemChangeErVerbs)
+        allVerbs.addAll(irregularArVerbs)
+        allVerbs.addAll(irregularIrVerbs)
+        allVerbs.addAll(irregularErVerbs)
+
+        assertEquals(allVerbs.size, allVerbs.toSet().size)
+    }
+
     @Test fun testOneVerb() {
-        printResult(irregularArVerbs[10])
+        val verb = Verb("meter", "put into")
+        printResult(verb)
     }
 
     @Test fun testRegular() {
@@ -37,15 +64,21 @@ class ConjugatorTest {
         printResult(regularErVerbs[0])
     }
 
-    @Test fun testIrregular_ar() {
+    @Test fun testSpellingChange() {
+        printAllResults(spellingChangeArVerbs)
+        printAllResults(spellingChangeIrVerbs)
+        printAllResults(spellingChangeErVerbs)
+    }
+
+    @Test fun testStemChange() {
+        printAllResults(stemChangeArVerbs)
+        printAllResults(stemChangeIrVerbs)
+        printAllResults(stemChangeErVerbs)
+    }
+
+    @Test fun testIrregular() {
         printAllResults(irregularArVerbs)
-    }
-
-    @Test fun testIrregular_ir() {
         printAllResults(irregularIrVerbs)
-    }
-
-    @Test fun testIrregular_er() {
         printAllResults(irregularErVerbs)
     }
 

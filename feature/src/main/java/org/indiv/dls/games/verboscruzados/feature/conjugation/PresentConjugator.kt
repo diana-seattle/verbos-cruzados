@@ -74,7 +74,7 @@ class PresentConjugator : Conjugator {
                     replaceInLastSyllable(root, "o", replacement)
                 }
                 irregularities.contains(Irregularity.STEM_CHANGE_E_to_IE) -> {
-                    val replacement = if (root.length <= 5 && root.startsWith("e")) "ye" else "ie"  // errar -> yerro
+                    val replacement = if (root.lastIndexOf("e") == 0) "ye" else "ie"  // errar -> yerro
                     replaceInLastSyllable(root, "e", replacement)
                 }
                 else -> root

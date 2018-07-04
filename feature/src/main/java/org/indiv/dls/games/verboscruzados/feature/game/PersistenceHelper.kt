@@ -80,7 +80,7 @@ class PersistenceHelper constructor(private val mContext: Context) {
                 .edit()
                 .clear()
         for (gameWord in gameWords) {
-            prefsEditor = prefsEditor.putString(gameWord.word, gson.toJson(gameWord, GameWord::class.java))
+            prefsEditor = prefsEditor.putString(gameWord.uniqueKey, gson.toJson(gameWord, GameWord::class.java))
         }
         prefsEditor.apply()
     }
@@ -93,18 +93,7 @@ class PersistenceHelper constructor(private val mContext: Context) {
     fun persistUserEntry(gameWord: GameWord) {
         gameWordPrefs
                 .edit()
-                .putString(gameWord.word, gson.toJson(gameWord, GameWord::class.java))
-                .apply()
-    }
-
-    /**
-     * Persists the game word selection option. Key should be one of the following:
-     * InfinitiveEnding.name, IrregularityCategory.name, SubjectPronoun.name, ConjugationType.name
-     */
-    fun persistGameOption(optionKey: String, enabled: Boolean) {
-        gameOptionPrefs
-                .edit()
-                .putBoolean(optionKey, enabled)
+                .putString(gameWord.uniqueKey, gson.toJson(gameWord, GameWord::class.java))
                 .apply()
     }
 
