@@ -4,12 +4,11 @@ package org.indiv.dls.games.verboscruzados.feature
  * Play Store: https://play.google.com/store/apps/details?id=org.indiv.dls.games.verboscruzados
  */
 
-// TODO: applying options
-// TODO: fix conjugations
 // TODO: more verbs
+// TODO: fix conjugations
 // TODO: change fragments into components
 // TODO: stats screen
-// TODO: backgrounds, icons, answer styling refinements
+// TODO: backgrounds, icons, answer styling refinements, puzzle size on small phones
 // TODO: help screen
 // TODO: instant app
 

@@ -1,5 +1,6 @@
 package org.indiv.dls.games.verboscruzados.feature.conjugation
 
+import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.feature.model.Irregularity
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
@@ -54,7 +55,18 @@ class ConjugatorTest {
     }
 
     @Test fun testOneVerb() {
-        val verb = Verb("meter", "put into")
+        val verb =
+                Verb("criar", "raise", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_I)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
+                    if (subjectPronoun == SubjectPronoun.VOSOTROS) {
+                        when (conjugationType) {
+                            ConjugationType.PRESENT -> "criais"
+                            ConjugationType.SUBJUNCTIVE_PRESENT -> "crieis"
+                            else -> null
+                        }
+                    } else {
+                        null
+                    }
+                }
         printResult(verb)
     }
 
