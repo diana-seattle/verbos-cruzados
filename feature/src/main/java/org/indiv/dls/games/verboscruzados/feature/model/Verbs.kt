@@ -575,8 +575,10 @@ val stemChangeIrVerbs = listOf(
         Verb("impedir", "impede", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("medir", "measure", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("pedir", "ask", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
+        Verb("perseguir", "pursue", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I, Irregularity.SPELLING_CHANGE_PHONETIC)),
+        Verb("rendir", "produce, defeat", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I, Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("repetir", "repeat", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
-        Verb("seguir", "follow", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
+        Verb("seguir", "follow", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I, Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("servir", "serve", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("vestir", "dress, wear", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
 
@@ -633,13 +635,13 @@ val irregularIrVerbs = listOf(
         Verb("venir", "come", altPreteritRoot = "vin", altInfinitiveRoot = "vendr", irregularImperativeTu = "ven", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
 
         // Custom conjugations
-        Verb("contradecir", "contradict", altPreteritRoot = "contradij", altInfinitiveRoot = "contradir", irregularPastParticiple = "contradicho", irregularGerund = "contradiciendo", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
+        Verb("contradecir", "contradict", altPreteritRoot = "contradij", altInfinitiveRoot = "contradir", irregularPastParticiple = "contradicho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
             when (conjugationType) {
-                ConjugationType.PRESENT -> if (subjectPronoun == SubjectPronoun.YO) "digo" else null
+                ConjugationType.PRESENT -> if (subjectPronoun == SubjectPronoun.YO) "contradigo" else null
                 else -> null
             }
         },
-        Verb("decir", "say, tell", altPreteritRoot = "dij", altInfinitiveRoot = "dir", irregularImperativeTu = "di", irregularPastParticiple = "dicho", irregularGerund = "diciendo", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
+        Verb("decir", "say, tell", altPreteritRoot = "dij", altInfinitiveRoot = "dir", irregularImperativeTu = "di", irregularPastParticiple = "dicho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
             when (conjugationType) {
                 ConjugationType.PRESENT -> if (subjectPronoun == SubjectPronoun.YO) "digo" else null
                 else -> null
@@ -685,6 +687,12 @@ val irregularIrVerbs = listOf(
                         SubjectPronoun.VOSOTROS -> "vayáis"
                     }
                 }
+                else -> null
+            }
+        },
+        Verb("maldecir", "curse", altPreteritRoot = "maldij", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
+            when (conjugationType) {
+                ConjugationType.PRESENT -> if (subjectPronoun == SubjectPronoun.YO) "maldigo" else null
                 else -> null
             }
         }
