@@ -247,6 +247,7 @@ val regularArVerbs = listOf(
         Verb("manejar", "drive, manage"),
         Verb("mandar", "order"),
         Verb("mejorar", "improve"),
+        Verb("mencionar", "mention"),
         Verb("mirar", "look at"),
         Verb("molestar", "bother"),
         Verb("montar", "ride"),
@@ -392,12 +393,19 @@ val stemChangeArVerbs = listOf(
         Verb("enterrar", "bury", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("errar", "miss, wander", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("gobernar", "govern", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
-        Verb("mentar", "mention", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("helar", "freeze", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("merendar", "snack", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("negar", "deny, negate", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE, Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("nevar", "snow", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("pensar", "think", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("recomendar", "recommend", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("regar", "water", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE, Irregularity.SPELLING_CHANGE_PHONETIC)),
+        Verb("remendar", "mend", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("sembrar", "plant, sow", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("sentar", "sit", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("serrar", "saw", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("temblar", "tremble", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("tentar", "tempt", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("tropezar", "stumble", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE, Irregularity.SPELLING_CHANGE_PHONETIC)),
 
         // stem change i -> í
@@ -568,11 +576,21 @@ val stemChangeIrVerbs = listOf(
         Verb("consentir", "allow", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("convertir", "turn into", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("desmentir", "deny", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
-        Verb("disentir", "disagree", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("diferir", "differ", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("digerir", "digest", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("discernir", "discern", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("disentir", "disagree, dissent", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("divertir", "amuse, entertain", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("herir", "wound", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("hervir", "boil", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("inferir", "infer", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("invertir", "invest", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("mentir", "lie", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("preferir", "prefer", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("referir", "refer", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("sentir", "feel", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
-        Verb("sugerir", "suggest", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE))
+        Verb("sugerir", "suggest", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("transferir", "transfer", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE))
 )
 val irregularIrVerbs = listOf(
         // past participle only
@@ -585,6 +603,7 @@ val irregularIrVerbs = listOf(
 
         // no accent on preterit
         Verb("conducir", "drive, conduct", altPreteritRoot = "conduj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("intervenir", "intervene", altPreteritRoot = "intervin", altInfinitiveRoot = "intervendr", irregularImperativeTu = "intervén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("prevenir", "prevent", altPreteritRoot = "previn", altInfinitiveRoot = "prevendr", irregularImperativeTu = "prevén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("producir", "produce", altPreteritRoot = "produj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("reducir", "reduce", altPreteritRoot = "reduj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
@@ -661,6 +680,7 @@ val regularErVerbs = listOf(
         Verb("esconder", "hide"),
         Verb("exceder", "exceed"),
         Verb("meter", "put into"),
+        Verb("ofender", "offend"),
         Verb("poseer", "possess"),
         Verb("prender", "catch, light"),
         Verb("proceder", "proceed"),
@@ -722,11 +742,13 @@ val stemChangeErVerbs = listOf(
         Verb("volver", "return", irregularPastParticiple = "vuelto", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
 
         // stem changes e -> ie
+        Verb("ascender", "rise, promote", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("atender", "attend to", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("defender", "defend", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("descender", "fall, descend", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("encender", "light, turn on", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("entender", "understand", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("extender", "extend", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("perder", "lose", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("verter", "pour, spill", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE))
 )
@@ -757,7 +779,7 @@ val irregularErVerbs = listOf(
         Verb("mantener", "maintain", altPreteritRoot = "mantuv", altInfinitiveRoot = "mantendr", irregularImperativeTu = "mantén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("obtener", "obtain", altPreteritRoot = "obtuv", altInfinitiveRoot = "obtendr", irregularImperativeTu = "obtén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("retener", "retain, keep", altPreteritRoot = "retuv", altInfinitiveRoot = "retendr", irregularImperativeTu = "retén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("sostener", "hold", altPreteritRoot = "sostuv", altInfinitiveRoot = "sostendr", irregularImperativeTu = "sostén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("sostener", "hold, sustain", altPreteritRoot = "sostuv", altInfinitiveRoot = "sostendr", irregularImperativeTu = "sostén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
 
         // Custom conjugations
         Verb("caber", "fit", altPreteritRoot = "cup", altInfinitiveRoot = "cabr", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
