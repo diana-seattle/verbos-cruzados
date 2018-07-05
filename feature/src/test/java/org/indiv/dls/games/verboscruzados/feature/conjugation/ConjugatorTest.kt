@@ -56,17 +56,9 @@ class ConjugatorTest {
 
     @Test fun testOneVerb() {
         val verb =
-                Verb("criar", "raise", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_I)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
-                    if (subjectPronoun == SubjectPronoun.VOSOTROS) {
-                        when (conjugationType) {
-                            ConjugationType.PRESENT -> "criais"
-                            ConjugationType.SUBJUNCTIVE_PRESENT -> "crieis"
-                            else -> null
-                        }
-                    } else {
-                        null
-                    }
-                }
+                Verb("tropezar", "stumble", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE, Irregularity.SPELLING_CHANGE_PHONETIC))
+
+
         printResult(verb)
     }
 
