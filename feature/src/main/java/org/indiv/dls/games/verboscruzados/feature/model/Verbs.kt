@@ -92,8 +92,13 @@ data class Verb(val infinitive: String,
             val alteredRoot = if (infinitiveEnding == InfinitiveEnding.IR)
                 getIrAlteredRoot(root, irregularities) else root
             val suffix = if (alteredRoot.isEmpty() || (alteredRoot.takeLast(1) in listOf("a", "e", "o", "u") &&
-                            alteredRoot.takeLast(2) !in listOf("qu", "gu")))
-                "yendo" else "iendo"
+                            alteredRoot.takeLast(2) !in listOf("qu", "gu"))) {
+                "yendo"
+            } else if (alteredRoot.takeLast(1) in listOf("i", "ñ")) {
+                "endo"
+            } else {
+                "iendo"
+            }
             alteredRoot + suffix
         }
     }
@@ -221,6 +226,7 @@ val regularArVerbs = listOf(
         Verb("funcionar", "function, work"),
         Verb("ganar", "win, earn"),
         Verb("gastar", "spend"),
+        Verb("girar", "turn, spin"),
         Verb("golpear", "hit"),
         Verb("gritar", "shout"),
         Verb("gustar", "like, please"),
@@ -362,6 +368,7 @@ val stemChangeArVerbs = listOf(
         Verb("acordar", "agree", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("acostar", "put to bed", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("almorzar", "eat lunch", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE, Irregularity.SPELLING_CHANGE_PHONETIC)),
+        Verb("apostar", "bet", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("aprobar", "approve", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("avergonzar", "embarrass", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE, Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("colgar", "hang", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE, Irregularity.SPELLING_CHANGE_PHONETIC)),
@@ -372,12 +379,16 @@ val stemChangeArVerbs = listOf(
         Verb("esforzar", "strain", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE, Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("forzar", "force", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE, Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("mostrar", "show", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
-        Verb("probar", "test, taste", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("probar", "test, taste, prove", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("recordar", "remember", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("reforzar", "reinforce", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE, Irregularity.SPELLING_CHANGE_PHONETIC)),
+        Verb("renovar", "renovate", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("rodar", "roll", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE, Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("rogar", "beg", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE, Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("soltar", "let go of, loosen", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("sonar", "sound", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("soñar", "dream", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("tostar", "toast", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("tronar", "thunder", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("volar", "fly", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
 
@@ -552,8 +563,14 @@ val spellingChangeIrVerbs = listOf(
 val stemChangeIrVerbs = listOf(
         // stem changes e -> i
         Verb("elegir", "choose", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC, Irregularity.STEM_CHANGE_E_to_I)),
+        Verb("competir", "compete", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("conseguir", "get", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
+        Verb("corregir", "correct", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I, Irregularity.SPELLING_CHANGE_PHONETIC)),
+        Verb("derretir", "melt", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
+        Verb("despedir", "say goodbye", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("elegir", "choose", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
+        Verb("estreñir", "constipate", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
+        Verb("freír", "fry", irregularPastParticiple = "frito", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("gemir", "groan", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("impedir", "impede", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("medir", "measure", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
@@ -568,8 +585,9 @@ val stemChangeIrVerbs = listOf(
         // stem changes i -> í
         Verb("prohibir", "prohibit", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_I)),
 
-        // stem changes o -> ui
+        // stem changes o -> ue
         Verb("dormir", "sleep", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("morir", "die", irregularPastParticiple = "muerto", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
 
         // stem changes e -> ie
         Verb("asentir", "agree, assent, nod", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
@@ -612,6 +630,12 @@ val irregularIrVerbs = listOf(
         Verb("venir", "come", altPreteritRoot = "vin", altInfinitiveRoot = "vendr", irregularImperativeTu = "ven", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
 
         // Custom conjugations
+        Verb("contradecir", "contradict", altPreteritRoot = "contradij", altInfinitiveRoot = "contradir", irregularPastParticiple = "contradicho", irregularGerund = "contradiciendo", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
+            when (conjugationType) {
+                ConjugationType.PRESENT -> if (subjectPronoun == SubjectPronoun.YO) "digo" else null
+                else -> null
+            }
+        },
         Verb("decir", "say, tell", altPreteritRoot = "dij", altInfinitiveRoot = "dir", irregularImperativeTu = "di", irregularPastParticiple = "dicho", irregularGerund = "diciendo", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
             when (conjugationType) {
                 ConjugationType.PRESENT -> if (subjectPronoun == SubjectPronoun.YO) "digo" else null
@@ -724,21 +748,24 @@ val spellingChangeErVerbs = listOf(
 )
 val stemChangeErVerbs = listOf(
         // stem changes o -> ue
-        Verb("mover", "move", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("cocer", "cook, bake", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE, Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("demoler", "demolish", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("devolver", "return something", irregularPastParticiple = "devuelto", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
-        Verb("disolver", "dissolve", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("disolver", "dissolve", irregularPastParticiple = "disuelto", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("doler", "hurt", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
-        Verb("envolver", "wrap", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("envolver", "wrap", irregularPastParticiple = "envuelto", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("llover", " rain", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("moler", "grind", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("morder", "bite", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("mover", "move", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("oler", "smell", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("promover", "promote", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("remover", "remove", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
-        Verb("resolver", "resolve", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
-        Verb("revolver", "stir, mix, shake", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("resolver", "resolve", irregularPastParticiple = "resuelto", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("retorcer", "twist, wring", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE, Irregularity.SPELLING_CHANGE_PHONETIC)),
+        Verb("revolver", "stir, mix, shake", irregularPastParticiple = "revuelto", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("soler", "use to, usually", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("torcer", "twist", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE, Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("volver", "return", irregularPastParticiple = "vuelto", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
 
         // stem changes e -> ie
