@@ -19,9 +19,10 @@ enum class Irregularity {
     SPELLING_CHANGE_YO_ZC,
     SPELLING_CHANGE_YO_GO,
     SPELLING_CHANGE_Y,
+    STEM_CHANGE_E_to_ACCENTED_I,
     STEM_CHANGE_E_to_I,
     STEM_CHANGE_E_to_IE,
-    STEM_CHANGE_I_to_I, // to accented í
+    STEM_CHANGE_I_to_ACCENTED_I,
     STEM_CHANGE_O_to_UE,
     STEM_CHANGE_U_to_UE
 }
@@ -420,12 +421,12 @@ val stemChangeArVerbs = listOf(
         Verb("tropezar", "stumble", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE, Irregularity.SPELLING_CHANGE_PHONETIC)),
 
         // stem change i -> í
-        Verb("confiar", "confide, trust", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_I)),
-        Verb("enviar", "send", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_I)),
-        Verb("espiar", "spy on", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_I)),
-        Verb("esquiar", "ski", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_I)),
-        Verb("fotografiar", "photograph", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_I)),
-        Verb("vaciar", "empty", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_I)),
+        Verb("confiar", "confide, trust", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
+        Verb("enviar", "send", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
+        Verb("espiar", "spy on", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
+        Verb("esquiar", "ski", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
+        Verb("fotografiar", "photograph", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
+        Verb("vaciar", "empty", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
 
         // stem change u -> ue
         Verb("jugar", "play", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_UE))
@@ -436,7 +437,7 @@ val irregularArVerbs = listOf(
         Verb("andar", "walk", altPreteritRoot = "anduv", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT)),
 
         // Custom conjugation
-        Verb("criar", "raise", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_I)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
+        Verb("criar", "raise", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
             if (subjectPronoun == SubjectPronoun.VOSOTROS) {
                 when (conjugationType) {
                     ConjugationType.PRESENT -> "criais"
@@ -497,7 +498,7 @@ val irregularArVerbs = listOf(
                 else -> null
             }
         },
-        Verb("guiar", "guide", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_I)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
+        Verb("guiar", "guide", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
             if (subjectPronoun == SubjectPronoun.VOSOTROS) {
                 when (conjugationType) {
                     ConjugationType.PRESENT -> "guiais"
@@ -570,20 +571,22 @@ val stemChangeIrVerbs = listOf(
         Verb("despedir", "say goodbye", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("elegir", "choose", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("estreñir", "constipate", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
-        Verb("freír", "fry", irregularPastParticiple = "frito", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("gemir", "groan", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("impedir", "impede", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("medir", "measure", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("pedir", "ask", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
-        Verb("reír", "laugh", altInfinitiveRoot = "reir", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("repetir", "repeat", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("seguir", "follow", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("servir", "serve", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
-        Verb("sonreír", "smile", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("vestir", "dress, wear", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
 
-        // stem changes i -> í
-        Verb("prohibir", "prohibit", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_I)),
+        // stem changes e -> accented í
+        Verb("reír", "laugh", altInfinitiveRoot = "reir", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_ACCENTED_I)),
+        Verb("freír", "fry", altInfinitiveRoot = "freir", irregularPastParticiple = "frito", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_ACCENTED_I)),
+        Verb("sonreír", "smile", altInfinitiveRoot = "sonreir", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_ACCENTED_I)),
+
+        // stem changes i -> accented í
+        Verb("prohibir", "prohibit", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
 
         // stem changes o -> ue
         Verb("dormir", "sleep", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),

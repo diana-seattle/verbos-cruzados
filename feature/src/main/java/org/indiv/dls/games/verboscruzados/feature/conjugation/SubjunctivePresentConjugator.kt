@@ -33,13 +33,17 @@ open class SubjunctivePresentConjugator : Conjugator {
     override fun conjugate(verb: Verb, subjectPronoun: SubjectPronoun): String {
         return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.SUBJUNCTIVE_PRESENT)
                 ?: run {
-                    val suffix = mapOfSuffixMaps[verb.infinitiveEnding]!![subjectPronoun]!!
+                    val defaultSuffix = mapOfSuffixMaps[verb.infinitiveEnding]!![subjectPronoun]!!
                     val yoRoot = getYoRoot(verb)
                     val subjunctiveRoot = if (subjectPronoun.isNosotrosOrVosotros)
                         reverseAnyStemChanges(yoRoot, verb.infinitiveEnding == InfinitiveEnding.IR, verb.irregularities)
                     else
                         yoRoot
-                    val root = getRootWithSpellingChange(subjunctiveRoot, "o", suffix)
+                    val root = getRootWithSpellingChange(subjunctiveRoot, "o", defaultSuffix)
+                    val suffix = if (root.takeLast(1) == "i" && defaultSuffix.startsWith("ái") &&
+                            !anyVowels(root.dropLast(1))) {
+                        "a" + defaultSuffix.drop(1)  // reír -> riais, freír -> friais, but sonreír -> sonriáis
+                    } else defaultSuffix
                     return root + suffix
                 }
     }
@@ -64,7 +68,10 @@ open class SubjunctivePresentConjugator : Conjugator {
                 val changedStem = if (yoRoot.length <= 5 && yoRoot.startsWith("ye")) "ye" else "ie"
                 replaceInLastSyllable(yoRoot, changedStem, if (forIrVerb) "i" else "e")
             }
-            irregularities.contains(Irregularity.STEM_CHANGE_I_to_I) -> {
+            irregularities.contains(Irregularity.STEM_CHANGE_E_to_ACCENTED_I) -> {
+                replaceInLastSyllable(yoRoot, "í", "i")
+            }
+            irregularities.contains(Irregularity.STEM_CHANGE_I_to_ACCENTED_I) -> {
                 replaceInLastSyllable(yoRoot, "í", "i")
             }
             else -> yoRoot

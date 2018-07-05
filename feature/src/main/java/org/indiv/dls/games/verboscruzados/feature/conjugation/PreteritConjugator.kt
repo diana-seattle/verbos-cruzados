@@ -34,10 +34,10 @@ class PreteritConjugator : Conjugator {
         return verb.customConjugation?.invoke(subjectPronoun, ConjugationType.PRETERIT) ?: run {
             val defaultSuffix = mapOfSuffixMaps[verb.infinitiveEnding]!![subjectPronoun]!!
             val suffixWithCorrectedAccent = replaceSuffixAccentIfAppropriate(defaultSuffix, verb.irregularities, subjectPronoun)
-            val suffix = getSuffixWithSpellingChanges(verb, suffixWithCorrectedAccent, subjectPronoun)
             val initialRoot = verb.altPreteritRoot
                     ?: getRootCorrectionForIrThirdPersonStemChange(verb, subjectPronoun)
                     ?: verb.root
+            val suffix = getSuffixWithSpellingChanges(initialRoot, suffixWithCorrectedAccent, subjectPronoun)
             val root = getRootWithSpellingChange(initialRoot, verb.infinitiveEnding.ending, suffix)
             return root + suffix
         }
@@ -63,16 +63,16 @@ class PreteritConjugator : Conjugator {
         }
     }
 
-    private fun getSuffixWithSpellingChanges(verb: Verb, suffix: String, subjectPronoun: SubjectPronoun): String {
-        (verb.altPreteritRoot ?: verb.root).apply {
+    private fun getSuffixWithSpellingChanges(root: String, suffix: String, subjectPronoun: SubjectPronoun): String {
+        root.apply {
             if (suffix.startsWith("i")) {
                 if (takeLast(1) in strongVowels) {
                     // E.g. caer -> caímos, cayeron
                     val replacement = if (subjectPronoun.isThirdPerson) "y" else "í"
                     return replacement + suffix.drop(1)
                 } else if (subjectPronoun.isThirdPerson &&
-                        (endsWith("ñ") || endsWith("ll") || endsWith("j"))) {
-                    // E.g. tañer -> tañó, bullir -> bulló, producir -> produjeron
+                        (endsWith("ñ") || endsWith("ll") || endsWith("j") || endsWith("i"))) {
+                    // E.g. tañer -> tañó, bullir -> bulló, producir -> produjeron, reír -> rieron
                     return suffix.drop(1)
                 } else if (subjectPronoun.isThirdPerson && takeLast(1) in listOf("a", "e", "o", "u")
                         && takeLast(2) !in listOf("qu", "gu")) {

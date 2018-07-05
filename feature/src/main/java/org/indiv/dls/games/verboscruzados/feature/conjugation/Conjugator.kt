@@ -41,8 +41,7 @@ internal fun getRootWithSpellingChange(root: String, oldSuffix: String, newSuffi
                 else -> this
             }
         }
-    } else if (!hardOldSuffix &&
-            (newSuffix.startsWith("a") || newSuffix.startsWith("á") || newSuffix.startsWith("o"))) {
+    } else if (!hardOldSuffix && newSuffix.take(1) in listOf("a", "á", "o")) {
         root.apply {
             return when {
                 endsWith("qu") -> dropLast(2) + "c" // e.g. delinquir -> delincamos
@@ -59,6 +58,7 @@ internal fun getRootWithSpellingChange(root: String, oldSuffix: String, newSuffi
 internal fun getIrAlteredRoot(root: String, irregularities: List<Irregularity>): String {
     return when {
         irregularities.contains(Irregularity.STEM_CHANGE_E_to_I) -> replaceInLastSyllable(root, "e", "i")
+        irregularities.contains(Irregularity.STEM_CHANGE_E_to_ACCENTED_I) -> replaceInLastSyllable(root, "e", "i")
         irregularities.contains(Irregularity.STEM_CHANGE_E_to_IE) -> replaceInLastSyllable(root, "e", "i")
         irregularities.contains(Irregularity.STEM_CHANGE_O_to_UE) -> replaceInLastSyllable(root, "o", "u")
         else -> root
