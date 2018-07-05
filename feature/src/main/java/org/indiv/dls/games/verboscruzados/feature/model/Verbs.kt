@@ -5,6 +5,7 @@ import org.indiv.dls.games.verboscruzados.feature.conjugation.getIrAlteredRoot
 //
 // See conjugation rules: https://en.wikipedia.org/wiki/Spanish_irregular_verbs
 //
+// Also, good source of verbs: http://www.intro2spanish.com/verbs/listas/all.htm
 
 enum class InfinitiveEnding(val ending: String) {
     ER("er"),
@@ -539,8 +540,6 @@ val spellingChangeIrVerbs = listOf(
         Verb("oír", "hear", altInfinitiveRoot = "oir", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
         Verb("desoír", "ignore", altInfinitiveRoot = "desoir", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
         Verb("salir", "go out, leave", altInfinitiveRoot = "saldr", irregularImperativeTu = "sal", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO))
-
-        // Yo zc
 )
 val stemChangeIrVerbs = listOf(
         // stem changes e -> i
@@ -585,9 +584,12 @@ val irregularIrVerbs = listOf(
         Verb("pudrir", "rot, decay", irregularPastParticiple = "podrido"),
 
         // no accent on preterit
+        Verb("conducir", "drive, conduct", altPreteritRoot = "conduj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("prevenir", "prevent", altPreteritRoot = "previn", altInfinitiveRoot = "prevendr", irregularImperativeTu = "prevén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("producir", "produce", altPreteritRoot = "produj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("reducir", "reduce", altPreteritRoot = "reduj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.SPELLING_CHANGE_PHONETIC, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("reducir", "reduce", altPreteritRoot = "reduj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("reproducir", "reproduce", altPreteritRoot = "reproduj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("traducir", "translate", altPreteritRoot = "traduj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("venir", "come", altPreteritRoot = "vin", altInfinitiveRoot = "vendr", irregularImperativeTu = "ven", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
 
         // Custom conjugations
@@ -683,15 +685,22 @@ val spellingChangeErVerbs = listOf(
 
         // Yo ZC verbs
         Verb("agradecer", "thank", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
+        Verb("amanecer", "dawn, get light", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
+        Verb("anochecer", "get dark", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
         Verb("aparecer", "appear", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
         Verb("conocer", "know, meet", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
         Verb("crecer", "grow", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
         Verb("desaparecer", "disappear", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
+        Verb("embellecer", "embellish", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
+        Verb("establecer", "establish", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
         Verb("merecer", "deserve", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
         Verb("nacer", "be born", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
         Verb("obedecer", "obey", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
         Verb("ofrecer", "offer", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
-        Verb("parecer", "seem", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC))
+        Verb("parecer", "seem", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
+        Verb("permanecer", "remain", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
+        Verb("pertenecer", "belong to", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
+        Verb("reconocer", "recognize", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC))
 )
 val stemChangeErVerbs = listOf(
         // stem changes o -> ue
