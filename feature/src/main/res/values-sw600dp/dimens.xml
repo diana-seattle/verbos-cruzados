@@ -8,4 +8,6 @@
     <!-- width of individual cell -->
     <dimen name="cell_width">28dp</dimen>
 
+    <dimen name="puzzle_margin">16dp</dimen>
+
 </resources>

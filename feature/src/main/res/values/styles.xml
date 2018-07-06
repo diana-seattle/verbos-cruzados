@@ -6,24 +6,28 @@
     </style>
 
     <style name="answerStyle">
-        <item name="android:textSize">@dimen/x_large</item>
+        <item name="android:textSize">@dimen/large</item>
     </style>
 
     <style name="answerHintStyle">
-        <item name="android:textSize">@dimen/large_fixed</item>
+        <item name="android:textSize">@dimen/medium_fixed</item>
         <item name="android:textColor">@color/dark_gray</item>
     </style>
 
     <style name="answerSubStyle">
-        <item name="android:textSize">@dimen/medium</item>
+        <item name="android:textSize">@dimen/small_fixed</item>
         <item name="android:textColor">@color/dark_gray</item>
     </style>
 
     <style name="answerLetterButton">
-        <item name="android:layout_width">40dp</item>
-        <item name="android:layout_height">40dp</item>
-        <item name="android:layout_marginRight">@dimen/quarter_margin</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:textAllCaps">false</item>
+        <item name="android:paddingTop">@dimen/half_margin</item>
+        <item name="android:paddingBottom">@dimen/half_margin</item>
+        <item name="android:paddingStart">@dimen/three_quarter_margin</item>
+        <item name="android:paddingEnd">@dimen/default_margin</item>
+        <item name="android:textColor">@color/red</item>
         <item name="android:textSize">@dimen/medium_fixed</item>
     </style>
 </resources>
