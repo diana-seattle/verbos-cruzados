@@ -2,7 +2,7 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <!-- height of answer fragment panel -->
-    <dimen name="fragment_answer_height">140dp</dimen>
+    <dimen name="fragment_answer_height">120dp</dimen>
 
     <!-- width of individual cell -->
     <dimen name="cell_width">22dp</dimen>

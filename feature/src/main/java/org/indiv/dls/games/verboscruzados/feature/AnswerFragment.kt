@@ -100,8 +100,8 @@ class AnswerFragment : Fragment() {
     // called by activity
     fun clearGameWord() {
         txt_answer.setText("")
-        txt_answer_layout.hint = ""
-        txt_answer_layout.error = ""
+        subject_pronoun_and_tense.text = ""
+        infinitive_and_translation.text = ""
     }
 
     //endregion
@@ -116,8 +116,8 @@ class AnswerFragment : Fragment() {
         txt_answer.setSelection(answerPresentation.userText?.length ?: 0)
 
         // update clue views
-        txt_answer_layout.hint = answerPresentation.conjugationLabel
-        txt_answer_layout.error = "${answerPresentation.infinitive} (${answerPresentation.translation})"
+        subject_pronoun_and_tense.text = answerPresentation.conjugationLabel
+        infinitive_and_translation.text = "${answerPresentation.infinitive} (${answerPresentation.translation})"
     }
 
     private fun updateActivityWithAnswer() {

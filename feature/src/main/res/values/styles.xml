@@ -6,10 +6,10 @@
     </style>
 
     <style name="answerStyle">
-        <item name="android:textSize">@dimen/large</item>
+        <item name="android:textSize">@dimen/large_fixed</item>
     </style>
 
-    <style name="answerHintStyle">
+    <style name="answerTopStyle">
         <item name="android:textSize">@dimen/medium_fixed</item>
         <item name="android:textColor">@color/dark_gray</item>
     </style>
@@ -26,7 +26,7 @@
         <item name="android:paddingTop">@dimen/half_margin</item>
         <item name="android:paddingBottom">@dimen/half_margin</item>
         <item name="android:paddingStart">@dimen/three_quarter_margin</item>
-        <item name="android:paddingEnd">@dimen/default_margin</item>
+        <item name="android:paddingEnd">@dimen/three_quarter_margin</item>
         <item name="android:textColor">@color/red</item>
         <item name="android:textSize">@dimen/medium_fixed</item>
     </style>

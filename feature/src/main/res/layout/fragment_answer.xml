@@ -4,45 +4,43 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_gravity="center"
               android:background="#FFFFFF"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:paddingEnd="@dimen/quarter_margin"
+              android:paddingStart="@dimen/quarter_margin">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/subject_pronoun_and_tense"
+        style="@style/answerTopStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
+        android:layout_marginStart="@dimen/quarter_margin"
         android:layout_marginTop="@dimen/quarter_margin"
-        android:orientation="horizontal"
-        android:paddingStart="@dimen/quarter_margin"
-        android:paddingTop="@dimen/quarter_margin">
+    />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/txt_answer_layout"
-            android:layout_width="330dp"
-            android:layout_height="wrap_content"
-            app:errorTextAppearance="@style/answerSubStyle"
-            app:hintTextAppearance="@style/answerHintStyle">
+    <EditText
+        android:id="@+id/txt_answer"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:imeOptions="actionGo"
+        android:inputType="textNoSuggestions"
+        android:maxLines="1"
+        android:paddingTop="2dp"
+        android:textAppearance="@style/answerStyle"/>
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/txt_answer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:imeOptions="actionGo"
-                android:inputType="textNoSuggestions"
-                android:maxLines="1"
-                android:textAppearance="@style/answerStyle"/>
-
-        </android.support.design.widget.TextInputLayout>
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/infinitive_and_translation"
+        style="@style/answerSubStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/quarter_margin"
+    />
 
     <!-- buttons for accented letters -->
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:layout_marginStart="@dimen/quarter_margin"
                   android:orientation="horizontal">
         <TextView android:id="@+id/button_accented_a"
                   style="@style/answerLetterButton"
