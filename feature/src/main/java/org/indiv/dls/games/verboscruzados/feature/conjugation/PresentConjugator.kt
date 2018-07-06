@@ -43,10 +43,9 @@ class PresentConjugator : Conjugator {
                     ?: applyStemChange(getRootWithSpellingChange(verb.root, verb.infinitiveEnding.ending, defaultSuffix),
                             subjectPronoun, verb.irregularities)
             // Examples: guiar, fluir, huir, criar, dar, ver
-            val weakOneSyllableRoot = !anyVowels(root.dropLast(2)) && !anyStrongVowels(root.takeLast(2))
             val suffix = when {
                 subjectPronoun == SubjectPronoun.NOSOTROS && verb.infinitive.endsWith("ír") -> "í" + defaultSuffix.drop(1) // e.g sonreír -> sonreímos
-                subjectPronoun == SubjectPronoun.VOSOTROS  && weakOneSyllableRoot -> {
+                subjectPronoun == SubjectPronoun.VOSOTROS  && isWeakOneSyllableRoot(root) -> {
                     removeStartingAccent(defaultSuffix) // no accent because single syllable with week vowel
                 }
                 else -> defaultSuffix

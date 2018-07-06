@@ -41,8 +41,7 @@ open class SubjunctivePresentConjugator : Conjugator {
                         yoRoot
                     val root = getRootWithSpellingChange(subjunctiveRoot, "o", defaultSuffix)
                     // Examples: guiar, fluir, huir, criar, dar, ver, reír, freír
-                    val weakOneSyllableRoot = !anyVowels(root.dropLast(2)) && !anyStrongVowels(root.takeLast(2))
-                    val suffix = if (subjectPronoun == SubjectPronoun.VOSOTROS && weakOneSyllableRoot) {
+                    val suffix = if (subjectPronoun == SubjectPronoun.VOSOTROS && isWeakOneSyllableRoot(root)) {
                             removeStartingAccent(defaultSuffix) // no accent because single syllable with week vowel
                     } else defaultSuffix
                     return root + suffix

@@ -83,6 +83,10 @@ internal fun anyStrongVowels(text: String): Boolean {
     return text.matches(Regex(".*[aeoáéíóú]+.*"))
 }
 
+internal fun isWeakOneSyllableRoot(root: String): Boolean {
+    return !anyVowels(root.dropLast(2)) && !anyStrongVowels(root.takeLast(2)) && anyVowels(root.takeLast(1))
+}
+
 internal fun removeStartingAccent(text: String): String {
     return when (text.take(1)) {
         "á" -> "a" + text.drop(1)

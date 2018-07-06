@@ -5,7 +5,7 @@
     <dimen name="fragment_answer_height">115dp</dimen>
 
     <!-- width of individual cell -->
-    <dimen name="cell_width">22dp</dimen>
+    <dimen name="cell_width">21dp</dimen>
 
     <dimen name="puzzle_margin">6dp</dimen>
 
