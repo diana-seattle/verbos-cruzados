@@ -78,3 +78,17 @@ internal fun replaceInLastSyllable(text: String, old: String, new: String): Stri
 internal fun anyVowels(text: String): Boolean {
     return text.matches(Regex(".*[aeiouáéíóú]+.*"))
 }
+
+internal fun anyStrongVowels(text: String): Boolean {
+    return text.matches(Regex(".*[aeoáéíóú]+.*"))
+}
+
+internal fun removeStartingAccent(text: String): String {
+    return when (text.take(1)) {
+        "á" -> "a" + text.drop(1)
+        "é" -> "e" + text.drop(1)
+        "í" -> "i" + text.drop(1)
+        "ó" -> "o" + text.drop(1)
+        else -> text
+    }
+}

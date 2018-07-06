@@ -40,9 +40,10 @@ open class SubjunctivePresentConjugator : Conjugator {
                     else
                         yoRoot
                     val root = getRootWithSpellingChange(subjunctiveRoot, "o", defaultSuffix)
-                    val suffix = if (root.takeLast(1) == "i" && defaultSuffix.startsWith("ái") &&
-                            !anyVowels(root.dropLast(1))) {
-                        "a" + defaultSuffix.drop(1)  // reír -> riais, freír -> friais, but sonreír -> sonriáis
+                    // Examples: guiar, fluir, huir, criar, dar, ver, reír, freír
+                    val weakOneSyllableRoot = !anyVowels(root.dropLast(2)) && !anyStrongVowels(root.takeLast(2))
+                    val suffix = if (subjectPronoun == SubjectPronoun.VOSOTROS && weakOneSyllableRoot) {
+                            removeStartingAccent(defaultSuffix) // no accent because single syllable with week vowel
                     } else defaultSuffix
                     return root + suffix
                 }

@@ -115,8 +115,6 @@ data class Verb(val infinitive: String,
 // Strong vowels form single-syllable dipthongs when combined with weak vowels
 internal val strongVowels = listOf("a", "e", "o")
 
-// todo: add more verbs, add other irregularities, sort, etc
-
 // AR verbs
 val regularArVerbs = listOf(
         Verb("abandonar", "abandon"),
@@ -422,10 +420,12 @@ val stemChangeArVerbs = listOf(
 
         // stem change i -> í
         Verb("confiar", "confide, trust", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
+        Verb("criar", "raise", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
         Verb("enviar", "send", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
         Verb("espiar", "spy on", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
         Verb("esquiar", "ski", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
         Verb("fotografiar", "photograph", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
+        Verb("guiar", "guide", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
         Verb("vaciar", "empty", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
 
         // stem change u -> ue
@@ -437,23 +437,11 @@ val irregularArVerbs = listOf(
         Verb("andar", "walk", altPreteritRoot = "anduv", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT)),
 
         // Custom conjugation
-        Verb("criar", "raise", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
-            if (subjectPronoun == SubjectPronoun.VOSOTROS) {
-                when (conjugationType) {
-                    ConjugationType.PRESENT -> "criais"
-                    ConjugationType.SUBJUNCTIVE_PRESENT -> "crieis"
-                    else -> null
-                }
-            } else {
-                null
-            }
-        },
         Verb("dar", "give", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
             when (conjugationType) {
                 ConjugationType.PRESENT -> {
                     when (subjectPronoun) {
                         SubjectPronoun.YO -> "doy"
-                        SubjectPronoun.VOSOTROS -> "dais"
                         else -> null
                     }
                 }
@@ -468,7 +456,6 @@ val irregularArVerbs = listOf(
                     when (subjectPronoun) {
                         SubjectPronoun.YO -> "dé"
                         SubjectPronoun.EL_ELLA_USTED -> "dé"
-                        SubjectPronoun.VOSOTROS -> "deis"
                         else -> null
                     }
                 }
@@ -497,19 +484,7 @@ val irregularArVerbs = listOf(
                 }
                 else -> null
             }
-        },
-        Verb("guiar", "guide", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
-            if (subjectPronoun == SubjectPronoun.VOSOTROS) {
-                when (conjugationType) {
-                    ConjugationType.PRESENT -> "guiais"
-                    ConjugationType.SUBJUNCTIVE_PRESENT -> "guieis"
-                    else -> null
-                }
-            } else {
-                null
-            }
         }
-
 )
 
 // IR verbs
@@ -626,7 +601,11 @@ val irregularIrVerbs = listOf(
 
         // no accent on preterit
         Verb("conducir", "drive, conduct", altPreteritRoot = "conduj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("contradecir", "contradict", altPreteritRoot = "contradij", altInfinitiveRoot = "contradir", irregularPastParticiple = "contradicho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("decir", "say, tell", altPreteritRoot = "dij", altInfinitiveRoot = "dir", irregularImperativeTu = "di", irregularPastParticiple = "dicho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("intervenir", "intervene", altPreteritRoot = "intervin", altInfinitiveRoot = "intervendr", irregularImperativeTu = "intervén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("maldecir", "curse", altPreteritRoot = "maldij", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("predecir", "predict", altPreteritRoot = "predij", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("prevenir", "prevent", altPreteritRoot = "previn", altInfinitiveRoot = "prevendr", irregularImperativeTu = "prevén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("producir", "produce", altPreteritRoot = "produj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("reducir", "reduce", altPreteritRoot = "reduj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
@@ -634,19 +613,8 @@ val irregularIrVerbs = listOf(
         Verb("traducir", "translate", altPreteritRoot = "traduj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("venir", "come", altPreteritRoot = "vin", altInfinitiveRoot = "vendr", irregularImperativeTu = "ven", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
 
+
         // Custom conjugations
-        Verb("contradecir", "contradict", altPreteritRoot = "contradij", altInfinitiveRoot = "contradir", irregularPastParticiple = "contradicho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
-            when (conjugationType) {
-                ConjugationType.PRESENT -> if (subjectPronoun == SubjectPronoun.YO) "contradigo" else null
-                else -> null
-            }
-        },
-        Verb("decir", "say, tell", altPreteritRoot = "dij", altInfinitiveRoot = "dir", irregularImperativeTu = "di", irregularPastParticiple = "dicho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
-            when (conjugationType) {
-                ConjugationType.PRESENT -> if (subjectPronoun == SubjectPronoun.YO) "digo" else null
-                else -> null
-            }
-        },
         Verb("ir", "go", altPreteritRoot = "fu", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT, Irregularity.SPELLING_CHANGE_PHONETIC, Irregularity.STEM_CHANGE_E_to_I)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
             when (conjugationType) {
                 ConjugationType.PRESENT -> {
@@ -687,12 +655,6 @@ val irregularIrVerbs = listOf(
                         SubjectPronoun.VOSOTROS -> "vayáis"
                     }
                 }
-                else -> null
-            }
-        },
-        Verb("maldecir", "curse", altPreteritRoot = "maldij", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
-            when (conjugationType) {
-                ConjugationType.PRESENT -> if (subjectPronoun == SubjectPronoun.YO) "maldigo" else null
                 else -> null
             }
         }
@@ -795,29 +757,27 @@ val irregularErVerbs = listOf(
         Verb("romper", "break", irregularPastParticiple = "roto"),
 
         // no accent on preterit
-        Verb("hacer", "make, do", altPreteritRoot = "hic", altInfinitiveRoot = "har", irregularImperativeTu = "haz", irregularPastParticiple = "hecho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("poder", "can, be able to", altPreteritRoot = "pud", altInfinitiveRoot = "podr", irregularGerund = "pudiendo", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT, Irregularity.STEM_CHANGE_O_to_UE)),
-        Verb("poner", "put", altPreteritRoot = "pus", altInfinitiveRoot = "pondr", irregularImperativeTu = "pon", irregularPastParticiple = "puesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("querer", "want", altPreteritRoot = "quis", altInfinitiveRoot = "querr", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("tener", "have", altPreteritRoot = "tuv", altInfinitiveRoot = "tendr", irregularImperativeTu = "ten", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("traer", "bring", altPreteritRoot = "traj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
-
-        // Similar to poner
         Verb("componer", "compose, prepare", altPreteritRoot = "compus", altInfinitiveRoot = "compondr", irregularImperativeTu = "compón", irregularPastParticiple = "compuesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("contraponer", "compare, contrast", altPreteritRoot = "contrapus", altInfinitiveRoot = "contrapondr", irregularImperativeTu = "contrapón", irregularPastParticiple = "contrapuesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("disponer", "arrange", altPreteritRoot = "dispus", altInfinitiveRoot = "dispondr", irregularImperativeTu = "dispón", irregularPastParticiple = "dispuesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("imponer", "impose", altPreteritRoot = "impus", altInfinitiveRoot = "impondr", irregularImperativeTu = "impón", irregularPastParticiple = "impuesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("oponer", "oppose", altPreteritRoot = "opus", altInfinitiveRoot = "opondr", irregularImperativeTu = "opón", irregularPastParticiple = "opuesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("posponer", "postpone", altPreteritRoot = "pospus", altInfinitiveRoot = "pospondr", irregularImperativeTu = "pospón", irregularPastParticiple = "pospuesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
-        Verb("suponer", "suppose", altPreteritRoot = "supus", altInfinitiveRoot = "supondr", irregularImperativeTu = "supón", irregularPastParticiple = "supuesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
-
-        // Similar to tener
         Verb("contener", "contain", altPreteritRoot = "contuv", altInfinitiveRoot = "contendr", irregularImperativeTu = "contén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("contraponer", "compare, contrast", altPreteritRoot = "contrapus", altInfinitiveRoot = "contrapondr", irregularImperativeTu = "contrapón", irregularPastParticiple = "contrapuesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("deshacer", "undo", altPreteritRoot = "deshic", altInfinitiveRoot = "deshar", irregularImperativeTu = "deshaz", irregularPastParticiple = "deshecho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("detener", "stop", altPreteritRoot = "detuv", altInfinitiveRoot = "detendr", irregularImperativeTu = "detén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("disponer", "arrange", altPreteritRoot = "dispus", altInfinitiveRoot = "dispondr", irregularImperativeTu = "dispón", irregularPastParticiple = "dispuesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("hacer", "make, do", altPreteritRoot = "hic", altInfinitiveRoot = "har", irregularImperativeTu = "haz", irregularPastParticiple = "hecho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("imponer", "impose", altPreteritRoot = "impus", altInfinitiveRoot = "impondr", irregularImperativeTu = "impón", irregularPastParticiple = "impuesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("mantener", "maintain", altPreteritRoot = "mantuv", altInfinitiveRoot = "mantendr", irregularImperativeTu = "mantén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("obtener", "obtain", altPreteritRoot = "obtuv", altInfinitiveRoot = "obtendr", irregularImperativeTu = "obtén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("oponer", "oppose", altPreteritRoot = "opus", altInfinitiveRoot = "opondr", irregularImperativeTu = "opón", irregularPastParticiple = "opuesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("poder", "can, be able to", altPreteritRoot = "pud", altInfinitiveRoot = "podr", irregularGerund = "pudiendo", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT, Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("posponer", "postpone", altPreteritRoot = "pospus", altInfinitiveRoot = "pospondr", irregularImperativeTu = "pospón", irregularPastParticiple = "pospuesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("poner", "put", altPreteritRoot = "pus", altInfinitiveRoot = "pondr", irregularImperativeTu = "pon", irregularPastParticiple = "puesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("proponer", "propose", altPreteritRoot = "propus", altInfinitiveRoot = "propondr", irregularImperativeTu = "propón", irregularPastParticiple = "propuesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("querer", "want", altPreteritRoot = "quis", altInfinitiveRoot = "querr", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("retener", "retain, keep", altPreteritRoot = "retuv", altInfinitiveRoot = "retendr", irregularImperativeTu = "retén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("sostener", "hold, sustain", altPreteritRoot = "sostuv", altInfinitiveRoot = "sostendr", irregularImperativeTu = "sostén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("suponer", "suppose", altPreteritRoot = "supus", altInfinitiveRoot = "supondr", irregularImperativeTu = "supón", irregularPastParticiple = "supuesto", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("tener", "have", altPreteritRoot = "tuv", altInfinitiveRoot = "tendr", irregularImperativeTu = "ten", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("traer", "bring", altPreteritRoot = "traj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
 
         // Custom conjugations
         Verb("caber", "fit", altPreteritRoot = "cup", altInfinitiveRoot = "cabr", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->
@@ -920,7 +880,6 @@ val irregularErVerbs = listOf(
                 ConjugationType.PRESENT -> {
                     when (subjectPronoun) {
                         SubjectPronoun.YO -> "veo"
-                        SubjectPronoun.VOSOTROS -> "veis"
                         else -> null
                     }
                 }

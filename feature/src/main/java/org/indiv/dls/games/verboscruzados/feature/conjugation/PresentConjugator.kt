@@ -5,7 +5,6 @@ import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.feature.model.Irregularity
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
-import org.indiv.dls.games.verboscruzados.feature.model.strongVowels
 
 /**
  * Present tense conjugator
@@ -43,10 +42,13 @@ class PresentConjugator : Conjugator {
             val root = getSpecialYoRootIfAny(verb, subjectPronoun)
                     ?: applyStemChange(getRootWithSpellingChange(verb.root, verb.infinitiveEnding.ending, defaultSuffix),
                             subjectPronoun, verb.irregularities)
+            // Examples: guiar, fluir, huir, criar, dar, ver
+            val weakOneSyllableRoot = !anyVowels(root.dropLast(2)) && !anyStrongVowels(root.takeLast(2))
             val suffix = when {
-                defaultSuffix.startsWith("i") && root.takeLast(1) in strongVowels -> "í" + defaultSuffix.drop(1)
-                defaultSuffix.startsWith("í") && root.takeLast(1) == "u" && !anyVowels(root.dropLast(1)) ->
-                    "i" + defaultSuffix.drop(1) // no accent because single syllable, e.g. fluir -> flui, huir -> hui
+                subjectPronoun == SubjectPronoun.NOSOTROS && verb.infinitive.endsWith("ír") -> "í" + defaultSuffix.drop(1) // e.g sonreír -> sonreímos
+                subjectPronoun == SubjectPronoun.VOSOTROS  && weakOneSyllableRoot -> {
+                    removeStartingAccent(defaultSuffix) // no accent because single syllable with week vowel
+                }
                 else -> defaultSuffix
             }
             return root + suffix
@@ -86,12 +88,14 @@ class PresentConjugator : Conjugator {
 
     private fun getSpecialYoRootIfAny(verb: Verb, subjectPronoun: SubjectPronoun): String? {
         if (subjectPronoun == SubjectPronoun.YO) {
+            val e2iStemChange = verb.irregularities.contains(Irregularity.STEM_CHANGE_E_to_I)
             if (verb.irregularities.contains(Irregularity.SPELLING_CHANGE_YO_GO)) {
                 verb.root.apply {
                     return when {
                         endsWith("l") || endsWith("n") || endsWith("s") -> this + "g" // e.g. salgo, tengo, asgo
                         endsWith("a") || endsWith("o") -> this + "ig"   // e.g. caer -> caigo, oír -> oigo
-                        endsWith("c") -> this.dropLast(1) + "g"  // e.g. hacer -> hago
+                        endsWith("ec") && e2iStemChange -> dropLast(2) + "ig"  // e.g. decir -> digo
+                        endsWith("c") -> dropLast(1) + "g"  // e.g. hacer -> hago
                         else -> null
                     }
                 }
