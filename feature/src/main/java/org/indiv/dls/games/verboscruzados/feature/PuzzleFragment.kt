@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.view.View.OnClickListener
 import android.widget.TableRow
 import kotlinx.android.synthetic.main.fragment_puzzle.*
+import org.indiv.dls.games.verboscruzados.feature.component.PuzzleCellTextView
 
 
 /**

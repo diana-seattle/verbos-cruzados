@@ -1,4 +1,4 @@
-package org.indiv.dls.games.verboscruzados.feature
+package org.indiv.dls.games.verboscruzados.feature.component
 
 import android.content.Context
 import android.graphics.Color
@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
 import android.widget.TextView
+import org.indiv.dls.games.verboscruzados.feature.R
 
 /**
  * Styled [TextView] used in puzzle.

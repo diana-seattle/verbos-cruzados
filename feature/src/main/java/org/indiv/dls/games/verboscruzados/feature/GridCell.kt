@@ -1,5 +1,6 @@
 package org.indiv.dls.games.verboscruzados.feature
 
+import org.indiv.dls.games.verboscruzados.feature.component.PuzzleCellTextView
 import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 
 /**
