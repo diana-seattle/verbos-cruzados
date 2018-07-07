@@ -23,7 +23,7 @@
 
     <LinearLayout android:layout_width="match_parent"
                   android:layout_height="match_parent"
-                  android:background="@drawable/canyon1280cropped"
+                  android:background="@drawable/pixnio325718cropped"
                   android:baselineAligned="false"
                   android:orientation="vertical"
                   tools:context=".MainActivity">

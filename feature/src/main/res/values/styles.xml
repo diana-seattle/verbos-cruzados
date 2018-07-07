@@ -7,12 +7,12 @@
 
     <style name="answerTopStyle">
         <item name="android:textSize">@dimen/medium_fixed</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/soft_black</item>
     </style>
 
     <style name="answerSubStyle">
         <item name="android:textSize">@dimen/small_fixed</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/soft_black</item>
     </style>
 
     <style name="answerLetterButton">
