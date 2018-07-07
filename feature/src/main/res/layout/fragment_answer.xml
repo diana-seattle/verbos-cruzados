@@ -4,10 +4,11 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="#FFFFFF"
+              android:background="@color/transparent"
               android:orientation="vertical"
               android:paddingEnd="@dimen/quarter_margin"
-              android:paddingStart="@dimen/quarter_margin">
+              android:paddingStart="@dimen/quarter_margin"
+              xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
         android:id="@+id/subject_pronoun_and_tense"
@@ -22,13 +23,20 @@
         android:id="@+id/txt_answer"
         android:layout_width="330dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
+        android:background="@color/soft_white"
         android:clickable="true"
         android:focusable="true"
         android:imeOptions="actionGo"
         android:inputType="textNoSuggestions"
         android:maxLines="1"
+        android:paddingEnd="2dp"
+        android:paddingStart="2dp"
         android:paddingTop="2dp"
-        android:textAppearance="@style/answerStyle"/>
+        android:textColor="@color/soft_black"
+        android:textSize="@dimen/large_fixed"
+    />
 
     <TextView
         android:id="@+id/infinitive_and_translation"
@@ -44,26 +52,26 @@
                   android:orientation="horizontal">
         <TextView android:id="@+id/button_accented_a"
                   style="@style/answerLetterButton"
-                  android:text="á"/>
+                  tools:text="á"/>
         <TextView android:id="@+id/button_accented_e"
                   style="@style/answerLetterButton"
-                  android:text="é"/>
+                  tools:text="é"/>
         <TextView android:id="@+id/button_accented_i"
                   style="@style/answerLetterButton"
-                  android:text="í"/>
+                  tools:text="í"/>
         <TextView android:id="@+id/button_accented_o"
                   style="@style/answerLetterButton"
-                  android:text="ó"/>
+                  tools:text="ó"/>
         <TextView android:id="@+id/button_umlaut_u"
                   style="@style/answerLetterButton"
-                  android:text="ü"/>
+                  tools:text="ü"/>
         <TextView android:id="@+id/button_tilde_n"
                   style="@style/answerLetterButton"
-                  android:text="ñ"/>
+                  tools:text="ñ"/>
         <TextView android:id="@+id/button_infinitive"
                   style="@style/answerLetterButton"
                   android:layout_width="90dp"
-                  android:text="@string/button_infinitive"/>
+                  tools:text="@string/button_infinitive"/>
     </LinearLayout>
 
 </LinearLayout>

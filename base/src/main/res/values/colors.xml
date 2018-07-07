@@ -4,8 +4,6 @@
     <color name="colorPrimaryDark">#FF393939</color>
     <color name="colorAccent">#388e3c</color>
 
-    <color name="sky_blue">#4fa5d5</color>
-
     <color name="soft_black">#FF393939</color>
     <color name="dark_gray">#FF737373</color>
     <color name="medium_gray">#FF999999</color>
@@ -15,5 +13,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="yellow">#f7e739</color>
     <color name="red">#f44336</color>
+    <color name="transparent">#00FFFFFF</color>
 
 </resources>

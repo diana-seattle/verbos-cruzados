@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
+import android.text.Html
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -16,14 +17,6 @@ import kotlinx.android.synthetic.main.fragment_answer.*
  * Fragment containing the clues and answer entry.
  */
 class AnswerFragment : Fragment() {
-
-    //region COMPANION OBJECT ----------------------------------------------------------------------
-
-    companion object {
-        private const val COLOR_ANSWER = -0xff6634  // a little darker than puzzle background
-    }
-
-    //endregion
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
@@ -63,8 +56,13 @@ class AnswerFragment : Fragment() {
         button_tilde_n.setOnClickListener(specialLetterListener)
         button_infinitive.setOnClickListener { _: View -> insertText(infinitive) }
 
-        // text editor
-        txt_answer.setTextColor(COLOR_ANSWER)
+        button_accented_a.setText(Html.fromHtml(resources.getString(R.string.button_accented_a)))
+        button_accented_e.setText(Html.fromHtml(resources.getString(R.string.button_accented_e)))
+        button_accented_i.setText(Html.fromHtml(resources.getString(R.string.button_accented_i)))
+        button_accented_o.setText(Html.fromHtml(resources.getString(R.string.button_accented_o)))
+        button_umlaut_u.setText(Html.fromHtml(resources.getString(R.string.button_umlaut_u)))
+        button_tilde_n.setText(Html.fromHtml(resources.getString(R.string.button_tilde_n)))
+        button_infinitive.setText(Html.fromHtml(resources.getString(R.string.button_infinitive)))
 
         txt_answer.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}

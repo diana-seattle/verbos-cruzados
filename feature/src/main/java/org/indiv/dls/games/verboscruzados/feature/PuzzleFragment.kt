@@ -172,11 +172,12 @@ class PuzzleFragment : Fragment() {
 
                     fillTextView(it)
 
-                    // set current game word to the first across word found for sake of dual pane mode
+                    // set current game word to the first across word found
                     if (firstGameWord == null) {
                         firstGameWord = it.gameWordAcross ?: it.gameWordDown
                     }
-                } ?: run {
+                }
+                        ?: run {
                     tableRow.addView(Space(activity), col)
                 }
             }

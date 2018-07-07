@@ -56,7 +56,7 @@ class ConjugatorTest {
 
     @Test fun testOneVerb() {
         val verb =
-                Verb("rehacer", "redo", altPreteritRoot = "rehic", altInfinitiveRoot = "rehar", irregularImperativeTu = "rehaz", irregularPastParticiple = "rehecho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT))
+                Verb("guiar", "guide", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I))
         printResult(verb)
 
     }

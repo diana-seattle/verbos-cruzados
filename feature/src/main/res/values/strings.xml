@@ -40,7 +40,13 @@
     <string name="dialog_stats_wordscompleted">Words:</string>
 
     <!--button text for answer fragment-->
-    <string name="button_infinitive">infinitive</string>
+    <string name="button_accented_a"><![CDATA[<u>á</u>]]></string>
+    <string name="button_accented_e"><![CDATA[<u>é</u>]]></string>
+    <string name="button_accented_i"><![CDATA[<u>í</u>]]></string>
+    <string name="button_accented_o"><![CDATA[<u>ó</u>]]></string>
+    <string name="button_umlaut_u"><![CDATA[<u>ü</u>]]></string>
+    <string name="button_tilde_n"><![CDATA[<u>ñ</u>]]></string>
+    <string name="button_infinitive"><![CDATA[<u>infinitive</u>]]></string>
 
     <!-- toast text-->
     <string name="toast_noerrorsfound">No errors</string>

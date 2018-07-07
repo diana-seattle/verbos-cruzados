@@ -13,6 +13,7 @@ package org.indiv.dls.games.verboscruzados.feature
 // TODO: help screen
 // TODO: instant app
 
+// https://pixabay.com/en/canyon-desert-sky-huge-mountains-311233/
 
 import org.indiv.dls.games.verboscruzados.feature.async.GameSetup
 import org.indiv.dls.games.verboscruzados.feature.game.GameWord
@@ -105,7 +106,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         val screenHeightPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 resources.configuration.screenHeightDp.toFloat(), displayMetrics)
         val puzzleHeightPixels = screenHeightPixels - resources.getDimension(R.dimen.fragment_answer_height) -
-                getActionBarHeightInPixels(displayMetrics) - marginInPixels
+                getActionBarHeightInPixels(displayMetrics) - marginInPixels / 2
         val puzzleWidthPixels = screenWidthPixels - marginInPixels
 
         // calculate number of pixels equivalent to 24dp (24dp allows 13 cells on smallest screen supported by Android (320dp width, 426dp height))
