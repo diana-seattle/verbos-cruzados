@@ -13,8 +13,11 @@ package org.indiv.dls.games.verboscruzados.feature
 // TODO: help screen
 // TODO: instant app
 
+// https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
 // https://pixabay.com/en/canyon-desert-sky-huge-mountains-311233/
+// https://www.pexels.com/photo/america-arid-bushes-california-221148/
 
+import android.inputmethodservice.Keyboard
 import org.indiv.dls.games.verboscruzados.feature.async.GameSetup
 import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 

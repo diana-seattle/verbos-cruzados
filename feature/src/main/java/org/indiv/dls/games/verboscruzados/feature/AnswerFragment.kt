@@ -136,10 +136,13 @@ class AnswerFragment : Fragment() {
         txt_answer.setSelection(selectionStart + text.length)
     }
 
+    private fun getKeyboard(): InputMethodManager? {
+        return activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+    }
+
     private fun showSoftKeyboardForAnswer() {
         // this works when called from onClick, but not from onCreateView
-        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
-                .showSoftInput(txt_answer, 0)
+        getKeyboard()?.showSoftInput(txt_answer, 0)
 
         // this works when called from onCreateView, but not from onClick
         //	     mTextEditorAnswer.requestFocus();
@@ -148,9 +151,7 @@ class AnswerFragment : Fragment() {
 
     private fun hideSoftKeyboardForAnswer() {
         // this works when called from onClick, but not from onCreateView
-        activity?.getSystemService(Context.INPUT_METHOD_SERVICE)?.let {
-            (it as InputMethodManager).hideSoftInputFromWindow(txt_answer.windowToken, 0)
-        }
+        getKeyboard()?.hideSoftInputFromWindow(txt_answer.windowToken, 0)
     }
 
     //endregion
