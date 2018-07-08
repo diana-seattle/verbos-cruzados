@@ -11,6 +11,8 @@
     <!-- height of bottom margin to allow for scrolling puzzle above keyboard -->
     <dimen name="keyboard_height">160dp</dimen>
 
+    <dimen name="keyboard_letter_size">@dimen/xx_large_fixed</dimen>
+
     <!-- width of individual cell -->
     <dimen name="cell_width">28dp</dimen>
 
