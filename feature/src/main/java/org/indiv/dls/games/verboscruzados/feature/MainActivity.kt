@@ -15,6 +15,7 @@ package org.indiv.dls.games.verboscruzados.feature
 // TODO: fix imports
 // Complete other TODO items
 
+// TODO: Space view in puzzle?
 // TODO: feedback on keyboard touch
 // TODO: fix bug where game thinks it's done before last letter of word is typed due to crossing word
 // TODO: consider floating or bigger keyboard on tablet
