@@ -17,6 +17,8 @@ package org.indiv.dls.games.verboscruzados.feature
 
 // TODO: get icons for keyboard
 // TODO: fix issue where crossing character won't delete
+// TODO: feedback on keyboard touch
+// TODO: use lower case everywhere except in puzzle display
 
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
@@ -198,7 +200,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
     override fun onUpdateAnswer(userText: String) {
 
         // This method may be called by answer dialog during setup (on text change)
-        if (puzzleFragment.currentGameWord == null || userText.isEmpty() ||
+        if (puzzleFragment.currentGameWord == null ||
                 puzzleFragment.currentGameWord?.userText == userText.toUpperCase()) {
             return
         }
