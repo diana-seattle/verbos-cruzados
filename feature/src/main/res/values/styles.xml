@@ -7,12 +7,12 @@
 
     <style name="answerTopStyle">
         <item name="android:textSize">@dimen/medium_fixed</item>
-        <item name="android:textColor">@color/soft_black</item>
+        <item name="android:textColor">@color/dark_gray</item>
     </style>
 
     <style name="answerSubStyle">
         <item name="android:textSize">@dimen/small_fixed</item>
-        <item name="android:textColor">@color/soft_black</item>
+        <item name="android:textColor">@color/dark_gray</item>
     </style>
 
     <style name="answerLetterButton">
@@ -24,7 +24,7 @@
         <item name="android:paddingStart">@dimen/three_quarter_margin</item>
         <item name="android:paddingEnd">@dimen/three_quarter_margin</item>
         <item name="android:textColor">@color/soft_black</item>
-        <item name="android:textStyle">italic</item>
+        <!--<item name="android:textStyle">italic</item>-->
         <item name="android:textSize">@dimen/medium_fixed</item>
     </style>
 </resources>

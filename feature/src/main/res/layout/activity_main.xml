@@ -21,27 +21,37 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:background="@drawable/pixnio325718cropped"
-                  android:baselineAligned="false"
-                  android:orientation="vertical"
-                  tools:context=".MainActivity">
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/pixnio325718cropped"
+                    android:baselineAligned="false"
+                    android:orientation="vertical"
+                    tools:context=".MainActivity">
 
         <!-- answer fragment -->
         <fragment android:id="@+id/answer_fragment"
                   class="org.indiv.dls.games.verboscruzados.feature.AnswerFragment"
                   android:layout_width="match_parent"
                   android:layout_height="@dimen/fragment_answer_height"
+                  android:layout_alignParentTop="true"
         />
 
         <!-- puzzle fragment -->
         <fragment android:id="@+id/puzzle_fragment"
                   class="org.indiv.dls.games.verboscruzados.feature.PuzzleFragment"
                   android:layout_width="match_parent"
-                  android:layout_height="0dp"
-                  android:layout_weight="1"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@id/answer_fragment"
         />
 
-    </LinearLayout>
+        <!-- special keyboard for answer entry -->
+        <org.indiv.dls.games.verboscruzados.feature.component.MinimalKeyboard
+            android:id="@+id/answer_keyboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true">
+
+        </org.indiv.dls.games.verboscruzados.feature.component.MinimalKeyboard>
+    </RelativeLayout>
 </LinearLayout>

@@ -15,4 +15,7 @@
     <color name="red">#f44336</color>
     <color name="transparent">#00FFFFFF</color>
 
+    <color name="keyboard_translucent">#efffffff</color>
+    <color name="keyboard_special_letters">#2962ff</color>
+
 </resources>

@@ -12,12 +12,17 @@ package org.indiv.dls.games.verboscruzados.feature
 // TODO: stats screen
 // TODO: help screen
 // TODO: instant app
+// TODO: fix imports
+// Complete other TODO items
+
+// TODO: get icons for keyboard
+// TODO: fix issue where crossing character won't delete
+
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
 // https://pixabay.com/en/canyon-desert-sky-huge-mountains-311233/
 // https://www.pexels.com/photo/america-arid-bushes-california-221148/
 
-import android.inputmethodservice.Keyboard
 import org.indiv.dls.games.verboscruzados.feature.async.GameSetup
 import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 
@@ -39,6 +44,8 @@ import io.reactivex.schedulers.Schedulers
 import org.indiv.dls.games.verboscruzados.feature.dialog.GameOptionsDialogFragment
 import org.indiv.dls.games.verboscruzados.feature.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
+import kotlinx.android.synthetic.main.activity_main.*
+
 
 /**
  * This is the main activity. It houses [PuzzleFragment], and [AnswerFragment].
@@ -109,7 +116,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         val screenHeightPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 resources.configuration.screenHeightDp.toFloat(), displayMetrics)
         val puzzleHeightPixels = screenHeightPixels - resources.getDimension(R.dimen.fragment_answer_height) -
-                getActionBarHeightInPixels(displayMetrics) - marginInPixels / 2
+                getActionBarHeightInPixels(displayMetrics) - marginInPixels
         val puzzleWidthPixels = screenWidthPixels - marginInPixels
 
         // calculate number of pixels equivalent to 24dp (24dp allows 13 cells on smallest screen supported by Android (320dp width, 426dp height))
@@ -120,6 +127,15 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         if (gridWidth > 0 && gridHeight > 0) {
             puzzleFragment.initialize(gridWidth, gridHeight)
             loadNewOrExistingGame()
+        }
+
+        // pass the InputConnection from the EditText to the keyboard
+        answer_keyboard.inputConnection = answerFragment.answerEntryInputConnection
+        answer_keyboard.dismissClickListener = {
+            hideKeyboardForAnswer()
+        }
+        answerFragment.keyboardNeededListener = {
+            showKeyboardForAnswer()
         }
     }
 
@@ -145,6 +161,14 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         return true
     }
 
+    override fun onBackPressed() {
+        if (isKeyboardVisible()) {
+            hideKeyboardForAnswer()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.clear()
@@ -161,11 +185,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
      * implements PuzzleListener interface for callback from PuzzleFragment
      */
     override fun onPuzzleClick(gameWord: GameWord) {
-        currentGameWord = gameWord
-        val answerPresentation = createAnswerPresentation(gameWord)
-
-        // update answer fragment with current game word
-        answerFragment.setGameWord(answerPresentation)
+        setGameWord(gameWord, !gameWord.isAnsweredCorrectly)
     }
 
     //endregion
@@ -189,6 +209,11 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
             // update database with answer
             Thread { persistenceHelper.persistUserEntry(it) }.start()
+        }
+
+        // If user text matches answer, dismiss keyboard
+        if (currentGameWord?.isAnsweredCorrectly == true){
+            hideKeyboardForAnswer()
         }
 
         // update error indications
@@ -232,7 +257,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
     }
 
     private fun promptForNewGame(extraMessage: String?) {
-        val message = (if (extraMessage != null) extraMessage + "\n\n" else "") +
+        val message = (if (extraMessage != null) extraMessage + "\n" else "") +
                 resources.getString(R.string.dialog_startnewgame_prompt)
         AlertDialog.Builder(this)
                 .setTitle(message)
@@ -276,6 +301,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         // Clear game word and hide answer fragment for now
         answerFragment.clearGameWord()
         answerFragment.view?.visibility = View.GONE // set invisible until puzzle shows up
+        hideKeyboardForAnswer()
 
         // clear puzzle fragment of existing game if any
         puzzleFragment.clearExistingGame()
@@ -304,8 +330,23 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
         // Update answer fragment with current game word
         if (currentGameWord != null) { // this extra check is necessary for case where setting up initial game and no words available in db
-            answerFragment.setGameWord(createAnswerPresentation(currentGameWord!!))
+            setGameWord(currentGameWord!!, false)
             answerFragment.view?.visibility = View.VISIBLE // set answer dialog fragment visible now that puzzle drawn
+        }
+    }
+
+    private fun setGameWord(gameWord: GameWord, showKeyboard: Boolean) {
+        currentGameWord = gameWord
+
+        // update answer fragment with current game word
+        answerFragment.setGameWord(createAnswerPresentation(gameWord))
+
+        // Update keyboard with infinitive
+        answer_keyboard.infinitive = gameWord.infinitive
+
+        // If answer not yet correct, show keyboard
+        if (showKeyboard) {
+            showKeyboardForAnswer()
         }
     }
 
@@ -342,6 +383,24 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
             actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, displayMetrics)
         }
         return actionBarHeight
+    }
+
+    private fun isKeyboardVisible(): Boolean {
+        return answer_keyboard.visibility == View.VISIBLE
+    }
+
+    private fun showKeyboardForAnswer() {
+
+        // TODO: animate
+
+        answer_keyboard.visibility = View.VISIBLE
+    }
+
+    private fun hideKeyboardForAnswer() {
+
+        // TODO: animate
+
+        answer_keyboard.visibility = View.GONE
     }
 
     //endregion

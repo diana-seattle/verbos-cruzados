@@ -1,6 +1,7 @@
 package org.indiv.dls.games.verboscruzados.feature
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
@@ -9,6 +10,8 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_answer.*
@@ -29,7 +32,24 @@ class AnswerFragment : Fragment() {
 
     //endregion
 
+
+    //region PUBLIC PROPERTIES ---------------------------------------------------------------------
+
+    /**
+     * Input connection from the answer EditText.
+     */
+    val answerEntryInputConnection: InputConnection
+        get() = txt_answer.onCreateInputConnection(EditorInfo())
+
+    // Caller can set this to be notified when the user needs to see the keyboard
+    var keyboardNeededListener: (() -> Unit)? = null
+
+    //endregion
+
+
     //region PUBLIC INTERFACES ---------------------------------------------------------------------
+
+    // TODO: change AnswerListener to function reference!!
 
     // interface for activity to implement to receive result
     interface AnswerListener {
@@ -47,22 +67,20 @@ class AnswerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val specialLetterListener = { v: View -> insertText((v as TextView).text.toString()) }
-        button_accented_a.setOnClickListener(specialLetterListener)
-        button_accented_e.setOnClickListener(specialLetterListener)
-        button_accented_i.setOnClickListener(specialLetterListener)
-        button_accented_o.setOnClickListener(specialLetterListener)
-        button_umlaut_u.setOnClickListener(specialLetterListener)
-        button_tilde_n.setOnClickListener(specialLetterListener)
-        button_infinitive.setOnClickListener { _: View -> insertText(infinitive) }
-
-        button_accented_a.setText(Html.fromHtml(resources.getString(R.string.button_accented_a)))
-        button_accented_e.setText(Html.fromHtml(resources.getString(R.string.button_accented_e)))
-        button_accented_i.setText(Html.fromHtml(resources.getString(R.string.button_accented_i)))
-        button_accented_o.setText(Html.fromHtml(resources.getString(R.string.button_accented_o)))
-        button_umlaut_u.setText(Html.fromHtml(resources.getString(R.string.button_umlaut_u)))
-        button_tilde_n.setText(Html.fromHtml(resources.getString(R.string.button_tilde_n)))
-        button_infinitive.setText(Html.fromHtml(resources.getString(R.string.button_infinitive)))
+        // Disable the default Android keyboard
+        txt_answer.setRawInputType(txt_answer.inputType)
+        txt_answer.setTextIsSelectable(true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            txt_answer.showSoftInputOnFocus = false
+        }
+        txt_answer.setOnTouchListener { view, event ->
+            view.onTouchEvent(event) // handle the event first
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                hideDefaultKeyboard()
+            }
+            keyboardNeededListener?.invoke()
+            true
+        }
 
         txt_answer.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
@@ -71,11 +89,6 @@ class AnswerFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable) {
                 updateActivityWithAnswer()
-
-                // If user text matches answer, dismiss keyboard
-                if (userEntry.toLowerCase() == word.toLowerCase()) {
-                    hideSoftKeyboardForAnswer()
-                }
             }
         })
     }
@@ -88,11 +101,6 @@ class AnswerFragment : Fragment() {
         updateGameWord(answerPresentation)
         word = answerPresentation.word
         infinitive = answerPresentation.infinitive
-
-        // If answer not yet correct, show keyboard
-        if (userEntry.toLowerCase() != word.toLowerCase()) {
-            showSoftKeyboardForAnswer()
-        }
     }
 
     // called by activity
@@ -136,22 +144,13 @@ class AnswerFragment : Fragment() {
         txt_answer.setSelection(selectionStart + text.length)
     }
 
-    private fun getKeyboard(): InputMethodManager? {
+    private fun getDefaultKeyboard(): InputMethodManager? {
         return activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
     }
 
-    private fun showSoftKeyboardForAnswer() {
+    private fun hideDefaultKeyboard() {
         // this works when called from onClick, but not from onCreateView
-        getKeyboard()?.showSoftInput(txt_answer, 0)
-
-        // this works when called from onCreateView, but not from onClick
-        //	     mTextEditorAnswer.requestFocus();
-        //	     activity?.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-    }
-
-    private fun hideSoftKeyboardForAnswer() {
-        // this works when called from onClick, but not from onCreateView
-        getKeyboard()?.hideSoftInputFromWindow(txt_answer.windowToken, 0)
+        getDefaultKeyboard()?.hideSoftInputFromWindow(txt_answer.windowToken, 0)
     }
 
     //endregion
