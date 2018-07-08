@@ -5,59 +5,50 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/keyboard_translucent"
-        android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/button_q"
                 style="@style/answerLetterButton"
                 android:text="q"/>
-
             <TextView
                 android:id="@+id/button_w"
                 style="@style/answerLetterButton"
                 android:text="w"/>
-
             <TextView
                 android:id="@+id/button_e"
                 style="@style/answerLetterButton"
                 android:text="e"/>
-
             <TextView
                 android:id="@+id/button_r"
                 style="@style/answerLetterButton"
                 android:text="r"/>
-
             <TextView
                 android:id="@+id/button_t"
                 style="@style/answerLetterButton"
                 android:text="t"/>
-
             <TextView
                 android:id="@+id/button_y"
                 style="@style/answerLetterButton"
                 android:text="y"/>
-
             <TextView
                 android:id="@+id/button_u"
                 style="@style/answerLetterButton"
                 android:text="u"/>
-
             <TextView
                 android:id="@+id/button_i"
                 style="@style/answerLetterButton"
                 android:text="i"/>
-
             <TextView
                 android:id="@+id/button_o"
                 style="@style/answerLetterButton"
                 android:text="o"/>
-
             <TextView
                 android:id="@+id/button_p"
                 style="@style/answerLetterButton"
@@ -65,51 +56,45 @@
 
         </LinearLayout>
 
+        <!-- Center the second row so it staggers relative to the first. -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/button_a"
                 style="@style/answerLetterButton"
                 android:text="a"/>
-
             <TextView
                 android:id="@+id/button_s"
                 style="@style/answerLetterButton"
                 android:text="s"/>
-
             <TextView
                 android:id="@+id/button_d"
                 style="@style/answerLetterButton"
                 android:text="d"/>
-
             <TextView
                 android:id="@+id/button_f"
                 style="@style/answerLetterButton"
                 android:text="f"/>
-
             <TextView
                 android:id="@+id/button_g"
                 style="@style/answerLetterButton"
                 android:text="g"/>
-
             <TextView
                 android:id="@+id/button_h"
                 style="@style/answerLetterButton"
                 android:text="h"/>
-
             <TextView
                 android:id="@+id/button_j"
                 style="@style/answerLetterButton"
                 android:text="j"/>
-
             <TextView
                 android:id="@+id/button_k"
                 style="@style/answerLetterButton"
                 android:text="k"/>
-
             <TextView
                 android:id="@+id/button_l"
                 style="@style/answerLetterButton"
@@ -120,13 +105,14 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:orientation="horizontal">
 
+            <!-- A dummy button corresponding to first row for the sake of spacing -->
             <TextView
-                android:id="@+id/button_enter"
                 style="@style/answerLetterButton"
-                android:layout_width="45dp"
-                android:text="Ok"/>
+                android:visibility="invisible"
+                android:text="q"/>
             <TextView
                 android:id="@+id/button_z"
                 style="@style/answerLetterButton"
@@ -155,17 +141,22 @@
                 android:id="@+id/button_m"
                 style="@style/answerLetterButton"
                 android:text="m"/>
-            <TextView
+            <ImageView
                 android:id="@+id/button_delete"
-                style="@style/answerLetterButton"
-                android:layout_width="48dp"
-                android:text="del"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:src="@android:drawable/ic_input_delete"
+                android:tint="@color/soft_black"/>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="start"
             android:orientation="horizontal">
 
             <TextView
@@ -204,6 +195,14 @@
                 android:layout_width="90dp"
                 android:text="infinitive"
                 android:textColor="@color/keyboard_special_letters"/>
+            <ImageView
+                android:id="@+id/button_close"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:src="@drawable/ic_baseline_check_circle_24px"
+                android:tint="@color/keyboard_done_key"/>
 
         </LinearLayout>
     </LinearLayout>

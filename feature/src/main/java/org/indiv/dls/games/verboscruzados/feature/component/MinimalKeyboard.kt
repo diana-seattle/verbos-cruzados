@@ -62,7 +62,7 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
         button_o_accent.setOnClickListener { letterClickListener.invoke(it) }
         button_u_umlaut.setOnClickListener { letterClickListener.invoke(it) }
         button_n_tilde.setOnClickListener { letterClickListener.invoke(it) }
-        button_enter.setOnClickListener { dismissClickListener?.invoke() }
+        button_close.setOnClickListener { dismissClickListener?.invoke() }
         button_infinitive.setOnClickListener {
             inputConnection?.commitText(infinitive, 1)
         }
