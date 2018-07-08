@@ -111,13 +111,18 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
         // calculate available space for the puzzle
         val displayMetrics = resources.displayMetrics
+        val configuration = resources.configuration
         val marginInPixels = resources.getDimension(R.dimen.puzzle_margin)
+        val actionBarHeightPixels = getActionBarHeightInPixels(displayMetrics)
+        val answerHeightPixels = resources.getDimension(R.dimen.fragment_answer_height)
+        val screenWidthDp = configuration.smallestScreenWidthDp
+        val screenHeightDp = maxOf(configuration.screenHeightDp, configuration.screenWidthDp)
+        val heightFactor = if (screenWidthDp < 400) 1.5f else 1f
         val screenWidthPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                resources.configuration.screenWidthDp.toFloat(), displayMetrics)
+                screenWidthDp.toFloat(), displayMetrics)
         val screenHeightPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                resources.configuration.screenHeightDp.toFloat(), displayMetrics)
-        val puzzleHeightPixels = screenHeightPixels - resources.getDimension(R.dimen.fragment_answer_height) -
-                getActionBarHeightInPixels(displayMetrics) - marginInPixels
+                screenHeightDp.toFloat(), displayMetrics)
+        val puzzleHeightPixels = (screenHeightPixels - actionBarHeightPixels - answerHeightPixels - marginInPixels) * heightFactor
         val puzzleWidthPixels = screenWidthPixels - marginInPixels
 
         // calculate number of pixels equivalent to 24dp (24dp allows 13 cells on smallest screen supported by Android (320dp width, 426dp height))

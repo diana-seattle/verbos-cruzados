@@ -1,6 +1,0 @@
-<resources>
-    
-    <!-- height of answer fragment panel -->
-    <dimen name="fragment_answer_height">92dp</dimen>
-    
-</resources>

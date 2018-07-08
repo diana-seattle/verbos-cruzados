@@ -5,6 +5,12 @@
          screen margins) for sw600dp devices (e.g. 7" tablets) here.
     -->
 
+    <!-- height of answer fragment panel -->
+    <dimen name="fragment_answer_height">92dp</dimen>
+
+    <!-- height of bottom margin to allow for scrolling puzzle above keyboard -->
+    <dimen name="scrolling_allowance_height">155dp</dimen>
+
     <!-- width of individual cell -->
     <dimen name="cell_width">28dp</dimen>
 

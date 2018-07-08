@@ -1,14 +1,26 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_gravity="center"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <TableLayout
-        android:id="@+id/cell_table_layout"
-        android:gravity="center_horizontal|top"
-        android:background="@drawable/cell_background_unused"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </TableLayout>
-    
-</FrameLayout>
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/quarter_margin"
+        android:orientation="vertical">
+
+        <TableLayout
+            android:id="@+id/cell_table_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/cell_background_unused"
+            android:gravity="center_horizontal|top">
+        </TableLayout>
+
+        <!-- Blank area to allow bottom of puzzle to be scrolled above keyboard -->
+        <View android:layout_width="wrap_content"
+              android:layout_height="@dimen/scrolling_allowance_height"
+              android:background="@color/transparent"/>
+
+    </LinearLayout>
+
+</ScrollView>

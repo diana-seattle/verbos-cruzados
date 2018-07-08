@@ -4,8 +4,11 @@
     <!-- height of answer fragment panel -->
     <dimen name="fragment_answer_height">92dp</dimen>
 
+    <!-- height of bottom margin to allow for scrolling puzzle above keyboard -->
+    <dimen name="scrolling_allowance_height">145dp</dimen>
+
     <!-- width of individual cell -->
-    <dimen name="cell_width">21dp</dimen>
+    <dimen name="cell_width">22dp</dimen>
 
     <dimen name="puzzle_margin">6dp</dimen>
 
