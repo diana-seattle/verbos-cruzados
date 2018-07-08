@@ -47,7 +47,7 @@
         <!-- special keyboard for answer entry -->
         <org.indiv.dls.games.verboscruzados.feature.component.MinimalKeyboard
             android:id="@+id/answer_keyboard"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true">

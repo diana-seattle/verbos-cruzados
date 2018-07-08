@@ -18,7 +18,8 @@
 
         <!-- Blank area to allow bottom of puzzle to be scrolled above keyboard -->
         <View android:layout_width="wrap_content"
-              android:layout_height="@dimen/scrolling_allowance_height"
+              android:layout_height="@dimen/keyboard_height"
+              android:layout_margin="@dimen/half_margin"
               android:background="@color/transparent"/>
 
     </LinearLayout>
