@@ -1,6 +1,8 @@
 package org.indiv.dls.games.verboscruzados.feature.component
 
 import android.content.Context
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.AttributeSet
 import android.view.View
 import android.view.inputmethod.InputConnection
@@ -19,13 +21,26 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
                                                      defStyleAttr: Int = 0)
     : LinearLayout(context, attrs, defStyleAttr) {
 
+
+    //region COMPANION OBJECT ----------------------------------------------------------------------
+
+    companion object {
+        val VIBRATION_MSEC = 25L
+    }
+    //endregion
+
+
     //region INITIALIZER ---------------------------------------------------------------------------
 
     init {
         inflate(context, R.layout.keyboard_minimal, this)
 
+        // Get instance of Vibrator from current Context
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+
         val letterClickListener: (View) -> Unit = {
             (it as? TextView)?.let {
+                vibrator.vibrate(VIBRATION_MSEC)
                 inputConnection?.commitText(it.text, 1)
             }
         }
@@ -62,11 +77,16 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
         button_o_accent.setOnClickListener { letterClickListener.invoke(it) }
         button_u_umlaut.setOnClickListener { letterClickListener.invoke(it) }
         button_n_tilde.setOnClickListener { letterClickListener.invoke(it) }
-        button_close.setOnClickListener { dismissClickListener?.invoke() }
+        button_close.setOnClickListener {
+            vibrator.vibrate(VIBRATION_MSEC)
+            dismissClickListener?.invoke()
+        }
         button_infinitive.setOnClickListener {
+            vibrator.vibrate(VIBRATION_MSEC)
             inputConnection?.commitText(infinitive, 1)
         }
         button_delete.setOnClickListener {
+            vibrator.vibrate(VIBRATION_MSEC)
             val selectedText = inputConnection?.getSelectedText(0)
             if (selectedText.isNullOrEmpty()) {
                 // no selection, so delete previous character
@@ -94,11 +114,6 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
     //endregion
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
-    //endregion
-
-
-    //region OVERRIDE FUNCTIONS --------------------------------------------------------------------
-
     //endregion
 
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------

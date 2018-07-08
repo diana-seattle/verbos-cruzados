@@ -516,7 +516,7 @@ val regularIrVerbs = listOf(
         Verb("percibir", "perceive"),
         Verb("permitir", "permit"),
         Verb("persistir", "persist"),
-        Verb("persuadir", "persusade"),
+        Verb("persuadir", "persuade"),
         Verb("recibir", "receive"),
         Verb("subir", "go up, climb"),
         Verb("sufrir", "suffer"),

@@ -6,19 +6,18 @@ package org.indiv.dls.games.verboscruzados.feature
 
 // TODO: change fragments into components
 // TODO: backgrounds, answer styling refinements, puzzle size on small phones
-// TODO: icons
-// TODO: more verbs
-// TODO: fix conjugations
+// TODO: app icons
+// TODO: more verbs - or message the user about selecting more options
+// TODO: test/fix conjugations
 // TODO: stats screen
 // TODO: help screen
 // TODO: instant app
 // TODO: fix imports
 // Complete other TODO items
 
-// TODO: get icons for keyboard
-// TODO: fix issue where crossing character won't delete
 // TODO: feedback on keyboard touch
-// TODO: use lower case everywhere except in puzzle display
+// TODO: fix bug where game thinks it's done before last letter of word is typed due to crossing word
+// TODO: consider floating or bigger keyboard on tablet
 
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
