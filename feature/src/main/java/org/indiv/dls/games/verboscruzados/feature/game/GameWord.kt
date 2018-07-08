@@ -13,5 +13,5 @@ class GameWord(val uniqueKey: String,        // unique key for use in persistenc
                val isAcross: Boolean,        // true if word appears in the across orientation, false if down
                var userText: String = "") {   // text entered by the user
     val isAnsweredCorrectly: Boolean
-        get() = userText.toLowerCase() == word.toLowerCase()
+        get() = userText == word
 }

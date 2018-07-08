@@ -201,12 +201,12 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
         // This method may be called by answer dialog during setup (on text change)
         if (puzzleFragment.currentGameWord == null ||
-                puzzleFragment.currentGameWord?.userText == userText.toUpperCase()) {
+                puzzleFragment.currentGameWord?.userText == userText) {
             return
         }
 
         puzzleFragment.currentGameWord?.let {
-            it.userText = userText.toUpperCase()
+            it.userText = userText
             puzzleFragment.updateUserTextInPuzzle(it)
 
             // update database with answer

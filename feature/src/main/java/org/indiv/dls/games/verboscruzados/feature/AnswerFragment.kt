@@ -118,7 +118,7 @@ class AnswerFragment : Fragment() {
         wordLength = answerPresentation.word.length
 
         // set text in editor
-        txt_answer.setText(answerPresentation.userText?.toLowerCase() ?: "")
+        txt_answer.setText(answerPresentation.userText ?: "")
         txt_answer.setSelection(answerPresentation.userText?.length ?: 0)
 
         // update clue views

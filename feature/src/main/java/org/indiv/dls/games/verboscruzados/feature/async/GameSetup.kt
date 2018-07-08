@@ -65,7 +65,7 @@ class GameSetup {
     fun addToGrid(gameWord: GameWord, cellGrid: Array<Array<GridCell?>>) {
         var row = gameWord.row
         var col = gameWord.col
-        val word = gameWord.word.toUpperCase()
+        val word = gameWord.word
         val userText = gameWord.userText
         val wordLength = word.length
         var charIndex = 0
@@ -105,12 +105,12 @@ class GameSetup {
             when (conjugationType) {
                 ConjugationType.GERUND -> {
                     candidates.addAll(verbs.map {
-                        createWordCandidate(it, it.gerund.toUpperCase(), conjugationType, null)
+                        createWordCandidate(it, it.gerund, conjugationType, null)
                     })
                 }
                 ConjugationType.PAST_PARTICIPLE -> {
                     candidates.addAll(verbs.map {
-                        createWordCandidate(it, it.pastParticiple.toUpperCase(), conjugationType, null)
+                        createWordCandidate(it, it.pastParticiple, conjugationType, null)
                     })
                 }
                 else -> {
@@ -120,7 +120,7 @@ class GameSetup {
                         // Avoid the Yo - Imperative form
                         if (conjugationType != ConjugationType.IMPERATIVE || subjectPronoun != SubjectPronoun.YO) {
                             candidates.addAll(verbs.map {
-                                createWordCandidate(it, conjugator.conjugate(it, subjectPronoun).toUpperCase(),
+                                createWordCandidate(it, conjugator.conjugate(it, subjectPronoun),
                                         conjugationType, subjectPronoun)
                             })
                         }
