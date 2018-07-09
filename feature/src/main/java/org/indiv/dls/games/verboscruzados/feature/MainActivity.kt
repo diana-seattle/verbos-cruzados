@@ -5,7 +5,7 @@ package org.indiv.dls.games.verboscruzados.feature
  */
 
 // TODO: change fragments into components
-// TODO: backgrounds, answer styling refinements, puzzle size on small phones
+// TODO: answer styling refinements, puzzle size on small phones
 // TODO: more verbs - or message the user about selecting more options
 // TODO: test/fix conjugations
 // TODO: stats screen
@@ -17,7 +17,6 @@ package org.indiv.dls.games.verboscruzados.feature
 // TODO: feedback on keyboard touch
 
 
-// TODO: Space view in puzzle?
 // TODO: animate keyboard
 
 

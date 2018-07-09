@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
-import android.text.Html
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_answer.*
 
 /**
