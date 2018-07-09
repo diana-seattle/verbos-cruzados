@@ -13,12 +13,15 @@ package org.indiv.dls.games.verboscruzados.feature
 // TODO: instant app
 // TODO: fix imports
 // Complete other TODO items throughout code
-// TODO: feedback on keyboard touch
+
+
+// TODO: feedback on keyboard touch (selectableItemBackground?)
 
 // TODO: fix clicks thru keyboard
-// TODO: fix layout algorithm to use more short words
-// TODO: fix game options (no ar/ir/er?, include vostros, gerund + past part, etc)
+// TODO: fix layout algorithm to use more short words & variability (80% rule)
+// TODO: fix game options (no ar/ir/er?, include vostros, gerund + past part, etc) - or 80% rule?
 // TODO: special keyboard letters -> italics
+// TODO: download photos from Elissa
 
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
@@ -332,6 +335,9 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
                             currentGameWords = gameWords
                             persistenceHelper.persistGame(gameWords)
                             createGrid()
+                            if (currentGameWords.size < 15) {
+                                Toast.makeText(this, R.string.not_enough_game_options, Toast.LENGTH_LONG).show()
+                            }
                         },
                         { error ->
                             Toast.makeText(this, R.string.error_game_setup_failure, Toast.LENGTH_SHORT).show()

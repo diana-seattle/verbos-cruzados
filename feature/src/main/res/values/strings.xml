@@ -82,9 +82,9 @@
     <string name="option_subject_pronoun_nosotros">Nosotros</string>
     <string name="option_subject_pronoun_vosotros">Vosotros</string>
 
-
     <!-- error messages -->
     <string name="error_game_setup_failure">Unable to set up game</string>
     <string name="error_initial_setup_failure">Unable to complete initial set up</string>
+    <string name="not_enough_game_options">More game options for more words</string>
 
 </resources>
