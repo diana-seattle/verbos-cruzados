@@ -21,7 +21,8 @@ class GridCell(val char: Char) {
      */
     val dominantUserChar: Char?
         get() = if (userCharAcross != null && userCharDown != null) {
-            userCharDown
+            // if one is incorrect, use that one
+            if (userCharAcross != char) userCharAcross else userCharDown
         } else {
             userCharAcross ?: userCharDown
         }

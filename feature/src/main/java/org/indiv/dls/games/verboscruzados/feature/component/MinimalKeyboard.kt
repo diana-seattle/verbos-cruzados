@@ -96,6 +96,10 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
                 inputConnection?.commitText("", 1)
             }
         }
+        button_delete.setOnLongClickListener {
+            // delete all characters before the cursor
+            inputConnection?.deleteSurroundingText(50, 0) == true
+        }
     }
 
     //endregion

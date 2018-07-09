@@ -6,19 +6,19 @@ package org.indiv.dls.games.verboscruzados.feature
 
 // TODO: change fragments into components
 // TODO: backgrounds, answer styling refinements, puzzle size on small phones
-// TODO: app icons
 // TODO: more verbs - or message the user about selecting more options
 // TODO: test/fix conjugations
 // TODO: stats screen
 // TODO: help screen
+// TODO: app icons
 // TODO: instant app
 // TODO: fix imports
 // Complete other TODO items
+// TODO: feedback on keyboard touch
+
 
 // TODO: Space view in puzzle?
-// TODO: feedback on keyboard touch
-// TODO: fix bug where game thinks it's done before last letter of word is typed due to crossing word
-// TODO: consider floating or bigger keyboard on tablet
+// TODO: animate keyboard
 
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
@@ -218,18 +218,19 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
             Thread { persistenceHelper.persistUserEntry(it) }.start()
         }
 
-        // If user text matches answer, dismiss keyboard
-        if (currentGameWord?.isAnsweredCorrectly == true){
-            hideKeyboardForAnswer()
-        }
-
         // update error indications
         if (showingErrors) {
             showErrors(showingErrors)
         }
 
+        // If user text matches answer, dismiss keyboard
+        val currentWordIsCorrect = currentGameWord?.isAnsweredCorrectly == true
+        if (currentWordIsCorrect) {
+            hideKeyboardForAnswer()
+        }
+
         // if puzzle is complete and correct
-        if (puzzleFragment.isPuzzleComplete(true)) {
+        if (currentWordIsCorrect && puzzleFragment.isPuzzleComplete(true)) {
 
             // prompt user with congrats and new game
             var extraMessage = resources.getString(R.string.dialog_startnewgame_congrats)
