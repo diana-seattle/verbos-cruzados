@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
     companion object {
         private val TAG = MainActivity::class.java.simpleName
+        private val KEYBOARD_ANIMATION_TIME = 150L
 
         var currentGameWord: GameWord? = null
     }
@@ -405,14 +406,14 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         // Set visible, then animate up to position
         answer_keyboard.visibility = View.VISIBLE
         ObjectAnimator.ofFloat(answer_keyboard, "translationY", 0f)
-                .setDuration(200)
+                .setDuration(KEYBOARD_ANIMATION_TIME)
                 .start()
     }
 
     private fun hideKeyboardForAnswer() {
         // Animate off screen, then set invisible
         val animator = ObjectAnimator.ofFloat(answer_keyboard, "translationY", keyboardHeight)
-                .setDuration(200)
+                .setDuration(KEYBOARD_ANIMATION_TIME)
         animator.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
             override fun onAnimationStart(animation: Animator?) {}
