@@ -45,7 +45,7 @@ class GameSetup {
             val gridHeight = cellGrid.size
             val gridWidth = cellGrid[0].size
 
-            val numWords = Math.round((gridWidth * gridHeight / 5 + 20).toFloat())  // get more than we need to maximize density of layout
+            val numWords = Math.round(((gridWidth * gridHeight) / 10).toFloat())  // get more than we need to maximize density of layout
             val wordCandidates = getWordCandidates(numWords, gameOptions).toMutableList()
 
             // determine layout
@@ -128,7 +128,8 @@ class GameSetup {
                 }
             }
         }
-        return randomSelection(candidates, numWords)
+        // Take less than 100% of candidates to ensure variability
+        return randomSelection(candidates, minOf(numWords, (.8f * candidates.size).toInt()))
     }
 
     private fun createWordCandidate(verb: Verb, word: String, conjugationType: ConjugationType,
