@@ -28,32 +28,6 @@ class GameOptionsDialogFragment : DialogFragment() {
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
     private val checkboxMap = mutableMapOf<String, CheckBox>()
-//    private lateinit var optionRegularityRegularCheckbox: CheckBox
-//    private lateinit var optionRegularitySpellingChangeCheckbox: CheckBox
-//    private lateinit var optionRegularityStemChangeCheckbox: CheckBox
-//    private lateinit var optionRegularityOtherIrregularCheckbox: CheckBox
-//
-//    private lateinit var optionInfinitiveEndingArCheckbox: CheckBox
-//    private lateinit var optionInfinitiveEndingIrCheckbox: CheckBox
-//    private lateinit var optionInfinitiveEndingErCheckbox: CheckBox
-//
-//    private lateinit var optionTenseModePresentCheckbox: CheckBox
-//    private lateinit var optionTenseModePreteritCheckbox: CheckBox
-//    private lateinit var optionTenseModeImperfectCheckbox: CheckBox
-//    private lateinit var optionTenseModeConditionalCheckbox: CheckBox
-//    private lateinit var optionTenseModeFutureCheckbox: CheckBox
-//    private lateinit var optionTenseModeImperativeCheckbox: CheckBox
-//    private lateinit var optionTenseModeSubjunctivePresentCheckbox: CheckBox
-//    private lateinit var optionTenseModeSubjunctiveImperfectCheckbox: CheckBox
-//    private lateinit var optionTenseModeGerundCheckbox: CheckBox
-//    private lateinit var optionTenseModePastParticipleCheckbox: CheckBox
-//
-//    private lateinit var optionSubjectPronounYoCheckbox: CheckBox
-//    private lateinit var optionSubjectPronounTuCheckbox: CheckBox
-//    private lateinit var optionSubjectPronounElEllaUdCheckbox: CheckBox
-//    private lateinit var optionSubjectPronounEllosEllasUdsCheckbox: CheckBox
-//    private lateinit var optionSubjectPronounNosotrosCheckbox: CheckBox
-//    private lateinit var optionSubjectPronounVosotrosCheckbox: CheckBox
 
     //endregion
 

@@ -5,8 +5,7 @@ package org.indiv.dls.games.verboscruzados.feature
  */
 
 // TODO: change fragments into components
-// TODO: answer styling refinements, puzzle size on small phones
-// TODO: more verbs - or message the user about selecting more options
+// TODO: more verbs - or message the user about selecting more options (https://www.e-spanyol.hu/en/grammar/irregular_ar.php)
 // TODO: test/fix conjugations
 // TODO: stats screen
 // TODO: help screen
