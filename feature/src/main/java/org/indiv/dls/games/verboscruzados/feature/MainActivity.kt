@@ -12,9 +12,13 @@ package org.indiv.dls.games.verboscruzados.feature
 // TODO: app icons
 // TODO: instant app
 // TODO: fix imports
-// Complete other TODO items
+// Complete other TODO items throughout code
 // TODO: feedback on keyboard touch
 
+// TODO: fix clicks thru keyboard
+// TODO: fix layout algorithm to use more short words
+// TODO: fix game options (no ar/ir/er?, include vostros, gerund + past part, etc)
+// TODO: special keyboard letters -> italics
 
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
