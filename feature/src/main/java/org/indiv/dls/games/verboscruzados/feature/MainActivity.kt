@@ -17,13 +17,13 @@ package org.indiv.dls.games.verboscruzados.feature
 // TODO: feedback on keyboard touch
 
 
-// TODO: animate keyboard
-
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
 // https://pixabay.com/en/canyon-desert-sky-huge-mountains-311233/
 // https://www.pexels.com/photo/america-arid-bushes-california-221148/
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
 import org.indiv.dls.games.verboscruzados.feature.async.GameSetup
 import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 
@@ -76,6 +76,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
     private lateinit var persistenceHelper: PersistenceHelper
 
     private var showingErrors = false
+    private var keyboardHeight: Float = 0f
 
     //endregion
 
@@ -108,6 +109,10 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         answerFragment = supportFragmentManager.findFragmentById(R.id.answer_fragment) as AnswerFragment
 
         answerFragment.view?.visibility = View.GONE // set answer fragment invisible until puzzle shows up
+
+        // Get keyboard height for use in keyboard animation
+        keyboardHeight = resources.getDimension(R.dimen.keyboard_height)
+        hideKeyboardForAnswer() // this will position the keyboard for animation when first shown.
 
         // calculate available space for the puzzle
         val displayMetrics = resources.displayMetrics
@@ -397,17 +402,28 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
     }
 
     private fun showKeyboardForAnswer() {
-
-        // TODO: animate
-
+        // Set visible, then animate up to position
         answer_keyboard.visibility = View.VISIBLE
+        ObjectAnimator.ofFloat(answer_keyboard, "translationY", 0f)
+                .setDuration(200)
+                .start()
     }
 
     private fun hideKeyboardForAnswer() {
-
-        // TODO: animate
-
-        answer_keyboard.visibility = View.GONE
+        // Animate off screen, then set invisible
+        val animator = ObjectAnimator.ofFloat(answer_keyboard, "translationY", keyboardHeight)
+                .setDuration(200)
+        animator.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationStart(animation: Animator?) {}
+            override fun onAnimationCancel(animation: Animator?) {
+                answer_keyboard.visibility = View.INVISIBLE
+            }
+            override fun onAnimationEnd(animation: Animator?) {
+                answer_keyboard.visibility = View.INVISIBLE
+            }
+        })
+        animator.start()
     }
 
     //endregion

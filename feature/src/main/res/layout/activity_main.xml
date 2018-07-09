@@ -49,8 +49,9 @@
             android:id="@+id/answer_keyboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true">
+            android:visibility="invisible">
 
         </org.indiv.dls.games.verboscruzados.feature.component.MinimalKeyboard>
     </RelativeLayout>
