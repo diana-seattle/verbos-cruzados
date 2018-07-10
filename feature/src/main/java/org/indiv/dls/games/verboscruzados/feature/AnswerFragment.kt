@@ -86,7 +86,7 @@ class AnswerFragment : Fragment() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable) {
-                updateActivityWithAnswer()
+                (activity as? AnswerListener)?.onUpdateAnswer(userEntry)
             }
         })
     }
@@ -122,16 +122,6 @@ class AnswerFragment : Fragment() {
         // update clue views
         subject_pronoun_and_tense.text = answerPresentation.conjugationLabel
         infinitive_and_translation.text = "${answerPresentation.infinitive} (${answerPresentation.translation})"
-    }
-
-    private fun updateActivityWithAnswer() {
-        // Return input text to activity
-        var answerText = userEntry
-        if (answerText.length > wordLength) {
-            answerText = answerText.substring(0, wordLength)
-        }
-
-        (activity as? AnswerListener)?.onUpdateAnswer(answerText)
     }
 
     private fun insertText(text: String) {

@@ -4,10 +4,10 @@ package org.indiv.dls.games.verboscruzados.feature
  * Play Store: https://play.google.com/store/apps/details?id=org.indiv.dls.games.verboscruzados
  */
 
+// TODO: stats screen
 // TODO: change fragments into components
 // TODO: more verbs - or message the user about selecting more options (https://www.e-spanyol.hu/en/grammar/irregular_ar.php)
 // TODO: test/fix conjugations
-// TODO: stats screen
 // TODO: help screen
 // TODO: app icons
 // TODO: instant app
@@ -211,7 +211,6 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
      * implements interface for receiving callback from AnswerFragment
      */
     override fun onUpdateAnswer(userText: String) {
-
         // This method may be called by answer dialog during setup (on text change)
         if (puzzleFragment.currentGameWord == null ||
                 puzzleFragment.currentGameWord?.userText == userText) {
@@ -237,7 +236,10 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
             hideKeyboardForAnswer()
         }
 
-        // if puzzle is complete and correct
+        // Note that the puzzle may be completed correctly while an individual word is not. It may be
+        // too long or have a wrong character that appears correct because of character in other direction.
+
+        // if puzzle is complete and correct.
         if (currentWordIsCorrect && puzzleFragment.isPuzzleComplete(true)) {
 
             // prompt user with congrats and new game
