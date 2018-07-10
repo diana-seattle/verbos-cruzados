@@ -45,7 +45,7 @@ class GameSetup {
             val gridHeight = cellGrid.size
             val gridWidth = cellGrid[0].size
 
-            val numWords = Math.round(((gridWidth * gridHeight) / 10).toFloat())  // get more than we need to maximize density of layout
+            val numWords = Math.round(((gridWidth * gridHeight) / 10 + 20).toFloat())  // get more than we need to maximize density of layout
             val wordCandidates = getWordCandidates(numWords, gameOptions).toMutableList()
 
             // determine layout

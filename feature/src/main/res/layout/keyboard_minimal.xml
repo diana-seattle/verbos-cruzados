@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Making the overall layout clickable/focusable so that clicks don't bleed thru to the puzzle layout beneath -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/keyboard_height"
+        android:clickable="true"
+        android:focusable="true"
         android:background="@color/keyboard_translucent"
         android:orientation="vertical">
 
@@ -192,40 +195,33 @@
                 android:visibility="invisible"/>
             <TextView
                 android:id="@+id/button_a_accent"
-                style="@style/answerLetterButton"
-                android:text="á"
-                android:textColor="@color/keyboard_special_letters"/>
+                style="@style/answerLetterButton.special"
+                android:text="á"/>
             <TextView
                 android:id="@+id/button_e_accent"
-                style="@style/answerLetterButton"
-                android:text="é"
-                android:textColor="@color/keyboard_special_letters"/>
+                style="@style/answerLetterButton.special"
+                android:text="é"/>
             <TextView
                 android:id="@+id/button_i_accent"
-                style="@style/answerLetterButton"
-                android:text="í"
-                android:textColor="@color/keyboard_special_letters"/>
+                style="@style/answerLetterButton.special"
+                android:text="í"/>
             <TextView
                 android:id="@+id/button_o_accent"
-                style="@style/answerLetterButton"
-                android:text="ó"
-                android:textColor="@color/keyboard_special_letters"/>
+                style="@style/answerLetterButton.special"
+                android:text="ó"/>
             <TextView
                 android:id="@+id/button_u_umlaut"
-                style="@style/answerLetterButton"
-                android:text="ü"
-                android:textColor="@color/keyboard_special_letters"/>
+                style="@style/answerLetterButton.special"
+                android:text="ü"/>
             <TextView
                 android:id="@+id/button_n_tilde"
-                style="@style/answerLetterButton"
-                android:text="ñ"
-                android:textColor="@color/keyboard_special_letters"/>
+                style="@style/answerLetterButton.special"
+                android:text="ñ"/>
             <TextView
                 android:id="@+id/button_infinitive"
-                style="@style/answerLetterButton"
+                style="@style/answerLetterButton.special"
                 android:layout_weight="3.5"
-                android:text="infinitive"
-                android:textColor="@color/keyboard_special_letters"/>
+                android:text="infinitive"/>
 
         </LinearLayout>
     </LinearLayout>
