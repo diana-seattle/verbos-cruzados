@@ -3,11 +3,10 @@ package org.indiv.dls.games.verboscruzados.feature.async
 import io.reactivex.Single
 import org.indiv.dls.games.verboscruzados.feature.GridCell
 import org.indiv.dls.games.verboscruzados.feature.conjugation.conjugatorMap
+import org.indiv.dls.games.verboscruzados.feature.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.feature.game.GameWord
-import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
 import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
-import org.indiv.dls.games.verboscruzados.feature.model.Irregularity
 import org.indiv.dls.games.verboscruzados.feature.model.IrregularityCategory
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
@@ -146,7 +145,7 @@ class GameSetup {
         val conjugationLabel = subjectPronoun?.let {
             "${it.text} - ${conjugationType.text}"
         } ?: conjugationType.text
-        val statsIndex = PersistenceHelper.createStatsIndex(conjugationType, verb.infinitiveEnding, irregularityCategory)
+        val statsIndex = StatsDialogFragment.createStatsIndex(conjugationType, verb.infinitiveEnding, irregularityCategory)
         return WordCandidate(uniqueKey, word, conjugationLabel, verb.infinitive, verb.translation, statsIndex)
     }
 

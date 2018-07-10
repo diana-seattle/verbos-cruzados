@@ -13,6 +13,7 @@ package org.indiv.dls.games.verboscruzados.feature
 // TODO: fix imports
 // Complete other TODO items throughout code
 // TODO: use photos from Elissa
+// TODO: optimizing drawing of puzzle (eliminate spacer views)
 
 // TODO: stats screen
 // TODO: fix game options (include vostros, horizontal ar/ir/er, gerund + past part)
@@ -80,6 +81,8 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
     private var showingErrors = false
     private var keyboardHeight: Float = 0f
+
+    private var statsPersisted: Boolean = false
 
     //endregion
 
@@ -240,6 +243,10 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
         // if puzzle is complete and correct.
         if (currentWordIsCorrect && puzzleFragment.isPuzzleComplete(true)) {
+            if (!statsPersisted) {
+                persistenceHelper.persistGameStats(currentGameWords)
+                statsPersisted = true
+            }
 
             // prompt user with congrats and new game
             var extraMessage = resources.getString(R.string.dialog_startnewgame_congrats)
@@ -336,6 +343,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
                             if (currentGameWords.size < 15) {
                                 Toast.makeText(this, R.string.not_enough_game_options, Toast.LENGTH_LONG).show()
                             }
+                            statsPersisted = false
                         },
                         { error ->
                             Toast.makeText(this, R.string.error_game_setup_failure, Toast.LENGTH_SHORT).show()
@@ -383,7 +391,6 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
     private fun showStatsDialog() {
         val dlg = StatsDialogFragment()
-        dlg.setStats(0, 0)
         dlg.show(supportFragmentManager, "fragment_showstats")
     }
 

@@ -35,7 +35,7 @@ class GameOptionsDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val inflater = activity!!.layoutInflater
-        val view = inflater.inflate(R.layout.fragment_game_options_dialog, null)
+        val v = inflater.inflate(R.layout.fragment_game_options_dialog, null)
 
         // wrap activity with ContextThemeWrapper to get better dialog styling
         val dialog = AlertDialog.Builder(activity!!)
@@ -45,7 +45,7 @@ class GameOptionsDialogFragment : DialogFragment() {
                 }
                 .setPositiveButton(R.string.dialog_options_okay) { _, _ -> saveOptions() }
                 .setNegativeButton(R.string.dialog_options_cancel) { _, _ -> }
-                .setView(view)
+                .setView(v)
                 .create()
 
         dialog.setOnShowListener {
@@ -55,32 +55,32 @@ class GameOptionsDialogFragment : DialogFragment() {
         }
 
         // Set up map of option keys to checkboxes for easy access later.
-        checkboxMap[IrregularityCategory.REGULAR.name] = view.findViewById(R.id.option_regularity_regular)
-        checkboxMap[IrregularityCategory.SPELLING_CHANGE.name] = view.findViewById(R.id.option_regularity_spelling_change)
-        checkboxMap[IrregularityCategory.STEM_CHANGE.name] = view.findViewById(R.id.option_regularity_stem_change)
-        checkboxMap[IrregularityCategory.IRREGULAR.name] = view.findViewById(R.id.option_regularity_other_irregular)
+        checkboxMap[IrregularityCategory.REGULAR.name] = v.findViewById(R.id.option_regularity_regular)
+        checkboxMap[IrregularityCategory.SPELLING_CHANGE.name] = v.findViewById(R.id.option_regularity_spelling_change)
+        checkboxMap[IrregularityCategory.STEM_CHANGE.name] = v.findViewById(R.id.option_regularity_stem_change)
+        checkboxMap[IrregularityCategory.IRREGULAR.name] = v.findViewById(R.id.option_regularity_other_irregular)
 
-        checkboxMap[InfinitiveEnding.AR.name] = view.findViewById(R.id.option_infinitive_ending_ar)
-        checkboxMap[InfinitiveEnding.IR.name] = view.findViewById(R.id.option_infinitive_ending_ir)
-        checkboxMap[InfinitiveEnding.ER.name] = view.findViewById(R.id.option_infinitive_ending_er)
+        checkboxMap[InfinitiveEnding.AR.name] = v.findViewById(R.id.option_infinitive_ending_ar)
+        checkboxMap[InfinitiveEnding.IR.name] = v.findViewById(R.id.option_infinitive_ending_ir)
+        checkboxMap[InfinitiveEnding.ER.name] = v.findViewById(R.id.option_infinitive_ending_er)
 
-        checkboxMap[ConjugationType.PRESENT.name] = view.findViewById(R.id.option_tense_present)
-        checkboxMap[ConjugationType.PRETERIT.name] = view.findViewById(R.id.option_tense_preterit)
-        checkboxMap[ConjugationType.IMPERFECT.name] = view.findViewById(R.id.option_tense_imperfect)
-        checkboxMap[ConjugationType.CONDITIONAL.name] = view.findViewById(R.id.option_tense_conditional)
-        checkboxMap[ConjugationType.FUTURE.name] = view.findViewById(R.id.option_tense_future)
-        checkboxMap[ConjugationType.IMPERATIVE.name] = view.findViewById(R.id.option_tense_imperative)
-        checkboxMap[ConjugationType.SUBJUNCTIVE_PRESENT.name] = view.findViewById(R.id.option_tense_subjunctive_present)
-        checkboxMap[ConjugationType.SUBJUNCTIVE_IMPERFECT.name] = view.findViewById(R.id.option_tense_subjunctive_imperfect)
-        checkboxMap[ConjugationType.GERUND.name] = view.findViewById(R.id.option_tense_gerund)
-        checkboxMap[ConjugationType.PAST_PARTICIPLE.name] = view.findViewById(R.id.option_tense_past_participle)
+        checkboxMap[ConjugationType.PRESENT.name] = v.findViewById(R.id.option_tense_present)
+        checkboxMap[ConjugationType.PRETERIT.name] = v.findViewById(R.id.option_tense_preterit)
+        checkboxMap[ConjugationType.IMPERFECT.name] = v.findViewById(R.id.option_tense_imperfect)
+        checkboxMap[ConjugationType.CONDITIONAL.name] = v.findViewById(R.id.option_tense_conditional)
+        checkboxMap[ConjugationType.FUTURE.name] = v.findViewById(R.id.option_tense_future)
+        checkboxMap[ConjugationType.IMPERATIVE.name] = v.findViewById(R.id.option_tense_imperative)
+        checkboxMap[ConjugationType.SUBJUNCTIVE_PRESENT.name] = v.findViewById(R.id.option_tense_subjunctive_present)
+        checkboxMap[ConjugationType.SUBJUNCTIVE_IMPERFECT.name] = v.findViewById(R.id.option_tense_subjunctive_imperfect)
+        checkboxMap[ConjugationType.GERUND.name] = v.findViewById(R.id.option_tense_gerund)
+        checkboxMap[ConjugationType.PAST_PARTICIPLE.name] = v.findViewById(R.id.option_tense_past_participle)
 
-        checkboxMap[SubjectPronoun.YO.name] = view.findViewById(R.id.option_subject_pronoun_yo)
-        checkboxMap[SubjectPronoun.TU.name] = view.findViewById(R.id.option_subject_pronoun_tu)
-        checkboxMap[SubjectPronoun.EL_ELLA_USTED.name] = view.findViewById(R.id.option_subject_pronoun_el_ella_ud)
-        checkboxMap[SubjectPronoun.ELLOS_ELLAS_USTEDES.name] = view.findViewById(R.id.option_subject_pronoun_ellos_ellas_uds)
-        checkboxMap[SubjectPronoun.NOSOTROS.name] = view.findViewById(R.id.option_subject_pronoun_nosotros)
-        checkboxMap[SubjectPronoun.VOSOTROS.name] = view.findViewById(R.id.option_subject_pronoun_vosotros)
+        checkboxMap[SubjectPronoun.YO.name] = v.findViewById(R.id.option_subject_pronoun_yo)
+        checkboxMap[SubjectPronoun.TU.name] = v.findViewById(R.id.option_subject_pronoun_tu)
+        checkboxMap[SubjectPronoun.EL_ELLA_USTED.name] = v.findViewById(R.id.option_subject_pronoun_el_ella_ud)
+        checkboxMap[SubjectPronoun.ELLOS_ELLAS_USTEDES.name] = v.findViewById(R.id.option_subject_pronoun_ellos_ellas_uds)
+        checkboxMap[SubjectPronoun.NOSOTROS.name] = v.findViewById(R.id.option_subject_pronoun_nosotros)
+        checkboxMap[SubjectPronoun.VOSOTROS.name] = v.findViewById(R.id.option_subject_pronoun_vosotros)
 
         initializeOptions()
 

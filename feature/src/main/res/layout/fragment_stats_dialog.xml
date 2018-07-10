@@ -25,22 +25,11 @@
             android:textColor="@color/soft_black"
             android:textSize="@dimen/xx_large"/>
 
-        <!-- games completed -->
+        <!-- temp view -->
         <TextView
-            android:id="@+id/textview_gamescompleted"
+            android:id="@+id/textview_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dialog_stats_gamescompleted"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/large"/>
-
-        <!-- words of games completed -->
-        <TextView
-            android:id="@+id/textview_wordscompleted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/default_margin"
-            android:text="@string/dialog_stats_wordscompleted"
             android:textColor="@color/soft_black"
             android:textSize="@dimen/large"/>
 

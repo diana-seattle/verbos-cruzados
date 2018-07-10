@@ -35,9 +35,7 @@
     <string name="dialog_help_offline">This game may be played offline. However, playing with an active network connection will provide a greater variety of words.</string>
 
     <!-- dialog text for stats dialog-->
-    <string name="dialog_stats_heading">Completed Game Stats</string>
-    <string name="dialog_stats_gamescompleted">Games:</string>
-    <string name="dialog_stats_wordscompleted">Words:</string>
+    <string name="dialog_stats_heading">Conjugation Coverage</string>
 
     <!-- toast text-->
     <string name="toast_noerrorsfound">No errors</string>

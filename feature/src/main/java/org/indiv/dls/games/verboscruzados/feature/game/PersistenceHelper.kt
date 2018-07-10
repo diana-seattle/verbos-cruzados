@@ -24,17 +24,6 @@ class PersistenceHelper constructor(private val mContext: Context) {
         private val PREFS_GAME_WORD_OPTIONS = "game options"
         private val PREFS_GAME_STATS = "game stats"
         private val gson = Gson()
-
-        /**
-         * Creates stats index for 2-dimensional representation of stats where IrregularityCategory
-         * and InfinitiveEnding are on the y-axis, and conjugation type on the x-axis.
-         */
-        fun createStatsIndex(conjugationType: ConjugationType,
-                             infinitiveEnding: InfinitiveEnding,
-                             irregularityCategory: IrregularityCategory): Int {
-            val rowIndex = (irregularityCategory.indexForStats * 3) + infinitiveEnding.indexForStats
-            return rowIndex * ConjugationType.values().size + conjugationType.indexForStats
-        }
     }
 
     //endregion

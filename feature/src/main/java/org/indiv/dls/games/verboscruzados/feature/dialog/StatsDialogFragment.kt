@@ -7,20 +7,37 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import android.widget.TextView
+import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
+import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
+import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
+import org.indiv.dls.games.verboscruzados.feature.model.IrregularityCategory
 
 /**
  * Dialog for showing game stats.
  */
 class StatsDialogFragment : DialogFragment() {
 
+    //region COMPANION OBJECT ----------------------------------------------------------------------
+
+    companion object {
+        /**
+         * Creates stats index for 2-dimensional representation of stats where IrregularityCategory
+         * and InfinitiveEnding are on the y-axis, and conjugation type on the x-axis.
+         */
+        fun createStatsIndex(conjugationType: ConjugationType,
+                             infinitiveEnding: InfinitiveEnding,
+                             irregularityCategory: IrregularityCategory): Int {
+            val rowIndex = (irregularityCategory.indexForStats * 3) + infinitiveEnding.indexForStats
+            return rowIndex * ConjugationType.values().size + conjugationType.indexForStats
+        }
+    }
+
+    //endregion
+
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
     //endregion
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
-
-    private var mGamesCompleted: Int = 0
-    private var mWordsCompleted: Int = 0
-
     //endregion
 
     //region PUBLIC INTERFACES ---------------------------------------------------------------------
@@ -30,16 +47,20 @@ class StatsDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val inflater = activity!!.layoutInflater
-        val view = inflater.inflate(R.layout.fragment_stats_dialog, null)
+        val v = inflater.inflate(R.layout.fragment_stats_dialog, null)
 
         val dialog = AlertDialog.Builder(activity!!)
                 .setPositiveButton(R.string.dialog_ok) { dialog, id -> }
-                .setView(view)
+                .setView(v)
                 .create()
 
         // fill in stats
-        appendTextToView(view.findViewById(R.id.textview_gamescompleted), " $mGamesCompleted")
-        appendTextToView(view.findViewById(R.id.textview_wordscompleted), " $mWordsCompleted")
+        val persistenceHelper = PersistenceHelper(activity!!)
+        val statsMap = persistenceHelper.allGameStats
+
+        val textView: TextView = v.findViewById(R.id.textview_temp)
+        val myText = statsMap.toString()
+        textView.text = myText
 
         return dialog
     }
@@ -47,19 +68,8 @@ class StatsDialogFragment : DialogFragment() {
     //endregion
 
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
-
-    fun setStats(gamesCompleted: Int, wordsCompleted: Int) {
-        mGamesCompleted = gamesCompleted
-        mWordsCompleted = wordsCompleted
-    }
-
     //endregion
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
-
-    private fun appendTextToView(textView: TextView, text: String) {
-        textView.text = textView.text.toString() + text
-    }
-
     //endregion
 }
