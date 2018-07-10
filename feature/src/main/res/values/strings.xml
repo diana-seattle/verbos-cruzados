@@ -85,6 +85,6 @@
     <!-- error messages -->
     <string name="error_game_setup_failure">Unable to set up game</string>
     <string name="error_initial_setup_failure">Unable to complete initial set up</string>
-    <string name="not_enough_game_options">Get more words with more game options</string>
+    <string name="not_enough_game_options">For more words, select more game options</string>
 
 </resources>

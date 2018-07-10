@@ -316,6 +316,7 @@ val spellingChangeArVerbs = listOf(
         Verb("arrancar", "pull out", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("apagar", "turn off", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("atacar", "attack", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
+        Verb("averiguar", "find out", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("bostezar", "yawn", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("buscar", "look for", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("cargar", "load, charge", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
@@ -438,6 +439,7 @@ val stemChangeArVerbs = listOf(
         Verb("esquiar", "ski", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
         Verb("fotografiar", "photograph", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
         Verb("guiar", "guide", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
+        Verb("piar", "cheep, tweet", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
         Verb("vaciar", "empty", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
 
         // stem change u -> ú
@@ -452,6 +454,8 @@ val stemChangeArVerbs = listOf(
         Verb("insinuar", "insinuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
         Verb("perpetuar", "perpetuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
         Verb("puntuar", "punctuate, score", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+        Verb("rehusar", "refuse", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+        Verb("reunir", "bring together", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
         Verb("situar", "place", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
         Verb("tatuar", "tattoo", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
         Verb("valuar", "value", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
