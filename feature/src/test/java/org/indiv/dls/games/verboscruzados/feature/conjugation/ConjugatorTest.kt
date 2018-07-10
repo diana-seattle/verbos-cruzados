@@ -51,30 +51,22 @@ class ConjugatorTest {
         allVerbs.addAll(irregularIrVerbs)
         allVerbs.addAll(irregularErVerbs)
 
-        assertEquals(allVerbs.size, allVerbs.toSet().size)
+        val duplicates = allVerbs.groupBy { it.infinitive }
+                .filter { it.value.size > 1 }
+        assertEquals(0, duplicates.size)
     }
 
     @Test fun testOneVerb() {
         val verb =
-                Verb("actuar", "act", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U))
+                Verb("constreñir", "constrain", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I))
         printResult(verb)
 
     }
 
     @Test fun testListOfVerbs() {
         val verbs = listOf(
-                Verb("actuar", "act", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-                Verb("atenuar", "attenuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-                Verb("continuar", "continue", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-                Verb("evaluar", "evaluate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-                Verb("fluctuar", "fluctuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-                Verb("habituar", "accustom", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-                Verb("insinuar", "insinuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-                Verb("perpetuar", "perpetuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-                Verb("puntuar", "punctuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-                Verb("situar", "situate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-                Verb("tatuar", "tattoo", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-                Verb("valuar", "value", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U))
+                Verb("deshacer", "undo", altPreteritRoot = "deshic", altInfinitiveRoot = "deshar", irregularImperativeTu = "deshaz", irregularPastParticiple = "deshecho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
+                Verb("rehacer", "redo", altPreteritRoot = "rehic", altInfinitiveRoot = "rehar", irregularImperativeTu = "rehaz", irregularPastParticiple = "rehecho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT))
                 )
         printAllResults(verbs)
     }
