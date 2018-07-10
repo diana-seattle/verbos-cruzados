@@ -24,6 +24,7 @@ enum class Irregularity {
     STEM_CHANGE_E_to_IE,
     STEM_CHANGE_I_to_ACCENTED_I,
     STEM_CHANGE_O_to_UE,
+    STEM_CHANGE_U_to_ACCENTED_U,
     STEM_CHANGE_U_to_UE
 }
 
@@ -436,6 +437,20 @@ val stemChangeArVerbs = listOf(
         Verb("guiar", "guide", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
         Verb("vaciar", "empty", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
 
+        // stem change u -> ú
+        Verb("actuar", "act", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+        Verb("atenuar", "attenuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+        Verb("continuar", "continue", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+        Verb("evaluar", "evaluate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+        Verb("fluctuar", "fluctuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+        Verb("habituar", "habituate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+        Verb("insinuar", "insinuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+        Verb("perpetuar", "perpetuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+        Verb("puntuar", "punctuate, score", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+        Verb("situar", "place", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+        Verb("tatuar", "tattoo", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+        Verb("valuar", "value", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+
         // stem change u -> ue
         Verb("jugar", "play", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_UE))
 )
@@ -533,9 +548,10 @@ val regularIrVerbs = listOf(
 )
 val spellingChangeIrVerbs = listOf(
         // spelling change - phonetic
+        Verb("construir", "build", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
         Verb("dirigir", "manage, direct", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("distinguir", "distinguish", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
-        Verb("construir", "build", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
+        Verb("excluir", "exclude", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
         Verb("fluir", "flow", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
         Verb("huir", "escape, flee", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
 

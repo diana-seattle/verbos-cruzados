@@ -74,6 +74,9 @@ open class SubjunctivePresentConjugator : Conjugator {
             irregularities.contains(Irregularity.STEM_CHANGE_I_to_ACCENTED_I) -> {
                 replaceInLastSyllable(yoRoot, "í", "i")
             }
+            irregularities.contains(Irregularity.STEM_CHANGE_U_to_ACCENTED_U) -> {
+                replaceInLastSyllable(yoRoot, "ú", "u")
+            }
             else -> yoRoot
         }
     }

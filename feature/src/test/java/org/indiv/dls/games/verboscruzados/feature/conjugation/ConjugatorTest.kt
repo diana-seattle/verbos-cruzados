@@ -56,9 +56,27 @@ class ConjugatorTest {
 
     @Test fun testOneVerb() {
         val verb =
-                Verb("guiar", "guide", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I))
+                Verb("actuar", "act", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U))
         printResult(verb)
 
+    }
+
+    @Test fun testListOfVerbs() {
+        val verbs = listOf(
+                Verb("actuar", "act", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+                Verb("atenuar", "attenuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+                Verb("continuar", "continue", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+                Verb("evaluar", "evaluate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+                Verb("fluctuar", "fluctuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+                Verb("habituar", "accustom", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+                Verb("insinuar", "insinuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+                Verb("perpetuar", "perpetuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+                Verb("puntuar", "punctuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+                Verb("situar", "situate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+                Verb("tatuar", "tattoo", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
+                Verb("valuar", "value", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U))
+                )
+        printAllResults(verbs)
     }
 
     @Test fun testRegular() {
