@@ -66,8 +66,8 @@ class PresentConjugator : Conjugator {
             return when {
                 irregularities.contains(Irregularity.STEM_CHANGE_E_to_I) -> replaceInLastSyllable(root, "e", "i")
                 irregularities.contains(Irregularity.STEM_CHANGE_E_to_ACCENTED_I) -> replaceInLastSyllable(root, "e", "í")
-                irregularities.contains(Irregularity.STEM_CHANGE_I_to_ACCENTED_I) -> replaceInLastSyllable(root, "i", "í")
-                irregularities.contains(Irregularity.STEM_CHANGE_U_to_ACCENTED_U) -> replaceInLastSyllable(root, "u", "ú")
+                irregularities.contains(Irregularity.SPELLING_CHANGE_I_to_ACCENTED_I) -> replaceInLastSyllable(root, "i", "í")
+                irregularities.contains(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U) -> replaceInLastSyllable(root, "u", "ú")
                 irregularities.contains(Irregularity.STEM_CHANGE_U_to_UE) -> replaceInLastSyllable(root, "u", "ue")
                 irregularities.contains(Irregularity.STEM_CHANGE_O_to_UE) -> {
                     val replacement = when {

@@ -15,16 +15,16 @@ enum class InfinitiveEnding(val ending: String) {
 
 enum class Irregularity {
     NO_ACCENT_ON_PRETERIT, // pude/pudo, dije/dijo
+    SPELLING_CHANGE_I_to_ACCENTED_I,
     SPELLING_CHANGE_PHONETIC,
+    SPELLING_CHANGE_U_to_ACCENTED_U,
     SPELLING_CHANGE_YO_ZC,
     SPELLING_CHANGE_YO_GO,
     SPELLING_CHANGE_Y,
     STEM_CHANGE_E_to_ACCENTED_I,
     STEM_CHANGE_E_to_I,
     STEM_CHANGE_E_to_IE,
-    STEM_CHANGE_I_to_ACCENTED_I,
     STEM_CHANGE_O_to_UE,
-    STEM_CHANGE_U_to_ACCENTED_U,
     STEM_CHANGE_U_to_UE
 }
 
@@ -363,7 +363,41 @@ val spellingChangeArVerbs = listOf(
         Verb("significar", "signify, mean", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("tocar", "touch, play instrument", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("utilizar", "use, utilize", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
-        Verb("verificar", "verify", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC))
+        Verb("verificar", "verify", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
+
+        // spelling change i -> í
+        Verb("aislar", "isolate, insulate", irregularities = listOf(Irregularity.SPELLING_CHANGE_I_to_ACCENTED_I)),
+        Verb("ansiar", "long for", irregularities = listOf(Irregularity.SPELLING_CHANGE_I_to_ACCENTED_I)),
+        Verb("chirriar", "screech, creak", irregularities = listOf(Irregularity.SPELLING_CHANGE_I_to_ACCENTED_I)),
+        Verb("confiar", "confide, trust", irregularities = listOf(Irregularity.SPELLING_CHANGE_I_to_ACCENTED_I)),
+        Verb("criar", "raise", irregularities = listOf(Irregularity.SPELLING_CHANGE_I_to_ACCENTED_I)),
+        Verb("desviar", "divert", irregularities = listOf(Irregularity.SPELLING_CHANGE_I_to_ACCENTED_I)),
+        Verb("enviar", "send", irregularities = listOf(Irregularity.SPELLING_CHANGE_I_to_ACCENTED_I)),
+        Verb("enfriar", "cool", irregularities = listOf(Irregularity.SPELLING_CHANGE_I_to_ACCENTED_I)),
+        Verb("espiar", "spy on", irregularities = listOf(Irregularity.SPELLING_CHANGE_I_to_ACCENTED_I)),
+        Verb("esquiar", "ski", irregularities = listOf(Irregularity.SPELLING_CHANGE_I_to_ACCENTED_I)),
+        Verb("fotografiar", "photograph", irregularities = listOf(Irregularity.SPELLING_CHANGE_I_to_ACCENTED_I)),
+        Verb("guiar", "guide", irregularities = listOf(Irregularity.SPELLING_CHANGE_I_to_ACCENTED_I)),
+        Verb("piar", "cheep, tweet", irregularities = listOf(Irregularity.SPELLING_CHANGE_I_to_ACCENTED_I)),
+        Verb("vaciar", "empty", irregularities = listOf(Irregularity.SPELLING_CHANGE_I_to_ACCENTED_I)),
+
+        // spelling change u -> ú
+        Verb("actuar", "act", irregularities = listOf(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U)),
+        Verb("atenuar", "attenuate", irregularities = listOf(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U)),
+        Verb("aullar", "howl", irregularities = listOf(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U)),
+        Verb("continuar", "continue", irregularities = listOf(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U)),
+        Verb("evaluar", "evaluate", irregularities = listOf(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U)),
+        Verb("fluctuar", "fluctuate", irregularities = listOf(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U)),
+        Verb("habituar", "habituate", irregularities = listOf(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U)),
+        Verb("maullar", "meow", irregularities = listOf(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U)),
+        Verb("insinuar", "insinuate", irregularities = listOf(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U)),
+        Verb("perpetuar", "perpetuate", irregularities = listOf(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U)),
+        Verb("puntuar", "punctuate, score", irregularities = listOf(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U)),
+        Verb("rehusar", "refuse", irregularities = listOf(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U)),
+        Verb("reunir", "bring together", irregularities = listOf(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U)),
+        Verb("situar", "place", irregularities = listOf(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U)),
+        Verb("tatuar", "tattoo", irregularities = listOf(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U)),
+        Verb("valuar", "value", irregularities = listOf(Irregularity.SPELLING_CHANGE_U_to_ACCENTED_U))
 )
 val stemChangeArVerbs = listOf(
         // stem change o -> ue
@@ -425,40 +459,6 @@ val stemChangeArVerbs = listOf(
         Verb("temblar", "tremble", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("tentar", "tempt", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("tropezar", "stumble", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE, Irregularity.SPELLING_CHANGE_PHONETIC)),
-
-        // stem change i -> í
-        Verb("aislar", "isolate, insulate", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
-        Verb("ansiar", "long for", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
-        Verb("chirriar", "screech, creak", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
-        Verb("confiar", "confide, trust", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
-        Verb("criar", "raise", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
-        Verb("desviar", "divert", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
-        Verb("enviar", "send", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
-        Verb("enfriar", "cool", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
-        Verb("espiar", "spy on", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
-        Verb("esquiar", "ski", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
-        Verb("fotografiar", "photograph", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
-        Verb("guiar", "guide", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
-        Verb("piar", "cheep, tweet", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
-        Verb("vaciar", "empty", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
-
-        // stem change u -> ú
-        Verb("actuar", "act", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-        Verb("atenuar", "attenuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-        Verb("aullar", "howl", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-        Verb("continuar", "continue", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-        Verb("evaluar", "evaluate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-        Verb("fluctuar", "fluctuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-        Verb("habituar", "habituate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-        Verb("maullar", "meow", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-        Verb("insinuar", "insinuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-        Verb("perpetuar", "perpetuate", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-        Verb("puntuar", "punctuate, score", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-        Verb("rehusar", "refuse", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-        Verb("reunir", "bring together", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-        Verb("situar", "place", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-        Verb("tatuar", "tattoo", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
-        Verb("valuar", "value", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_ACCENTED_U)),
 
         // stem change u -> ue
         Verb("jugar", "play", irregularities = listOf(Irregularity.STEM_CHANGE_U_to_UE))
@@ -572,6 +572,9 @@ val spellingChangeIrVerbs = listOf(
         Verb("instruir", "instruct", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
         Verb("obstruir", "obstruct", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
 
+        // spelling change i -> accented í
+        Verb("prohibir", "prohibit", irregularities = listOf(Irregularity.SPELLING_CHANGE_I_to_ACCENTED_I)),
+
         // Yo Go verbs
         Verb("oír", "hear", altInfinitiveRoot = "oir", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
         Verb("desoír", "ignore", altInfinitiveRoot = "desoir", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO)),
@@ -604,9 +607,6 @@ val stemChangeIrVerbs = listOf(
         Verb("reír", "laugh", altInfinitiveRoot = "reir", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_ACCENTED_I)),
         Verb("freír", "fry", altInfinitiveRoot = "freir", irregularPastParticiple = "frito", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_ACCENTED_I)),
         Verb("sonreír", "smile", altInfinitiveRoot = "sonreir", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_ACCENTED_I)),
-
-        // stem changes i -> accented í
-        Verb("prohibir", "prohibit", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_ACCENTED_I)),
 
         // stem changes o -> ue
         Verb("dormir", "sleep", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
