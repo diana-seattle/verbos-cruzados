@@ -8,6 +8,7 @@ class GameWord(val uniqueKey: String,        // unique key for use in persistenc
                val conjugationLabel: String, // conjugation type label (e.g. "Yo - Preterit")
                val infinitive: String,       // infinitive clue (e.g. "hablar (to speak)")
                val translation: String,      // English translation
+               val statsIndex: Int,          // Stats index
                val row: Int,                 // row in which the word begins
                val col: Int,                 // column in which the word begins
                val isAcross: Boolean,        // true if word appears in the across orientation, false if down

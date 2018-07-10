@@ -14,7 +14,7 @@
     <dimen name="keyboard_letter_size">@dimen/xx_large_fixed</dimen>
 
     <!-- width of individual cell -->
-    <dimen name="cell_width">28dp</dimen>
+    <dimen name="cell_width">30dp</dimen>
 
     <dimen name="puzzle_margin">16dp</dimen>
 

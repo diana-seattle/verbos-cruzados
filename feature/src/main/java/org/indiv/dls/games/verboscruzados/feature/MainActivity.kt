@@ -4,7 +4,6 @@ package org.indiv.dls.games.verboscruzados.feature
  * Play Store: https://play.google.com/store/apps/details?id=org.indiv.dls.games.verboscruzados
  */
 
-// TODO: stats screen
 // TODO: change fragments into components
 // TODO: more verbs - or message the user about selecting more options (https://www.e-spanyol.hu/en/grammar/irregular_ar.php)
 // TODO: test/fix conjugations
@@ -15,8 +14,8 @@ package org.indiv.dls.games.verboscruzados.feature
 // Complete other TODO items throughout code
 // TODO: use photos from Elissa
 
-
-// TODO: fix game options (no ar/ir/er?, include vostros, gerund + past part, etc) - or 80% rule?
+// TODO: stats screen
+// TODO: fix game options (include vostros, horizontal ar/ir/er, gerund + past part)
 
 // TODO: fix layout algorithm to use more short words & variability (80% rule)
 

@@ -4,6 +4,7 @@ import io.reactivex.Single
 import org.indiv.dls.games.verboscruzados.feature.GridCell
 import org.indiv.dls.games.verboscruzados.feature.conjugation.conjugatorMap
 import org.indiv.dls.games.verboscruzados.feature.game.GameWord
+import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
 import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.feature.model.Irregularity
@@ -97,32 +98,36 @@ class GameSetup {
      * Gets list of words that are candidates for the next puzzle.
      */
     private fun getWordCandidates(numWords: Int, gameOptions: Map<String, Boolean>): List<WordCandidate> {
-        val verbs = getQualifyingVerbs(gameOptions)
+        val verbMap = getQualifyingVerbs(gameOptions)
         val candidates = mutableListOf<WordCandidate>()
 
         getQualifyingConjugationTypes(gameOptions).forEach {
             val conjugationType = it
-            when (conjugationType) {
-                ConjugationType.GERUND -> {
-                    candidates.addAll(verbs.map {
-                        createWordCandidate(it, it.gerund, conjugationType, null)
-                    })
-                }
-                ConjugationType.PAST_PARTICIPLE -> {
-                    candidates.addAll(verbs.map {
-                        createWordCandidate(it, it.pastParticiple, conjugationType, null)
-                    })
-                }
-                else -> {
-                    val conjugator = conjugatorMap[it]!!
-                    getQualifyingSubjectPronouns(gameOptions).forEach {
-                        val subjectPronoun = it
-                        // Avoid the Yo - Imperative form
-                        if (conjugationType != ConjugationType.IMPERATIVE || subjectPronoun != SubjectPronoun.YO) {
-                            candidates.addAll(verbs.map {
-                                createWordCandidate(it, conjugator.conjugate(it, subjectPronoun),
-                                        conjugationType, subjectPronoun)
-                            })
+            verbMap.keys.forEach {
+                val irregularityCategory = it
+                val verbs = verbMap[irregularityCategory]!!
+                when (conjugationType) {
+                    ConjugationType.GERUND -> {
+                        candidates.addAll(verbs.map {
+                            createWordCandidate(it, it.gerund, conjugationType, irregularityCategory, null)
+                        })
+                    }
+                    ConjugationType.PAST_PARTICIPLE -> {
+                        candidates.addAll(verbs.map {
+                            createWordCandidate(it, it.pastParticiple, conjugationType, irregularityCategory, null)
+                        })
+                    }
+                    else -> {
+                        val conjugator = conjugatorMap[conjugationType]!!
+                        getQualifyingSubjectPronouns(gameOptions).forEach {
+                            val subjectPronoun = it
+                            // Avoid the Yo - Imperative form
+                            if (conjugationType != ConjugationType.IMPERATIVE || subjectPronoun != SubjectPronoun.YO) {
+                                candidates.addAll(verbs.map {
+                                    createWordCandidate(it, conjugator.conjugate(it, subjectPronoun),
+                                            conjugationType, irregularityCategory, subjectPronoun)
+                                })
+                            }
                         }
                     }
                 }
@@ -132,41 +137,56 @@ class GameSetup {
         return randomSelection(candidates, minOf(numWords, (.8f * candidates.size).toInt()))
     }
 
-    private fun createWordCandidate(verb: Verb, word: String, conjugationType: ConjugationType,
+    private fun createWordCandidate(verb: Verb, word: String,
+                                    conjugationType: ConjugationType,
+                                    irregularityCategory: IrregularityCategory,
                                     subjectPronoun: SubjectPronoun?): WordCandidate {
         // Conjugated verb can be duplicate between imperative and subjunctive or between sentar and sentir.
         val uniqueKey = "${verb.infinitive}|${conjugationType.name}|${subjectPronoun?.name ?: "na"}"
         val conjugationLabel = subjectPronoun?.let {
             "${it.text} - ${conjugationType.text}"
         } ?: conjugationType.text
-        return WordCandidate(uniqueKey, word, conjugationLabel, verb.infinitive, verb.translation)
+        val statsIndex = PersistenceHelper.createStatsIndex(conjugationType, verb.infinitiveEnding, irregularityCategory)
+        return WordCandidate(uniqueKey, word, conjugationLabel, verb.infinitive, verb.translation, statsIndex)
     }
 
-    private fun getQualifyingVerbs(gameOptions: Map<String, Boolean>): List<Verb> {
-        val verbs = mutableListOf<Verb>()
+    private fun createStatsIndex() {
+
+    }
+
+    private fun getQualifyingVerbs(gameOptions: Map<String, Boolean>): Map<IrregularityCategory, List<Verb>> {
+        val verbMap = mutableMapOf<IrregularityCategory, List<Verb>>()
 
         val infinitiveEndings = getQualifyingInfinitiveEndings(gameOptions)
         val irregularityCategories = getQualifyingIrregularityCategories(gameOptions)
 
-        if (infinitiveEndings.contains(InfinitiveEnding.AR)) {
-            if (irregularityCategories.contains(IrregularityCategory.REGULAR)) verbs.addAll(regularArVerbs)
-            if (irregularityCategories.contains(IrregularityCategory.SPELLING_CHANGE)) verbs.addAll(spellingChangeArVerbs)
-            if (irregularityCategories.contains(IrregularityCategory.STEM_CHANGE)) verbs.addAll(stemChangeArVerbs)
-            if (irregularityCategories.contains(IrregularityCategory.IRREGULAR)) verbs.addAll(irregularArVerbs)
+        irregularityCategories.forEach {
+            val verbs = mutableListOf<Verb>()
+            when (it) {
+                IrregularityCategory.REGULAR -> {
+                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(regularArVerbs)
+                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(regularIrVerbs)
+                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(regularErVerbs)
+                }
+                IrregularityCategory.SPELLING_CHANGE -> {
+                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(spellingChangeArVerbs)
+                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(spellingChangeIrVerbs)
+                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(spellingChangeErVerbs)
+                }
+                IrregularityCategory.STEM_CHANGE -> {
+                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(stemChangeArVerbs)
+                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(stemChangeIrVerbs)
+                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(stemChangeErVerbs)
+                }
+                IrregularityCategory.IRREGULAR -> {
+                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(irregularArVerbs)
+                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(irregularIrVerbs)
+                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(irregularErVerbs)
+                }
+            }
+            verbMap[it] = verbs.toList()
         }
-        if (infinitiveEndings.contains(InfinitiveEnding.IR)) {
-            if (irregularityCategories.contains(IrregularityCategory.REGULAR)) verbs.addAll(regularIrVerbs)
-            if (irregularityCategories.contains(IrregularityCategory.SPELLING_CHANGE)) verbs.addAll(spellingChangeIrVerbs)
-            if (irregularityCategories.contains(IrregularityCategory.STEM_CHANGE)) verbs.addAll(stemChangeIrVerbs)
-            if (irregularityCategories.contains(IrregularityCategory.IRREGULAR)) verbs.addAll(irregularIrVerbs)
-        }
-        if (infinitiveEndings.contains(InfinitiveEnding.ER)) {
-            if (irregularityCategories.contains(IrregularityCategory.REGULAR)) verbs.addAll(regularErVerbs)
-            if (irregularityCategories.contains(IrregularityCategory.SPELLING_CHANGE)) verbs.addAll(spellingChangeErVerbs)
-            if (irregularityCategories.contains(IrregularityCategory.STEM_CHANGE)) verbs.addAll(stemChangeErVerbs)
-            if (irregularityCategories.contains(IrregularityCategory.IRREGULAR)) verbs.addAll(irregularErVerbs)
-        }
-        return verbs
+        return verbMap
     }
 
     private fun getQualifyingConjugationTypes(gameOptions: Map<String, Boolean>): List<ConjugationType> {
@@ -295,7 +315,8 @@ class GameSetup {
 
         if (locationFound) {
             gameWord = GameWord(wordCandidate.uniqueKey, word, wordCandidate.conjugationLabel,
-                    wordCandidate.infinitive, wordCandidate.translation, row, col, across)
+                    wordCandidate.infinitive, wordCandidate.translation, wordCandidate.statsIndex,
+                    row, col, across)
             addToGrid(gameWord, cellGrid)
         }
 
@@ -379,7 +400,8 @@ class GameSetup {
                                 val word: String,
                                 val conjugationLabel: String,
                                 val infinitive: String,
-                                val translation: String) {
+                                val translation: String,
+                                val statsIndex: Int) {
         // variables used by word placement algorithm to place word in puzzle
         private var lastAcrossPositionTried = -1
         private var lastDownPositionTried = -1

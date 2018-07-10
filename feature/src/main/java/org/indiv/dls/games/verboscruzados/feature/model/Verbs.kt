@@ -7,10 +7,10 @@ import org.indiv.dls.games.verboscruzados.feature.conjugation.getIrAlteredRoot
 //
 // Also, good source of verbs: http://www.intro2spanish.com/verbs/listas/all.htm
 
-enum class InfinitiveEnding(val ending: String) {
-    ER("er"),
-    AR("ar"),
-    IR("ir")
+enum class InfinitiveEnding(val ending: String, val indexForStats: Int) {
+    AR("ar", 0),
+    IR("ir", 1),
+    ER("er", 2)
 }
 
 enum class Irregularity {
@@ -28,11 +28,11 @@ enum class Irregularity {
     STEM_CHANGE_U_to_UE
 }
 
-enum class IrregularityCategory(val text: String) {
-    REGULAR("Regular"),
-    SPELLING_CHANGE("Spelling Change"),
-    STEM_CHANGE("Stem Change"),
-    IRREGULAR("Irregular")
+enum class IrregularityCategory(val text: String, val indexForStats: Int) {
+    REGULAR("Regular", 0),
+    SPELLING_CHANGE("Spelling Change", 1),
+    STEM_CHANGE("Stem Change", 2),
+    IRREGULAR("Irregular", 3)
 }
 
 /**
@@ -40,17 +40,17 @@ enum class IrregularityCategory(val text: String) {
  *
  * @param text name of the conjugation type
  */
-enum class ConjugationType(val text: String) {
-    PRESENT("Present"),
-    PRETERIT("Preterit"),
-    IMPERFECT("Imperfect"),
-    CONDITIONAL("Conditional"),
-    FUTURE("Future"),
-    IMPERATIVE("Imperative"),
-    SUBJUNCTIVE_PRESENT("Subjunctive Present"),
-    SUBJUNCTIVE_IMPERFECT("Subjunctive Imperfect"),
-    GERUND("Gerund"),
-    PAST_PARTICIPLE("Past Participle")
+enum class ConjugationType(val text: String, val indexForStats: Int) {
+    PRESENT("Present", 0),
+    PRETERIT("Preterit", 1),
+    IMPERFECT("Imperfect", 2),
+    CONDITIONAL("Conditional", 3),
+    FUTURE("Future", 4),
+    IMPERATIVE("Imperative", 5),
+    SUBJUNCTIVE_PRESENT("Subjunctive Present", 6),
+    SUBJUNCTIVE_IMPERFECT("Subjunctive Imperfect", 7),
+    GERUND("Gerund", 8),
+    PAST_PARTICIPLE("Past Participle", 9)
 }
 
 enum class SubjectPronoun(val text: String, val isThirdPerson: Boolean = false) {

@@ -10,6 +10,7 @@ import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.feature.model.IrregularityCategory
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
+import java.lang.Integer.parseInt
 
 /**
  * Manages reading and writing from persisted storage.
@@ -19,9 +20,21 @@ class PersistenceHelper constructor(private val mContext: Context) {
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
     companion object {
-        private val PREFS_NAME_GAME_WORDS = "game words"
+        private val PREFS_GAME_WORDS = "game words"
         private val PREFS_GAME_WORD_OPTIONS = "game options"
+        private val PREFS_GAME_STATS = "game stats"
         private val gson = Gson()
+
+        /**
+         * Creates stats index for 2-dimensional representation of stats where IrregularityCategory
+         * and InfinitiveEnding are on the y-axis, and conjugation type on the x-axis.
+         */
+        fun createStatsIndex(conjugationType: ConjugationType,
+                             infinitiveEnding: InfinitiveEnding,
+                             irregularityCategory: IrregularityCategory): Int {
+            val rowIndex = (irregularityCategory.indexForStats * 3) + infinitiveEnding.indexForStats
+            return rowIndex * ConjugationType.values().size + conjugationType.indexForStats
+        }
     }
 
     //endregion
@@ -34,7 +47,7 @@ class PersistenceHelper constructor(private val mContext: Context) {
     val currentGameWords: List<GameWord>
         get() {
             val gameWords = ArrayList<GameWord>()
-            val map = gameWordPrefs.all
+            val map : Map<String, *> = gameWordPrefs.all
             for (key in map.keys) {
                 gameWords.add(gson.fromJson(map[key] as String, GameWord::class.java))
             }
@@ -47,7 +60,7 @@ class PersistenceHelper constructor(private val mContext: Context) {
      */
     val currentGameOptions: Map<String, Boolean>
         get() {
-            var map = gameOptionPrefs.all
+            var map : Map<String, *> = gameOptionPrefs.all
             if (map.isEmpty()) {
                 map = setDefaults()
             }
@@ -58,15 +71,31 @@ class PersistenceHelper constructor(private val mContext: Context) {
             return optionMap.toMap()
         }
 
+    /**
+     * @return map of stats index to total count.
+     */
+    val allGameStats: Map<Int, Int>
+        get() {
+            val statsMap = mutableMapOf<Int, Int>()
+            gameStatsPrefs.all.mapKeys {
+                val key = parseInt(it.key)
+                statsMap[key] = it.value as Int
+            }
+            return statsMap
+        }
+
     //endregion
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
     private val gameWordPrefs: SharedPreferences
-        get() = mContext.getSharedPreferences(PREFS_NAME_GAME_WORDS, Context.MODE_PRIVATE)
+        get() = mContext.getSharedPreferences(PREFS_GAME_WORDS, Context.MODE_PRIVATE)
 
     private val gameOptionPrefs: SharedPreferences
         get() = mContext.getSharedPreferences(PREFS_GAME_WORD_OPTIONS, Context.MODE_PRIVATE)
+
+    private val gameStatsPrefs: SharedPreferences
+        get() = mContext.getSharedPreferences(PREFS_GAME_STATS, Context.MODE_PRIVATE)
 
     //endregion
 
@@ -109,6 +138,26 @@ class PersistenceHelper constructor(private val mContext: Context) {
         editor.apply()
     }
 
+    /**
+     * Persists game stats for the specified set of game words.
+     */
+    fun persistGameStats(gameWords: List<GameWord>) {
+        // Get counts per index for the game
+        val gameWordsByStatsIndex = gameWords.groupBy {
+            it.statsIndex
+        }
+
+        // Add game counts to totals
+        val editor = gameStatsPrefs.edit()
+        gameWordsByStatsIndex.keys.forEach {
+            val countForGame = gameWordsByStatsIndex[it]?.size ?: 0
+            val key = it.toString()
+            val totalCount = gameStatsPrefs.getInt(key, 0)
+            editor.putInt(key, totalCount + countForGame)
+        }
+        editor.apply()
+    }
+
     //endregion
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
@@ -123,7 +172,7 @@ class PersistenceHelper constructor(private val mContext: Context) {
         editor.putBoolean(ConjugationType.PRETERIT.name, true)
         editor.putBoolean(ConjugationType.FUTURE.name, true)
         editor.apply()
-        return gameOptionPrefs.all
+        return gameOptionPrefs.all.toMap()
     }
 
     //endregion
