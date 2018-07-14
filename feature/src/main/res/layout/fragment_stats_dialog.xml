@@ -11,9 +11,12 @@
     <LinearLayout android:layout_width="wrap_content"
                   android:layout_height="@dimen/stats_map_height"
                   android:orientation="vertical">
-        <TextView style="@style/statsIrregularityLabel" android:text="@string/stats_label_other_irregular"/>
-        <TextView style="@style/statsIrregularityLabel" android:text="@string/stats_label_stem_change"/>
-        <TextView style="@style/statsIrregularityLabel" android:text="@string/stats_label_spelling_change"/>
+        <TextView style="@style/statsIrregularityLabel"
+                  android:text="@string/stats_label_other_irregular"/>
+        <TextView style="@style/statsIrregularityLabel"
+                  android:text="@string/stats_label_stem_change"/>
+        <TextView style="@style/statsIrregularityLabel"
+                  android:text="@string/stats_label_spelling_change"/>
         <TextView style="@style/statsIrregularityLabel" android:text="@string/stats_label_regular"/>
     </LinearLayout>
 
@@ -47,19 +50,39 @@
                   android:layout_weight="1"
                   android:orientation="vertical">
 
+        <!-- stats view -->
         <org.indiv.dls.games.verboscruzados.feature.component.StatsGraphicView
             android:id="@+id/stats_dialog_graphic"
             android:layout_width="match_parent"
             android:layout_height="@dimen/stats_map_height"
             android:background="@drawable/stats_graphic_background"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/stats_label_conjugation_type"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
+        <!-- conjugation type labels -->
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_height="match_parent"
+                      android:layout_gravity="center_horizontal"
+                      android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stats_label_present"
+                android:textColor="@color/soft_black"
+                android:textSize="@dimen/small_fixed"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_margin"
+                android:layout_marginEnd="@dimen/default_margin"
+                android:text="-->"
+                android:textColor="@color/soft_black"
+                android:textSize="@dimen/small_fixed"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stats_label_gerund"
+                android:textColor="@color/soft_black"
+                android:textSize="@dimen/small_fixed"/>
+        </LinearLayout>
 
     </LinearLayout>
 

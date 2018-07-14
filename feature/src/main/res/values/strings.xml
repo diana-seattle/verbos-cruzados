@@ -43,7 +43,8 @@
     <string name="stats_label_ar">ar</string>
     <string name="stats_label_ir">ir</string>
     <string name="stats_label_er">er</string>
-    <string name="stats_label_conjugation_type">present ---> gerund</string>
+    <string name="stats_label_present">present</string>
+    <string name="stats_label_gerund">gerund</string>
 
     <!-- toast text-->
     <string name="toast_noerrorsfound">No errors</string>

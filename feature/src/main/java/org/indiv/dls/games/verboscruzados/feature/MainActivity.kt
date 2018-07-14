@@ -7,18 +7,16 @@ package org.indiv.dls.games.verboscruzados.feature
 // TODO: change fragments into components
 // TODO: more verbs - or message the user about selecting more options (https://www.e-spanyol.hu/en/grammar/irregular_ar.php)
 // TODO: test/fix conjugations
-// TODO: help screen
-// TODO: app icons
 // TODO: instant app
 // TODO: fix imports
 // Complete other TODO items throughout code
 // TODO: use photos from Elissa
 // TODO: fix game options (include vostros, horizontal ar/ir/er, gerund + past part)
 
-// TODO: stats screen
 // TODO: optimizing drawing of puzzle (eliminate spacer views)
-
 // TODO: fix layout algorithm to use more short words & variability (80% rule)
+// TODO: app icons
+// TODO: help screen
 
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
