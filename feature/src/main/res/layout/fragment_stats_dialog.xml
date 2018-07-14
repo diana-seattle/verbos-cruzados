@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:gravity="center_vertical"
               android:orientation="horizontal"
               android:paddingEnd="@dimen/default_margin"
               android:paddingStart="@dimen/default_margin"
@@ -11,144 +10,35 @@
     <!-- y-axis major headings -->
     <LinearLayout android:layout_width="wrap_content"
                   android:layout_height="@dimen/stats_map_height"
-                  android:layout_marginEnd="@dimen/half_margin"
                   android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/stats_label_other_irregular"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/stats_label_stem_change"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/stats_label_spelling_change"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/stats_label_regular"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
-
+        <TextView style="@style/statsIrregularityLabel" android:text="@string/stats_label_other_irregular"/>
+        <TextView style="@style/statsIrregularityLabel" android:text="@string/stats_label_stem_change"/>
+        <TextView style="@style/statsIrregularityLabel" android:text="@string/stats_label_spelling_change"/>
+        <TextView style="@style/statsIrregularityLabel" android:text="@string/stats_label_regular"/>
     </LinearLayout>
 
     <!-- y-axis minor headings -->
     <LinearLayout android:layout_width="wrap_content"
                   android:layout_height="@dimen/stats_map_height"
-                  android:layout_marginEnd="@dimen/quarter_margin"
+                  android:layout_marginStart="@dimen/half_margin"
                   android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/stats_label_ar"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/stats_label_er"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/stats_label_ir"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/stats_label_ar"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/stats_label_er"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/stats_label_ir"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/stats_label_ar"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/stats_label_er"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/stats_label_ir"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/stats_label_ar"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/stats_label_er"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/stats_label_ir"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/small_fixed"/>
+        <View style="@style/statsInfinitiveEndingSeparator"/>
+        <TextView style="@style/statsInfinitiveEndingLabel" android:text="@string/stats_label_ir"/>
+        <TextView style="@style/statsInfinitiveEndingLabel" android:text="@string/stats_label_er"/>
+        <TextView style="@style/statsInfinitiveEndingLabel" android:text="@string/stats_label_ar"/>
+        <View style="@style/statsInfinitiveEndingSeparator"/>
+        <TextView style="@style/statsInfinitiveEndingLabel" android:text="@string/stats_label_ir"/>
+        <TextView style="@style/statsInfinitiveEndingLabel" android:text="@string/stats_label_er"/>
+        <TextView style="@style/statsInfinitiveEndingLabel" android:text="@string/stats_label_ar"/>
+        <View style="@style/statsInfinitiveEndingSeparator"/>
+        <TextView style="@style/statsInfinitiveEndingLabel" android:text="@string/stats_label_ir"/>
+        <TextView style="@style/statsInfinitiveEndingLabel" android:text="@string/stats_label_er"/>
+        <TextView style="@style/statsInfinitiveEndingLabel" android:text="@string/stats_label_ar"/>
+        <View style="@style/statsInfinitiveEndingSeparator"/>
+        <TextView style="@style/statsInfinitiveEndingLabel" android:text="@string/stats_label_ir"/>
+        <TextView style="@style/statsInfinitiveEndingLabel" android:text="@string/stats_label_er"/>
+        <TextView style="@style/statsInfinitiveEndingLabel" android:text="@string/stats_label_ar"/>
+        <View style="@style/statsInfinitiveEndingSeparator"/>
     </LinearLayout>
 
     <LinearLayout android:layout_width="0dp"
@@ -161,7 +51,7 @@
             android:id="@+id/stats_dialog_graphic"
             android:layout_width="match_parent"
             android:layout_height="@dimen/stats_map_height"
-            android:background="@color/pale_gray"/>
+            android:background="@drawable/stats_graphic_background"/>
 
         <TextView
             android:layout_width="wrap_content"

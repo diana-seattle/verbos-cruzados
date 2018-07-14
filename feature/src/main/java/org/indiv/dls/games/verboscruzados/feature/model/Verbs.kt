@@ -9,8 +9,8 @@ import org.indiv.dls.games.verboscruzados.feature.conjugation.getIrAlteredRoot
 
 enum class InfinitiveEnding(val ending: String, val indexForStats: Int) {
     AR("ar", 0),
-    IR("ir", 1),
-    ER("er", 2)
+    ER("er", 1),
+    IR("ir", 2)
 }
 
 enum class Irregularity {

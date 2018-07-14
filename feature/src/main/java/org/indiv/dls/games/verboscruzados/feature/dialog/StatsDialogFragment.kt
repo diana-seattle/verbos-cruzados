@@ -3,13 +3,9 @@ package org.indiv.dls.games.verboscruzados.feature.dialog
 import org.indiv.dls.games.verboscruzados.feature.R
 
 import android.app.Dialog
-import android.graphics.Canvas
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
-import android.view.SurfaceView
-import android.view.View
-import android.widget.TextView
 import org.indiv.dls.games.verboscruzados.feature.component.StatsGraphicView
 import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
 import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
@@ -24,6 +20,8 @@ class StatsDialogFragment : DialogFragment() {
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
     companion object {
+        val columnCount = ConjugationType.values().size
+        val rowCount = IrregularityCategory.values().size * InfinitiveEnding.values().size
         /**
          * Creates stats index for 2-dimensional representation of stats where IrregularityCategory
          * and InfinitiveEnding are on the y-axis, and conjugation type on the x-axis.
@@ -32,7 +30,16 @@ class StatsDialogFragment : DialogFragment() {
                              infinitiveEnding: InfinitiveEnding,
                              irregularityCategory: IrregularityCategory): Int {
             val rowIndex = (irregularityCategory.indexForStats * 3) + infinitiveEnding.indexForStats
-            return rowIndex * ConjugationType.values().size + conjugationType.indexForStats
+            return rowIndex * columnCount + conjugationType.indexForStats
+        }
+
+        /**
+         * Returns x,y coordinates for a stats index where 0,0 is top left.
+         */
+        fun getCoordinates(statsIndex: Int): Pair<Int, Int> {
+            val x = statsIndex % columnCount
+            val y = rowCount - 1 - statsIndex / columnCount
+            return Pair(x, y)
         }
     }
 
@@ -62,9 +69,10 @@ class StatsDialogFragment : DialogFragment() {
         // fill in stats
         val persistenceHelper = PersistenceHelper(activity!!)
         val statsMap = persistenceHelper.allGameStats
+                .mapKeys { getCoordinates(it.key) }
 
         val statsGraphicView: StatsGraphicView = v.findViewById(R.id.stats_dialog_graphic)
-        statsGraphicView.setStats(statsMap)
+        statsGraphicView.setStats(rowCount, columnCount, statsMap)
 
         return dialog
     }

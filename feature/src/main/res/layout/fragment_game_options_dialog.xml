@@ -71,16 +71,16 @@
                 android:text="@string/option_infinitive_ending_ar"
             />
             <CheckBox
-                android:id="@+id/option_infinitive_ending_ir"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_infinitive_ending_ir"
-            />
-            <CheckBox
                 android:id="@+id/option_infinitive_ending_er"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/option_infinitive_ending_er"
+            />
+            <CheckBox
+                android:id="@+id/option_infinitive_ending_ir"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/option_infinitive_ending_ir"
             />
 
         </LinearLayout>

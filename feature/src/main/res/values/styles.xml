@@ -31,4 +31,33 @@
         <item name="android:textStyle">italic</item>
         <item name="android:textColor">@color/keyboard_special_letters</item>
     </style>
+
+    <style name="statsIrregularityLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_gravity">end</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/soft_black</item>
+        <item name="android:textSize">@dimen/small_fixed</item>
+    </style>
+
+    <style name="statsInfinitiveEndingLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_gravity">end</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_marginEnd">@dimen/quarter_margin</item>
+        <item name="android:textColor">@color/soft_black</item>
+        <item name="android:textSize">@dimen/small_fixed</item>
+    </style>
+
+    <style name="statsInfinitiveEndingSeparator">
+        <item name="android:layout_width">@dimen/large_margin</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_gravity">end</item>
+        <item name="android:background">@color/pale_gray</item>
+    </style>
+
 </resources>
