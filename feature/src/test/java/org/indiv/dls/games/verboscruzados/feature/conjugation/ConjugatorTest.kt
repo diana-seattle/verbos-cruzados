@@ -1,7 +1,8 @@
 package org.indiv.dls.games.verboscruzados.feature.conjugation
 
-import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
+import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.feature.model.Irregularity
+import org.indiv.dls.games.verboscruzados.feature.model.IrregularityCategory
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
 import org.indiv.dls.games.verboscruzados.feature.model.irregularArVerbs
@@ -58,7 +59,7 @@ class ConjugatorTest {
 
     @Test fun testOneVerb() {
         val verb =
-                Verb("constreñir", "constrain", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I))
+                Verb("prevalecer", "prevail", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC))
         printResult(verb)
 
     }
@@ -69,6 +70,24 @@ class ConjugatorTest {
                 Verb("rehacer", "redo", altPreteritRoot = "rehic", altInfinitiveRoot = "rehar", irregularImperativeTu = "rehaz", irregularPastParticiple = "rehecho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT))
                 )
         printAllResults(verbs)
+    }
+
+    @Test fun showVerbCollectionSizes() {
+        println("regularArVerbs: " + regularArVerbs.size)
+        println("regularIrVerbs: " + regularIrVerbs.size)
+        println("regularErVerbs: " + regularErVerbs.size)
+
+        println("spellingChangeArVerbs: " + spellingChangeArVerbs.size)
+        println("spellingChangeIrVerbs: " + spellingChangeIrVerbs.size)
+        println("spellingChangeErVerbs: " + spellingChangeErVerbs.size)
+
+        println("stemChangeArVerbs: " + stemChangeArVerbs.size)
+        println("stemChangeIrVerbs: " + stemChangeIrVerbs.size)
+        println("stemChangeErVerbs: " + stemChangeErVerbs.size)
+
+        println("irregularArVerbs: " + irregularArVerbs.size)
+        println("irregularIrVerbs: " + irregularIrVerbs.size)
+        println("irregularErVerbs: " + irregularErVerbs.size)
     }
 
     @Test fun testRegular() {

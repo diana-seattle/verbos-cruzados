@@ -13,10 +13,10 @@ package org.indiv.dls.games.verboscruzados.feature
 // TODO: fix imports
 // Complete other TODO items throughout code
 // TODO: use photos from Elissa
-// TODO: optimizing drawing of puzzle (eliminate spacer views)
+// TODO: fix game options (include vostros, horizontal ar/ir/er, gerund + past part)
 
 // TODO: stats screen
-// TODO: fix game options (include vostros, horizontal ar/ir/er, gerund + past part)
+// TODO: optimizing drawing of puzzle (eliminate spacer views)
 
 // TODO: fix layout algorithm to use more short words & variability (80% rule)
 
@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         val answerHeightPixels = resources.getDimension(R.dimen.fragment_answer_height)
         val screenWidthDp = configuration.smallestScreenWidthDp
         val screenHeightDp = maxOf(configuration.screenHeightDp, configuration.screenWidthDp)
-        val heightFactor = if (screenWidthDp < 400) 1.5f else 1f
+        val heightFactor = if (screenWidthDp < 450) 1.5f else 1f
         val screenWidthPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 screenWidthDp.toFloat(), displayMetrics)
         val screenHeightPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,

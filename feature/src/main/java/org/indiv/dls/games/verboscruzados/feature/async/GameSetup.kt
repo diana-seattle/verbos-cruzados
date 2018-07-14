@@ -23,6 +23,7 @@ import org.indiv.dls.games.verboscruzados.feature.model.stemChangeArVerbs
 import org.indiv.dls.games.verboscruzados.feature.model.stemChangeErVerbs
 import org.indiv.dls.games.verboscruzados.feature.model.stemChangeIrVerbs
 import java.util.*
+import kotlin.math.round
 
 /**
  * Handles process of setting up a game.
@@ -97,7 +98,7 @@ class GameSetup {
      * Gets list of words that are candidates for the next puzzle.
      */
     private fun getWordCandidates(numWords: Int, gameOptions: Map<String, Boolean>): List<WordCandidate> {
-        val verbMap = getQualifyingVerbs(gameOptions)
+        val verbMap = getQualifyingVerbs(gameOptions, numWords)
         val candidates = mutableListOf<WordCandidate>()
 
         getQualifyingConjugationTypes(gameOptions).forEach {
@@ -153,7 +154,7 @@ class GameSetup {
 
     }
 
-    private fun getQualifyingVerbs(gameOptions: Map<String, Boolean>): Map<IrregularityCategory, List<Verb>> {
+    private fun getQualifyingVerbs(gameOptions: Map<String, Boolean>, minTargetQty: Int): Map<IrregularityCategory, List<Verb>> {
         val verbMap = mutableMapOf<IrregularityCategory, List<Verb>>()
 
         val infinitiveEndings = getQualifyingInfinitiveEndings(gameOptions)
@@ -163,12 +164,14 @@ class GameSetup {
             val verbs = mutableListOf<Verb>()
             when (it) {
                 IrregularityCategory.REGULAR -> {
-                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(regularArVerbs)
+                    if (infinitiveEndings.contains(InfinitiveEnding.AR))
+                        verbs.addAll(randomSelection(regularArVerbs, minTargetQty)) // cut this one down a little in size
                     if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(regularIrVerbs)
                     if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(regularErVerbs)
                 }
                 IrregularityCategory.SPELLING_CHANGE -> {
-                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(spellingChangeArVerbs)
+                    if (infinitiveEndings.contains(InfinitiveEnding.AR))
+                        verbs.addAll(randomSelection(spellingChangeArVerbs, minTargetQty)) // cut this one down a little in size
                     if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(spellingChangeIrVerbs)
                     if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(spellingChangeErVerbs)
                 }
@@ -212,13 +215,29 @@ class GameSetup {
         return if (filteredValues.isEmpty()) allValues.toList() else filteredValues
     }
 
-    private fun randomSelection(verbs: List<WordCandidate>, numWords: Int): List<WordCandidate> {
-        val randomList = verbs.toMutableList()
-        while (randomList.size > numWords) {
-            val randomIndex = (Math.random() * (randomList.size - 1)).toInt()
-            randomList.removeAt(randomIndex)
+    private fun <T> randomSelection(items: List<T>, numItems: Int): List<T> {
+        if (items.isEmpty() || numItems <= 0) {
+            return emptyList()
         }
-        return randomList
+        val destinationList = mutableListOf<T>()
+        val randomList = items.toMutableList()
+        do {
+            // return whichever list reaches the correct size first
+            if (destinationList.size >= numItems) {
+                return destinationList
+            } else if (randomList.size <= numItems) {
+                return randomList
+            }
+
+            // randomly move an item from one list to the other
+            val randomIndex = getRandomIndex(randomList.size)
+            destinationList.add(randomList.removeAt(randomIndex))
+
+        } while(true)
+    }
+
+    private fun getRandomIndex(size: Int): Int {
+        return Math.round(Math.random() * (size - 1)).toInt()
     }
 
     private fun layoutWords(cellGrid: Array<Array<GridCell?>>, wordCandidates: MutableList<WordCandidate>): List<GameWord> {
