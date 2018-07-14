@@ -389,6 +389,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
     private fun showStatsDialog() {
         val dlg = StatsDialogFragment()
+        dlg.showGameOptionsListener = { showGameOptionsDialog() }
         dlg.show(supportFragmentManager, "fragment_showstats")
     }
 
