@@ -3,10 +3,14 @@ package org.indiv.dls.games.verboscruzados.feature.dialog
 import org.indiv.dls.games.verboscruzados.feature.R
 
 import android.app.Dialog
+import android.graphics.Canvas
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
+import android.view.SurfaceView
+import android.view.View
 import android.widget.TextView
+import org.indiv.dls.games.verboscruzados.feature.component.StatsGraphicView
 import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
 import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
@@ -59,9 +63,8 @@ class StatsDialogFragment : DialogFragment() {
         val persistenceHelper = PersistenceHelper(activity!!)
         val statsMap = persistenceHelper.allGameStats
 
-//        val textView: TextView = v.findViewById(R.id.textview_temp)
-        val myText = statsMap.toString()
-//        textView.text = myText
+        val statsGraphicView: StatsGraphicView = v.findViewById(R.id.stats_dialog_graphic)
+        statsGraphicView.setStats(statsMap)
 
         return dialog
     }

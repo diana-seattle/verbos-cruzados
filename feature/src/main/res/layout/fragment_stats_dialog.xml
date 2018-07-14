@@ -157,9 +157,11 @@
                   android:layout_weight="1"
                   android:orientation="vertical">
 
-        <SurfaceView android:layout_width="match_parent"
-                     android:layout_height="@dimen/stats_map_height"
-                     android:background="@color/pale_gray"/>
+        <org.indiv.dls.games.verboscruzados.feature.component.StatsGraphicView
+            android:id="@+id/stats_dialog_graphic"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/stats_map_height"
+            android:background="@color/pale_gray"/>
 
         <TextView
             android:layout_width="wrap_content"
