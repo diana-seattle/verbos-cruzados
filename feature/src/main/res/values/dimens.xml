@@ -14,4 +14,6 @@
 
     <dimen name="puzzle_margin">6dp</dimen>
 
+    <dimen name="stats_map_height">300dp</dimen>
+
 </resources>

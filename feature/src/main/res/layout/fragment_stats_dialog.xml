@@ -1,38 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:id="@+id/scrollView_definitions"
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_vertical"
+              android:orientation="horizontal"
+              android:paddingEnd="@dimen/default_margin"
+              android:paddingStart="@dimen/default_margin"
+              android:paddingTop="@dimen/default_margin">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/default_margin"
-        android:paddingEnd="@dimen/default_margin"
-        android:paddingStart="@dimen/default_margin"
-        android:paddingTop="@dimen/half_margin">
-
-        <!-- maybe give note that only words of completed games are counted -->
-        <!-- maybe give note that greater variety of words available if occasionally playing with network connection -->
-
-        <!-- heading -->
+    <!-- y-axis major headings -->
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="@dimen/stats_map_height"
+                  android:layout_marginEnd="@dimen/half_margin"
+                  android:orientation="vertical">
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/default_margin"
-            android:text="@string/dialog_stats_heading"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/stats_label_other_irregular"
             android:textColor="@color/soft_black"
-            android:textSize="@dimen/xx_large"/>
-
-        <!-- temp view -->
+            android:textSize="@dimen/small_fixed"/>
         <TextView
-            android:id="@+id/textview_temp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/stats_label_stem_change"
             android:textColor="@color/soft_black"
-            android:textSize="@dimen/large"/>
+            android:textSize="@dimen/small_fixed"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/stats_label_spelling_change"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/small_fixed"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/stats_label_regular"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/small_fixed"/>
 
     </LinearLayout>
-</ScrollView>
+
+    <!-- y-axis minor headings -->
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="@dimen/stats_map_height"
+                  android:layout_marginEnd="@dimen/quarter_margin"
+                  android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/stats_label_ar"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/small_fixed"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/stats_label_er"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/small_fixed"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/stats_label_ir"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/small_fixed"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/stats_label_ar"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/small_fixed"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/stats_label_er"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/small_fixed"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/stats_label_ir"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/small_fixed"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/stats_label_ar"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/small_fixed"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/stats_label_er"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/small_fixed"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/stats_label_ir"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/small_fixed"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/stats_label_ar"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/small_fixed"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/stats_label_er"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/small_fixed"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="@string/stats_label_ir"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/small_fixed"/>
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_marginEnd="@dimen/half_margin"
+                  android:layout_weight="1"
+                  android:orientation="vertical">
+
+        <SurfaceView android:layout_width="match_parent"
+                     android:layout_height="@dimen/stats_map_height"
+                     android:background="@color/pale_gray"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/stats_label_conjugation_type"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/small_fixed"/>
+
+    </LinearLayout>
+
+</LinearLayout>
 

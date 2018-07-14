@@ -50,6 +50,7 @@ class StatsDialogFragment : DialogFragment() {
         val v = inflater.inflate(R.layout.fragment_stats_dialog, null)
 
         val dialog = AlertDialog.Builder(activity!!)
+                .setTitle(R.string.dialog_stats_heading)
                 .setPositiveButton(R.string.dialog_ok) { dialog, id -> }
                 .setView(v)
                 .create()
@@ -58,9 +59,9 @@ class StatsDialogFragment : DialogFragment() {
         val persistenceHelper = PersistenceHelper(activity!!)
         val statsMap = persistenceHelper.allGameStats
 
-        val textView: TextView = v.findViewById(R.id.textview_temp)
+//        val textView: TextView = v.findViewById(R.id.textview_temp)
         val myText = statsMap.toString()
-        textView.text = myText
+//        textView.text = myText
 
         return dialog
     }

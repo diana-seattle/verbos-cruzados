@@ -36,6 +36,14 @@
 
     <!-- dialog text for stats dialog-->
     <string name="dialog_stats_heading">Conjugation Coverage</string>
+    <string name="stats_label_regular">Reg.</string>
+    <string name="stats_label_spelling_change">Spell.</string>
+    <string name="stats_label_stem_change">Stem</string>
+    <string name="stats_label_other_irregular">Other</string>
+    <string name="stats_label_ar">ar</string>
+    <string name="stats_label_ir">ir</string>
+    <string name="stats_label_er">er</string>
+    <string name="stats_label_conjugation_type">present  -->  gerund</string>
 
     <!-- toast text-->
     <string name="toast_noerrorsfound">No errors</string>
