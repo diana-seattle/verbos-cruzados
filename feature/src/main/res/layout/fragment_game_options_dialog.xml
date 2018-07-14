@@ -150,16 +150,16 @@
                 android:text="@string/option_tense_subjunctive_imperfect"
             />
             <CheckBox
-                android:id="@+id/option_tense_gerund"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_tense_gerund"
-            />
-            <CheckBox
                 android:id="@+id/option_tense_past_participle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/option_tense_past_participle"
+            />
+            <CheckBox
+                android:id="@+id/option_tense_gerund"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/option_tense_gerund"
             />
 
         </LinearLayout>

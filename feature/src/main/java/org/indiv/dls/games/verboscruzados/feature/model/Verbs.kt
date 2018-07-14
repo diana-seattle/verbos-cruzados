@@ -49,8 +49,8 @@ enum class ConjugationType(val text: String, val indexForStats: Int) {
     IMPERATIVE("Imperative", 5),
     SUBJUNCTIVE_PRESENT("Subjunctive Present", 6),
     SUBJUNCTIVE_IMPERFECT("Subjunctive Imperfect", 7),
-    GERUND("Gerund", 8),
-    PAST_PARTICIPLE("Past Participle", 9)
+    PAST_PARTICIPLE("Past Participle", 8),
+    GERUND("Gerund", 9)
 }
 
 enum class SubjectPronoun(val text: String, val isThirdPerson: Boolean = false) {
