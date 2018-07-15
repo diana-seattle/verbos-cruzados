@@ -30,7 +30,7 @@
     <string name="dialog_help_infinitive_button">\"Infinitive\" button saves typing</string>
     <string name="dialog_help_accents">Accents are important!</string>
     <string name="dialog_help_scrolling">Scroll to see bottom of puzzle</string>
-    <string name="dialog_help_actions">Menu Actions</string>
+    <string name="dialog_help_menu_title">Menu</string>
     <string name="dialog_help_startnewgame">1. Start New Game</string>
     <string name="dialog_help_showerrors">2. Show/Hide Errors</string>
     <string name="dialog_help_gameoptions">3. Game Options</string>

@@ -16,7 +16,6 @@ package org.indiv.dls.games.verboscruzados.feature
 // TODO: optimizing drawing of puzzle (eliminate spacer views)
 // TODO: fix layout algorithm to use more short words & variability (80% rule)
 // TODO: app icons
-// TODO: help screen
 
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain

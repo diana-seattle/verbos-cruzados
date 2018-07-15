@@ -38,9 +38,10 @@
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/half_margin"
             android:paddingTop="@dimen/default_margin"
-            android:text="@string/dialog_help_actions"
+            android:text="@string/dialog_help_menu_title"
             android:textColor="@color/soft_black"
-            android:textSize="@dimen/large"/>
+            android:textSize="@dimen/large"
+            android:textStyle="bold"/>
 
         <!-- starting new game -->
         <TextView
