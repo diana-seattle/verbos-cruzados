@@ -23,7 +23,6 @@ import org.indiv.dls.games.verboscruzados.feature.model.stemChangeArVerbs
 import org.indiv.dls.games.verboscruzados.feature.model.stemChangeErVerbs
 import org.indiv.dls.games.verboscruzados.feature.model.stemChangeIrVerbs
 import java.util.*
-import kotlin.math.round
 
 /**
  * Handles process of setting up a game.
@@ -32,6 +31,9 @@ class GameSetup {
 
     companion object {
         private val TAG = GameSetup::class.java.simpleName
+
+        private val EL_ELLA_USTED_PRONOUNS = listOf("Él", "Ella", "Usted")
+        private val ELLOS_ELLAS_USTEDES_PRONOUNS = listOf("Ellos", "Ellas", "Ustedes")
     }
 
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
@@ -144,14 +146,18 @@ class GameSetup {
         // Conjugated verb can be duplicate between imperative and subjunctive or between sentar and sentir.
         val uniqueKey = "${verb.infinitive}|${conjugationType.name}|${subjectPronoun?.name ?: "na"}"
         val conjugationLabel = subjectPronoun?.let {
-            "${it.text} - ${conjugationType.text}"
+            "${getPronounText(it)} - ${conjugationType.text}"
         } ?: conjugationType.text
         val statsIndex = StatsDialogFragment.createStatsIndex(conjugationType, verb.infinitiveEnding, irregularityCategory)
         return WordCandidate(uniqueKey, word, conjugationLabel, verb.infinitive, verb.translation, statsIndex)
     }
 
-    private fun createStatsIndex() {
-
+    private fun getPronounText(subjectPronoun: SubjectPronoun): String {
+        return when (subjectPronoun) {
+            SubjectPronoun.EL_ELLA_USTED -> randomSelection(EL_ELLA_USTED_PRONOUNS, 1)[0]
+            SubjectPronoun.ELLOS_ELLAS_USTEDES -> randomSelection(ELLOS_ELLAS_USTEDES_PRONOUNS, 1)[0]
+            else -> subjectPronoun.text
+        }
     }
 
     private fun getQualifyingVerbs(gameOptions: Map<String, Boolean>, minTargetQty: Int): Map<IrregularityCategory, List<Verb>> {
@@ -216,22 +222,19 @@ class GameSetup {
     }
 
     private fun <T> randomSelection(items: List<T>, numItems: Int): List<T> {
-        if (items.isEmpty() || numItems <= 0) {
-            return emptyList()
-        }
+        val sourceList = items.toMutableList()
         val destinationList = mutableListOf<T>()
-        val randomList = items.toMutableList()
         do {
             // return whichever list reaches the correct size first
             if (destinationList.size >= numItems) {
                 return destinationList
-            } else if (randomList.size <= numItems) {
-                return randomList
+            } else if (sourceList.size <= numItems) {
+                return sourceList
             }
 
             // randomly move an item from one list to the other
-            val randomIndex = getRandomIndex(randomList.size)
-            destinationList.add(randomList.removeAt(randomIndex))
+            val randomIndex = getRandomIndex(sourceList.size)
+            destinationList.add(sourceList.removeAt(randomIndex))
 
         } while(true)
     }

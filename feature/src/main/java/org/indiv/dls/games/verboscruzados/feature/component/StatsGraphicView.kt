@@ -36,6 +36,7 @@ open class StatsGraphicView @JvmOverloads constructor(context: Context,
     private var cellHeight = 0f
 
     val borderPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics).toInt()
+    val borderPixelsOneSide = borderPixels / 2
 
     //endregion
 
@@ -99,9 +100,9 @@ open class StatsGraphicView @JvmOverloads constructor(context: Context,
     private fun calculateRect(statsPosition: Pair<Int, Int>): Rect {
         val x = statsPosition.first.coerceIn(0 until columnCount)
         val y = statsPosition.second.coerceIn(0 until rowCount)
-        val left = Math.round(x * cellWidth)
+        val left = Math.round(x * cellWidth + borderPixelsOneSide)
         val right = Math.round(left + cellWidth)
-        val top = Math.round(y * cellHeight)
+        val top = Math.round(y * cellHeight + borderPixelsOneSide)
         val bottom = Math.round(top + cellHeight)
         return Rect(left, top, right, bottom)
     }
