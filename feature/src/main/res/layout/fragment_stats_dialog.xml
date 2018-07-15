@@ -5,6 +5,7 @@
               android:orientation="horizontal"
               android:paddingEnd="@dimen/default_margin"
               android:paddingStart="@dimen/default_margin"
+              android:paddingBottom="@dimen/half_margin"
               android:paddingTop="@dimen/default_margin">
 
     <!-- y-axis major headings -->

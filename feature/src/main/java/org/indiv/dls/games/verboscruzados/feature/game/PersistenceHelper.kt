@@ -154,12 +154,12 @@ class PersistenceHelper constructor(private val mContext: Context) {
     private fun setDefaults(): Map<String, *> {
         val editor = gameOptionPrefs.edit()
         InfinitiveEnding.values().forEach { editor.putBoolean(it.name, true) }
-        IrregularityCategory.values().forEach { editor.putBoolean(it.name, true) }
         SubjectPronoun.values().forEach { editor.putBoolean(it.name, true) }
-        editor.putBoolean(SubjectPronoun.VOSOTROS.name, false)
+        editor.putBoolean(SubjectPronoun.VOSOTROS.name, false) // all but vosotros
         editor.putBoolean(ConjugationType.PRESENT.name, true)
         editor.putBoolean(ConjugationType.PRETERIT.name, true)
         editor.putBoolean(ConjugationType.FUTURE.name, true)
+        editor.putBoolean(IrregularityCategory.REGULAR.name, true)
         editor.apply()
         return gameOptionPrefs.all.toMap()
     }

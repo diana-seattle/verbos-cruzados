@@ -60,4 +60,16 @@
         <item name="android:background">@color/pale_gray</item>
     </style>
 
+    <style name="helpBulletText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/default_margin</item>
+        <item name="android:drawableLeft">@drawable/ic_dot_24dp</item>
+        <item name="android:drawablePadding">12dp</item>
+        <item name="android:textColor">@color/soft_black</item>
+        <item name="android:textSize">@dimen/medium</item>
+        <item name="android:textStyle">italic</item>
+
+    </style>
+
 </resources>

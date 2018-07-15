@@ -25,14 +25,23 @@
 
     <!-- dialog text for help dialog-->
     <string name="dialog_help_title">Game Instructions</string>
-    <string name="dialog_help_step1">1. Touch the puzzle for clues</string>
+    <string name="dialog_help_step1">1. Touch a puzzle word</string>
     <string name="dialog_help_step2">2. Enter your answer</string>
+    <string name="dialog_help_infinitive_button">\"Infinitive\" button saves typing</string>
+    <string name="dialog_help_accents">Accents are important!</string>
+    <string name="dialog_help_scrolling">Scroll to see bottom of puzzle</string>
     <string name="dialog_help_actions">Menu Actions</string>
-    <string name="dialog_help_showhelp">Help</string>
-    <string name="dialog_help_startnewgame">Start New Game</string>
-    <string name="dialog_help_showerrors">Show/Hide errors</string>
-    <string name="dialog_help_menu">Other Menu Actions</string>
-    <string name="dialog_help_offline">This game may be played offline. However, playing with an active network connection will provide a greater variety of words.</string>
+    <string name="dialog_help_startnewgame">1. Start New Game</string>
+    <string name="dialog_help_showerrors">2. Show/Hide Errors</string>
+    <string name="dialog_help_gameoptions">3. Game Options</string>
+    <string name="dialog_help_gamestats">4. Game Statistics</string>
+    <string name="dialog_help_showerrors_desc">Errored cells turn red</string>
+    <string name="dialog_help_gameoptions_infinitive_endings">Infinitive Endings</string>
+    <string name="dialog_help_gameoptions_tense_mood">Tense/Mood</string>
+    <string name="dialog_help_gameoptions_regularity">Regularity</string>
+    <string name="dialog_help_gameoptions_vosotros">Vosotros</string>
+    <string name="dialog_help_gamestats_desc1">See your progress</string>
+    <string name="dialog_help_gamestats_desc2">History for completed games</string>
 
     <!-- dialog text for stats dialog-->
     <string name="dialog_stats_heading">Conjugation Coverage</string>

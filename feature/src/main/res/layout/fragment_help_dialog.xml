@@ -12,33 +12,25 @@
         android:paddingStart="@dimen/default_margin"
         android:paddingTop="@dimen/half_margin">
 
-        <!-- instructions heading -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/half_margin"
-            android:text="@string/dialog_help_title"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/xx_large"/>
-
         <!-- step 1 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dialog_help_step1"
             android:textColor="@color/soft_black"
-            android:textSize="@dimen/large"/>
+            android:textSize="@dimen/medium"/>
 
         <!-- step 2 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawablePadding="12dp"
-            android:drawableRight="@drawable/ic_keyboard_24px_white"
-            android:gravity="center_vertical"
             android:text="@string/dialog_help_step2"
             android:textColor="@color/soft_black"
-            android:textSize="@dimen/large"/>
+            android:textSize="@dimen/medium"/>
+        <TextView style="@style/helpBulletText"
+                  android:text="@string/dialog_help_infinitive_button"/>
+        <TextView style="@style/helpBulletText" android:text="@string/dialog_help_accents"/>
+        <TextView style="@style/helpBulletText" android:text="@string/dialog_help_scrolling"/>
 
         <!-- actions heading -->
         <TextView
@@ -48,72 +40,56 @@
             android:paddingTop="@dimen/default_margin"
             android:text="@string/dialog_help_actions"
             android:textColor="@color/soft_black"
-            android:textSize="@dimen/xx_large"/>
+            android:textSize="@dimen/large"/>
 
         <!-- starting new game -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_replay_24px"
-            android:drawablePadding="4dp"
+            android:drawableEnd="@drawable/ic_replay_24px_gray"
+            android:drawablePadding="@dimen/half_margin"
             android:gravity="center"
             android:text="@string/dialog_help_startnewgame"
             android:textColor="@color/soft_black"
-            android:textSize="@dimen/large"/>
+            android:textSize="@dimen/medium"/>
 
         <!-- showing errors -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_report_24px"
-            android:drawablePadding="4dp"
+            android:drawableEnd="@drawable/ic_report_24px_gray"
+            android:drawablePadding="@dimen/half_margin"
             android:gravity="center"
             android:text="@string/dialog_help_showerrors"
             android:textColor="@color/soft_black"
-            android:textSize="@dimen/large"/>
+            android:textSize="@dimen/medium"/>
+        <TextView style="@style/helpBulletText" android:text="@string/dialog_help_showerrors_desc"/>
 
-        <!-- showing help -->
+        <!-- showing game options -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_help_24px"
-            android:drawablePadding="4dp"
-            android:gravity="center"
-            android:text="@string/dialog_help_showhelp"
+            android:text="@string/dialog_help_gameoptions"
             android:textColor="@color/soft_black"
-            android:textSize="@dimen/large"/>
+            android:textSize="@dimen/medium"/>
+        <TextView style="@style/helpBulletText"
+                  android:text="@string/dialog_help_gameoptions_infinitive_endings"/>
+        <TextView style="@style/helpBulletText"
+                  android:text="@string/dialog_help_gameoptions_tense_mood"/>
+        <TextView style="@style/helpBulletText"
+                  android:text="@string/dialog_help_gameoptions_regularity"/>
+        <TextView style="@style/helpBulletText"
+                  android:text="@string/dialog_help_gameoptions_vosotros"/>
 
-        <!-- menu heading -->
+        <!-- showing game stats -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/half_margin"
-            android:paddingTop="@dimen/default_margin"
-            android:text="@string/dialog_help_menu"
+            android:text="@string/dialog_help_gamestats"
             android:textColor="@color/soft_black"
-            android:textSize="@dimen/xx_large"/>
-
-        <!-- menu - stats -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_dot_24dp"
-            android:drawablePadding="@dimen/half_margin"
-            android:gravity="center"
-            android:text="@string/action_showstats"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/large"/>
-
-        <!-- note about offline play -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxWidth="600dp"
-            android:paddingTop="@dimen/default_margin"
-            android:text="@string/dialog_help_offline"
-            android:textColor="@color/soft_black"
-            android:textSize="@dimen/large"
-            android:textStyle="italic"/>
+            android:textSize="@dimen/medium"/>
+        <TextView style="@style/helpBulletText" android:text="@string/dialog_help_gamestats_desc1"/>
+        <TextView style="@style/helpBulletText" android:text="@string/dialog_help_gamestats_desc2"/>
 
     </LinearLayout>
 </ScrollView>

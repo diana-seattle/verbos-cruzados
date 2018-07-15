@@ -382,6 +382,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
     private fun showHelpDialog() {
         AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_help_title)
                 .setView(R.layout.fragment_help_dialog)
                 .setPositiveButton(R.string.dialog_ok) { _, _ -> }
                 .show()
