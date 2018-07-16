@@ -740,6 +740,7 @@ val regularErVerbs = listOf(
         Verb("comprender", "understand"),
         Verb("conceder", "concede"),
         Verb("correr", "run"),
+        Verb("corresponder", "correspond to, reciprocate"),
         Verb("deber", "owe, should"),
         Verb("depender", "depend"),
         Verb("esconder", "hide"),
@@ -747,8 +748,10 @@ val regularErVerbs = listOf(
         Verb("meter", "put into"),
         Verb("ofender", "offend"),
         Verb("prender", "catch, light"),
+        Verb("pretender", "attempt, intend, claim"),
         Verb("proceder", "proceed"),
         Verb("prometer", "promise"),
+        Verb("recorrer", "travel around"),
         Verb("reprender", "reprimand"),
         Verb("responder", "respond, reply"),
         Verb("sorprender", "surprise"),
@@ -758,14 +761,19 @@ val regularErVerbs = listOf(
         Verb("toser", "cough"),
         Verb("vender", "sell"))
 val spellingChangeErVerbs = listOf(
-        // Spelling change
+        // Spelling change - phonetic
+        Verb("ejercer", "exercise, practice", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
+        Verb("proteger", "protect", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
+        Verb("recoger", "pick up, gather", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
+        Verb("tañer", "strum", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
+
+        // Spelling change - y
         Verb("creer", "believe", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
         Verb("descreer", "disbelieve", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
         Verb("leer", "read", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
         Verb("poseer", "possess", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
         Verb("proveer", "provide", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
         Verb("releer", "reread", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
-        Verb("tañer", "strum", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
 
         // Yo Go verbs
         Verb("caer", "fall", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.SPELLING_CHANGE_Y)),
@@ -825,6 +833,7 @@ val stemChangeErVerbs = listOf(
         Verb("entender", "understand", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("extender", "extend", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("perder", "lose", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("tender", "hang, lay out", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("verter", "pour, spill", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE))
 )
 val irregularErVerbs = listOf(
