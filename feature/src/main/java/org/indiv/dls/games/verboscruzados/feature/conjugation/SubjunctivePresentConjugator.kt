@@ -68,6 +68,9 @@ open class SubjunctivePresentConjugator : Conjugator {
                 val changedStem = if (yoRoot.length <= 5 && yoRoot.startsWith("ye")) "ye" else "ie"
                 replaceInLastSyllable(yoRoot, changedStem, if (forIrVerb) "i" else "e")
             }
+            irregularities.contains(Irregularity.STEM_CHANGE_I_to_IE) -> {
+                replaceInLastSyllable(yoRoot, "ie", "i")
+            }
             irregularities.contains(Irregularity.STEM_CHANGE_E_to_ACCENTED_I) -> {
                 replaceInLastSyllable(yoRoot, "í", "i")
             }

@@ -24,6 +24,7 @@ enum class Irregularity {
     STEM_CHANGE_E_to_ACCENTED_I,
     STEM_CHANGE_E_to_I,
     STEM_CHANGE_E_to_IE,
+    STEM_CHANGE_I_to_IE, // adquirir --> adquiero
     STEM_CHANGE_O_to_UE,
     STEM_CHANGE_U_to_UE
 }
@@ -544,12 +545,15 @@ val irregularArVerbs = listOf(
 // IR verbs
 val regularIrVerbs = listOf(
         Verb("aburrir", "bore"),
+        Verb("acudir", "come, turn to"),
         Verb("admitir", "admit"),
         Verb("añadir", "add"),
         Verb("asistir", "attend"),
         Verb("asumir", "assume"),
+        Verb("coincidir", "coincide"),
         Verb("compartir", "share"),
         Verb("confundir", "confuse"),
+        Verb("consistir", "consist of"),
         Verb("consumir", "consume"),
         Verb("cumplir", "achieve"),
         Verb("decidir", "decide"),
@@ -579,13 +583,18 @@ val regularIrVerbs = listOf(
 )
 val spellingChangeIrVerbs = listOf(
         // spelling change - phonetic
-        Verb("concluir", "conclude", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
-        Verb("construir", "build", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
-        Verb("contribuir", "contribute", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
-        Verb("diluir", "dilute", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("dirigir", "manage, direct", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("distinguir", "distinguish", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
-        Verb("distribuir", "distribute", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
+        Verb("exigir", "demand, require", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
+        Verb("surgir", "arise", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
+
+        // spelling change - y
+        Verb("concluir", "conclude", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
+        Verb("construir", "build", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
+        Verb("constituir", "constitute", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
+        Verb("contribuir", "contribute", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
+        Verb("diluir", "dilute", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
+        Verb("distribuir", "distribute", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
         Verb("excluir", "exclude", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
         Verb("fluir", "flow", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
         Verb("huir", "escape, flee", irregularities = listOf(Irregularity.SPELLING_CHANGE_Y)),
@@ -612,7 +621,7 @@ val stemChangeIrVerbs = listOf(
         Verb("derretir", "melt", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("despedir", "say goodbye", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("desvestir", "undress", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
-        Verb("elegir", "choose", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC, Irregularity.STEM_CHANGE_E_to_I)),
+        Verb("elegir", "elect, choose", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC, Irregularity.STEM_CHANGE_E_to_I)),
         Verb("estreñir", "constipate", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("gemir", "groan", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
         Verb("impedir", "impede", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_I)),
@@ -634,8 +643,12 @@ val stemChangeIrVerbs = listOf(
         Verb("dormir", "sleep", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("morir", "die", irregularPastParticiple = "muerto", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
 
+        // stem changes i -> ie
+        Verb("adquirir", "acquire, purchase", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_IE)),
+        Verb("inquirir", "inquire into, investigate", irregularities = listOf(Irregularity.STEM_CHANGE_I_to_IE)),
+
         // stem changes e -> ie
-        Verb("advertir", "warn", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("advertir", "warn, advise, notice", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("asentir", "agree, assent, nod", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("consentir", "allow", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("convertir", "turn into", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
@@ -671,8 +684,10 @@ val irregularIrVerbs = listOf(
         Verb("bendecir", "bless", altPreteritRoot = "bendij", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("conducir", "drive, conduct", altPreteritRoot = "conduj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("contradecir", "contradict", altPreteritRoot = "contradij", altInfinitiveRoot = "contradir", irregularPastParticiple = "contradicho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("convenir", "be advisable, agree", altPreteritRoot = "convin", altInfinitiveRoot = "convendr", irregularImperativeTu = "convén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("decir", "say, tell", altPreteritRoot = "dij", altInfinitiveRoot = "dir", irregularImperativeTu = "di", irregularPastParticiple = "dicho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("intervenir", "intervene", altPreteritRoot = "intervin", altInfinitiveRoot = "intervendr", irregularImperativeTu = "intervén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
+        Verb("introducir", "insert, introduce", altPreteritRoot = "introduj", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT, Irregularity.SPELLING_CHANGE_YO_ZC)),
         Verb("maldecir", "curse", altPreteritRoot = "maldij", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("predecir", "predict", altPreteritRoot = "predij", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_I, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("prevenir", "prevent", altPreteritRoot = "previn", altInfinitiveRoot = "prevendr", irregularImperativeTu = "prevén", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
