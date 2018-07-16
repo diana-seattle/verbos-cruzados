@@ -118,8 +118,8 @@ class GameSetup {
             val irregularityCategory = it
             val verbs = verbMap[irregularityCategory]!!
             val lowOnVerbs = verbs.size < numWords / irregularityCategories.size
-            val conjugationTypesPerVerb = if (subjectPronouns.size < 3) 4 else 2
-            val subjectPronounsPerVerb = if (conjugationTypes.size < 2) 4 else 2
+            val conjugationTypesPerVerb = if (lowOnVerbs && subjectPronouns.size < 3) 4 else 2
+            val subjectPronounsPerVerb = if (lowOnVerbs && conjugationTypes.size < 2) 4 else 2
 
             // For each verb in irregularity category
             verbs.forEach {
