@@ -1,8 +1,6 @@
 package org.indiv.dls.games.verboscruzados.feature.conjugation
 
-import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.feature.model.Irregularity
-import org.indiv.dls.games.verboscruzados.feature.model.IrregularityCategory
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
 import org.indiv.dls.games.verboscruzados.feature.model.irregularArVerbs
@@ -59,16 +57,17 @@ class ConjugatorTest {
 
     @Test fun testOneVerb() {
         val verb =
-                Verb("prevalecer", "prevail", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC))
+                Verb("vencer", "defeat, overcome", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC))
         printResult(verb)
 
     }
 
     @Test fun testListOfVerbs() {
         val verbs = listOf(
-                Verb("deshacer", "undo", altPreteritRoot = "deshic", altInfinitiveRoot = "deshar", irregularImperativeTu = "deshaz", irregularPastParticiple = "deshecho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT)),
-                Verb("rehacer", "redo", altPreteritRoot = "rehic", altInfinitiveRoot = "rehar", irregularImperativeTu = "rehaz", irregularPastParticiple = "rehecho", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.NO_ACCENT_ON_PRETERIT))
+                Verb("absolver", "absolve, acquit", irregularPastParticiple = "absuelto", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+                Verb("conmover", "move emotionally, shake", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE))
                 )
+
         printAllResults(verbs)
     }
 
@@ -136,7 +135,7 @@ class ConjugatorTest {
                 .append("\n${"".padEnd(firstColumnWidth)}")
         for ((conjugationType, conjugator) in conjugatorMap.entries) {
             val columnWidth = max(conjugationType.text.length + 2, verb.infinitive.length + 7)
-            labelBuilder.append("${conjugationType.text.toUpperCase().padEnd(columnWidth)}")
+            labelBuilder.append(conjugationType.text.toUpperCase().padEnd(columnWidth))
             for (subjectPronoun in SubjectPronoun.values()) {
                 val result = conjugator.conjugate(verb, subjectPronoun)
                 mapOfBuilders[subjectPronoun]!!.append(result.padEnd(columnWidth))
