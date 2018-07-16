@@ -100,8 +100,7 @@ class GameSetup {
      * Gets list of words that are candidates for the next puzzle.
      */
     private fun getWordCandidates(numWords: Int, gameOptions: Map<String, Boolean>): List<WordCandidate> {
-        val numWordsWithSurplus = (numWords * 1.2).toInt() // get surplus because we'll cut to 80% later
-        val verbMap = getQualifyingVerbs(gameOptions, numWordsWithSurplus)
+        val verbMap = getQualifyingVerbs(gameOptions, numWords)
         val candidates = mutableListOf<WordCandidate>()
 
         val conjugationTypes = getQualifyingConjugationTypes(gameOptions)
@@ -112,26 +111,39 @@ class GameSetup {
             subjectPronouns.filter { it != SubjectPronoun.YO }
         }
 
-        verbMap.keys.forEach {
+        val irregularityCategories = verbMap.keys
+
+        // For each irregularity category
+        irregularityCategories.forEach {
             val irregularityCategory = it
             val verbs = verbMap[irregularityCategory]!!
-            candidates.addAll(verbs.map {
-                val conjugationType = randomSelection(conjugationTypes, 1)[0]
-                when (conjugationType) {
-                    ConjugationType.GERUND -> createWordCandidate(it, it.gerund, conjugationType, irregularityCategory, null)
-                    ConjugationType.PAST_PARTICIPLE -> createWordCandidate(it, it.pastParticiple, conjugationType, irregularityCategory, null)
-                    else -> {
-                        val subjectPronoun = if (conjugationType == ConjugationType.IMPERATIVE) {
-                            randomSelection(subjectPronounsForImperative, 1)[0]
-                        } else {
-                            randomSelection(subjectPronouns, 1)[0]
+            val lowOnVerbs = verbs.size < numWords / irregularityCategories.size
+            val conjugationTypesPerVerb = if (subjectPronouns.size < 3) 4 else 2
+            val subjectPronounsPerVerb = if (conjugationTypes.size < 2) 4 else 2
+
+            // For each verb in irregularity category
+            verbs.forEach {
+                val verb = it
+
+                // For each conjugation type
+                randomSelection(conjugationTypes, conjugationTypesPerVerb).forEach {
+                    val conjugationType = it
+                    when (conjugationType) {
+                        ConjugationType.GERUND ->
+                            candidates.add(createWordCandidate(verb, verb.gerund, conjugationType, irregularityCategory, null))
+                        ConjugationType.PAST_PARTICIPLE ->
+                            candidates.add(createWordCandidate(verb, verb.pastParticiple, conjugationType, irregularityCategory, null))
+                        else -> {
+                            val conjugator = conjugatorMap[conjugationType]!!
+                            val relevantSubjectPronouns = if (conjugationType == ConjugationType.IMPERATIVE)
+                                subjectPronounsForImperative else subjectPronouns
+                            randomSelection(relevantSubjectPronouns, subjectPronounsPerVerb).forEach {
+                                candidates.add(createWordCandidate(verb, conjugator.conjugate(verb, it), conjugationType, irregularityCategory, it))
+                            }
                         }
-                        val conjugator = conjugatorMap[conjugationType]!!
-                        createWordCandidate(it, conjugator.conjugate(it, subjectPronoun),
-                                conjugationType, irregularityCategory, subjectPronoun)
                     }
                 }
-            })
+            }
         }
 
         // Take less than 100% of candidates to ensure variability
