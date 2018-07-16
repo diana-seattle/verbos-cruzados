@@ -38,7 +38,7 @@ class StatsDialogFragment : DialogFragment() {
          */
         fun getCoordinates(statsIndex: Int): Pair<Int, Int> {
             val x = statsIndex % columnCount
-            val y = rowCount - 1 - statsIndex / columnCount
+            val y = statsIndex / columnCount
             return Pair(x, y)
         }
     }
