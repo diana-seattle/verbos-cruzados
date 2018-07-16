@@ -48,7 +48,7 @@ class GameSetup {
             val gridHeight = cellGrid.size
             val gridWidth = cellGrid[0].size
 
-            val numWords = Math.round(((gridWidth * gridHeight) / 10 + 20).toFloat())  // get more than we need to maximize density of layout
+            val numWords = Math.round(((gridWidth * gridHeight) / 5 + 20).toFloat())  // get more than we need to maximize density of layout
             val wordCandidates = getWordCandidates(numWords, gameOptions).toMutableList()
 
             // determine layout
@@ -100,41 +100,40 @@ class GameSetup {
      * Gets list of words that are candidates for the next puzzle.
      */
     private fun getWordCandidates(numWords: Int, gameOptions: Map<String, Boolean>): List<WordCandidate> {
-        val verbMap = getQualifyingVerbs(gameOptions, numWords)
+        val numWordsWithSurplus = (numWords * 1.2).toInt() // get surplus because we'll cut to 80% later
+        val verbMap = getQualifyingVerbs(gameOptions, numWordsWithSurplus)
         val candidates = mutableListOf<WordCandidate>()
 
-        getQualifyingConjugationTypes(gameOptions).forEach {
-            val conjugationType = it
-            verbMap.keys.forEach {
-                val irregularityCategory = it
-                val verbs = verbMap[irregularityCategory]!!
+        val conjugationTypes = getQualifyingConjugationTypes(gameOptions)
+        val subjectPronouns = getQualifyingSubjectPronouns(gameOptions)
+        val subjectPronounsForImperative = if (subjectPronouns.size == 1 && subjectPronouns[0] == SubjectPronoun.YO) {
+            listOf(SubjectPronoun.TU) // Use Tú for commands to self
+        } else {
+            subjectPronouns.filter { it != SubjectPronoun.YO }
+        }
+
+        verbMap.keys.forEach {
+            val irregularityCategory = it
+            val verbs = verbMap[irregularityCategory]!!
+            candidates.addAll(verbs.map {
+                val conjugationType = randomSelection(conjugationTypes, 1)[0]
                 when (conjugationType) {
-                    ConjugationType.GERUND -> {
-                        candidates.addAll(verbs.map {
-                            createWordCandidate(it, it.gerund, conjugationType, irregularityCategory, null)
-                        })
-                    }
-                    ConjugationType.PAST_PARTICIPLE -> {
-                        candidates.addAll(verbs.map {
-                            createWordCandidate(it, it.pastParticiple, conjugationType, irregularityCategory, null)
-                        })
-                    }
+                    ConjugationType.GERUND -> createWordCandidate(it, it.gerund, conjugationType, irregularityCategory, null)
+                    ConjugationType.PAST_PARTICIPLE -> createWordCandidate(it, it.pastParticiple, conjugationType, irregularityCategory, null)
                     else -> {
-                        val conjugator = conjugatorMap[conjugationType]!!
-                        getQualifyingSubjectPronouns(gameOptions).forEach {
-                            val subjectPronoun = it
-                            // Avoid the Yo - Imperative form
-                            if (conjugationType != ConjugationType.IMPERATIVE || subjectPronoun != SubjectPronoun.YO) {
-                                candidates.addAll(verbs.map {
-                                    createWordCandidate(it, conjugator.conjugate(it, subjectPronoun),
-                                            conjugationType, irregularityCategory, subjectPronoun)
-                                })
-                            }
+                        val subjectPronoun = if (conjugationType == ConjugationType.IMPERATIVE) {
+                            randomSelection(subjectPronounsForImperative, 1)[0]
+                        } else {
+                            randomSelection(subjectPronouns, 1)[0]
                         }
+                        val conjugator = conjugatorMap[conjugationType]!!
+                        createWordCandidate(it, conjugator.conjugate(it, subjectPronoun),
+                                conjugationType, irregularityCategory, subjectPronoun)
                     }
                 }
-            }
+            })
         }
+
         // Take less than 100% of candidates to ensure variability
         return randomSelection(candidates, minOf(numWords, (.8f * candidates.size).toInt()))
     }
@@ -160,36 +159,39 @@ class GameSetup {
         }
     }
 
-    private fun getQualifyingVerbs(gameOptions: Map<String, Boolean>, minTargetQty: Int): Map<IrregularityCategory, List<Verb>> {
+    private fun getQualifyingVerbs(gameOptions: Map<String, Boolean>, numWords: Int): Map<IrregularityCategory, List<Verb>> {
         val verbMap = mutableMapOf<IrregularityCategory, List<Verb>>()
 
         val infinitiveEndings = getQualifyingInfinitiveEndings(gameOptions)
         val irregularityCategories = getQualifyingIrregularityCategories(gameOptions)
 
+        // Don't count irregular AR as a combination since it only has 3 verbs
+        val includesIrregularAr = infinitiveEndings.contains(InfinitiveEnding.AR) && irregularityCategories.contains(IrregularityCategory.IRREGULAR)
+        val combinations = (infinitiveEndings.size * irregularityCategories.size - (if (includesIrregularAr) 1 else 0)).coerceAtLeast(1)
+        val minTargetQty = numWords / combinations
+
         irregularityCategories.forEach {
             val verbs = mutableListOf<Verb>()
             when (it) {
                 IrregularityCategory.REGULAR -> {
-                    if (infinitiveEndings.contains(InfinitiveEnding.AR))
-                        verbs.addAll(randomSelection(regularArVerbs, minTargetQty)) // cut this one down a little in size
-                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(regularIrVerbs)
-                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(regularErVerbs)
+                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(randomSelection(regularArVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(randomSelection(regularIrVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(randomSelection(regularErVerbs, minTargetQty))
                 }
                 IrregularityCategory.SPELLING_CHANGE -> {
-                    if (infinitiveEndings.contains(InfinitiveEnding.AR))
-                        verbs.addAll(randomSelection(spellingChangeArVerbs, minTargetQty)) // cut this one down a little in size
-                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(spellingChangeIrVerbs)
-                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(spellingChangeErVerbs)
+                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(randomSelection(spellingChangeArVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(randomSelection(spellingChangeIrVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(randomSelection(spellingChangeErVerbs, minTargetQty))
                 }
                 IrregularityCategory.STEM_CHANGE -> {
-                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(stemChangeArVerbs)
-                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(stemChangeIrVerbs)
-                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(stemChangeErVerbs)
+                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(randomSelection(stemChangeArVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(randomSelection(stemChangeIrVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(randomSelection(stemChangeErVerbs, minTargetQty))
                 }
                 IrregularityCategory.IRREGULAR -> {
-                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(irregularArVerbs)
-                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(irregularIrVerbs)
-                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(irregularErVerbs)
+                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(irregularArVerbs) // this category only has 3
+                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(randomSelection(irregularIrVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(randomSelection(irregularErVerbs, minTargetQty))
                 }
             }
             verbMap[it] = verbs.toList()
@@ -236,7 +238,7 @@ class GameSetup {
             val randomIndex = getRandomIndex(sourceList.size)
             destinationList.add(sourceList.removeAt(randomIndex))
 
-        } while(true)
+        } while (true)
     }
 
     private fun getRandomIndex(size: Int): Int {

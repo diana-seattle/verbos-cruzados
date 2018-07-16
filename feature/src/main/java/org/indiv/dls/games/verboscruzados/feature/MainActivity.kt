@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
         // Get keyboard height for use in keyboard animation
         keyboardHeight = resources.getDimension(R.dimen.keyboard_height)
-        hideKeyboardForAnswer() // this will position the keyboard for animation when first shown.
+        hideKeyboard() // this will position the keyboard for animation when first shown.
 
         // calculate available space for the puzzle
         val displayMetrics = resources.displayMetrics
@@ -125,7 +125,11 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         val answerHeightPixels = resources.getDimension(R.dimen.fragment_answer_height)
         val screenWidthDp = configuration.smallestScreenWidthDp
         val screenHeightDp = maxOf(configuration.screenHeightDp, configuration.screenWidthDp)
-        val heightFactor = if (screenWidthDp < 450) 1.5f else 1f
+        val heightFactor = when {
+            screenWidthDp < 350 -> 2f
+            screenWidthDp < 450 -> 1.5f
+            else -> 1f
+        }
         val screenWidthPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 screenWidthDp.toFloat(), displayMetrics)
         val screenHeightPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
@@ -146,10 +150,10 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         // pass the InputConnection from the EditText to the keyboard
         answer_keyboard.inputConnection = answerFragment.answerEntryInputConnection
         answer_keyboard.dismissClickListener = {
-            hideKeyboardForAnswer()
+            hideKeyboard()
         }
         answerFragment.keyboardNeededListener = {
-            showKeyboardForAnswer()
+            showKeyboard()
         }
     }
 
@@ -177,7 +181,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
     override fun onBackPressed() {
         if (isKeyboardVisible()) {
-            hideKeyboardForAnswer()
+            hideKeyboard()
         } else {
             super.onBackPressed()
         }
@@ -232,7 +236,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         // If user text matches answer, dismiss keyboard
         val currentWordIsCorrect = currentGameWord?.isAnsweredCorrectly == true
         if (currentWordIsCorrect) {
-            hideKeyboardForAnswer()
+            hideKeyboard()
         }
 
         // Note that the puzzle may be completed correctly while an individual word is not. It may be
@@ -278,6 +282,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
     }
 
     private fun promptForNewGame(extraMessage: String?) {
+        hideKeyboard()
         val message = (if (extraMessage != null) extraMessage + "\n" else "") +
                 resources.getString(R.string.dialog_startnewgame_prompt)
         AlertDialog.Builder(this)
@@ -322,7 +327,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         // Clear game word and hide answer fragment for now
         answerFragment.clearGameWord()
         answerFragment.view?.visibility = View.GONE // set invisible until puzzle shows up
-        hideKeyboardForAnswer()
+        hideKeyboard()
 
         // clear puzzle fragment of existing game if any
         puzzleFragment.clearExistingGame()
@@ -371,7 +376,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
         // If answer not yet correct, show keyboard
         if (showKeyboard) {
-            showKeyboardForAnswer()
+            showKeyboard()
         }
     }
 
@@ -415,7 +420,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         return answer_keyboard.visibility == View.VISIBLE
     }
 
-    private fun showKeyboardForAnswer() {
+    private fun showKeyboard() {
         // Set visible, then animate up to position
         answer_keyboard.visibility = View.VISIBLE
         ObjectAnimator.ofFloat(answer_keyboard, "translationY", 0f)
@@ -423,7 +428,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
                 .start()
     }
 
-    private fun hideKeyboardForAnswer() {
+    private fun hideKeyboard() {
         // Animate off screen, then set invisible
         val animator = ObjectAnimator.ofFloat(answer_keyboard, "translationY", keyboardHeight)
                 .setDuration(KEYBOARD_ANIMATION_TIME)
