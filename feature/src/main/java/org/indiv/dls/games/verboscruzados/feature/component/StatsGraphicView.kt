@@ -7,6 +7,7 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
+import org.indiv.dls.games.verboscruzados.feature.R
 
 /**
  * View for displaying game statistics.
@@ -19,7 +20,7 @@ open class StatsGraphicView @JvmOverloads constructor(context: Context,
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
     companion object {
-        private val PAINT_GREEN = Paint(Paint.ANTI_ALIAS_FLAG)
+        private val greenPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     }
 
     //endregion
@@ -43,8 +44,8 @@ open class StatsGraphicView @JvmOverloads constructor(context: Context,
     //region INITIALIZER ---------------------------------------------------------------------------
 
     init {
-        PAINT_GREEN.style = Paint.Style.FILL
-        PAINT_GREEN.color = (0xff008F00).toInt()
+        greenPaint.style = Paint.Style.FILL
+        greenPaint.color = resources.getColor(R.color.stats_green)
     }
 
     //endregion
@@ -83,17 +84,19 @@ open class StatsGraphicView @JvmOverloads constructor(context: Context,
 
     private fun drawStat(canvas: Canvas?, statsPosition: Pair<Int, Int>, statsValue: Int) {
         val rect = calculateRect(statsPosition)
-        PAINT_GREEN.alpha = calculateAlpha(statsValue)
-        canvas?.drawRect(rect, PAINT_GREEN)
+        greenPaint.alpha = calculateAlpha(statsValue)
+        canvas?.drawRect(rect, greenPaint)
     }
 
     private fun calculateAlpha(statsValue: Int): Int {
 
-        // 1  2  4  8  16 32 64 128 256 512 1024 2048 4096 8182 16364 32728
-        // 0  1  2  3  4  5  6  7   8   9   10   11   12   13   14    15
+        // Score: 1  2    4    8   16   32   64   128  256  512  1024 2048 4096 8182 16364 32728
+        // Sqrt:  1  1.4  2    3   4    5.5  8    11   16   23   32   45   64   90
+        // Log2:  0  1    2    3   4    5    6    7    8    9    10   11   12   13   14    15
+        // Ln:    0  .7   1.4  2   2.8  3.5  4.1  4.8  5.5  6.2  7
 
         val fullAlpha = (0xff).toDouble()
-        val factor = Math.min(Math.log(statsValue.toDouble()), 16.0) / 16.0
+        val factor = Math.min(Math.sqrt(statsValue.toDouble()), 20.0) / 20.0
         return Math.round(fullAlpha * factor).toInt()
     }
 
@@ -101,9 +104,9 @@ open class StatsGraphicView @JvmOverloads constructor(context: Context,
         val x = statsPosition.first.coerceIn(0 until columnCount)
         val y = statsPosition.second.coerceIn(0 until rowCount)
         val left = Math.round(x * cellWidth + borderPixelsOneSide)
-        val right = Math.round(left + cellWidth)
+        val right = Math.round((x+1) * cellWidth + borderPixelsOneSide)
         val top = Math.round(y * cellHeight + borderPixelsOneSide)
-        val bottom = Math.round(top + cellHeight)
+        val bottom = Math.round((y+1) * cellHeight + borderPixelsOneSide)
         return Rect(left, top, right, bottom)
     }
 

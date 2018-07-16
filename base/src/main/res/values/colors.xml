@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#FF393939</color>
     <color name="colorAccent">#388e3c</color>
 
+    <color name="stats_green">#2e7d32</color>
+
     <color name="soft_black">#FF393939</color>
     <color name="dark_gray">#FF737373</color>
     <color name="medium_gray">#FF999999</color>
