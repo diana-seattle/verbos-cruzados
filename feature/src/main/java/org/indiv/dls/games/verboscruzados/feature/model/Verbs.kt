@@ -435,6 +435,7 @@ val stemChangeArVerbs = listOf(
         Verb("contar", "tell, count", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("costar", "cost", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("demostrar", "demonstrate, prove", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
+        Verb("descontar", "discount, deduct, exclude", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("encontrar", "meet, find", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("esforzar", "strain", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE, Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("forzar", "force", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE, Irregularity.SPELLING_CHANGE_PHONETIC)),
@@ -463,6 +464,7 @@ val stemChangeArVerbs = listOf(
         Verb("despertar", "wake", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("desterrar", "banish", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("empezar", "begin", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE, Irregularity.SPELLING_CHANGE_PHONETIC)),
+        Verb("encerrar", "enclose, lock up", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("enterrar", "bury", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("errar", "miss, wander", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("fregar", "scrub", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE, Irregularity.SPELLING_CHANGE_PHONETIC)),
@@ -819,7 +821,9 @@ val spellingChangeErVerbs = listOf(
 )
 val stemChangeErVerbs = listOf(
         // stem changes o -> ue
+        Verb("absolver", "absolve, acquit", irregularPastParticiple = "absuelto", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("cocer", "cook, bake", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE, Irregularity.SPELLING_CHANGE_PHONETIC)),
+        Verb("conmover", "move emotionally, shake", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("demoler", "demolish", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("devolver", "return something", irregularPastParticiple = "devuelto", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
         Verb("disolver", "dissolve", irregularPastParticiple = "disuelto", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
