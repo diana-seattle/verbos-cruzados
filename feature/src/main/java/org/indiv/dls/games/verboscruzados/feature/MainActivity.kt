@@ -203,7 +203,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
      * implements PuzzleListener interface for callback from PuzzleFragment
      */
     override fun onPuzzleClick(gameWord: GameWord) {
-        setGameWord(gameWord, !gameWord.isAnsweredCorrectly)
+        setGameWord(gameWord, true)
     }
 
     //endregion
@@ -369,12 +369,12 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         currentGameWord = gameWord
 
         // update answer fragment with current game word
-        answerFragment.setGameWord(createAnswerPresentation(gameWord))
+        val answerPresentation = createAnswerPresentation(gameWord)
+        answerFragment.setGameWord(answerPresentation)
 
-        // Update keyboard with infinitive
-        answer_keyboard.infinitive = gameWord.infinitive
+        // Update keyboard with answer info
+        answer_keyboard.answerPresentation = answerPresentation
 
-        // If answer not yet correct, show keyboard
         if (showKeyboard) {
             showKeyboard()
         }

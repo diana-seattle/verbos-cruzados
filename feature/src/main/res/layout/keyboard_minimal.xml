@@ -1,16 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+       xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Making the overall layout clickable/focusable so that clicks don't bleed thru to the puzzle layout beneath -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/keyboard_height"
+        android:background="@color/keyboard_translucent"
         android:clickable="true"
         android:focusable="true"
-        android:background="@color/keyboard_translucent"
         android:orientation="vertical">
 
-        <!-- first row, 10 letters -->
+        <!-- row for clue and infinitive button -->
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="0dp"
+                      android:layout_weight="1.5"
+                      android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/conjugation_label"
+                android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/button_infinitive"
+                style="@style/answerLetterButton.special"
+                tools:text="infinitive"/>
+
+        </LinearLayout>
+
+        <!-- separator line -->
+        <View android:layout_width="match_parent"
+              android:layout_height="1dp"
+              android:background="@color/pale_gray"/>
+
+        <!-- first row of 10 letters -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -60,7 +84,7 @@
 
         </LinearLayout>
 
-        <!-- second row, 9 letters -->
+        <!-- second row of 9 letters -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -118,7 +142,7 @@
 
         </LinearLayout>
 
-        <!-- third row, 7 letters and delete button -->
+        <!-- third row of 7 letters and delete button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -180,7 +204,7 @@
 
         </LinearLayout>
 
-        <!-- fourth row, 6 letters & infinitive & close -->
+        <!-- fourth row of 6 letters -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -217,10 +241,9 @@
                 style="@style/answerLetterButton.special"
                 android:text="ñ"/>
             <TextView
-                android:id="@+id/button_infinitive"
                 style="@style/answerLetterButton.special"
                 android:layout_weight="3"
-                android:text="infinitive"/>
+                android:text="arrows here"/>
 
         </LinearLayout>
     </LinearLayout>

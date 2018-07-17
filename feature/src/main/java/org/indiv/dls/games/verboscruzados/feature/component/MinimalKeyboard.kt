@@ -8,6 +8,7 @@ import android.view.inputmethod.InputConnection
 import android.widget.LinearLayout
 import android.widget.TextView
 import kotlinx.android.synthetic.main.keyboard_minimal.view.*
+import org.indiv.dls.games.verboscruzados.feature.AnswerPresentation
 import org.indiv.dls.games.verboscruzados.feature.R
 
 /**
@@ -83,7 +84,10 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
         }
         button_infinitive.setOnClickListener {
             vibrator.vibrate(VIBRATION_MSEC)
-            inputConnection?.commitText(infinitive, 1)
+
+            // replace all existing text with the infinitive
+            inputConnection?.deleteSurroundingText(50, 50) == true
+            inputConnection?.commitText(answerPresentation?.infinitive, 1)
         }
         button_delete.setOnClickListener {
             vibrator.vibrate(VIBRATION_MSEC)
@@ -112,8 +116,13 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
     // Caller can set this to be notified when the user wants to dismiss the keyboard
     var dismissClickListener: (() -> Unit)? = null
 
-    // Caller must set this for the infinitive button to insert the infinitive text.
-    var infinitive: String = ""
+    // Caller must set this for the display of the clue info and for the infinitive button to insert the infinitive text.
+    var answerPresentation: AnswerPresentation? = null
+        set(value) {
+            field = value
+            conjugation_label.text = value?.conjugationLabel
+            button_infinitive.text = value?.infinitive
+        }
 
     //endregion
 

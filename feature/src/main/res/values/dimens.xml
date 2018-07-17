@@ -5,7 +5,7 @@
     <dimen name="fragment_answer_height">92dp</dimen>
 
     <!-- height of bottom margin to allow for scrolling puzzle above keyboard -->
-    <dimen name="keyboard_height">145dp</dimen>
+    <dimen name="keyboard_height">200dp</dimen>
 
     <dimen name="keyboard_letter_size">@dimen/x_large_fixed</dimen>
 
