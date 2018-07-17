@@ -117,9 +117,17 @@ class GameSetup {
         irregularityCategories.forEach {
             val irregularityCategory = it
             val verbs = verbMap[irregularityCategory]!!
-            val lowOnVerbs = verbs.size < numWords / irregularityCategories.size
-            val conjugationTypesPerVerb = if (lowOnVerbs && subjectPronouns.size < 3) 4 else 2
-            val subjectPronounsPerVerb = if (lowOnVerbs && conjugationTypes.size < 2) 4 else 2
+            val lowOnVerbs = verbs.size < (.6f * numWords / irregularityCategories.size).toInt() // when less than 60% what it should be
+            val conjugationTypesPerVerb = when {
+                !lowOnVerbs -> 1
+                subjectPronouns.size < 3 -> 4
+                else -> 2
+            }
+            val subjectPronounsPerVerb = when {
+                !lowOnVerbs -> 1
+                conjugationTypes.size < 3 -> 4
+                else -> 2
+            }
 
             // For each verb in irregularity category
             verbs.forEach {
@@ -154,13 +162,21 @@ class GameSetup {
                                     conjugationType: ConjugationType,
                                     irregularityCategory: IrregularityCategory,
                                     subjectPronoun: SubjectPronoun?): WordCandidate {
+        return WordCandidate(word, verb.infinitive, verb.infinitiveEnding, verb.translation,
+                irregularityCategory, conjugationType, subjectPronoun)
+    }
+
+    private fun createGameWord(wordCandidate: WordCandidate, row: Int, col: Int, isAcross: Boolean): GameWord {
         // Conjugated verb can be duplicate between imperative and subjunctive or between sentar and sentir.
-        val uniqueKey = "${verb.infinitive}|${conjugationType.name}|${subjectPronoun?.name ?: "na"}"
-        val conjugationLabel = subjectPronoun?.let {
-            "${getPronounText(it)} - ${conjugationType.text}"
-        } ?: conjugationType.text
-        val statsIndex = StatsDialogFragment.createStatsIndex(conjugationType, verb.infinitiveEnding, irregularityCategory)
-        return WordCandidate(uniqueKey, word, conjugationLabel, verb.infinitive, verb.translation, statsIndex)
+        val uniqueKey = "${wordCandidate.infinitive}|${wordCandidate.conjugationType.name}|${wordCandidate.subjectPronoun?.name
+                ?: "na"}"
+        val conjugationLabel = wordCandidate.subjectPronoun?.let {
+            "${getPronounText(it)} - ${wordCandidate.conjugationType.text}"
+        } ?: wordCandidate.conjugationType.text
+        val statsIndex = StatsDialogFragment.createStatsIndex(wordCandidate.conjugationType,
+                wordCandidate.infinitiveEnding, wordCandidate.irregularityCategory)
+        return GameWord(uniqueKey, wordCandidate.word, conjugationLabel, wordCandidate.infinitive, wordCandidate.translation, statsIndex,
+                row, col, isAcross)
     }
 
     private fun getPronounText(subjectPronoun: SubjectPronoun): String {
@@ -180,7 +196,7 @@ class GameSetup {
         // Don't count irregular AR as a combination since it only has 3 verbs
         val includesIrregularAr = infinitiveEndings.contains(InfinitiveEnding.AR) && irregularityCategories.contains(IrregularityCategory.IRREGULAR)
         val combinations = (infinitiveEndings.size * irregularityCategories.size - (if (includesIrregularAr) 1 else 0)).coerceAtLeast(1)
-        val minTargetQty = numWords / combinations
+        val minTargetQty = (1.5 * numWords / combinations).toInt() // go 50% over to make it more likely total target is met
 
         irregularityCategories.forEach {
             val verbs = mutableListOf<Verb>()
@@ -257,10 +273,31 @@ class GameSetup {
         return Math.round(Math.random() * (size - 1)).toInt()
     }
 
-    private fun layoutWords(cellGrid: Array<Array<GridCell?>>, wordCandidates: MutableList<WordCandidate>): List<GameWord> {
+    private fun sortCandidates(wordCandidates: MutableList<WordCandidate>): MutableList<WordCandidate> {
+        // sort by descending length
+        wordCandidates.sortByDescending { it.word.length }
 
+        // group by pronoun & conjugation type into separate mutable lists each sorted by descending length
+        val candidatesByType = wordCandidates.groupBy {
+            it.subjectPronoun.toString() + "_" + it.conjugationType.toString()
+        }
+                .map { it.key to it.value.toMutableList() }
+
+        // merge lists such that longest of each type listed first
+        val result = mutableListOf<WordCandidate>()
+        while (result.size < wordCandidates.size) {
+            candidatesByType.forEach {
+                if (it.second.isNotEmpty()) {
+                    result.add(it.second.removeAt(0))
+                }
+            }
+        }
+        return result
+    }
+
+    private fun layoutWords(cellGrid: Array<Array<GridCell?>>, wordCandidates: MutableList<WordCandidate>): List<GameWord> {
         // sort so that longest words are first
-        wordCandidates.sortWith(Comparator { lhs, rhs -> rhs.word.length - lhs.word.length })
+        val sortedCandidates = sortCandidates(wordCandidates)
 
         // place each word into character grid
         val gameWords = ArrayList<GameWord>()
@@ -268,20 +305,20 @@ class GameSetup {
         var firstWord = true
         var lastGaspEffortTaken = false
         var i = 0
-        while (i < wordCandidates.size) {
-            val word = wordCandidates[i]
+        while (i < sortedCandidates.size) {
+            val word = sortedCandidates[i]
             val gameWord = placeInGrid(cellGrid, gameWords, word, across, firstWord)
 
             if (gameWord != null) {
                 gameWords.add(gameWord)
-                wordCandidates.removeAt(i) // remove used word from list of available words
+                sortedCandidates.removeAt(i) // remove used word from list of available words
                 i = -1 // start over at beginning of list for next word
                 across = !across
                 firstWord = false
                 lastGaspEffortTaken = false // since we found a word, continue on
             } else {
                 // if we're about to give up, make one last effort with opposite direction
-                if (!lastGaspEffortTaken && i == wordCandidates.size - 1) {
+                if (!lastGaspEffortTaken && i == sortedCandidates.size - 1) {
                     lastGaspEffortTaken = true
                     across = !across
                     i = -1
@@ -349,9 +386,7 @@ class GameSetup {
         }
 
         if (locationFound) {
-            gameWord = GameWord(wordCandidate.uniqueKey, word, wordCandidate.conjugationLabel,
-                    wordCandidate.infinitive, wordCandidate.translation, wordCandidate.statsIndex,
-                    row, col, across)
+            gameWord = createGameWord(wordCandidate, row, col, across)
             addToGrid(gameWord, cellGrid)
         }
 
@@ -431,12 +466,13 @@ class GameSetup {
 
     //region INNER CLASSES -------------------------------------------------------------------------
 
-    private class WordCandidate(val uniqueKey: String,
-                                val word: String,
-                                val conjugationLabel: String,
+    private class WordCandidate(val word: String,
                                 val infinitive: String,
+                                val infinitiveEnding: InfinitiveEnding,
                                 val translation: String,
-                                val statsIndex: Int) {
+                                val irregularityCategory: IrregularityCategory,
+                                val conjugationType: ConjugationType,
+                                val subjectPronoun: SubjectPronoun?) {
         // variables used by word placement algorithm to place word in puzzle
         private var lastAcrossPositionTried = -1
         private var lastDownPositionTried = -1

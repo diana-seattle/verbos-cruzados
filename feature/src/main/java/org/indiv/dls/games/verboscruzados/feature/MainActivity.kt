@@ -11,7 +11,7 @@ package org.indiv.dls.games.verboscruzados.feature
 // TODO: fix imports
 // Complete other TODO items throughout code
 // TODO: use photos from Elissa
-// TODO: fix game options (include vostros, horizontal ar/ir/er, gerund + past part)
+// TODO: fix game options (include vosotros/singular/plural, horizontal ar/ir/er, gerund + past part)
 
 // TODO: optimizing drawing of puzzle (eliminate spacer views)
 // TODO: fix layout algorithm to use more short words & variability (80% rule)

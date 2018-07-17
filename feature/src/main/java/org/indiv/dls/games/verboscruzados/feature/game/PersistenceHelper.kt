@@ -157,8 +157,6 @@ class PersistenceHelper constructor(private val mContext: Context) {
         SubjectPronoun.values().forEach { editor.putBoolean(it.name, true) }
         editor.putBoolean(SubjectPronoun.VOSOTROS.name, false) // all but vosotros
         editor.putBoolean(ConjugationType.PRESENT.name, true)
-        editor.putBoolean(ConjugationType.PRETERIT.name, true)
-        editor.putBoolean(ConjugationType.FUTURE.name, true)
         editor.putBoolean(IrregularityCategory.REGULAR.name, true)
         editor.apply()
         return gameOptionPrefs.all.toMap()
