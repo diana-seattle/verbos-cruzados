@@ -14,19 +14,55 @@
         <!-- row for clue and infinitive button -->
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="0dp"
+                      android:layout_marginStart="@dimen/half_margin"
+                      android:layout_marginTop="@dimen/half_margin"
                       android:layout_weight="1.5"
-                      android:orientation="horizontal">
+                      android:orientation="vertical">
 
+            <!-- Conjugation type (tense/mood) -->
             <TextView
-                android:id="@+id/conjugation_label"
+                android:id="@+id/keyboard_conjugation_type_label"
                 android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textColor="@color/soft_black"
+                android:textSize="@dimen/medium_fixed"/>
 
-            <TextView
-                android:id="@+id/button_infinitive"
-                style="@style/answerLetterButton.special"
-                tools:text="infinitive"/>
+            <LinearLayout android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal">
 
+                <!-- Subject pronoun -->
+                <TextView
+                    android:id="@+id/keyboard_subject_pronoun_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/half_margin"
+                    android:textColor="@color/soft_black"
+                    android:textSize="@dimen/keyboard_letter_size"/>
+
+                <!-- Infinitive -->
+                <TextView
+                    android:id="@+id/keyboard_button_infinitive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:textColor="@color/keyboard_special_letters"
+                    android:textSize="@dimen/keyboard_letter_size"
+                    android:textStyle="italic"
+                    tools:text="infinitive"/>
+
+                <!-- English Translation -->
+                <TextView
+                    android:id="@+id/keyboard_translation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/half_margin"
+                    android:lines="1"
+                    android:textColor="@color/light_gray"
+                    android:textSize="@dimen/small_fixed"
+                    android:textStyle="italic"/>
+
+            </LinearLayout>
         </LinearLayout>
 
         <!-- separator line -->
@@ -243,7 +279,7 @@
             <TextView
                 style="@style/answerLetterButton.special"
                 android:layout_weight="3"
-                android:text="arrows here"/>
+                android:text="arrows!!!"/>
 
         </LinearLayout>
     </LinearLayout>

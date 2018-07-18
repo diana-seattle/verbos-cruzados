@@ -168,15 +168,16 @@ class GameSetup {
 
     private fun createGameWord(wordCandidate: WordCandidate, row: Int, col: Int, isAcross: Boolean): GameWord {
         // Conjugated verb can be duplicate between imperative and subjunctive or between sentar and sentir.
-        val uniqueKey = "${wordCandidate.infinitive}|${wordCandidate.conjugationType.name}|${wordCandidate.subjectPronoun?.name
-                ?: "na"}"
-        val conjugationLabel = wordCandidate.subjectPronoun?.let {
-            "${getPronounText(it)} - ${wordCandidate.conjugationType.text}"
-        } ?: wordCandidate.conjugationType.text
+        val uniqueKey = "${wordCandidate.infinitive}|${wordCandidate.conjugationType.name}|${wordCandidate.subjectPronoun?.name ?: "na"}"
+        val conjugationTypeLabel = when (wordCandidate.conjugationType) {
+            ConjugationType.PAST_PARTICIPLE, ConjugationType.GERUND -> "${wordCandidate.conjugationType.text} of"
+            else -> "${wordCandidate.conjugationType.text} tense of"
+        }
+        val subjectPronounLabel = wordCandidate.subjectPronoun?.let { getPronounText(it) } ?: ""
         val statsIndex = StatsDialogFragment.createStatsIndex(wordCandidate.conjugationType,
                 wordCandidate.infinitiveEnding, wordCandidate.irregularityCategory)
-        return GameWord(uniqueKey, wordCandidate.word, conjugationLabel, wordCandidate.infinitive, wordCandidate.translation, statsIndex,
-                row, col, isAcross)
+        return GameWord(uniqueKey, wordCandidate.word, conjugationTypeLabel, subjectPronounLabel,
+                wordCandidate.infinitive, wordCandidate.translation, statsIndex, row, col, isAcross)
     }
 
     private fun getPronounText(subjectPronoun: SubjectPronoun): String {

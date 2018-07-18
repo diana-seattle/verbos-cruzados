@@ -23,7 +23,6 @@ class AnswerFragment : Fragment() {
 
     private var infinitive: String = ""
     private var word: String = ""
-    private var wordLength: Int = 0
 
     private val userEntry: String
         get() = txt_answer.text.toString().trim { it <= ' ' }
@@ -96,7 +95,7 @@ class AnswerFragment : Fragment() {
     //region PUBLIC CLASS FUNCTIONS ----------------------------------------------------------------
 
     fun setGameWord(answerPresentation: AnswerPresentation) {
-        updateGameWord(answerPresentation)
+        updateGameWord(answerPresentation.userText)
         word = answerPresentation.word
         infinitive = answerPresentation.infinitive
     }
@@ -104,24 +103,16 @@ class AnswerFragment : Fragment() {
     // called by activity
     fun clearGameWord() {
         txt_answer.setText("")
-        subject_pronoun_and_tense.text = ""
-        infinitive_and_translation.text = ""
     }
 
     //endregion
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
-    private fun updateGameWord(answerPresentation: AnswerPresentation) {
-        wordLength = answerPresentation.word.length
-
+    private fun updateGameWord(userText: String?) {
         // set text in editor
-        txt_answer.setText(answerPresentation.userText ?: "")
-        txt_answer.setSelection(answerPresentation.userText?.length ?: 0)
-
-        // update clue views
-        subject_pronoun_and_tense.text = answerPresentation.conjugationLabel
-        infinitive_and_translation.text = "${answerPresentation.infinitive} (${answerPresentation.translation})"
+        txt_answer.setText(userText?: "")
+        txt_answer.setSelection(userText?.length ?: 0)
     }
 
     private fun insertText(text: String) {

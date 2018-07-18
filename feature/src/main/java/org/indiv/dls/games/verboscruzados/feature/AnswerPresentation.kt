@@ -6,6 +6,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class AnswerPresentation(val word: String,
                          val userText: String?,
-                         val conjugationLabel: String,
+                         val conjugationTypeLabel: String,
+                         val subjectPronounLabel: String,
                          val infinitive: String,
                          val translation: String) : Parcelable

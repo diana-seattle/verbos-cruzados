@@ -268,8 +268,8 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
     private fun createAnswerPresentation(gameWord: GameWord): AnswerPresentation {
-        return AnswerPresentation(gameWord.word, gameWord.userText, gameWord.conjugationLabel,
-                gameWord.infinitive, gameWord.translation)
+        return AnswerPresentation(gameWord.word, gameWord.userText, gameWord.conjugationTypeLabel,
+                gameWord.subjectPronounLabel, gameWord.infinitive, gameWord.translation)
     }
 
     /*

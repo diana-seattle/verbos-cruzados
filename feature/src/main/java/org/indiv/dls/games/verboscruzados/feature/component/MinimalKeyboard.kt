@@ -2,6 +2,7 @@ package org.indiv.dls.games.verboscruzados.feature.component
 
 import android.content.Context
 import android.os.Vibrator
+import android.text.Html
 import android.util.AttributeSet
 import android.view.View
 import android.view.inputmethod.InputConnection
@@ -82,7 +83,7 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
             vibrator.vibrate(VIBRATION_MSEC)
             dismissClickListener?.invoke()
         }
-        button_infinitive.setOnClickListener {
+        keyboard_button_infinitive.setOnClickListener {
             vibrator.vibrate(VIBRATION_MSEC)
 
             // replace all existing text with the infinitive
@@ -120,8 +121,13 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
     var answerPresentation: AnswerPresentation? = null
         set(value) {
             field = value
-            conjugation_label.text = value?.conjugationLabel
-            button_infinitive.text = value?.infinitive
+            value?.apply {
+                keyboard_conjugation_type_label.text = conjugationTypeLabel
+                keyboard_button_infinitive.text = Html.fromHtml("<u>$infinitive</u>")
+                keyboard_translation.text = "($translation)"
+                keyboard_subject_pronoun_label.text = subjectPronounLabel
+                keyboard_subject_pronoun_label.visibility = if (subjectPronounLabel.isEmpty()) GONE else VISIBLE
+            }
         }
 
     //endregion
