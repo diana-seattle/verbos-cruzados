@@ -5,9 +5,10 @@
     <dimen name="fragment_answer_height">50dp</dimen>
 
     <!-- height of bottom margin to allow for scrolling puzzle above keyboard -->
-    <dimen name="keyboard_height">200dp</dimen>
+    <dimen name="keyboard_height">196dp</dimen>
 
     <dimen name="keyboard_letter_size">@dimen/x_large_fixed</dimen>
+    <dimen name="keyboard_infinitive_size">@dimen/large_fixed</dimen>
 
     <!-- width of individual cell -->
     <dimen name="cell_width">22dp</dimen>
