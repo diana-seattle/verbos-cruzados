@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.View.OnClickListener
+import android.widget.ScrollView
 import android.widget.TableRow
 import kotlinx.android.synthetic.main.fragment_puzzle.*
 import org.indiv.dls.games.verboscruzados.feature.component.PuzzleCellTextView
@@ -49,6 +50,12 @@ class PuzzleFragment : Fragment() {
             field?.let { showAsSelected(it, false) }
             gameWord?.let { showAsSelected(it, true) }
             field = gameWord
+        }
+
+    var scrollPosition: Int
+        get() = (view as? ScrollView)?.scrollY ?: 0
+        set(value) {
+            (view as? ScrollView)?.smoothScrollTo(0, value)
         }
 
     //endregion

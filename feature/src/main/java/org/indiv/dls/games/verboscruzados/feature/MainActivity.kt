@@ -24,6 +24,7 @@ import org.indiv.dls.games.verboscruzados.feature.dialog.GameOptionsDialogFragme
 import org.indiv.dls.games.verboscruzados.feature.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.math.roundToInt
 
 
 /*
@@ -44,10 +45,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 // TODO: app icons
 
 
-// add arrows to keyboard (up, down / right, left)
+//TODO: scroll puzzle on word selection
 // highlight individual letter, dark yellow
+// add arrows to keyboard (up, down / right, left)
 // no red fill for errors, thicker border
-// scroll puzzle on word selection
 // consider when to show/hide keyboard
 // consider how to display letter that conflicts in the two directions
 // always show errored cells? maybe too obvious
@@ -88,6 +89,9 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
     private var showingErrors = false
     private var keyboardHeight: Float = 0f
+    private var viewablePuzzleHeight: Float = 0f
+    private var puzzleMarginPixels: Float = 0f
+    private var pixelsPerCell : Float = 0f
 
     private var statsPersisted: Boolean = false
 
@@ -130,7 +134,8 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         // calculate available space for the puzzle
         val displayMetrics = resources.displayMetrics
         val configuration = resources.configuration
-        val marginInPixels = resources.getDimension(R.dimen.puzzle_margin)
+        puzzleMarginPixels = resources.getDimension(R.dimen.puzzle_margin)
+        val totalPuzzleMarginPixels = puzzleMarginPixels * 2
         val actionBarHeightPixels = getActionBarHeightInPixels(displayMetrics)
         val answerHeightPixels = resources.getDimension(R.dimen.fragment_answer_height)
         val screenWidthDp = configuration.smallestScreenWidthDp
@@ -144,11 +149,12 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
                 screenWidthDp.toFloat(), displayMetrics)
         val screenHeightPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 screenHeightDp.toFloat(), displayMetrics)
-        val puzzleHeightPixels = (screenHeightPixels - actionBarHeightPixels - answerHeightPixels - marginInPixels) * heightFactor
-        val puzzleWidthPixels = screenWidthPixels - marginInPixels
+        viewablePuzzleHeight = screenHeightPixels - actionBarHeightPixels - answerHeightPixels - totalPuzzleMarginPixels
+        val puzzleHeightPixels = viewablePuzzleHeight * heightFactor
+        val puzzleWidthPixels = screenWidthPixels - totalPuzzleMarginPixels
 
         // calculate number of pixels equivalent to 24dp (24dp allows 13 cells on smallest screen supported by Android (320dp width, 426dp height))
-        val pixelsPerCell = resources.getDimension(R.dimen.cell_width)
+        pixelsPerCell = resources.getDimension(R.dimen.cell_width)
         val gridHeight = (puzzleHeightPixels / pixelsPerCell).toInt()
         val gridWidth = (puzzleWidthPixels / pixelsPerCell).toInt()
 
@@ -162,7 +168,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         answer_keyboard.nextWordClickListener = {
             if (puzzleFragment.selectNextGameWord(currentGameWord?.row ?: 0, currentGameWord?.col ?: 0) ||
                     puzzleFragment.selectNextGameWord(0,-1)) {
-                currentGameWord = puzzleFragment.currentGameWord
+                setGameWord(puzzleFragment.currentGameWord!!, false)
             }
         }
         answer_keyboard.dismissClickListener = {
@@ -393,6 +399,40 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
         if (showKeyboard) {
             showKeyboard()
+        }
+
+        scrollWordIntoView()
+    }
+
+    private fun scrollWordIntoView() {
+        currentGameWord?.let {
+            val firstRowPosition = it.row
+            val lastRowPosition = when {
+                it.isAcross -> it.row
+                else -> it.row + it.word.length - 1
+            }
+            val yOfFirstCell = firstRowPosition * pixelsPerCell
+
+            val heightForKeyboard = if (isKeyboardVisible()) keyboardHeight else 0f
+            val availableHeight = viewablePuzzleHeight - heightForKeyboard
+            val wordHeight = (lastRowPosition - firstRowPosition + 1) * pixelsPerCell
+
+            // if there's room to display the whole word
+            if (wordHeight < availableHeight) {
+                // if first cell is above visible area, scroll
+                if (yOfFirstCell < puzzleFragment.scrollPosition) {
+                    puzzleFragment.scrollPosition = (yOfFirstCell - puzzleMarginPixels).roundToInt()
+                } else if (yOfFirstCell - wordHeight > puzzleFragment.scrollPosition + availableHeight) {
+                    puzzleFragment.scrollPosition = (yOfFirstCell - wordHeight - availableHeight).roundToInt()
+                }
+                val desiredScrollPosition = yOfFirstCell + availableHeight - wordHeight + puzzleMarginPixels
+                if (desiredScrollPosition > puzzleFragment.scrollPosition) {
+                    puzzleFragment.scrollPosition = desiredScrollPosition.roundToInt()
+                }
+            } else {
+                // otherwise scroll top of word to top of viewable area
+                puzzleFragment.scrollPosition = (yOfFirstCell - puzzleMarginPixels).roundToInt()
+            }
         }
     }
 
