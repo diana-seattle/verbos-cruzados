@@ -11,6 +11,10 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.keyboard_minimal.view.*
 import org.indiv.dls.games.verboscruzados.feature.AnswerPresentation
 import org.indiv.dls.games.verboscruzados.feature.R
+import org.indiv.dls.games.verboscruzados.feature.R.id.keyboard_button_infinitive
+import org.indiv.dls.games.verboscruzados.feature.R.id.keyboard_conjugation_type_label
+import org.indiv.dls.games.verboscruzados.feature.R.id.keyboard_subject_pronoun_label
+import org.indiv.dls.games.verboscruzados.feature.R.id.keyboard_translation
 
 /**
  * Minimal keyboard for entering answers while covering the least amount of puzzle possible.
@@ -104,6 +108,25 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
         button_delete.setOnLongClickListener {
             // delete all characters before the cursor
             inputConnection?.deleteSurroundingText(50, 0) == true
+        }
+        button_left_arrow.setOnClickListener {
+            vibrator.vibrate(VIBRATION_MSEC)
+            val currentPosition = inputConnection?.getTextBeforeCursor(50, 0)?.length
+            currentPosition?.let {
+                val newPosition = (it - 1).coerceAtLeast(0)
+                inputConnection?.setSelection(newPosition, newPosition)
+            }
+        }
+        button_right_arrow.setOnClickListener {
+            vibrator.vibrate(VIBRATION_MSEC)
+            val currentPosition = inputConnection?.getTextBeforeCursor(50, 0)?.length
+            currentPosition?.let {
+                val newPosition = (it + 1)
+                inputConnection?.setSelection(newPosition, newPosition)
+            }
+        }
+        button_next_word.setOnClickListener {
+            vibrator.vibrate(VIBRATION_MSEC)
         }
     }
 

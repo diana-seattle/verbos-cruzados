@@ -1,27 +1,5 @@
 package org.indiv.dls.games.verboscruzados.feature
 
-/*
- * Play Store: https://play.google.com/store/apps/details?id=org.indiv.dls.games.verboscruzados
- */
-
-// TODO: change fragments into components
-// TODO: more verbs - or message the user about selecting more options (https://www.e-spanyol.hu/en/grammar/irregular_ar.php)
-// TODO: test/fix conjugations
-// TODO: instant app
-// TODO: fix imports
-// Complete other TODO items throughout code
-// TODO: use photos from Elissa
-// TODO: fix game options (include vosotros/singular/plural, horizontal ar/ir/er, gerund + past part)
-
-// TODO: optimizing drawing of puzzle (eliminate spacer views)
-// TODO: fix layout algorithm to use more short words & variability (80% rule)
-// TODO: app icons
-
-
-// https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
-// https://pixabay.com/en/canyon-desert-sky-huge-mountains-311233/
-// https://www.pexels.com/photo/america-arid-bushes-california-221148/
-
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import org.indiv.dls.games.verboscruzados.feature.async.GameSetup
@@ -46,6 +24,40 @@ import org.indiv.dls.games.verboscruzados.feature.dialog.GameOptionsDialogFragme
 import org.indiv.dls.games.verboscruzados.feature.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
 import kotlinx.android.synthetic.main.activity_main.*
+
+
+/*
+ * Play Store: https://play.google.com/store/apps/details?id=org.indiv.dls.games.verboscruzados
+ */
+
+// TODO: change fragments into components
+// TODO: more verbs - or message the user about selecting more options (https://www.e-spanyol.hu/en/grammar/irregular_ar.php)
+// TODO: test/fix conjugations
+// TODO: instant app
+// TODO: fix imports
+// Complete other TODO items throughout code
+// TODO: use photos from Elissa
+// TODO: fix game options (include vosotros/singular/plural, horizontal ar/ir/er, gerund + past part)
+
+// TODO: optimizing drawing of puzzle (eliminate spacer views)
+// TODO: fix layout algorithm to use more short words & variability (80% rule)
+// TODO: app icons
+
+
+// add arrows to keyboard (up, down / right, left)
+// highlight individual letter, dark yellow
+// no red fill for errors, thicker border
+// scroll puzzle on word selection
+// consider when to show/hide keyboard
+// consider how to display letter that conflicts in the two directions
+// always show errored cells? maybe too obvious
+
+
+
+
+// https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
+// https://pixabay.com/en/canyon-desert-sky-huge-mountains-311233/
+// https://www.pexels.com/photo/america-arid-bushes-california-221148/
 
 
 /**

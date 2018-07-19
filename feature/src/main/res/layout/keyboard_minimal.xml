@@ -25,7 +25,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/soft_black"
-                android:textSize="@dimen/small_fixed"/>
+                android:textSize="@dimen/medium_fixed"
+                android:textStyle="italic"/>
 
             <LinearLayout android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
@@ -276,10 +277,25 @@
                 android:id="@+id/button_n_tilde"
                 style="@style/answerLetterButton.special"
                 android:text="ñ"/>
-            <TextView
-                style="@style/answerLetterButton.special"
-                android:layout_weight="3"
-                android:text="arrows!!!"/>
+            <ImageView
+                android:id="@+id/button_left_arrow"
+                style="@style/answerLetterButton"
+                android:src="@android:drawable/arrow_up_float"
+                android:tint="@color/soft_black"/>
+            <ImageView
+                android:id="@+id/button_right_arrow"
+                style="@style/answerLetterButton"
+                android:src="@android:drawable/arrow_down_float"
+                android:tint="@color/soft_black"/>
+            <ImageView
+                android:id="@+id/button_next_word"
+                style="@style/answerLetterButton"
+                android:src="@android:drawable/ic_media_next"
+                android:tint="@color/soft_black"/>
+            <!--<TextView-->
+            <!--style="@style/answerLetterButton.special"-->
+            <!--android:layout_weight="3"-->
+            <!--android:text="arrows!!!"/>-->
 
         </LinearLayout>
     </LinearLayout>

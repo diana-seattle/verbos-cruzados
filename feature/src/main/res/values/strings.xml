@@ -27,7 +27,7 @@
     <string name="dialog_help_title">Game Instructions</string>
     <string name="dialog_help_step1">1. Touch a puzzle word</string>
     <string name="dialog_help_step2">2. Enter your answer</string>
-    <string name="dialog_help_infinitive_button">\"Infinitive\" button saves typing</string>
+    <string name="dialog_help_infinitive_button">Infinitive button saves typing</string>
     <string name="dialog_help_accents">Accents are important!</string>
     <string name="dialog_help_scrolling">Scroll to see bottom of puzzle</string>
     <string name="dialog_help_menu_title">Menu</string>
