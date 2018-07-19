@@ -186,11 +186,14 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/button_close"
+                android:id="@+id/button_delete"
                 style="@style/answerLetterButton"
-                android:layout_gravity="start"
-                android:src="@drawable/ic_baseline_check_circle_24px"
-                android:tint="@color/keyboard_done_key"/>
+                android:layout_weight="1"
+                android:paddingBottom="6dp"
+                android:paddingTop="6dp"
+                android:paddingStart="4dp"
+                android:src="@drawable/ic_baseline_backspace_24px"
+                android:tint="@color/soft_black"/>
             <TextView
                 android:id="@+id/button_z"
                 style="@style/answerLetterButton"
@@ -219,24 +222,14 @@
                 android:id="@+id/button_m"
                 style="@style/answerLetterButton"
                 android:text="m"/>
-            <!-- A dummy view for the sake of spacing -->
-            <View
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".5"
-                android:visibility="invisible"/>
             <ImageView
-                android:id="@+id/button_delete"
+                android:id="@+id/button_next_word"
                 style="@style/answerLetterButton"
-                android:layout_weight="1"
-                android:src="@android:drawable/ic_input_delete"
+                android:paddingEnd="4dp"
+                android:paddingStart="2dp"
+                android:paddingTop="2dp"
+                android:src="@drawable/ic_baseline_keyboard_return_24px"
                 android:tint="@color/soft_black"/>
-            <!-- A dummy view for the sake of spacing -->
-            <View
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".5"
-                android:visibility="invisible"/>
 
         </LinearLayout>
 
@@ -247,7 +240,6 @@
             android:layout_weight="1"
             android:orientation="horizontal">
 
-            <!-- A dummy view for the sake of spacing -->
             <TextView
                 android:id="@+id/button_a_accent"
                 style="@style/answerLetterButton.special"
@@ -279,17 +271,20 @@
             <ImageView
                 android:id="@+id/button_left_arrow"
                 style="@style/answerLetterButton"
-                android:src="@android:drawable/arrow_up_float"
+                android:src="@drawable/ic_baseline_arrow_left_24px"
                 android:tint="@color/soft_black"/>
             <ImageView
                 android:id="@+id/button_right_arrow"
                 style="@style/answerLetterButton"
-                android:src="@android:drawable/arrow_down_float"
+                android:src="@drawable/ic_baseline_arrow_right_24px"
                 android:tint="@color/soft_black"/>
             <ImageView
-                android:id="@+id/button_next_word"
+                android:id="@+id/button_close"
                 style="@style/answerLetterButton"
-                android:src="@android:drawable/ic_media_next"
+                android:layout_gravity="start"
+                android:paddingEnd="6dp"
+                android:paddingStart="2dp"
+                android:src="@drawable/ic_baseline_keyboard_hide_24px"
                 android:tint="@color/soft_black"/>
             <!--<TextView-->
             <!--style="@style/answerLetterButton.special"-->
