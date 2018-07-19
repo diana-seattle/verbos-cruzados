@@ -161,61 +161,13 @@ class PuzzleFragment : Fragment() {
     }
 
     /**
-     * Selects next game word containing an error.
+     * Selects next empty or errored game word depending on parameter.
+     *
+     * @param emptyOnly true if next empty game word should be selected, false if any errored game word shold be selected.
      */
-    fun selectNextErroredGameWord(): Boolean {
-        for (row in 0 until gridHeight) {
-            for (col in 0 until gridWidth) {
-                cellGrid[row][col]?.let {
-                    when {
-                        it.hasUserErrorAcross() -> {
-                            currentGameWord = it.gameWordAcross
-                            return true
-                        }
-                        it.hasUserErrorDown() -> {
-                            currentGameWord = it.gameWordDown
-                            return true
-                        }
-                        else -> {
-                        }
-                    }
-                }
-            }
-        }
-        return false
-    }
-
-    /**
-     * Selects next game word containing an error.
-     */
-    fun selectNextGameWord(startingRow: Int, startingCol: Int): Boolean {
-        var initialCol = startingCol
-        for (row in 0 until gridHeight) {
-            if (row >= startingRow) {
-                for (col in 0 until gridWidth) {
-                    if (col >= initialCol) {
-                        cellGrid[row][col]?.let {
-                            if (row > startingRow || col > initialCol) {
-                                // if the cell's word begins in the cell, then select it
-                                if (it.gameWordAcross?.col == col) {
-                                    currentGameWord = it.gameWordAcross
-                                    return true
-                                } else if (it.gameWordDown?.row == row) {
-                                    currentGameWord = it.gameWordDown
-                                    return true
-                                }
-                            } else if (it.gameWordDown?.row == row && it.gameWordDown != currentGameWord) {
-                                currentGameWord = it.gameWordDown
-                                return true
-                            }
-                        }
-                    }
-                }
-                // for subsequent rows, start at first column
-                initialCol = 0
-            }
-        }
-        return false
+    fun selectNextGameWord(emptyOnly: Boolean): Boolean {
+        return selectNextGameWord(currentGameWord?.row ?: 0, currentGameWord?.col ?: 0, emptyOnly) ||
+                selectNextGameWord(0, -1, emptyOnly)
     }
 
     /**
@@ -285,6 +237,47 @@ class PuzzleFragment : Fragment() {
     //endregion
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
+
+    /**
+     * Selects next empty or errored game word depending on parameter.
+     *
+     * @param emptyOnly true if next empty game word should be selected, false if any errored game word shold be selected.
+     */
+    private fun selectNextGameWord(startingRow: Int, startingCol: Int, emptyOnly: Boolean): Boolean {
+        var initialCol = startingCol
+        for (row in 0 until gridHeight) {
+            if (row >= startingRow) {
+                for (col in 0 until gridWidth) {
+                    if (col >= initialCol) {
+                        cellGrid[row][col]?.let {
+                            if (row > startingRow || col > initialCol) {
+                                // if the cell's word begins in the cell, then select it
+                                if (it.gameWordAcross?.col == col && it.gameWordAcross != currentGameWord && isEmptyOrErroredGameWord(it.gameWordAcross, emptyOnly)) {
+                                    currentGameWord = it.gameWordAcross
+                                    return true
+                                } else if (it.gameWordDown?.row == row && it.gameWordDown != currentGameWord && isEmptyOrErroredGameWord(it.gameWordDown, emptyOnly)) {
+                                    currentGameWord = it.gameWordDown
+                                    return true
+                                }
+                            } else if (it.gameWordDown?.row == row && it.gameWordDown != currentGameWord) {
+                                currentGameWord = it.gameWordDown
+                                return true
+                            }
+                        }
+                    }
+                }
+                // for subsequent rows, start at first column
+                initialCol = 0
+            }
+        }
+        return false
+    }
+
+    private fun isEmptyOrErroredGameWord(gameWord: GameWord?, emptyOnly: Boolean): Boolean {
+        return gameWord?.let {
+            emptyOnly && it.userText.isEmpty() || (!emptyOnly && !it.isAnsweredCorrectly)
+        }?: false
+    }
 
     /**
      * Shows the specified word as selected (yellow highlight).

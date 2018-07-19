@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
                     currentGameWord?.let {
                         onUpdateAnswer(it.word)
                     }
-                } while (puzzleFragment.selectNextErroredGameWord() == true)
+                } while (puzzleFragment.selectNextGameWord(false))
                 true
             }
         }
@@ -166,8 +166,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         // pass the InputConnection from the EditText to the keyboard
         answer_keyboard.inputConnection = answerFragment.answerEntryInputConnection
         answer_keyboard.nextWordClickListener = {
-            if (puzzleFragment.selectNextGameWord(currentGameWord?.row ?: 0, currentGameWord?.col ?: 0) ||
-                    puzzleFragment.selectNextGameWord(0,-1)) {
+            if (puzzleFragment.selectNextGameWord(true) || puzzleFragment.selectNextGameWord(false)) {
                 setGameWord(puzzleFragment.currentGameWord!!, false)
             }
         }
@@ -255,16 +254,11 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
             showErrors(showingErrors)
         }
 
-        // If user text matches answer, dismiss keyboard
-        val currentWordIsCorrect = currentGameWord?.isAnsweredCorrectly == true
-        if (currentWordIsCorrect) {
-            hideKeyboard()
-        }
-
         // Note that the puzzle may be completed correctly while an individual word is not. It may be
         // too long or have a wrong character that appears correct because of character in other direction.
 
         // if puzzle is complete and correct.
+        val currentWordIsCorrect = currentGameWord?.isAnsweredCorrectly == true
         if (currentWordIsCorrect && puzzleFragment.isPuzzleComplete(true)) {
             if (!statsPersisted) {
                 persistenceHelper.persistGameStats(currentGameWords)
