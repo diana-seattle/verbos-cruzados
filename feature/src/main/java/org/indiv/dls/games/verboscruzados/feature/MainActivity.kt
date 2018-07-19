@@ -53,8 +53,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 // always show errored cells? maybe too obvious
 
 
-
-
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
 // https://pixabay.com/en/canyon-desert-sky-huge-mountains-311233/
 // https://www.pexels.com/photo/america-arid-bushes-california-221148/
@@ -161,6 +159,12 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
         // pass the InputConnection from the EditText to the keyboard
         answer_keyboard.inputConnection = answerFragment.answerEntryInputConnection
+        answer_keyboard.nextWordClickListener = {
+            if (puzzleFragment.selectNextGameWord(currentGameWord?.row ?: 0, currentGameWord?.col ?: 0) ||
+                    puzzleFragment.selectNextGameWord(0,-1)) {
+                currentGameWord = puzzleFragment.currentGameWord
+            }
+        }
         answer_keyboard.dismissClickListener = {
             hideKeyboard()
         }
@@ -450,6 +454,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
             override fun onAnimationCancel(animation: Animator?) {
                 answer_keyboard.visibility = View.INVISIBLE
             }
+
             override fun onAnimationEnd(animation: Animator?) {
                 answer_keyboard.visibility = View.INVISIBLE
             }

@@ -11,10 +11,6 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.keyboard_minimal.view.*
 import org.indiv.dls.games.verboscruzados.feature.AnswerPresentation
 import org.indiv.dls.games.verboscruzados.feature.R
-import org.indiv.dls.games.verboscruzados.feature.R.id.keyboard_button_infinitive
-import org.indiv.dls.games.verboscruzados.feature.R.id.keyboard_conjugation_type_label
-import org.indiv.dls.games.verboscruzados.feature.R.id.keyboard_subject_pronoun_label
-import org.indiv.dls.games.verboscruzados.feature.R.id.keyboard_translation
 
 /**
  * Minimal keyboard for entering answers while covering the least amount of puzzle possible.
@@ -127,6 +123,7 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
         }
         button_next_word.setOnClickListener {
             vibrator.vibrate(VIBRATION_MSEC)
+            nextWordClickListener?.invoke()
         }
     }
 
@@ -139,6 +136,9 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
 
     // Caller can set this to be notified when the user wants to dismiss the keyboard
     var dismissClickListener: (() -> Unit)? = null
+
+    // Caller can set this to be notified when the user wants to select the next word
+    var nextWordClickListener: (() -> Unit)? = null
 
     // Caller must set this for the display of the clue info and for the infinitive button to insert the infinitive text.
     var answerPresentation: AnswerPresentation? = null

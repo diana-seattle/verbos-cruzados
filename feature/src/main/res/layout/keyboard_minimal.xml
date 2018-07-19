@@ -188,12 +188,17 @@
             <ImageView
                 android:id="@+id/button_delete"
                 style="@style/answerLetterButton"
-                android:layout_weight="1"
+                android:layout_weight="1.25"
                 android:paddingBottom="6dp"
                 android:paddingTop="6dp"
-                android:paddingStart="4dp"
+                android:paddingStart="6dp"
                 android:src="@drawable/ic_baseline_backspace_24px"
                 android:tint="@color/soft_black"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".25"
+                android:visibility="invisible"/>
             <TextView
                 android:id="@+id/button_z"
                 style="@style/answerLetterButton"
@@ -222,14 +227,22 @@
                 android:id="@+id/button_m"
                 style="@style/answerLetterButton"
                 android:text="m"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".25"
+                android:visibility="invisible"/>
             <ImageView
                 android:id="@+id/button_next_word"
                 style="@style/answerLetterButton"
-                android:paddingEnd="4dp"
-                android:paddingStart="2dp"
                 android:paddingTop="2dp"
                 android:src="@drawable/ic_baseline_keyboard_return_24px"
                 android:tint="@color/soft_black"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".25"
+                android:visibility="invisible"/>
 
         </LinearLayout>
 

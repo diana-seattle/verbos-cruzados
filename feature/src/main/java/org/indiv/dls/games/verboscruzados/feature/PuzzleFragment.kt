@@ -51,38 +51,6 @@ class PuzzleFragment : Fragment() {
             field = gameWord
         }
 
-    /**
-     * List of cell values from opposing words of the the currently selected word.
-     */
-    val opposingPuzzleCellValues: Map<Int, Char>
-        get() {
-            val puzzleCellValues = HashMap<Int, Char>()
-            currentGameWord?.let {
-                val isAcross = it.isAcross
-                val wordLength = it.word.length
-                var row = it.row
-                var col = it.col
-                for (charIndex in 0 until wordLength) {
-                    cellGrid[row][col]?.let {
-                        when {
-                            isAcross && it.userCharDown != null -> it.userCharDown
-                            !isAcross && it.userCharAcross != null -> it.userCharAcross
-                            else -> null
-                        }
-                    }?.let {
-                        puzzleCellValues.put(charIndex, it)
-                    }
-
-                    if (isAcross) {
-                        col++
-                    } else {
-                        row++
-                    }
-                }
-            }
-            return puzzleCellValues
-        }
-
     //endregion
 
     //region OVERRIDDEN FUNCTIONS ------------------------------------------------------------------
@@ -205,6 +173,39 @@ class PuzzleFragment : Fragment() {
                         }
                     }
                 }
+            }
+        }
+        return false
+    }
+
+    /**
+     * Selects next game word containing an error.
+     */
+    fun selectNextGameWord(startingRow: Int, startingCol: Int): Boolean {
+        var initialCol = startingCol
+        for (row in 0 until gridHeight) {
+            if (row >= startingRow) {
+                for (col in 0 until gridWidth) {
+                    if (col >= initialCol) {
+                        cellGrid[row][col]?.let {
+                            if (row > startingRow || col > initialCol) {
+                                // if the cell's word begins in the cell, then select it
+                                if (it.gameWordAcross?.col == col) {
+                                    currentGameWord = it.gameWordAcross
+                                    return true
+                                } else if (it.gameWordDown?.row == row) {
+                                    currentGameWord = it.gameWordDown
+                                    return true
+                                }
+                            } else if (it.gameWordDown?.row == row && it.gameWordDown != currentGameWord) {
+                                currentGameWord = it.gameWordDown
+                                return true
+                            }
+                        }
+                    }
+                }
+                // for subsequent rows, start at first column
+                initialCol = 0
             }
         }
         return false
