@@ -413,15 +413,11 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
             // if there's room to display the whole word
             if (wordHeight < availableHeight) {
-                // if first cell is above visible area, scroll
+                // if first cell is above visible area, scroll up to it, or if last cell is below visible area, scroll down to it
                 if (yOfFirstCell < puzzleFragment.scrollPosition) {
                     puzzleFragment.scrollPosition = (yOfFirstCell - puzzleMarginPixels).roundToInt()
-                } else if (yOfFirstCell - wordHeight > puzzleFragment.scrollPosition + availableHeight) {
-                    puzzleFragment.scrollPosition = (yOfFirstCell - wordHeight - availableHeight).roundToInt()
-                }
-                val desiredScrollPosition = yOfFirstCell + availableHeight - wordHeight + puzzleMarginPixels
-                if (desiredScrollPosition > puzzleFragment.scrollPosition) {
-                    puzzleFragment.scrollPosition = desiredScrollPosition.roundToInt()
+                } else if (yOfFirstCell + wordHeight > puzzleFragment.scrollPosition + availableHeight) {
+                    puzzleFragment.scrollPosition = (yOfFirstCell + wordHeight - availableHeight).roundToInt()
                 }
             } else {
                 // otherwise scroll top of word to top of viewable area
