@@ -2,19 +2,19 @@
 <level-list
     xmlns:android="http://schemas.android.com/apk/res/android" >
     <item
-        android:drawable="@drawable/cell_border"
+        android:drawable="@drawable/cell_background_used"
         android:maxLevel="1"
     />
     <item
-        android:drawable="@drawable/cell_border_errored"
+        android:drawable="@drawable/cell_background_errored"
         android:maxLevel="2"
     />
     <item
-        android:drawable="@drawable/cell_border_selected"
+        android:drawable="@drawable/cell_background_selected"
         android:maxLevel="3"
     />
     <item
-        android:drawable="@drawable/cell_border_errored_selected"
+        android:drawable="@drawable/cell_background_errored_selected"
         android:maxLevel="4"
     />
 </level-list>

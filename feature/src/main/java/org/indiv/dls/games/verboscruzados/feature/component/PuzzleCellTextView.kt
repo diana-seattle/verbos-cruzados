@@ -23,7 +23,7 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
         val fontHeight = size * FONT_SIZE_FRACTION
         gravity = Gravity.CENTER
         // need to create Drawable object for each TextView
-        background = resources.getDrawable(R.drawable.cell_drawable)  // non-deprecated method not supported until API level 21
+        background = resources.getDrawable(R.drawable.cell_drawable, null)
         setTextSize(TypedValue.COMPLEX_UNIT_PX, fontHeight)
         width = size
         height = size

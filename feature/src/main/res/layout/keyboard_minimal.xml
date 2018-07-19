@@ -49,7 +49,6 @@
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:textColor="@color/keyboard_special_letters"
                     android:textSize="@dimen/keyboard_infinitive_size"
-                    android:textStyle="italic"
                     tools:text="infinitive"/>
 
                 <!-- English Translation -->
