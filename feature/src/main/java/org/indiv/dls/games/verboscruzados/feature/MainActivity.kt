@@ -45,14 +45,14 @@ import kotlin.math.roundToInt
 // TODO: app icons
 
 
-//TODO: have keyboard arrows adjust selected cell
-//TODO: connect typing to selected cell
+//TODO: connect typing to selected cell (infinitive)
 //TODO: move selected cell to end of user text after pressing infinitive
 // TODO: change keyboard arrows up<->left, down<->right when word is selected
+// TODO: delete edittext
+//TODO: remove delete key?
 // adjust spacing on keyboard 3rd row (see on 10in)
-// remove delete key and edit box?
 // consider when to show/hide keyboard
-// consider how to display letter that conflicts in the two directions
+// consider how to display letter that conflicts in the two directions (respect selected word, then errored word)
 
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
@@ -166,6 +166,15 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
         // pass the InputConnection from the EditText to the keyboard
         answer_keyboard.inputConnection = answerFragment.answerEntryInputConnection
+        answer_keyboard.letterClickListener = {
+            puzzleFragment.updateLetterInPuzzle(it)
+        }
+        answer_keyboard.leftClickListener = {
+            puzzleFragment.advanceSelectedCellInPuzzle(true)
+        }
+        answer_keyboard.rightClickListener = {
+            puzzleFragment.advanceSelectedCellInPuzzle(false)
+        }
         answer_keyboard.nextWordClickListener = {
             if (puzzleFragment.selectNextGameWord(true) || puzzleFragment.selectNextGameWord(false)) {
                 setGameWord(puzzleFragment.currentGameWord!!)

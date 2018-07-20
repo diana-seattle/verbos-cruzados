@@ -15,7 +15,6 @@ import android.view.View.OnClickListener
 import android.widget.ScrollView
 import android.widget.TableRow
 import kotlinx.android.synthetic.main.fragment_puzzle.*
-import org.indiv.dls.games.verboscruzados.feature.MainActivity.Companion.currentGameWord
 import org.indiv.dls.games.verboscruzados.feature.component.PuzzleCellTextView
 
 
@@ -249,6 +248,34 @@ class PuzzleFragment : Fragment() {
         }
     }
 
+    fun updateLetterInPuzzle(letter: Char) {
+        currentGameWord?.let {
+            if (selectedCellIndex >= it.userText.length) {
+                it.userText = it.userText + letter
+            } else {
+                it.userText = it.userText.take(selectedCellIndex) + letter + it.userText.substring(selectedCellIndex).drop(1)
+            }
+            selectedCellIndex = (selectedCellIndex + 1).coerceAtMost(it.word.length - 1)
+            updateUserTextInPuzzle(it)
+            showAsSelected(it, true)
+        }
+    }
+
+    fun advanceSelectedCellInPuzzle(leftDirection: Boolean) {
+        currentGameWord?.let {
+            if (leftDirection) {
+                selectedCellIndex = (selectedCellIndex - 1).coerceAtLeast(0)
+            } else {
+                selectedCellIndex = (selectedCellIndex + 1).coerceAtMost(it.word.length - 1)
+            }
+            showAsSelected(it, true)
+        }
+    }
+
+    //endregion
+
+    //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
+
     private fun getIndexOfCellInWord(gameWord: GameWord, gridCell: GridCell): Int {
         val isAcross = gameWord.isAcross
         var row = gameWord.row
@@ -267,10 +294,6 @@ class PuzzleFragment : Fragment() {
         }
         return 0
     }
-
-    //endregion
-
-    //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
     /**
      * Selects next empty or errored game word depending on parameter.

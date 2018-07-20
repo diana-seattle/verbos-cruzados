@@ -42,7 +42,7 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
         val letterClickListener: (View) -> Unit = {
             (it as? TextView)?.let {
                 vibrator.vibrate(VIBRATION_MSEC)
-                inputConnection?.commitText(it.text, 1)
+                letterClickListener?.invoke(it.text[0])
             }
         }
 
@@ -109,16 +109,14 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
             vibrator.vibrate(VIBRATION_MSEC)
             val currentPosition = inputConnection?.getTextBeforeCursor(50, 0)?.length
             currentPosition?.let {
-                val newPosition = (it - 1).coerceAtLeast(0)
-                inputConnection?.setSelection(newPosition, newPosition)
+                leftClickListener?.invoke()
             }
         }
         button_right_arrow.setOnClickListener {
             vibrator.vibrate(VIBRATION_MSEC)
             val currentPosition = inputConnection?.getTextBeforeCursor(50, 0)?.length
             currentPosition?.let {
-                val newPosition = (it + 1)
-                inputConnection?.setSelection(newPosition, newPosition)
+                rightClickListener?.invoke()
             }
         }
         button_next_word.setOnClickListener {
@@ -139,6 +137,15 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
 
     // Caller can set this to be notified when the user wants to select the next word
     var nextWordClickListener: (() -> Unit)? = null
+
+    // Caller can set this to be notified when the user clicks on a letter
+    var letterClickListener: ((Char) -> Unit)? = null
+
+    // Caller can set this to be notified when the user clicks on the left/up arrow
+    var leftClickListener: (() -> Unit)? = null
+
+    // Caller can set this to be notified when the user clicks on the right/down arrow
+    var rightClickListener: (() -> Unit)? = null
 
     // Caller must set this for the display of the clue info and for the infinitive button to insert the infinitive text.
     var answerPresentation: AnswerPresentation? = null
