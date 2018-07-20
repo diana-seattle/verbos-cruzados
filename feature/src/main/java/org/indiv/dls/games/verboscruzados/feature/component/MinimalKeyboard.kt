@@ -11,6 +11,10 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.keyboard_minimal.view.*
 import org.indiv.dls.games.verboscruzados.feature.AnswerPresentation
 import org.indiv.dls.games.verboscruzados.feature.R
+import org.indiv.dls.games.verboscruzados.feature.R.id.keyboard_button_infinitive
+import org.indiv.dls.games.verboscruzados.feature.R.id.keyboard_conjugation_type_label
+import org.indiv.dls.games.verboscruzados.feature.R.id.keyboard_subject_pronoun_label
+import org.indiv.dls.games.verboscruzados.feature.R.id.keyboard_translation
 
 /**
  * Minimal keyboard for entering answers while covering the least amount of puzzle possible.
@@ -85,10 +89,7 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
         }
         keyboard_button_infinitive.setOnClickListener {
             vibrator.vibrate(VIBRATION_MSEC)
-
-            // replace all existing text with the infinitive
-            inputConnection?.deleteSurroundingText(50, 50) == true
-            inputConnection?.commitText(answerPresentation?.infinitive, 1)
+            infinitiveClickListener?.invoke(answerPresentation?.infinitive ?: "")
         }
         button_delete.setOnClickListener {
             vibrator.vibrate(VIBRATION_MSEC)
@@ -107,17 +108,11 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
         }
         button_left_arrow.setOnClickListener {
             vibrator.vibrate(VIBRATION_MSEC)
-            val currentPosition = inputConnection?.getTextBeforeCursor(50, 0)?.length
-            currentPosition?.let {
-                leftClickListener?.invoke()
-            }
+            leftClickListener?.invoke()
         }
         button_right_arrow.setOnClickListener {
             vibrator.vibrate(VIBRATION_MSEC)
-            val currentPosition = inputConnection?.getTextBeforeCursor(50, 0)?.length
-            currentPosition?.let {
-                rightClickListener?.invoke()
-            }
+            rightClickListener?.invoke()
         }
         button_next_word.setOnClickListener {
             vibrator.vibrate(VIBRATION_MSEC)
@@ -140,6 +135,9 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
 
     // Caller can set this to be notified when the user clicks on a letter
     var letterClickListener: ((Char) -> Unit)? = null
+
+    // Caller can set this to be notified when the user clicks on the infinitive
+    var infinitiveClickListener: ((String) -> Unit)? = null
 
     // Caller can set this to be notified when the user clicks on the left/up arrow
     var leftClickListener: (() -> Unit)? = null

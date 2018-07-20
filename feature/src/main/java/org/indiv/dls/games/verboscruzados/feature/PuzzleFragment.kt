@@ -222,7 +222,7 @@ class PuzzleFragment : Fragment() {
         return true
     }
 
-    /*
+    /**
      * Fills in the puzzle with the user's answer for the specified game word.
      */
     fun updateUserTextInPuzzle(gameWord: GameWord) {
@@ -245,6 +245,18 @@ class PuzzleFragment : Fragment() {
                 }
                 fillTextView(it)
             }
+        }
+    }
+
+    /*
+ * Fills in the puzzle with the user's answer for the specified game word.
+ */
+    fun updateUserTextInPuzzle(userText: String) {
+        currentGameWord?.let {
+            it.userText = userText
+            updateUserTextInPuzzle(it)
+            selectedCellIndex = (userText.length).coerceAtMost(it.word.length - 1)
+            showAsSelected(it, true)
         }
     }
 
@@ -307,17 +319,20 @@ class PuzzleFragment : Fragment() {
                 for (col in 0 until gridWidth) {
                     if (col >= initialCol) {
                         cellGrid[row][col]?.let {
+                            var nextGameWord: GameWord? = null
                             if (row > startingRow || col > initialCol) {
                                 // if the cell's word begins in the cell, then select it
                                 if (it.gameWordAcross?.col == col && it.gameWordAcross != currentGameWord && isEmptyOrErroredGameWord(it.gameWordAcross, emptyOnly)) {
-                                    currentGameWord = it.gameWordAcross
-                                    return true
+                                    nextGameWord = it.gameWordAcross
                                 } else if (it.gameWordDown?.row == row && it.gameWordDown != currentGameWord && isEmptyOrErroredGameWord(it.gameWordDown, emptyOnly)) {
-                                    currentGameWord = it.gameWordDown
-                                    return true
+                                    nextGameWord = it.gameWordDown
                                 }
-                            } else if (it.gameWordDown?.row == row && it.gameWordDown != currentGameWord) {
-                                currentGameWord = it.gameWordDown
+                            } else if (it.gameWordDown?.row == row && it.gameWordDown != currentGameWord && isEmptyOrErroredGameWord(it.gameWordDown, emptyOnly)) {
+                                nextGameWord = it.gameWordDown
+                            }
+                            nextGameWord?.let {
+                                selectedCellIndex = it.userText.length.coerceAtMost(it.word.length - 1)
+                                currentGameWord = it
                                 return true
                             }
                         }

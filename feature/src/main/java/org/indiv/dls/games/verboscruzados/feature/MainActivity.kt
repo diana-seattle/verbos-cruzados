@@ -166,6 +166,9 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
         // pass the InputConnection from the EditText to the keyboard
         answer_keyboard.inputConnection = answerFragment.answerEntryInputConnection
+        answer_keyboard.infinitiveClickListener = {
+            puzzleFragment.updateUserTextInPuzzle(it)
+        }
         answer_keyboard.letterClickListener = {
             puzzleFragment.updateLetterInPuzzle(it)
         }
