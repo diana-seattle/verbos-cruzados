@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
     companion object {
         private val TAG = MainActivity::class.java.simpleName
-        private val KEYBOARD_ANIMATION_TIME = 150L
+        private const val KEYBOARD_ANIMATION_TIME = 150L
 
         var currentGameWord: GameWord? = null
     }
@@ -167,7 +167,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         answer_keyboard.inputConnection = answerFragment.answerEntryInputConnection
         answer_keyboard.nextWordClickListener = {
             if (puzzleFragment.selectNextGameWord(true) || puzzleFragment.selectNextGameWord(false)) {
-                setGameWord(puzzleFragment.currentGameWord!!, false)
+                setGameWord(puzzleFragment.currentGameWord!!)
             }
         }
         answer_keyboard.dismissClickListener = {
@@ -224,7 +224,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
      * implements PuzzleListener interface for callback from PuzzleFragment
      */
     override fun onPuzzleClick(gameWord: GameWord) {
-        setGameWord(gameWord, true)
+        setGameWord(gameWord)
     }
 
     //endregion
@@ -266,7 +266,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
             }
 
             // prompt user with congrats and new game
-            var extraMessage = resources.getString(R.string.dialog_startnewgame_congrats)
+            val extraMessage = resources.getString(R.string.dialog_startnewgame_congrats)
             promptForNewGame(extraMessage)
 
             // else if puzzle is complete but not correct, show errors
@@ -376,12 +376,12 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
         // Update answer fragment with current game word
         if (currentGameWord != null) { // this extra check is necessary for case where setting up initial game and no words available in db
-            setGameWord(currentGameWord!!, false)
+            setGameWord(currentGameWord!!)
             answerFragment.view?.visibility = View.VISIBLE // set answer dialog fragment visible now that puzzle drawn
         }
     }
 
-    private fun setGameWord(gameWord: GameWord, showKeyboard: Boolean) {
+    private fun setGameWord(gameWord: GameWord) {
         currentGameWord = gameWord
 
         // update answer fragment with current game word
@@ -391,9 +391,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         // Update keyboard with answer info
         answer_keyboard.answerPresentation = answerPresentation
 
-        if (showKeyboard) {
-            showKeyboard()
-        }
+        showKeyboard()
 
         scrollWordIntoView()
     }
@@ -431,6 +429,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
     }
 
     private fun showHelpDialog() {
+        hideKeyboard()
         AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_help_title)
                 .setView(R.layout.fragment_help_dialog)
@@ -439,12 +438,14 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
     }
 
     private fun showStatsDialog() {
+        hideKeyboard()
         val dlg = StatsDialogFragment()
         dlg.showGameOptionsListener = { showGameOptionsDialog() }
         dlg.show(supportFragmentManager, "fragment_showstats")
     }
 
     private fun showGameOptionsDialog() {
+        hideKeyboard()
         val dlg = GameOptionsDialogFragment()
         dlg.startNewGameListener = { setupNewGame() }
         dlg.show(supportFragmentManager, "fragment_showoptions")
@@ -467,11 +468,13 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
     }
 
     private fun showKeyboard() {
-        // Set visible, then animate up to position
-        answer_keyboard.visibility = View.VISIBLE
-        ObjectAnimator.ofFloat(answer_keyboard, "translationY", 0f)
-                .setDuration(KEYBOARD_ANIMATION_TIME)
-                .start()
+        if (!isKeyboardVisible()) {
+            // Set visible, then animate up to position
+            answer_keyboard.visibility = View.VISIBLE
+            ObjectAnimator.ofFloat(answer_keyboard, "translationY", 0f)
+                    .setDuration(KEYBOARD_ANIMATION_TIME)
+                    .start()
+        }
     }
 
     private fun hideKeyboard() {
