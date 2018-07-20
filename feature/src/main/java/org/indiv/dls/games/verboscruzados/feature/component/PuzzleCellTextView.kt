@@ -42,7 +42,13 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
         private val CELL_BKGD_LEVEL_ERRORED = 2
         private val CELL_BKGD_LEVEL_SELECTED = 3
         private val CELL_BKGD_LEVEL_ERRORED_SELECTED = 4
-        private val ERRORED_BACKGROUND_LEVLS = listOf(CELL_BKGD_LEVEL_ERRORED, CELL_BKGD_LEVEL_ERRORED_SELECTED)
+        private val CELL_BKGD_LEVEL_SELECTED_INDIV = 5 // Individual cell selected within selected word
+        private val CELL_BKGD_LEVEL_ERRORED_SELECTED_INDIV = 6
+        private val ERRORED_BACKGROUND_LEVELS = listOf(CELL_BKGD_LEVEL_ERRORED,
+                CELL_BKGD_LEVEL_ERRORED_SELECTED,
+                CELL_BKGD_LEVEL_ERRORED_SELECTED_INDIV)
+        private val INDIV_SELECTION_BACKGROUND_LEVELS = listOf(CELL_BKGD_LEVEL_SELECTED_INDIV,
+                CELL_BKGD_LEVEL_ERRORED_SELECTED_INDIV)
     }
 
     //endregion
@@ -63,25 +69,43 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
      * Sets background and text colors according to specified state.
      */
     fun setStyle(isSelected: Boolean, indicateError: Boolean) {
-        if (indicateError) {
-            background.level = if (isSelected) CELL_BKGD_LEVEL_ERRORED_SELECTED else CELL_BKGD_LEVEL_ERRORED
-            setTextColor(Color.RED)
-        } else {
-            background.level = if (isSelected) CELL_BKGD_LEVEL_SELECTED else CELL_BKGD_LEVEL_NORMAL // set normal text cell background
-            setTextColor(Color.BLACK)
+        val individuallySelected = background.level in INDIV_SELECTION_BACKGROUND_LEVELS
+        background.level = when {
+            indicateError && isSelected && individuallySelected -> CELL_BKGD_LEVEL_ERRORED_SELECTED_INDIV
+            indicateError && isSelected && !individuallySelected -> CELL_BKGD_LEVEL_ERRORED_SELECTED
+            indicateError && !isSelected -> CELL_BKGD_LEVEL_ERRORED
+            !indicateError && isSelected && individuallySelected -> CELL_BKGD_LEVEL_SELECTED_INDIV
+            !indicateError && isSelected && !individuallySelected -> CELL_BKGD_LEVEL_SELECTED
+            else -> CELL_BKGD_LEVEL_NORMAL
         }
+        val textColor = if (indicateError) Color.RED else Color.BLACK
+        setTextColor(textColor)
     }
 
     /**
-     * Updates cell background to selected or unselected while maintaining existing style (e.g. error state).
+     * Updates cell background to selected or unselected while maintaining existing error state.
      */
     fun setSelection(selected: Boolean) {
-        val showingError = background.level in ERRORED_BACKGROUND_LEVLS
+        val showingError = background.level in ERRORED_BACKGROUND_LEVELS
         background.level = when {
             selected && showingError -> CELL_BKGD_LEVEL_ERRORED_SELECTED
             selected && !showingError -> CELL_BKGD_LEVEL_SELECTED
             !selected && showingError -> CELL_BKGD_LEVEL_ERRORED
             else -> CELL_BKGD_LEVEL_NORMAL
+        }
+    }
+
+    /**
+     * Updates cell background to be individually selected or generally selected while maintaining existing
+     * error state. That is, a selected word can have an individually selected letter that stands out.
+     */
+    fun setIndividualSelection(individuallySelected: Boolean) {
+        val showingError = background.level in ERRORED_BACKGROUND_LEVELS
+        background.level = when {
+            individuallySelected && showingError -> CELL_BKGD_LEVEL_ERRORED_SELECTED_INDIV
+            individuallySelected && !showingError -> CELL_BKGD_LEVEL_SELECTED_INDIV
+            !individuallySelected && showingError -> CELL_BKGD_LEVEL_ERRORED_SELECTED
+            else -> CELL_BKGD_LEVEL_SELECTED
         }
     }
 

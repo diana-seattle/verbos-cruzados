@@ -45,13 +45,14 @@ import kotlin.math.roundToInt
 // TODO: app icons
 
 
-//TODO: scroll puzzle on word selection
-// highlight individual letter, dark yellow
-// add arrows to keyboard (up, down / right, left)
-// no red fill for errors, thicker border
+//TODO: have keyboard arrows adjust selected cell
+//TODO: connect typing to selected cell
+//TODO: move selected cell to end of user text after pressing infinitive
+// TODO: change keyboard arrows up<->left, down<->right when word is selected
+// adjust spacing on keyboard 3rd row (see on 10in)
+// remove delete key and edit box?
 // consider when to show/hide keyboard
 // consider how to display letter that conflicts in the two directions
-// always show errored cells? maybe too obvious
 
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain

@@ -15,6 +15,7 @@ import android.view.View.OnClickListener
 import android.widget.ScrollView
 import android.widget.TableRow
 import kotlinx.android.synthetic.main.fragment_puzzle.*
+import org.indiv.dls.games.verboscruzados.feature.MainActivity.Companion.currentGameWord
 import org.indiv.dls.games.verboscruzados.feature.component.PuzzleCellTextView
 
 
@@ -45,10 +46,12 @@ class PuzzleFragment : Fragment() {
     var initialized = false
     lateinit var cellGrid: Array<Array<GridCell?>>
 
+    var selectedCellIndex = 0
+
     var currentGameWord: GameWord? = null
         private set(gameWord) {
-            field?.let { showAsSelected(it, false) }
-            gameWord?.let { showAsSelected(it, true) }
+            field?.let { showAsSelected(it, false) }   // unselect previous word
+            gameWord?.let { showAsSelected(it, true) } // select new word
             field = gameWord
         }
 
@@ -121,12 +124,23 @@ class PuzzleFragment : Fragment() {
      * @param puzzleListener implementation of the [PuzzleListener] interface that listens for clicks on the puzzle.
      */
     fun createGrid(puzzleListener: PuzzleListener) {
-        // create click listener for puzzle clicks
         val onPuzzleClickListener = OnClickListener { v ->
             getCellForView(v)?.let {
                 vibrator?.vibrate(25)
-                currentGameWord = it.gameWordDown ?: it.gameWordAcross
-                currentGameWord?.let {
+                val gridCell = it
+
+                val sameWordSelected = currentGameWord == gridCell.gameWordDown || currentGameWord == gridCell.gameWordAcross
+                val newGameWord = if (sameWordSelected) {
+                    currentGameWord
+                } else {
+                    gridCell.gameWordDown ?: gridCell.gameWordAcross
+                }
+
+                newGameWord?.let {
+                    selectedCellIndex = getIndexOfCellInWord(it, gridCell).coerceAtMost(it.userText.length)
+                    currentGameWord = newGameWord  // this assignment will call setter which will take care of showing word and cell as selected
+
+                    // Notify the listener regardless of whether new word selected or not (e.g. so keyboard can be shown).
                     puzzleListener.onPuzzleClick(it)
                 }
             }
@@ -166,7 +180,8 @@ class PuzzleFragment : Fragment() {
      * @param emptyOnly true if next empty game word should be selected, false if any errored game word shold be selected.
      */
     fun selectNextGameWord(emptyOnly: Boolean): Boolean {
-        return selectNextGameWord(currentGameWord?.row ?: 0, currentGameWord?.col ?: 0, emptyOnly) ||
+        return selectNextGameWord(currentGameWord?.row ?: 0, currentGameWord?.col
+                ?: 0, emptyOnly) ||
                 selectNextGameWord(0, -1, emptyOnly)
     }
 
@@ -234,6 +249,25 @@ class PuzzleFragment : Fragment() {
         }
     }
 
+    private fun getIndexOfCellInWord(gameWord: GameWord, gridCell: GridCell): Int {
+        val isAcross = gameWord.isAcross
+        var row = gameWord.row
+        var col = gameWord.col
+        for (charIndex in 0 until gameWord.word.length) {
+            cellGrid[row][col]?.let {
+                if (it == gridCell) {
+                    return if (isAcross) col - gameWord.col else row - gameWord.row
+                }
+                if (isAcross) {
+                    col++
+                } else {
+                    row++
+                }
+            }
+        }
+        return 0
+    }
+
     //endregion
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
@@ -276,22 +310,26 @@ class PuzzleFragment : Fragment() {
     private fun isEmptyOrErroredGameWord(gameWord: GameWord?, emptyOnly: Boolean): Boolean {
         return gameWord?.let {
             emptyOnly && it.userText.isEmpty() || (!emptyOnly && !it.isAnsweredCorrectly)
-        }?: false
+        } ?: false
     }
 
     /**
-     * Shows the specified word as selected (yellow highlight).
+     * Shows the specified word as selected (yellow highlight), or not selected.
      *
      * @param gameWord word to show as selected or unselected.
      * @param asSelected true if word should be shown as selected, false if unselected.
      */
     private fun showAsSelected(gameWord: GameWord?, asSelected: Boolean) {
-        if (gameWord != null) {
-            var row = gameWord.row
-            var col = gameWord.col
-            for (i in 0 until gameWord.word.length) {
-                cellGrid[row][col]?.view?.setSelection(asSelected)
-                if (gameWord.isAcross) {
+        gameWord?.let {
+            var row = it.row
+            var col = it.col
+            for (i in 0 until it.word.length) {
+                if (asSelected && i == selectedCellIndex) {
+                    cellGrid[row][col]?.view?.setIndividualSelection(true)
+                } else {
+                    cellGrid[row][col]?.view?.setSelection(asSelected)
+                }
+                if (it.isAcross) {
                     col++
                 } else {
                     row++
