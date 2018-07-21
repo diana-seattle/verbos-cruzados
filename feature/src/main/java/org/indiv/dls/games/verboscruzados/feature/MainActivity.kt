@@ -45,14 +45,15 @@ import kotlin.math.roundToInt
 // TODO: app icons
 
 
+//TODO: fix color updates when show-errors turned on and value goes for right to wrong or wrong to right
 //TODO: connect typing to selected cell (infinitive)
 //TODO: move selected cell to end of user text after pressing infinitive
-// TODO: change keyboard arrows up<->left, down<->right when word is selected
 // TODO: delete edittext
 //TODO: remove delete key?
-// adjust spacing on keyboard 3rd row (see on 10in)
-// consider when to show/hide keyboard
-// consider how to display letter that conflicts in the two directions (respect selected word, then errored word)
+//TODO: consider lowercase in puzzle
+//TODO adjust spacing on keyboard 3rd row (see on 10in)
+//TODO consider when to show/hide keyboard
+//TODO consider how to display letter that conflicts in the two directions (respect selected word, then errored word)
 
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
