@@ -46,6 +46,9 @@ class PuzzleFragment : Fragment() {
     lateinit var cellGrid: Array<Array<GridCell?>>
 
     var selectedCellIndex = 0
+        private set(value) {
+            field = value
+        }
 
     var currentGameWord: GameWord? = null
         private set(gameWord) {

@@ -176,9 +176,11 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         }
         answer_keyboard.leftClickListener = {
             puzzleFragment.advanceSelectedCellInPuzzle(true)
+            scrollSelectedCellIntoView()
         }
         answer_keyboard.rightClickListener = {
             puzzleFragment.advanceSelectedCellInPuzzle(false)
+            scrollSelectedCellIntoView()
         }
         answer_keyboard.nextWordClickListener = {
             if (puzzleFragment.selectNextGameWord(true) || puzzleFragment.selectNextGameWord(false)) {
@@ -299,6 +301,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
      * Handles housekeeping after an answer has changed.
      */
     fun onAnswerChanged() {
+
         puzzleFragment.currentGameWord?.let {
             // update database with answer
             Thread { persistenceHelper.persistUserEntry(it) }.start()
@@ -308,6 +311,8 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         if (showingErrors) {
             showErrors(showingErrors)
         }
+
+        scrollSelectedCellIntoView()
 
         // Note that the puzzle may be completed correctly while an individual word is not. It may
         // have a wrong character that appears correct because of character in other direction.
@@ -435,7 +440,26 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         scrollWordIntoView()
     }
 
-    private fun scrollWordIntoView() {
+    private fun scrollSelectedCellIntoView() {
+        currentGameWord?.let {
+            if (!it.isAcross) {
+                val rowOfSelectedCell = it.row + puzzleFragment.selectedCellIndex
+                val yOfSelectedCell = rowOfSelectedCell * pixelsPerCell
+
+                val heightForKeyboard = if (isKeyboardVisible()) keyboardHeight else 0f
+                val availableHeight = viewablePuzzleHeight - heightForKeyboard
+
+                // if cell above viewable area, scroll up to it, if below, scroll down to it
+                if (yOfSelectedCell < puzzleFragment.scrollPosition) {
+                    scrollWordIntoView(true)
+                } else if (yOfSelectedCell + pixelsPerCell > puzzleFragment.scrollPosition + availableHeight) {
+                    scrollWordIntoView(false)
+                }
+            }
+        }
+    }
+
+    private fun scrollWordIntoView(defaultToTop: Boolean = true) {
         currentGameWord?.let {
             val firstRowPosition = it.row
             val lastRowPosition = when {
@@ -454,11 +478,16 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                 if (yOfFirstCell < puzzleFragment.scrollPosition) {
                     puzzleFragment.scrollPosition = (yOfFirstCell - puzzleMarginPixels).roundToInt()
                 } else if (yOfFirstCell + wordHeight > puzzleFragment.scrollPosition + availableHeight) {
-                    puzzleFragment.scrollPosition = (yOfFirstCell + wordHeight - availableHeight).roundToInt()
+                    puzzleFragment.scrollPosition = (yOfFirstCell + wordHeight - availableHeight + puzzleMarginPixels).roundToInt()
                 }
             } else {
-                // otherwise scroll top of word to top of viewable area
-                puzzleFragment.scrollPosition = (yOfFirstCell - puzzleMarginPixels).roundToInt()
+                if (defaultToTop) {
+                    // scroll top of word to top of viewable area
+                    puzzleFragment.scrollPosition = (yOfFirstCell - puzzleMarginPixels).roundToInt()
+                } else {
+                    // scroll bottom of word to bottom of viewable area
+                    puzzleFragment.scrollPosition = (yOfFirstCell + wordHeight - availableHeight + puzzleMarginPixels).roundToInt()
+                }
             }
         }
     }

@@ -14,9 +14,10 @@
         <!-- Row for answer presentation and infinitive button -->
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="0dp"
-                      android:layout_marginStart="@dimen/half_margin"
-                      android:layout_marginTop="@dimen/quarter_margin"
+                      android:paddingStart="@dimen/half_margin"
+                      android:paddingTop="@dimen/quarter_margin"
                       android:layout_weight="1.4"
+                      android:background="@color/keyboard_yellow_translucent"
                       android:orientation="vertical">
 
             <!-- Conjugation type (tense/mood) -->
@@ -188,17 +189,12 @@
             <ImageView
                 android:id="@+id/button_delete"
                 style="@style/answerLetterButton"
-                android:layout_weight="1.25"
+                android:layout_weight="1"
                 android:paddingBottom="6dp"
-                android:paddingTop="6dp"
                 android:paddingStart="6dp"
+                android:paddingTop="6dp"
                 android:src="@drawable/ic_baseline_backspace_24px"
                 android:tint="@color/soft_black"/>
-            <View
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".25"
-                android:visibility="invisible"/>
             <TextView
                 android:id="@+id/button_z"
                 style="@style/answerLetterButton"
@@ -241,7 +237,7 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight=".25"
+                android:layout_weight=".75"
                 android:visibility="invisible"/>
 
         </LinearLayout>
