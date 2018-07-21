@@ -93,18 +93,7 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
         }
         button_delete.setOnClickListener {
             vibrator.vibrate(VIBRATION_MSEC)
-            val selectedText = inputConnection?.getSelectedText(0)
-            if (selectedText.isNullOrEmpty()) {
-                // no selection, so delete previous character
-                inputConnection?.deleteSurroundingText(1, 0)
-            } else {
-                // delete the selection
-                inputConnection?.commitText("", 1)
-            }
-        }
-        button_delete.setOnLongClickListener {
-            // delete all characters before the cursor
-            inputConnection?.deleteSurroundingText(50, 0) == true
+            deleteClickListener?.invoke()
         }
         button_left_arrow.setOnClickListener {
             vibrator.vibrate(VIBRATION_MSEC)
@@ -124,14 +113,14 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
 
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
 
-    // Caller must set this to the current EditText's input connection.
-    var inputConnection: InputConnection? = null
-
     // Caller can set this to be notified when the user wants to dismiss the keyboard
     var dismissClickListener: (() -> Unit)? = null
 
     // Caller can set this to be notified when the user wants to select the next word
     var nextWordClickListener: (() -> Unit)? = null
+
+    // Caller can set this to be notified when the user clicks on the delete button
+    var deleteClickListener: (() -> Unit)? = null
 
     // Caller can set this to be notified when the user clicks on a letter
     var letterClickListener: ((Char) -> Unit)? = null

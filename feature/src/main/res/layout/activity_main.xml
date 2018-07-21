@@ -15,8 +15,8 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimaryDark"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="?android:attr/colorPrimaryDark"
             app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
     </android.support.design.widget.AppBarLayout>
@@ -28,21 +28,11 @@
                     android:orientation="vertical"
                     tools:context=".MainActivity">
 
-        <!-- answer fragment -->
-        <fragment android:id="@+id/answer_fragment"
-                  class="org.indiv.dls.games.verboscruzados.feature.AnswerFragment"
-                  android:layout_width="match_parent"
-                  android:layout_height="@dimen/fragment_answer_height"
-                  android:layout_alignParentTop="true"
-        />
-
         <!-- puzzle fragment -->
         <fragment android:id="@+id/puzzle_fragment"
                   class="org.indiv.dls.games.verboscruzados.feature.PuzzleFragment"
                   android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:layout_below="@id/answer_fragment"
-        />
+                  android:layout_height="wrap_content"/>
 
         <!-- special keyboard for answer entry -->
         <org.indiv.dls.games.verboscruzados.feature.component.MinimalKeyboard

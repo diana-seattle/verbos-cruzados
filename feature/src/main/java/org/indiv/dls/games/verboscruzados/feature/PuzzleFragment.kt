@@ -250,12 +250,19 @@ class PuzzleFragment : Fragment() {
     /**
      * Fills in the puzzle with the user's answer for the specified game word.
      */
-    fun updateUserEntryInPuzzle(userText: String) {
+    fun updateUserTextInPuzzle(userText: String) {
         currentGameWord?.let {
             it.userText = userText.take(it.word.length)
             updateUserEntryInPuzzle(it)
             selectedCellIndex = (userText.length).coerceAtMost(it.word.length - 1)
             showAsSelected(it, true)
+        }
+    }
+
+    fun deleteLetterInPuzzle() {
+        currentGameWord?.let {
+            it.userEntry[selectedCellIndex] = '\u0000' // this is the default value for a CharArray
+            updateUserEntryInPuzzle(it)
         }
     }
 

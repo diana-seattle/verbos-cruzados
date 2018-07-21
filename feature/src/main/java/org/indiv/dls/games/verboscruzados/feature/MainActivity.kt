@@ -54,7 +54,7 @@ import kotlin.math.roundToInt
 //TODO adjust spacing on keyboard 3rd row (see on 10in)
 //TODO consider when to show/hide keyboard
 //TODO consider how to display letter that conflicts in the two directions (respect selected word, then errored word)
-
+// TODO don't store 2 references to gameword
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
 // https://pixabay.com/en/canyon-desert-sky-huge-mountains-311233/
@@ -62,7 +62,7 @@ import kotlin.math.roundToInt
 
 
 /**
- * This is the main activity. It houses [PuzzleFragment], and [AnswerFragment].
+ * This is the main activity. It houses [PuzzleFragment].
  */
 class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
@@ -83,7 +83,6 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     private var currentGameWords: List<GameWord> = emptyList()
     private val gameSetup = GameSetup()
     private lateinit var puzzleFragment: PuzzleFragment
-    private lateinit var answerFragment: AnswerFragment
 
     private var optionsMenu: Menu? = null
     private var toolbar: Toolbar? = null
@@ -116,7 +115,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                 do {
                     currentGameWord = puzzleFragment.currentGameWord
                     currentGameWord?.let {
-                        puzzleFragment.updateUserEntryInPuzzle(it.word)
+                        puzzleFragment.updateUserTextInPuzzle(it.word)
                         onAnswerChanged()
                     }
                 } while (puzzleFragment.selectNextGameWord(false))
@@ -126,9 +125,6 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
         // get puzzle and answer fragments
         puzzleFragment = supportFragmentManager.findFragmentById(R.id.puzzle_fragment) as PuzzleFragment
-        answerFragment = supportFragmentManager.findFragmentById(R.id.answer_fragment) as AnswerFragment
-
-        answerFragment.view?.visibility = View.GONE // set answer fragment invisible until puzzle shows up
 
         // Get keyboard height for use in keyboard animation
         keyboardHeight = resources.getDimension(R.dimen.keyboard_height)
@@ -140,7 +136,6 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         puzzleMarginPixels = resources.getDimension(R.dimen.puzzle_margin)
         val totalPuzzleMarginPixels = puzzleMarginPixels * 2
         val actionBarHeightPixels = getActionBarHeightInPixels(displayMetrics)
-        val answerHeightPixels = resources.getDimension(R.dimen.fragment_answer_height)
         val screenWidthDp = configuration.smallestScreenWidthDp
         val screenHeightDp = maxOf(configuration.screenHeightDp, configuration.screenWidthDp)
         val heightFactor = when {
@@ -152,7 +147,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                 screenWidthDp.toFloat(), displayMetrics)
         val screenHeightPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 screenHeightDp.toFloat(), displayMetrics)
-        viewablePuzzleHeight = screenHeightPixels - actionBarHeightPixels - answerHeightPixels - totalPuzzleMarginPixels
+        viewablePuzzleHeight = screenHeightPixels - actionBarHeightPixels - totalPuzzleMarginPixels
         val puzzleHeightPixels = viewablePuzzleHeight * heightFactor
         val puzzleWidthPixels = screenWidthPixels - totalPuzzleMarginPixels
 
@@ -167,9 +162,12 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         }
 
         // pass the InputConnection from the EditText to the keyboard
-        answer_keyboard.inputConnection = answerFragment.answerEntryInputConnection
         answer_keyboard.infinitiveClickListener = {
-            puzzleFragment.updateUserEntryInPuzzle(it)
+            puzzleFragment.updateUserTextInPuzzle(it)
+            onAnswerChanged()
+        }
+        answer_keyboard.deleteClickListener = {
+            puzzleFragment.deleteLetterInPuzzle()
             onAnswerChanged()
         }
         answer_keyboard.letterClickListener = {
@@ -189,9 +187,6 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         }
         answer_keyboard.dismissClickListener = {
             hideKeyboard()
-        }
-        answerFragment.keyboardNeededListener = {
-            showKeyboard()
         }
     }
 
@@ -392,9 +387,6 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
      * Creates new game (called first time app run, or when user starts new game)
      */
     private fun setupNewGame() {
-        // Clear game word and hide answer fragment for now
-        answerFragment.clearGameWord()
-        answerFragment.view?.visibility = View.GONE // set invisible until puzzle shows up
         hideKeyboard()
 
         // clear puzzle fragment of existing game if any
@@ -429,19 +421,14 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         // Update answer fragment with current game word
         if (currentGameWord != null) { // this extra check is necessary for case where setting up initial game and no words available in db
             setGameWord(currentGameWord!!)
-            answerFragment.view?.visibility = View.VISIBLE // set answer dialog fragment visible now that puzzle drawn
         }
     }
 
     private fun setGameWord(gameWord: GameWord) {
         currentGameWord = gameWord
 
-        // update answer fragment with current game word
-        val answerPresentation = createAnswerPresentation(gameWord)
-        answerFragment.setGameWord(gameWord.userText)
-
         // Update keyboard with answer info
-        answer_keyboard.answerPresentation = answerPresentation
+        answer_keyboard.answerPresentation = createAnswerPresentation(gameWord)
 
         showKeyboard()
 

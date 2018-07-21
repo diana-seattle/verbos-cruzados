@@ -1,9 +1,6 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
 
-    <!-- height of answer fragment panel -->
-    <dimen name="fragment_answer_height">50dp</dimen>
-
     <!-- height of bottom margin to allow for scrolling puzzle above keyboard -->
     <dimen name="keyboard_height">196dp</dimen>
 
