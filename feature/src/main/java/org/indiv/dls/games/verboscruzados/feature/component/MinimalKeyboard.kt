@@ -155,6 +155,8 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
                 keyboard_translation.text = "($translation)"
                 keyboard_subject_pronoun_label.text = subjectPronounLabel
                 keyboard_subject_pronoun_label.visibility = if (subjectPronounLabel.isEmpty()) GONE else VISIBLE
+                button_left_arrow.rotation = if (across) 0f else 90f
+                button_right_arrow.rotation = if (across) 0f else 90f
             }
         }
 

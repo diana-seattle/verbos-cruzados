@@ -253,7 +253,7 @@ class PuzzleFragment : Fragment() {
  */
     fun updateUserTextInPuzzle(userText: String) {
         currentGameWord?.let {
-            it.userText = userText
+            it.userText = userText.take(it.word.length)
             updateUserTextInPuzzle(it)
             selectedCellIndex = (userText.length).coerceAtMost(it.word.length - 1)
             showAsSelected(it, true)

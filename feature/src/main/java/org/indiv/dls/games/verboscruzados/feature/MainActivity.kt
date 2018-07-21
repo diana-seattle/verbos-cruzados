@@ -297,7 +297,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
     private fun createAnswerPresentation(gameWord: GameWord): AnswerPresentation {
-        return AnswerPresentation(gameWord.word, gameWord.userText, gameWord.conjugationTypeLabel,
+        return AnswerPresentation(gameWord.word, gameWord.isAcross, gameWord.userText, gameWord.conjugationTypeLabel,
                 gameWord.subjectPronounLabel, gameWord.infinitive, gameWord.translation)
     }
 
