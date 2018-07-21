@@ -21,9 +21,6 @@ class AnswerFragment : Fragment() {
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
-    private var infinitive: String = ""
-    private var word: String = ""
-
     private val userEntry: String
         get() = txt_answer.text.toString().trim { it <= ' ' }
 
@@ -94,10 +91,8 @@ class AnswerFragment : Fragment() {
 
     //region PUBLIC CLASS FUNCTIONS ----------------------------------------------------------------
 
-    fun setGameWord(answerPresentation: AnswerPresentation) {
-        updateGameWord(answerPresentation.userText)
-        word = answerPresentation.word
-        infinitive = answerPresentation.infinitive
+    fun setGameWord(userText: String) {
+        updateGameWord(userText)
     }
 
     // called by activity

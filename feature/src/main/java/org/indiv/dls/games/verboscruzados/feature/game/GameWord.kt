@@ -13,7 +13,40 @@ class GameWord(val uniqueKey: String,            // unique key for use in persis
                val row: Int,                     // row in which the word begins
                val col: Int,                     // column in which the word begins
                val isAcross: Boolean,            // true if word appears in the across orientation, false if down
-               var userText: String = "") {      // text entered by the user
+               var userEntry: CharArray = CharArray(word.length)) {   // text entered by the user
+    var userText: String
+        get() {
+            val sb = StringBuilder()
+            userEntry.forEach {
+                sb.append(it)
+            }
+            return sb.toString()
+        }
+        set(value) {
+            for (i in 0 until value.length.coerceAtMost(userEntry.size)) {
+                userEntry[i] = value[i]
+            }
+        }
     val isAnsweredCorrectly: Boolean
-        get() = userText == word
+        get() {
+            userEntry.forEachIndexed { index, c ->
+                if (c != word.get(index)) {
+                    return false
+                }
+            }
+            return true
+        }
+    val isEntryEmpty: Boolean
+        get() {
+            return userEntry.none { it.isLetter() }
+        }
+    val defaultSelectionIndex: Int
+        get() {
+            for (i in 0 until word.length) {
+                if (userEntry[i] != word[i]) {
+                    return i
+                }
+            }
+            return word.length - 1
+        }
 }

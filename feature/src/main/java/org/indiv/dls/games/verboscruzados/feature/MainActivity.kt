@@ -64,7 +64,7 @@ import kotlin.math.roundToInt
 /**
  * This is the main activity. It houses [PuzzleFragment], and [AnswerFragment].
  */
-class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleFragment.PuzzleListener {
+class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
@@ -116,7 +116,8 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
                 do {
                     currentGameWord = puzzleFragment.currentGameWord
                     currentGameWord?.let {
-                        onUpdateAnswer(it.word)
+                        puzzleFragment.updateUserEntryInPuzzle(it.word)
+                        onAnswerChanged()
                     }
                 } while (puzzleFragment.selectNextGameWord(false))
                 true
@@ -168,10 +169,12 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         // pass the InputConnection from the EditText to the keyboard
         answer_keyboard.inputConnection = answerFragment.answerEntryInputConnection
         answer_keyboard.infinitiveClickListener = {
-            puzzleFragment.updateUserTextInPuzzle(it)
+            puzzleFragment.updateUserEntryInPuzzle(it)
+            onAnswerChanged()
         }
         answer_keyboard.letterClickListener = {
             puzzleFragment.updateLetterInPuzzle(it)
+            onAnswerChanged()
         }
         answer_keyboard.leftClickListener = {
             puzzleFragment.advanceSelectedCellInPuzzle(true)
@@ -245,20 +248,63 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
     //region INTERFACE FUNCTIONS (AnswerFragment.AnswerListener) ---------------------------
 
-    /*
-     * implements interface for receiving callback from AnswerFragment
+//    /*
+//     * implements interface for receiving callback from AnswerFragment
+//     */
+//    override fun onUpdateAnswer(userText: String) {
+//        // This method may be called by answer dialog during setup (on text change)
+//        if (puzzleFragment.currentGameWord == null ||
+//                puzzleFragment.currentGameWord?.userText == userText) {
+//            return
+//        }
+//
+//        puzzleFragment.currentGameWord?.let {
+//            it.userText = userText
+//            puzzleFragment.updateUserEntryInPuzzle(it)
+//
+//            // update database with answer
+//            Thread { persistenceHelper.persistUserEntry(it) }.start()
+//        }
+//
+//        // update error indications
+//        if (showingErrors) {
+//            showErrors(showingErrors)
+//        }
+//
+//        // Note that the puzzle may be completed correctly while an individual word is not. It may be
+//        // too long or have a wrong character that appears correct because of character in other direction.
+//
+//        // if puzzle is complete and correct.
+//        val currentWordIsCorrect = currentGameWord?.isAnsweredCorrectly == true
+//        if (currentWordIsCorrect && puzzleFragment.isPuzzleComplete(true)) {
+//            if (!statsPersisted) {
+//                persistenceHelper.persistGameStats(currentGameWords)
+//                statsPersisted = true
+//            }
+//
+//            // prompt user with congrats and new game
+//            val extraMessage = resources.getString(R.string.dialog_startnewgame_congrats)
+//            promptForNewGame(extraMessage)
+//
+//            // else if puzzle is complete but not correct, show errors
+//        } else if (!showingErrors && puzzleFragment.isPuzzleComplete(false)) {
+//            showErrors(true)
+//        }
+//
+//    }
+
+    //endregion
+
+    //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
+    //endregion
+
+    //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
+
+    /**
+     * Handles housekeeping after an answer has changed.
      */
-    override fun onUpdateAnswer(userText: String) {
-        // This method may be called by answer dialog during setup (on text change)
-        if (puzzleFragment.currentGameWord == null ||
-                puzzleFragment.currentGameWord?.userText == userText) {
-            return
-        }
-
+    fun onAnswerChanged() {
         puzzleFragment.currentGameWord?.let {
-            it.userText = userText
-            puzzleFragment.updateUserTextInPuzzle(it)
-
             // update database with answer
             Thread { persistenceHelper.persistUserEntry(it) }.start()
         }
@@ -268,8 +314,8 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
             showErrors(showingErrors)
         }
 
-        // Note that the puzzle may be completed correctly while an individual word is not. It may be
-        // too long or have a wrong character that appears correct because of character in other direction.
+        // Note that the puzzle may be completed correctly while an individual word is not. It may
+        // have a wrong character that appears correct because of character in other direction.
 
         // if puzzle is complete and correct.
         val currentWordIsCorrect = currentGameWord?.isAnsweredCorrectly == true
@@ -287,18 +333,10 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
         } else if (!showingErrors && puzzleFragment.isPuzzleComplete(false)) {
             showErrors(true)
         }
-
     }
 
-    //endregion
-
-    //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
-    //endregion
-
-    //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
-
     private fun createAnswerPresentation(gameWord: GameWord): AnswerPresentation {
-        return AnswerPresentation(gameWord.word, gameWord.isAcross, gameWord.userText, gameWord.conjugationTypeLabel,
+        return AnswerPresentation(gameWord.word, gameWord.isAcross, gameWord.conjugationTypeLabel,
                 gameWord.subjectPronounLabel, gameWord.infinitive, gameWord.translation)
     }
 
@@ -400,7 +438,7 @@ class MainActivity : AppCompatActivity(), AnswerFragment.AnswerListener, PuzzleF
 
         // update answer fragment with current game word
         val answerPresentation = createAnswerPresentation(gameWord)
-        answerFragment.setGameWord(answerPresentation)
+        answerFragment.setGameWord(gameWord.userText)
 
         // Update keyboard with answer info
         answer_keyboard.answerPresentation = answerPresentation

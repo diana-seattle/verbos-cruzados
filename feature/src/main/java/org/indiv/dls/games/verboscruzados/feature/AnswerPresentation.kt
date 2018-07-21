@@ -6,7 +6,6 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class AnswerPresentation(val word: String,
                          val across: Boolean,
-                         val userText: String?,
                          val conjugationTypeLabel: String,
                          val subjectPronounLabel: String,
                          val infinitive: String,

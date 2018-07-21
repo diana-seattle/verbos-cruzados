@@ -69,7 +69,7 @@ class GameSetup {
         var row = gameWord.row
         var col = gameWord.col
         val word = gameWord.word
-        val userText = gameWord.userText
+        val userEntry = gameWord.userEntry
         val wordLength = word.length
         var charIndex = 0
         while (charIndex < wordLength) {
@@ -77,7 +77,7 @@ class GameSetup {
                 cellGrid[row][col] = GridCell(word[charIndex])
             }
             cellGrid[row][col]!!.apply {
-                val userChar = if (userText != null && userText.length > charIndex) userText[charIndex] else null
+                val userChar = userEntry[charIndex].takeIf { it.isLetter() }
                 if (gameWord.isAcross) {
                     gameWordAcross = gameWord
                     userCharAcross = userChar

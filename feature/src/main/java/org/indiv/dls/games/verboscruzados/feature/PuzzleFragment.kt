@@ -136,7 +136,7 @@ class PuzzleFragment : Fragment() {
                 }
 
                 newGameWord?.let {
-                    selectedCellIndex = getIndexOfCellInWord(it, gridCell).coerceAtMost(it.userText.length)
+                    selectedCellIndex = getIndexOfCellInWord(it, gridCell)
                     currentGameWord = newGameWord  // this assignment will call setter which will take care of showing word and cell as selected
 
                     // Notify the listener regardless of whether new word selected or not (e.g. so keyboard can be shown).
@@ -225,17 +225,16 @@ class PuzzleFragment : Fragment() {
     /**
      * Fills in the puzzle with the user's answer for the specified game word.
      */
-    fun updateUserTextInPuzzle(gameWord: GameWord) {
+    fun updateUserEntryInPuzzle(gameWord: GameWord) {
         // show answer in puzzle
-        val userText = gameWord.userText
-        val userTextLength = userText.length
+        val userEntry = gameWord.userEntry
         val wordLength = gameWord.word.length
         val isAcross = gameWord.isAcross
         var row = gameWord.row
         var col = gameWord.col
         for (charIndex in 0 until wordLength) {
             cellGrid[row][col]?.let {
-                val userChar = if (charIndex < userTextLength) userText[charIndex] else null
+                val userChar = userEntry[charIndex].takeIf { it.isLetter() }
                 if (isAcross) {
                     it.userCharAcross = userChar
                     col++
@@ -248,13 +247,13 @@ class PuzzleFragment : Fragment() {
         }
     }
 
-    /*
- * Fills in the puzzle with the user's answer for the specified game word.
- */
-    fun updateUserTextInPuzzle(userText: String) {
+    /**
+     * Fills in the puzzle with the user's answer for the specified game word.
+     */
+    fun updateUserEntryInPuzzle(userText: String) {
         currentGameWord?.let {
             it.userText = userText.take(it.word.length)
-            updateUserTextInPuzzle(it)
+            updateUserEntryInPuzzle(it)
             selectedCellIndex = (userText.length).coerceAtMost(it.word.length - 1)
             showAsSelected(it, true)
         }
@@ -262,13 +261,9 @@ class PuzzleFragment : Fragment() {
 
     fun updateLetterInPuzzle(letter: Char) {
         currentGameWord?.let {
-            if (selectedCellIndex >= it.userText.length) {
-                it.userText = it.userText + letter
-            } else {
-                it.userText = it.userText.take(selectedCellIndex) + letter + it.userText.substring(selectedCellIndex).drop(1)
-            }
+            it.userEntry[selectedCellIndex] = letter
             selectedCellIndex = (selectedCellIndex + 1).coerceAtMost(it.word.length - 1)
-            updateUserTextInPuzzle(it)
+            updateUserEntryInPuzzle(it)
             showAsSelected(it, true)
         }
     }
@@ -331,7 +326,7 @@ class PuzzleFragment : Fragment() {
                                 nextGameWord = it.gameWordDown
                             }
                             nextGameWord?.let {
-                                selectedCellIndex = it.userText.length.coerceAtMost(it.word.length - 1)
+                                selectedCellIndex = it.defaultSelectionIndex
                                 currentGameWord = it
                                 return true
                             }
@@ -347,7 +342,7 @@ class PuzzleFragment : Fragment() {
 
     private fun isEmptyOrErroredGameWord(gameWord: GameWord?, emptyOnly: Boolean): Boolean {
         return gameWord?.let {
-            emptyOnly && it.userText.isEmpty() || (!emptyOnly && !it.isAnsweredCorrectly)
+            (emptyOnly && it.isEntryEmpty) || (!emptyOnly && !it.isAnsweredCorrectly)
         } ?: false
     }
 
