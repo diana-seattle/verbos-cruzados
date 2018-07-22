@@ -37,7 +37,7 @@ import kotlin.math.roundToInt
 // TODO: instant app
 // TODO: fix imports
 // Complete other TODO items throughout code
-// TODO: use photos from Elissa
+// TODO: use photos from Elissa, less sky in existing photo
 // TODO: update help
 // TODO: fix game options (include vosotros/singular/plural, horizontal ar/ir/er, gerund + past part)
 
@@ -166,6 +166,10 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         }
         answer_keyboard.deleteClickListener = {
             puzzleFragment.deleteLetterInPuzzle()
+            onAnswerChanged()
+        }
+        answer_keyboard.deleteLongClickListener = {
+            puzzleFragment.updateUserTextInPuzzle("")
             onAnswerChanged()
         }
         answer_keyboard.letterClickListener = {

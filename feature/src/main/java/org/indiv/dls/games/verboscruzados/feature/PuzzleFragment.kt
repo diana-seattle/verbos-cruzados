@@ -216,7 +216,7 @@ class PuzzleFragment : Fragment() {
                 val gridCell = cellGrid[row][col]
                 if (gridCell != null) {
                     // if cell is empty, then not complete
-                    if (gridCell.dominantUserChar == null || correctly && gridCell.hasUserError()) {
+                    if (gridCell.userChar == GameWord.BLANK || correctly && gridCell.hasUserError()) {
                         return false
                     }
                 }
@@ -228,35 +228,10 @@ class PuzzleFragment : Fragment() {
     /**
      * Fills in the puzzle with the user's answer for the specified game word.
      */
-    fun updateUserEntryInPuzzle(gameWord: GameWord) {
-        // show answer in puzzle
-        val userEntry = gameWord.userEntry
-        val wordLength = gameWord.word.length
-        val isAcross = gameWord.isAcross
-        var row = gameWord.row
-        var col = gameWord.col
-        for (charIndex in 0 until wordLength) {
-            cellGrid[row][col]?.let {
-                val userChar = userEntry[charIndex].takeIf { it.isLetter() }
-                if (isAcross) {
-                    it.userCharAcross = userChar
-                    col++
-                } else {
-                    it.userCharDown = userChar
-                    row++
-                }
-                fillTextView(it)
-            }
-        }
-    }
-
-    /**
-     * Fills in the puzzle with the user's answer for the specified game word.
-     */
     fun updateUserTextInPuzzle(userText: String) {
         currentGameWord?.let {
             it.userText = userText.take(it.word.length)
-            updateUserEntryInPuzzle(it)
+            updateUserEntryInPuzzle(it, false)
             selectedCellIndex = (userText.length).coerceAtMost(it.word.length - 1)
             showAsSelected(it, true)
         }
@@ -264,8 +239,8 @@ class PuzzleFragment : Fragment() {
 
     fun deleteLetterInPuzzle() {
         currentGameWord?.let {
-            it.userEntry[selectedCellIndex] = '\u0000' // this is the default value for a CharArray
-            updateUserEntryInPuzzle(it)
+            it.userEntry[selectedCellIndex] = GameWord.BLANK
+            updateUserEntryInPuzzle(it, true)
         }
     }
 
@@ -273,7 +248,7 @@ class PuzzleFragment : Fragment() {
         currentGameWord?.let {
             it.userEntry[selectedCellIndex] = letter
             selectedCellIndex = (selectedCellIndex + 1).coerceAtMost(it.word.length - 1)
-            updateUserEntryInPuzzle(it)
+            updateUserEntryInPuzzle(it, true)
             showAsSelected(it, true)
         }
     }
@@ -292,6 +267,49 @@ class PuzzleFragment : Fragment() {
     //endregion
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
+
+    /**
+     * Fills in the puzzle with the user's answer for the specified game word.
+     */
+    private fun updateUserEntryInPuzzle(gameWord: GameWord, applyBlanksToCrossingWords: Boolean) {
+        // show answer in puzzle
+        val userEntry = gameWord.userEntry
+        val wordLength = gameWord.word.length
+        val isAcross = gameWord.isAcross
+        var row = gameWord.row
+        var col = gameWord.col
+        for (charIndex in 0 until wordLength) {
+            cellGrid[row][col]?.let {
+                val gridCell = it
+                val userChar = userEntry[charIndex]
+                if (userChar != GameWord.BLANK || applyBlanksToCrossingWords) {
+                    gridCell.userChar = userChar
+                } else {
+                    when {
+                        isAcross -> gridCell.clearAcross()
+                        else -> gridCell.clearDown()
+                    }
+                }
+
+                // apply to crossing word if any, and advance row or col index
+                val opposingGameWord: GameWord?
+                if (isAcross) {
+                    opposingGameWord = gridCell.gameWordDown
+                    col++
+                } else {
+                    opposingGameWord = gridCell.gameWordAcross
+                    row++
+                }
+                opposingGameWord?.let {
+                    if (userChar != GameWord.BLANK || applyBlanksToCrossingWords) {
+                        it.userEntry[getIndexOfCellInWord(it, gridCell)] = userChar
+                    }
+                }
+
+                fillTextView(it)
+            }
+        }
+    }
 
     private fun getIndexOfCellInWord(gameWord: GameWord, gridCell: GridCell): Int {
         val isAcross = gameWord.isAcross
@@ -387,7 +405,7 @@ class PuzzleFragment : Fragment() {
      * @param gridCell the grid cell from which to get the textview and the user's answer.
      */
     private fun fillTextView(gridCell: GridCell) {
-        gridCell.view?.fillTextView(gridCell.dominantUserChar)
+        gridCell.view?.fillTextView(gridCell.userChar)
     }
 
     /**

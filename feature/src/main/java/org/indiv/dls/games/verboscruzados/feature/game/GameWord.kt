@@ -23,8 +23,8 @@ class GameWord(val uniqueKey: String,            // unique key for use in persis
             return sb.toString()
         }
         set(value) {
-            for (i in 0 until value.length.coerceAtMost(userEntry.size)) {
-                userEntry[i] = value[i]
+            for (i in 0 until userEntry.size) {
+                userEntry[i] = if (i < value.length) value[i] else BLANK
             }
         }
     val isAnsweredCorrectly: Boolean
@@ -38,7 +38,7 @@ class GameWord(val uniqueKey: String,            // unique key for use in persis
         }
     val isEntryEmpty: Boolean
         get() {
-            return userEntry.none { it.isLetter() }
+            return userEntry.all { it == BLANK }
         }
     val defaultSelectionIndex: Int
         get() {
@@ -49,4 +49,8 @@ class GameWord(val uniqueKey: String,            // unique key for use in persis
             }
             return word.length - 1
         }
+
+    companion object {
+        const val BLANK = '\u0000'
+    }
 }

@@ -10,7 +10,6 @@ import org.indiv.dls.games.verboscruzados.feature.R
 import android.support.v4.content.res.ResourcesCompat
 
 
-
 /**
  * Styled [TextView] used in puzzle.
  */
@@ -60,6 +59,13 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
 
     //endregion
 
+    //region PRIVATE PROPERTIES --------------------------------------------------------------------
+
+    var fontColorBlack: Int = ResourcesCompat.getColor(resources, R.color.soft_black, null)
+    var fontColorRed: Int = Color.RED
+
+    //endregion
+
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
 
     /**
@@ -69,7 +75,7 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
      */
     fun fillTextView(userChar: Char?) {
         text = userChar?.toString()
-        setTextColor(Color.BLACK)
+        setTextColor(fontColorBlack)
     }
 
     /**
@@ -85,7 +91,7 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
             !indicateError && isSelected && !individuallySelected -> CELL_BKGD_LEVEL_SELECTED
             else -> CELL_BKGD_LEVEL_NORMAL
         }
-        val textColor = if (indicateError) Color.RED else Color.BLACK
+        val textColor = if (indicateError) fontColorRed else fontColorBlack
         setTextColor(textColor)
     }
 

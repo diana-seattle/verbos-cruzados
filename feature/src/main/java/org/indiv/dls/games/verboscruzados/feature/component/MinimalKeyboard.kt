@@ -1,6 +1,7 @@
 package org.indiv.dls.games.verboscruzados.feature.component
 
 import android.content.Context
+import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.Html
 import android.util.AttributeSet
@@ -90,6 +91,11 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
             vibrator.vibrate(VIBRATION_MSEC)
             deleteClickListener?.invoke()
         }
+        button_delete.setOnLongClickListener() {
+            vibrator.vibrate(VIBRATION_MSEC)
+            deleteLongClickListener?.invoke()
+            true
+        }
         button_left_arrow.setOnClickListener {
             vibrator.vibrate(VIBRATION_MSEC)
             leftClickListener?.invoke()
@@ -116,6 +122,9 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
 
     // Caller can set this to be notified when the user clicks on the delete button
     var deleteClickListener: (() -> Unit)? = null
+
+    // Caller can set this to be notified when the user long clicks on the delete button
+    var deleteLongClickListener: (() -> Unit)? = null
 
     // Caller can set this to be notified when the user clicks on a letter
     var letterClickListener: ((Char) -> Unit)? = null

@@ -12,44 +12,43 @@ class GridCell(val char: Char) {
 
     var gameWordAcross: GameWord? = null
     var gameWordDown: GameWord? = null
-    var userCharAcross: Char? = null
-    var userCharDown: Char? = null
+    var userCharAcross: Char = GameWord.BLANK
+        private set(value) { field = value }
+    var userCharDown: Char = GameWord.BLANK
+        private set(value) { field = value }
     var view: PuzzleCellTextView? = null
 
     /**
-     * Returns the dominant character of the two that the cell may contain (down or across).
+     * If both across and down characters are non-blank, they will be the same.
      */
-    val dominantUserChar: Char?
-        get() = if (userCharAcross != null && userCharDown != null) {
-            // if one is incorrect, use that one
-            if (userCharAcross != char) userCharAcross else userCharDown
-        } else {
-            userCharAcross ?: userCharDown
+    var userChar: Char
+        get() = when {
+            userCharDown != GameWord.BLANK -> userCharDown
+            userCharAcross != GameWord.BLANK -> userCharAcross
+            else -> GameWord.BLANK
+        }
+        set(value) {
+            userCharAcross = value
+            userCharDown = value
         }
 
     //endregion
 
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
 
+    fun clearAcross() {
+        userCharAcross = GameWord.BLANK
+    }
+
+    fun clearDown() {
+        userCharDown = GameWord.BLANK
+    }
+
     /**
      * Returns error if cell contains wrong value or empty.
      */
     fun hasUserError(): Boolean {
-        return dominantUserChar != char
-    }
-
-    /**
-     * Returns error if cell contains wrong value for a word going across.
-     */
-    fun hasUserErrorAcross(): Boolean {
-        return gameWordAcross != null && userCharAcross != char
-    }
-
-    /**
-     * Returns error if cell contains wrong value for a word going down.
-     */
-    fun hasUserErrorDown(): Boolean {
-        return gameWordDown != null && userCharDown != char
+        return userChar != char
     }
 
     //endregion
