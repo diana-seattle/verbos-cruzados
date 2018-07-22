@@ -5,16 +5,11 @@ import android.os.Vibrator
 import android.text.Html
 import android.util.AttributeSet
 import android.view.View
-import android.view.inputmethod.InputConnection
 import android.widget.LinearLayout
 import android.widget.TextView
 import kotlinx.android.synthetic.main.keyboard_minimal.view.*
 import org.indiv.dls.games.verboscruzados.feature.AnswerPresentation
 import org.indiv.dls.games.verboscruzados.feature.R
-import org.indiv.dls.games.verboscruzados.feature.R.id.keyboard_button_infinitive
-import org.indiv.dls.games.verboscruzados.feature.R.id.keyboard_conjugation_type_label
-import org.indiv.dls.games.verboscruzados.feature.R.id.keyboard_subject_pronoun_label
-import org.indiv.dls.games.verboscruzados.feature.R.id.keyboard_translation
 
 /**
  * Minimal keyboard for entering answers while covering the least amount of puzzle possible.
@@ -83,7 +78,7 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
         button_u_accent.setOnClickListener { letterClickListener.invoke(it) }
         button_u_umlaut.setOnClickListener { letterClickListener.invoke(it) }
         button_n_tilde.setOnClickListener { letterClickListener.invoke(it) }
-        button_close.setOnClickListener {
+        button_hide_keyboard.setOnClickListener {
             vibrator.vibrate(VIBRATION_MSEC)
             dismissClickListener?.invoke()
         }

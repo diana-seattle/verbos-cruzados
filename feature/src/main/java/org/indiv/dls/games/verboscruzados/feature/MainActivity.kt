@@ -45,21 +45,18 @@ import kotlin.math.roundToInt
 // TODO: app icons
 
 
-//TODO: fix color updates when show-errors turned on and value goes for right to wrong or wrong to right
-//TODO: connect typing to selected cell (infinitive)
-//TODO: move selected cell to end of user text after pressing infinitive
-// TODO: delete edittext
-//TODO: remove delete key?
+//TODO: crossing letters - edit/delete char in both words
+//TODO consider how to display letter that conflicts in the two directions - edit both directions
 //TODO: consider lowercase in puzzle
-//TODO adjust spacing on keyboard 3rd row (see on 10in)
-//TODO consider when to show/hide keyboard
-//TODO consider how to display letter that conflicts in the two directions (respect selected word, then errored word)
 // TODO don't store 2 references to gameword
+//TODO: remove delete key?
+//TODO consider when to show/hide keyboard - after game setup?
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
 // https://pixabay.com/en/canyon-desert-sky-huge-mountains-311233/
 // https://www.pexels.com/photo/america-arid-bushes-california-221148/
 
+// System icons:
 
 /**
  * This is the main activity. It houses [PuzzleFragment].

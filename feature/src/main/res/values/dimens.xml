@@ -8,7 +8,7 @@
     <dimen name="keyboard_infinitive_size">@dimen/large_fixed</dimen>
 
     <!-- width of individual cell -->
-    <dimen name="cell_width">22dp</dimen>
+    <dimen name="cell_width">23dp</dimen>
 
     <dimen name="puzzle_margin">5dp</dimen>
 
