@@ -38,6 +38,7 @@ import kotlin.math.roundToInt
 // TODO: fix imports
 // Complete other TODO items throughout code
 // TODO: use photos from Elissa
+// TODO: update help
 // TODO: fix game options (include vosotros/singular/plural, horizontal ar/ir/er, gerund + past part)
 
 // TODO: optimizing drawing of puzzle (eliminate spacer views)
@@ -45,9 +46,8 @@ import kotlin.math.roundToInt
 // TODO: app icons
 
 
-//TODO: crossing letters - edit/delete char in both words
+//TODO: crossing letters - edit/delete char in both words, but not on infinitive
 //TODO consider how to display letter that conflicts in the two directions - edit both directions
-//TODO: consider lowercase in puzzle
 // TODO don't store 2 references to gameword
 //TODO consider when to show/hide keyboard - after game setup?
 
@@ -56,6 +56,7 @@ import kotlin.math.roundToInt
 // https://www.pexels.com/photo/america-arid-bushes-california-221148/
 
 // Lato font: https://fonts.google.com/specimen/Lato
+// Font guide: https://developer.android.com/guide/topics/ui/look-and-feel/fonts-in-xml
 // System icons: https://developer.android.com/design/downloads/
 
 /**
