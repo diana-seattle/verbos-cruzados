@@ -49,14 +49,14 @@ import kotlin.math.roundToInt
 //TODO consider how to display letter that conflicts in the two directions - edit both directions
 //TODO: consider lowercase in puzzle
 // TODO don't store 2 references to gameword
-//TODO: remove delete key?
 //TODO consider when to show/hide keyboard - after game setup?
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
 // https://pixabay.com/en/canyon-desert-sky-huge-mountains-311233/
 // https://www.pexels.com/photo/america-arid-bushes-california-221148/
 
-// System icons:
+// Lato font: https://fonts.google.com/specimen/Lato
+// System icons: https://developer.android.com/design/downloads/
 
 /**
  * This is the main activity. It houses [PuzzleFragment].

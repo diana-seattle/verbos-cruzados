@@ -34,7 +34,7 @@
                     android:textSize="@dimen/medium_fixed"
                     android:textStyle="italic"/>
 
-                <!-- "Next" button -->
+                <!-- "Next" button (use padding to increase touch target) -->
                 <TextView
                     android:id="@+id/button_next_word"
                     android:layout_width="wrap_content"
@@ -243,13 +243,13 @@
             <ImageView
                 android:id="@+id/button_left_arrow"
                 style="@style/answerLetterButton"
-                android:padding="4dp"
+                android:padding="3dp"
                 android:src="@drawable/ic_baseline_arrow_back_24px"
                 android:tint="@color/soft_black"/>
             <ImageView
                 android:id="@+id/button_right_arrow"
                 style="@style/answerLetterButton"
-                android:padding="4dp"
+                android:padding="3dp"
                 android:src="@drawable/ic_baseline_arrow_forward_24px"
                 android:tint="@color/soft_black"/>
 
@@ -312,9 +312,8 @@
                 android:id="@+id/button_delete"
                 style="@style/answerLetterButton"
                 android:layout_margin="2dp"
-                android:backgroundTint="@color/soft_black"
                 android:src="@drawable/ic_baseline_cancel_24px"
-                android:tint="#ffff8d"/>
+                android:tint="#ffea00"/>
             <View
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

@@ -387,7 +387,7 @@ class PuzzleFragment : Fragment() {
      * @param gridCell the grid cell from which to get the textview and the user's answer.
      */
     private fun fillTextView(gridCell: GridCell) {
-        gridCell.view?.fillTextView(gridCell.dominantUserChar?.toUpperCase())
+        gridCell.view?.fillTextView(gridCell.dominantUserChar)
     }
 
     /**

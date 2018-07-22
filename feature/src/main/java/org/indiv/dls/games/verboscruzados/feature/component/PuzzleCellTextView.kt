@@ -7,6 +7,9 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.widget.TextView
 import org.indiv.dls.games.verboscruzados.feature.R
+import android.support.v4.content.res.ResourcesCompat
+
+
 
 /**
  * Styled [TextView] used in puzzle.
@@ -21,7 +24,10 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
     init {
         val size = Math.round(resources.getDimension(R.dimen.cell_width))
         val fontHeight = size * FONT_SIZE_FRACTION
-        gravity = Gravity.CENTER
+        gravity = Gravity.CENTER_HORIZONTAL.or(Gravity.TOP)
+
+        typeface = ResourcesCompat.getFont(context, R.font.latoregular)
+
         // need to create Drawable object for each TextView
         background = resources.getDrawable(R.drawable.cell_drawable, null)
         setTextSize(TypedValue.COMPLEX_UNIT_PX, fontHeight)
@@ -36,7 +42,7 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
     companion object {
-        private val FONT_SIZE_FRACTION = .74f
+        private val FONT_SIZE_FRACTION = .80f
 
         private val CELL_BKGD_LEVEL_NORMAL = 1
         private val CELL_BKGD_LEVEL_ERRORED = 2
@@ -44,6 +50,7 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
         private val CELL_BKGD_LEVEL_ERRORED_SELECTED = 4
         private val CELL_BKGD_LEVEL_SELECTED_INDIV = 5 // Individual cell selected within selected word
         private val CELL_BKGD_LEVEL_ERRORED_SELECTED_INDIV = 6
+
         private val ERRORED_BACKGROUND_LEVELS = listOf(CELL_BKGD_LEVEL_ERRORED,
                 CELL_BKGD_LEVEL_ERRORED_SELECTED,
                 CELL_BKGD_LEVEL_ERRORED_SELECTED_INDIV)

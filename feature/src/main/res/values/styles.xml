@@ -14,11 +14,11 @@
         <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
         <item name="android:textSize">@dimen/keyboard_letter_size</item>
         <item name="android:textColor">@color/soft_black</item>
+        <item name="android:fontFamily">@font/latoregular</item>
         <item name="android:textAllCaps">false</item>
     </style>
 
     <style name="answerLetterButton.special">
-        <item name="android:textStyle">italic</item>
         <item name="android:textColor">@color/keyboard_special_letters</item>
     </style>
 
