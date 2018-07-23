@@ -10,46 +10,36 @@ class GridCell(val char: Char) {
 
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
 
+    var view: PuzzleCellTextView? = null
+    var acrossIndex: Int = 0
+    var downIndex: Int = 0
     var gameWordAcross: GameWord? = null
     var gameWordDown: GameWord? = null
     var userCharAcross: Char = GameWord.BLANK
-        private set(value) { field = value }
     var userCharDown: Char = GameWord.BLANK
-        private set(value) { field = value }
-    var view: PuzzleCellTextView? = null
 
     /**
-     * If both across and down characters are non-blank, they will be the same.
+     * Default user-entered character to display.
      */
-    var userChar: Char
+    val userChar: Char
         get() = when {
             userCharDown != GameWord.BLANK -> userCharDown
-            userCharAcross != GameWord.BLANK -> userCharAcross
-            else -> GameWord.BLANK
+            else -> userCharAcross
         }
-        set(value) {
-            userCharAcross = value
-            userCharDown = value
-        }
-
-    //endregion
-
-    //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
-
-    fun clearAcross() {
-        userCharAcross = GameWord.BLANK
-    }
-
-    fun clearDown() {
-        userCharDown = GameWord.BLANK
-    }
 
     /**
-     * Returns error if cell contains wrong value or empty.
+     * True if the across and down characters are both non-blank and conflict with each other.
      */
-    fun hasUserError(): Boolean {
-        return userChar != char
-    }
+    val isConflict: Boolean
+        get() = userCharAcross != GameWord.BLANK && userCharDown != GameWord.BLANK &&
+                userCharAcross !=  userCharDown
+
+    val isBlank: Boolean
+        get() = userCharAcross == GameWord.BLANK && userCharDown == GameWord.BLANK
+
+    val hasUserError: Boolean
+        get() = userChar != char || isConflict
 
     //endregion
+
 }

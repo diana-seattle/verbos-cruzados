@@ -78,19 +78,15 @@ class GameSetup {
             }
             cellGrid[row][col]!!.apply {
                 val userEntryChar = userEntry[charIndex]
-                if (userEntryChar != GameWord.BLANK) {
-                    userChar = userEntryChar
-                } else {
-                    when {
-                        gameWord.isAcross -> clearAcross()
-                        else -> clearDown()
-                    }
-                }
                 if (gameWord.isAcross) {
                     gameWordAcross = gameWord
+                    userCharAcross = userEntryChar
+                    acrossIndex = charIndex
                     col++
                 } else {
                     gameWordDown = gameWord
+                    userCharDown = userEntryChar
+                    downIndex = charIndex
                     row++
                 }
                 charIndex++

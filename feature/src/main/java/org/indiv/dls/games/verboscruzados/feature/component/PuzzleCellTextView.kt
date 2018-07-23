@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.widget.TextView
 import org.indiv.dls.games.verboscruzados.feature.R
 import android.support.v4.content.res.ResourcesCompat
+import android.text.Html
 
 
 /**
@@ -18,18 +19,25 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
                                                         defStyleAttr: Int = 0)
     : TextView(context, attrs, defStyleAttr) {
 
+    //region PRIVATE PROPERTIES --------------------------------------------------------------------
+
+    var fontColorBlack: Int = ResourcesCompat.getColor(resources, R.color.soft_black, null)
+    var fontColorRed: Int = Color.RED
+    val size = Math.round(resources.getDimension(R.dimen.cell_width))
+    val fontHeight = size * FONT_SIZE_FRACTION
+    val fontHeightForCompoundText = size * FONT_SIZE_FRACTION * .7f
+
+    //endregion
+
     //region INITIALIZER ---------------------------------------------------------------------------
 
     init {
-        val size = Math.round(resources.getDimension(R.dimen.cell_width))
-        val fontHeight = size * FONT_SIZE_FRACTION
-        gravity = Gravity.CENTER_HORIZONTAL.or(Gravity.TOP)
+        gravity = Gravity.CENTER
 
         typeface = ResourcesCompat.getFont(context, R.font.latoregular)
 
         // need to create Drawable object for each TextView
         background = resources.getDrawable(R.drawable.cell_drawable, null)
-        setTextSize(TypedValue.COMPLEX_UNIT_PX, fontHeight)
         width = size
         height = size
         background.level = CELL_BKGD_LEVEL_NORMAL // default to normal text cell background (i.e. no error indication)
@@ -41,7 +49,7 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
     companion object {
-        private val FONT_SIZE_FRACTION = .80f
+        private val FONT_SIZE_FRACTION = .82f
 
         private val CELL_BKGD_LEVEL_NORMAL = 1
         private val CELL_BKGD_LEVEL_ERRORED = 2
@@ -59,13 +67,6 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
 
     //endregion
 
-    //region PRIVATE PROPERTIES --------------------------------------------------------------------
-
-    var fontColorBlack: Int = ResourcesCompat.getColor(resources, R.color.soft_black, null)
-    var fontColorRed: Int = Color.RED
-
-    //endregion
-
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
 
     /**
@@ -73,8 +74,10 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
      *
      * @param userChar the character to fill the textview with.
      */
-    fun fillTextView(userChar: Char?) {
-        text = userChar?.toString()
+    fun fillTextView(userText: String?) {
+        text = userText
+        setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                if (userText?.length ?: 0 > 1) fontHeightForCompoundText else fontHeight)
         setTextColor(fontColorBlack)
     }
 

@@ -24,6 +24,7 @@ import org.indiv.dls.games.verboscruzados.feature.dialog.GameOptionsDialogFragme
 import org.indiv.dls.games.verboscruzados.feature.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
 import kotlinx.android.synthetic.main.activity_main.*
+import org.indiv.dls.games.verboscruzados.feature.R.id.answer_keyboard
 import kotlin.math.roundToInt
 
 
@@ -69,8 +70,6 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     companion object {
         private val TAG = MainActivity::class.java.simpleName
         private const val KEYBOARD_ANIMATION_TIME = 150L
-
-        var currentGameWord: GameWord? = null
     }
 
     //endregion
@@ -90,7 +89,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     private var keyboardHeight: Float = 0f
     private var viewablePuzzleHeight: Float = 0f
     private var puzzleMarginPixels: Float = 0f
-    private var pixelsPerCell : Float = 0f
+    private var pixelsPerCell: Float = 0f
 
     private var statsPersisted: Boolean = false
 
@@ -111,8 +110,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             // This is a special debug-build-only hack that allows the developer/tester to complete a game immediately.
             toolbar?.setOnLongClickListener { v ->
                 do {
-                    currentGameWord = puzzleFragment.currentGameWord
-                    currentGameWord?.let {
+                    puzzleFragment.currentGameWord?.let {
                         puzzleFragment.updateUserTextInPuzzle(it.word)
                         onAnswerChanged()
                     }
@@ -164,17 +162,26 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             puzzleFragment.updateUserTextInPuzzle(it)
             onAnswerChanged()
         }
-        answer_keyboard.deleteClickListener = {
-            puzzleFragment.deleteLetterInPuzzle()
-            onAnswerChanged()
-        }
         answer_keyboard.deleteLongClickListener = {
             puzzleFragment.updateUserTextInPuzzle("")
             onAnswerChanged()
         }
-        answer_keyboard.letterClickListener = {
-            puzzleFragment.updateLetterInPuzzle(it)
+        answer_keyboard.deleteClickListener = {
+            val conflictingGameWord = puzzleFragment.deleteLetterInPuzzle()
+            conflictingGameWord?.let {
+                Thread { persistenceHelper.persistUserEntry(it) }.start()
+            }
             onAnswerChanged()
+        }
+        answer_keyboard.letterClickListener = {
+            val conflictingGameWord = puzzleFragment.updateLetterInPuzzle(it)
+            conflictingGameWord?.let {
+                Thread { persistenceHelper.persistUserEntry(it) }.start()
+            }
+            onAnswerChanged()
+
+            puzzleFragment.advanceSelectedCellInPuzzle(false)
+            scrollSelectedCellIntoView()
         }
         answer_keyboard.leftClickListener = {
             puzzleFragment.advanceSelectedCellInPuzzle(true)
@@ -227,8 +234,6 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.clear()
-
-        currentGameWord = null
         showingErrors = false
     }
 
@@ -320,7 +325,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         // have a wrong character that appears correct because of character in other direction.
 
         // if puzzle is complete and correct.
-        val currentWordIsCorrect = currentGameWord?.isAnsweredCorrectly == true
+        val currentWordIsCorrect = puzzleFragment.currentGameWord?.isAnsweredCorrectly == true
         if (currentWordIsCorrect && puzzleFragment.isPuzzleComplete(true)) {
             if (!statsPersisted) {
                 persistenceHelper.persistGameStats(currentGameWords)
@@ -422,18 +427,12 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
     private fun createGrid() {
         puzzleFragment.createGrid(this)
-
-        currentGameWord = puzzleFragment.currentGameWord
-
-        // Update answer fragment with current game word
-        if (currentGameWord != null) { // this extra check is necessary for case where setting up initial game and no words available in db
-            setGameWord(currentGameWord!!)
+        puzzleFragment.currentGameWord?.let {
+            setGameWord(it)
         }
     }
 
     private fun setGameWord(gameWord: GameWord) {
-        currentGameWord = gameWord
-
         // Update keyboard with answer info
         answer_keyboard.answerPresentation = createAnswerPresentation(gameWord)
 
@@ -443,7 +442,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     }
 
     private fun scrollSelectedCellIntoView() {
-        currentGameWord?.let {
+        puzzleFragment.currentGameWord?.let {
             if (!it.isAcross) {
                 val rowOfSelectedCell = it.row + puzzleFragment.selectedCellIndex
                 val yOfSelectedCell = rowOfSelectedCell * pixelsPerCell
@@ -462,7 +461,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     }
 
     private fun scrollWordIntoView(defaultToTop: Boolean = true) {
-        currentGameWord?.let {
+        puzzleFragment.currentGameWord?.let {
             val firstRowPosition = it.row
             val lastRowPosition = when {
                 it.isAcross -> it.row

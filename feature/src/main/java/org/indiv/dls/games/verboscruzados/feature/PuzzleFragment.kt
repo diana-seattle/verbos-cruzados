@@ -139,7 +139,7 @@ class PuzzleFragment : Fragment() {
                 }
 
                 newGameWord?.let {
-                    selectedCellIndex = getIndexOfCellInWord(it, gridCell)
+                    selectedCellIndex = if (it.isAcross) gridCell.acrossIndex else gridCell.downIndex
                     currentGameWord = newGameWord  // this assignment will call setter which will take care of showing word and cell as selected
 
                     // Notify the listener regardless of whether new word selected or not (e.g. so keyboard can be shown).
@@ -199,7 +199,7 @@ class PuzzleFragment : Fragment() {
                 // if cell is part of currently selected game word, adjust the level to set the background color
                 cellGrid[row][col]?.let {
                     val isSelected = currentGameWord == it.gameWordAcross || currentGameWord == it.gameWordDown
-                    it.view?.setStyle(isSelected, showErrors && it.hasUserError())
+                    it.view?.setStyle(isSelected, showErrors && it.hasUserError)
                 }
             }
         }
@@ -216,7 +216,7 @@ class PuzzleFragment : Fragment() {
                 val gridCell = cellGrid[row][col]
                 if (gridCell != null) {
                     // if cell is empty, then not complete
-                    if (gridCell.userChar == GameWord.BLANK || correctly && gridCell.hasUserError()) {
+                    if (gridCell.userChar == GameWord.BLANK || correctly && gridCell.hasUserError) {
                         return false
                     }
                 }
@@ -230,32 +230,30 @@ class PuzzleFragment : Fragment() {
      */
     fun updateUserTextInPuzzle(userText: String) {
         currentGameWord?.let {
-            it.userText = userText.take(it.word.length)
-            updateUserEntryInPuzzle(it, false)
+            it.setUserText(userText.take(it.word.length))
+            updateUserEntryInPuzzle(it)
             selectedCellIndex = (userText.length).coerceAtMost(it.word.length - 1)
             showAsSelected(it, true)
         }
     }
 
-    fun deleteLetterInPuzzle() {
-        currentGameWord?.let {
-            it.userEntry[selectedCellIndex] = GameWord.BLANK
-            updateUserEntryInPuzzle(it, true)
-        }
+    fun deleteLetterInPuzzle(): GameWord? {
+        return updateLetterInPuzzle(GameWord.BLANK)
     }
 
-    fun updateLetterInPuzzle(letter: Char) {
+    fun updateLetterInPuzzle(userChar: Char): GameWord? {
         currentGameWord?.let {
-            it.userEntry[selectedCellIndex] = letter
-            selectedCellIndex = (selectedCellIndex + 1).coerceAtMost(it.word.length - 1)
-            updateUserEntryInPuzzle(it, true)
-            showAsSelected(it, true)
+            it.userEntry[selectedCellIndex] = userChar
+            val row = if (it.isAcross) it.row else it.row + selectedCellIndex
+            val col = if (it.isAcross) it.col + selectedCellIndex else it.col
+            return updateUserLetterInPuzzle(userChar, it.isAcross, row, col)
         }
+        return null
     }
 
-    fun advanceSelectedCellInPuzzle(leftDirection: Boolean) {
+    fun advanceSelectedCellInPuzzle(backwardDirection: Boolean) {
         currentGameWord?.let {
-            if (leftDirection) {
+            if (backwardDirection) {
                 selectedCellIndex = (selectedCellIndex - 1).coerceAtLeast(0)
             } else {
                 selectedCellIndex = (selectedCellIndex + 1).coerceAtMost(it.word.length - 1)
@@ -271,7 +269,7 @@ class PuzzleFragment : Fragment() {
     /**
      * Fills in the puzzle with the user's answer for the specified game word.
      */
-    private fun updateUserEntryInPuzzle(gameWord: GameWord, applyBlanksToCrossingWords: Boolean) {
+    private fun updateUserEntryInPuzzle(gameWord: GameWord) {
         // show answer in puzzle
         val userEntry = gameWord.userEntry
         val wordLength = gameWord.word.length
@@ -282,52 +280,56 @@ class PuzzleFragment : Fragment() {
             cellGrid[row][col]?.let {
                 val gridCell = it
                 val userChar = userEntry[charIndex]
-                if (userChar != GameWord.BLANK || applyBlanksToCrossingWords) {
-                    gridCell.userChar = userChar
-                } else {
-                    when {
-                        isAcross -> gridCell.clearAcross()
-                        else -> gridCell.clearDown()
-                    }
-                }
-
-                // apply to crossing word if any, and advance row or col index
-                val opposingGameWord: GameWord?
                 if (isAcross) {
-                    opposingGameWord = gridCell.gameWordDown
+//                    val inConflict = userChar != GameWord.BLANK && gridCell.userCharDown != GameWord.BLANK && userChar != gridCell.userCharDown
+//                    gridCell.userCharAcross = if (!inConflict) userChar else GameWord.BLANK
+                    gridCell.userCharAcross = userChar
                     col++
                 } else {
-                    opposingGameWord = gridCell.gameWordAcross
+//                    val inConflict = userChar != GameWord.BLANK && gridCell.userCharAcross != GameWord.BLANK && userChar != gridCell.userCharAcross
+//                    gridCell.userCharDown = if (!inConflict) userChar else GameWord.BLANK
+                    gridCell.userCharDown = userChar
                     row++
                 }
-                opposingGameWord?.let {
-                    if (userChar != GameWord.BLANK || applyBlanksToCrossingWords) {
-                        it.userEntry[getIndexOfCellInWord(it, gridCell)] = userChar
-                    }
-                }
-
                 fillTextView(it)
             }
         }
     }
 
-    private fun getIndexOfCellInWord(gameWord: GameWord, gridCell: GridCell): Int {
-        val isAcross = gameWord.isAcross
-        var row = gameWord.row
-        var col = gameWord.col
-        for (charIndex in 0 until gameWord.word.length) {
-            cellGrid[row][col]?.let {
-                if (it == gridCell) {
-                    return if (isAcross) col - gameWord.col else row - gameWord.row
+    /**
+     * Fills in the puzzle with the user's letter for the specified position.
+     *
+     * @return word in opposing direction that had conflict and was updated if any, otherwise null
+     */
+    private fun updateUserLetterInPuzzle(userChar: Char, isAcross: Boolean, row: Int, col: Int): GameWord? {
+        var conflictingGameWord: GameWord? = null
+        cellGrid[row][col]?.let {
+            if (isAcross) {
+                val inConflict = it.userCharDown != GameWord.BLANK && userChar != it.userCharDown
+                it.userCharAcross = userChar
+                if (inConflict) {
+                    it.userCharDown = userChar
+                    val index = it.downIndex
+                    conflictingGameWord = it.gameWordDown
+                    conflictingGameWord?.let {
+                        it.userEntry[index] = userChar
+                    }
                 }
-                if (isAcross) {
-                    col++
-                } else {
-                    row++
+            } else {
+                val inConflict = it.userCharAcross != GameWord.BLANK && userChar != it.userCharAcross
+                it.userCharDown = userChar
+                if (inConflict) {
+                    it.userCharAcross = userChar
+                    val index = it.acrossIndex
+                    conflictingGameWord = it.gameWordAcross
+                    conflictingGameWord?.let {
+                        it.userEntry[index] = userChar
+                    }
                 }
             }
+            fillTextView(it)
         }
-        return 0
+        return conflictingGameWord
     }
 
     /**
@@ -405,7 +407,14 @@ class PuzzleFragment : Fragment() {
      * @param gridCell the grid cell from which to get the textview and the user's answer.
      */
     private fun fillTextView(gridCell: GridCell) {
-        gridCell.view?.fillTextView(gridCell.userChar)
+        gridCell.view?.let {
+            val text = when {
+                gridCell.isConflict -> "${gridCell.userCharAcross}/${gridCell.userCharDown}"
+                gridCell.isBlank -> null
+                else -> gridCell.userChar.toString()
+            }
+            it.fillTextView(text)
+        }
     }
 
     /**

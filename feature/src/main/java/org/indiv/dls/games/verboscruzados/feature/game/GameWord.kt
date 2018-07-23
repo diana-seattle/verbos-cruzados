@@ -14,19 +14,6 @@ class GameWord(val uniqueKey: String,            // unique key for use in persis
                val col: Int,                     // column in which the word begins
                val isAcross: Boolean,            // true if word appears in the across orientation, false if down
                var userEntry: CharArray = CharArray(word.length)) {   // text entered by the user
-    var userText: String
-        get() {
-            val sb = StringBuilder()
-            userEntry.forEach {
-                sb.append(it)
-            }
-            return sb.toString()
-        }
-        set(value) {
-            for (i in 0 until userEntry.size) {
-                userEntry[i] = if (i < value.length) value[i] else BLANK
-            }
-        }
     val isAnsweredCorrectly: Boolean
         get() {
             userEntry.forEachIndexed { index, c ->
@@ -52,5 +39,11 @@ class GameWord(val uniqueKey: String,            // unique key for use in persis
 
     companion object {
         const val BLANK = '\u0000'
+    }
+
+    fun setUserText(userText: String) {
+        for (i in 0 until userEntry.size) {
+            userEntry[i] = if (i < userText.length) userText[i] else BLANK
+        }
     }
 }
