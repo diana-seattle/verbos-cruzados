@@ -91,11 +91,8 @@
 
     <!--game options - subject pronouns -->
     <string name="option_title_subject_pronouns">Subject Pronouns</string>
-    <string name="option_subject_pronoun_yo">Yo</string>
-    <string name="option_subject_pronoun_tu">Tú</string>
-    <string name="option_subject_pronoun_el_ella_ud">Él/Ella/Ud.</string>
-    <string name="option_subject_pronoun_ellos_ellas_uds">Ellos/Ellas/Uds.</string>
-    <string name="option_subject_pronoun_nosotros">Nosotros</string>
+    <string name="option_subject_pronoun_singular">Yo, Tú, Él/Ella/Ud. (singular)</string>
+    <string name="option_subject_pronoun_plural">Nosotros, Ellos/Ellas/Uds. (plural)</string>
     <string name="option_subject_pronoun_vosotros">Vosotros</string>
 
     <!-- error messages -->

@@ -75,11 +75,11 @@ class GameOptionsDialogFragment : DialogFragment() {
         checkboxMap[ConjugationType.GERUND.name] = v.findViewById(R.id.option_tense_gerund)
         checkboxMap[ConjugationType.PAST_PARTICIPLE.name] = v.findViewById(R.id.option_tense_past_participle)
 
-        checkboxMap[SubjectPronoun.YO.name] = v.findViewById(R.id.option_subject_pronoun_yo)
-        checkboxMap[SubjectPronoun.TU.name] = v.findViewById(R.id.option_subject_pronoun_tu)
-        checkboxMap[SubjectPronoun.EL_ELLA_USTED.name] = v.findViewById(R.id.option_subject_pronoun_el_ella_ud)
-        checkboxMap[SubjectPronoun.ELLOS_ELLAS_USTEDES.name] = v.findViewById(R.id.option_subject_pronoun_ellos_ellas_uds)
-        checkboxMap[SubjectPronoun.NOSOTROS.name] = v.findViewById(R.id.option_subject_pronoun_nosotros)
+        checkboxMap[SubjectPronoun.YO.name] = v.findViewById(R.id.option_subject_pronoun_singular)
+        checkboxMap[SubjectPronoun.TU.name] = v.findViewById(R.id.option_subject_pronoun_singular)
+        checkboxMap[SubjectPronoun.EL_ELLA_USTED.name] = v.findViewById(R.id.option_subject_pronoun_singular)
+        checkboxMap[SubjectPronoun.ELLOS_ELLAS_USTEDES.name] = v.findViewById(R.id.option_subject_pronoun_plural)
+        checkboxMap[SubjectPronoun.NOSOTROS.name] = v.findViewById(R.id.option_subject_pronoun_plural)
         checkboxMap[SubjectPronoun.VOSOTROS.name] = v.findViewById(R.id.option_subject_pronoun_vosotros)
 
         initializeOptions()

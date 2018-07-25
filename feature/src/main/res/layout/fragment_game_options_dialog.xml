@@ -4,217 +4,181 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <!--Regularity-->
-        <LinearLayout
-            android:id="@+id/top_left_quadrant"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/default_margin"
-            android:layout_marginStart="@dimen/default_margin"
-            android:layout_marginTop="@dimen/default_margin"
-            android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/quarter_margin"
-                android:text="@string/option_title_regularity"
-            />
-            <CheckBox
-                android:id="@+id/option_regularity_regular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_regularity_regular"
-            />
-            <CheckBox
-                android:id="@+id/option_regularity_spelling_change"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_regularity_spelling_change"
-            />
-            <CheckBox
-                android:id="@+id/option_regularity_stem_change"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_regularity_stem_change"/>
-            <CheckBox
-                android:id="@+id/option_regularity_other_irregular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_regularity_other_irregular"/>
-        </LinearLayout>
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginEnd="@dimen/half_margin"
+                  android:layout_marginStart="@dimen/default_margin"
+                  android:layout_marginTop="@dimen/default_margin"
+                  android:orientation="vertical"
+                  android:paddingBottom="@dimen/large_margin">
 
         <!--Infinitive Endings-->
+        <TextView style="@style/gameOptionHeadingText"
+                  android:text="@string/option_title_infinitive_endings"/>
         <LinearLayout
-            android:id="@+id/top_right_quadrant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_margin"
-            android:orientation="vertical"
-            app:layout_constraintStart_toEndOf="@+id/bottom_left_quadrant"
-            app:layout_constraintTop_toTopOf="parent">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/quarter_margin"
-                android:text="@string/option_title_infinitive_endings"
-            />
+            android:orientation="horizontal">
             <CheckBox
                 android:id="@+id/option_infinitive_ending_ar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/option_infinitive_ending_ar"
-            />
+                android:layout_marginEnd="@dimen/half_margin"
+                android:paddingEnd="@dimen/half_margin"
+                android:text="@string/option_infinitive_ending_ar"/>
             <CheckBox
                 android:id="@+id/option_infinitive_ending_er"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/option_infinitive_ending_er"
-            />
+                android:layout_marginEnd="@dimen/half_margin"
+                android:paddingEnd="@dimen/half_margin"
+                android:text="@string/option_infinitive_ending_er"/>
             <CheckBox
                 android:id="@+id/option_infinitive_ending_ir"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/option_infinitive_ending_ir"
-            />
-
+                android:paddingEnd="@dimen/half_margin"
+                android:text="@string/option_infinitive_ending_ir"/>
         </LinearLayout>
 
-        <!--Tense/Mood-->
+        <!--Regularity-->
+        <TextView style="@style/gameOptionHeadingText"
+            android:layout_marginTop="@dimen/three_quarter_margin"
+            android:text="@string/option_title_regularity"/>
         <LinearLayout
-            android:id="@+id/bottom_left_quadrant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/default_margin"
-            android:layout_marginStart="@dimen/default_margin"
-            android:layout_marginTop="@dimen/default_margin"
-            android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/top_left_quadrant">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/quarter_margin"
-                android:text="@string/option_title_tense_mood"/>
-            <CheckBox
-                android:id="@+id/option_tense_present"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_tense_present"
-            />
-            <CheckBox
-                android:id="@+id/option_tense_preterit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_tense_preterit"
-            />
-            <CheckBox
-                android:id="@+id/option_tense_imperfect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_tense_imperfect"
-            />
-            <CheckBox
-                android:id="@+id/option_tense_conditional"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_tense_conditional"
-            />
-            <CheckBox
-                android:id="@+id/option_tense_future"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_tense_future"
-            />
-            <CheckBox
-                android:id="@+id/option_tense_imperative"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_tense_imperative"
-            />
-            <CheckBox
-                android:id="@+id/option_tense_subjunctive_present"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_tense_subjunctive_present"
-            />
-            <CheckBox
-                android:id="@+id/option_tense_subjunctive_imperfect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_tense_subjunctive_imperfect"
-            />
-            <CheckBox
-                android:id="@+id/option_tense_past_participle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_tense_past_participle"
-            />
-            <CheckBox
-                android:id="@+id/option_tense_gerund"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_tense_gerund"
-            />
+            android:orientation="horizontal">
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <CheckBox
+                    android:id="@+id/option_regularity_regular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/option_regularity_regular"/>
+                <CheckBox
+                    android:id="@+id/option_regularity_stem_change"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/half_margin"
+                    android:text="@string/option_regularity_stem_change"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <CheckBox
+                    android:id="@+id/option_regularity_spelling_change"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/option_regularity_spelling_change"/>
+                <CheckBox
+                    android:id="@+id/option_regularity_other_irregular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/option_regularity_other_irregular"/>
+            </LinearLayout>
         </LinearLayout>
 
         <!--Subject Pronouns-->
-        <LinearLayout
-            android:id="@+id/bottom_right_quadrant"
+        <TextView style="@style/gameOptionHeadingText"
+            android:layout_marginTop="@dimen/three_quarter_margin"
+            android:text="@string/option_title_subject_pronouns"/>
+        <CheckBox
+            android:id="@+id/option_subject_pronoun_singular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintStart_toEndOf="@id/bottom_left_quadrant"
-            app:layout_constraintTop_toTopOf="@id/bottom_left_quadrant">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/quarter_margin"
-                android:text="@string/option_title_subject_pronouns"
-            />
-            <CheckBox
-                android:id="@+id/option_subject_pronoun_yo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_subject_pronoun_yo"
-            />
-            <CheckBox
-                android:id="@+id/option_subject_pronoun_tu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_subject_pronoun_tu"
-            />
-            <CheckBox
-                android:id="@+id/option_subject_pronoun_el_ella_ud"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_subject_pronoun_el_ella_ud"
-            />
-            <CheckBox
-                android:id="@+id/option_subject_pronoun_ellos_ellas_uds"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_subject_pronoun_ellos_ellas_uds"
-            />
-            <CheckBox
-                android:id="@+id/option_subject_pronoun_nosotros"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_subject_pronoun_nosotros"
-            />
-            <CheckBox
-                android:id="@+id/option_subject_pronoun_vosotros"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_subject_pronoun_vosotros"
-            />
-        </LinearLayout>
+            android:text="@string/option_subject_pronoun_singular"/>
+        <CheckBox
+            android:id="@+id/option_subject_pronoun_plural"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/option_subject_pronoun_plural"/>
+        <CheckBox
+            android:id="@+id/option_subject_pronoun_vosotros"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/option_subject_pronoun_vosotros"/>
 
-    </android.support.constraint.ConstraintLayout>
+        <!--Tense/Mood-->
+        <TextView style="@style/gameOptionHeadingText"
+            android:layout_marginTop="@dimen/three_quarter_margin"
+            android:text="@string/option_title_tense_mood"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <CheckBox
+                    android:id="@+id/option_tense_present"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/option_tense_present"/>
+                <CheckBox
+                    android:id="@+id/option_tense_preterit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/option_tense_preterit"/>
+                <CheckBox
+                    android:id="@+id/option_tense_imperfect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/option_tense_imperfect"/>
+                <CheckBox
+                    android:id="@+id/option_tense_conditional"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/half_margin"
+                    android:text="@string/option_tense_conditional"/>
+                <CheckBox
+                    android:id="@+id/option_tense_future"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/option_tense_future"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <CheckBox
+                    android:id="@+id/option_tense_imperative"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/option_tense_imperative"/>
+                <CheckBox
+                    android:id="@+id/option_tense_subjunctive_present"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/option_tense_subjunctive_present"/>
+                <CheckBox
+                    android:id="@+id/option_tense_subjunctive_imperfect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/option_tense_subjunctive_imperfect"/>
+                <CheckBox
+                    android:id="@+id/option_tense_past_participle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/option_tense_past_participle"/>
+                <CheckBox
+                    android:id="@+id/option_tense_gerund"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/option_tense_gerund"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+        
+    </LinearLayout>
+
 </ScrollView>

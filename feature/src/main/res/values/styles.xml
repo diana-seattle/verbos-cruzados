@@ -59,7 +59,15 @@
         <item name="android:textColor">@color/soft_black</item>
         <item name="android:textSize">@dimen/medium</item>
         <item name="android:textStyle">italic</item>
+    </style>
 
+    <style name="gameOptionHeadingText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/quarter_margin</item>
+        <item name="android:textColor">@color/medium_gray</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">@dimen/small</item>
     </style>
 
 </resources>
