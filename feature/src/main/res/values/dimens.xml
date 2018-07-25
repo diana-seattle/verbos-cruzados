@@ -2,7 +2,7 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <!-- height of bottom margin to allow for scrolling puzzle above keyboard -->
-    <dimen name="keyboard_height">196dp</dimen>
+    <dimen name="keyboard_height">204dp</dimen>
 
     <dimen name="keyboard_letter_size">@dimen/x_large_fixed</dimen>
     <dimen name="keyboard_infinitive_size">@dimen/large_fixed</dimen>
