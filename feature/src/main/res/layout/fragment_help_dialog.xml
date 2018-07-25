@@ -27,12 +27,27 @@
             android:text="@string/dialog_help_step2"
             android:textColor="@color/soft_black"
             android:textSize="@dimen/medium"/>
-        <TextView style="@style/helpBulletText"
-                  android:text="@string/dialog_help_infinitive_button"/>
-        <TextView style="@style/helpBulletText" android:text="@string/dialog_help_accents"/>
-        <TextView style="@style/helpBulletText" android:text="@string/dialog_help_scrolling"/>
 
-        <!-- actions heading -->
+        <!-- step 3 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_help_step3"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/medium"/>
+        <TextView style="@style/helpBulletText" android:text="@string/dialog_help_keyboard_infinitive"/>
+        <TextView style="@style/helpBulletText" android:text="@string/dialog_help_keyboard_arrows"/>
+        <TextView style="@style/helpBulletText" android:text="@string/dialog_help_accents"/>
+
+        <!-- step 4 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_help_step4"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/medium"/>
+
+        <!-- Menu heading -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,7 +64,6 @@
             android:layout_height="wrap_content"
             android:drawableEnd="@drawable/ic_replay_24px_gray"
             android:drawablePadding="@dimen/half_margin"
-            android:gravity="center"
             android:text="@string/dialog_help_startnewgame"
             android:textColor="@color/soft_black"
             android:textSize="@dimen/medium"/>
@@ -60,7 +74,6 @@
             android:layout_height="wrap_content"
             android:drawableEnd="@drawable/ic_report_24px_gray"
             android:drawablePadding="@dimen/half_margin"
-            android:gravity="center"
             android:text="@string/dialog_help_showerrors"
             android:textColor="@color/soft_black"
             android:textSize="@dimen/medium"/>
@@ -76,11 +89,11 @@
         <TextView style="@style/helpBulletText"
                   android:text="@string/dialog_help_gameoptions_infinitive_endings"/>
         <TextView style="@style/helpBulletText"
-                  android:text="@string/dialog_help_gameoptions_tense_mood"/>
-        <TextView style="@style/helpBulletText"
                   android:text="@string/dialog_help_gameoptions_regularity"/>
         <TextView style="@style/helpBulletText"
-                  android:text="@string/dialog_help_gameoptions_vosotros"/>
+                  android:text="@string/dialog_help_gameoptions_subject_pronouns"/>
+        <TextView style="@style/helpBulletText"
+                  android:text="@string/dialog_help_gameoptions_tense_mood"/>
 
         <!-- showing game stats -->
         <TextView

@@ -275,7 +275,7 @@
 
         </LinearLayout>
 
-        <!-- third row of 7 letters and delete button -->
+        <!-- third row of 7 letters and arrow buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -330,7 +330,7 @@
 
         </LinearLayout>
 
-        <!-- fourth row of 6 letters -->
+        <!-- fourth row of 6 letters, and delete button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -388,7 +388,7 @@
                 style="@style/answerLetterButton"
                 android:layout_margin="2dp"
                 android:src="@drawable/ic_baseline_cancel_24px"
-                android:tint="#ffea00"/>
+                android:tint="@color/keyboard_delete_key"/>
             <View
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
