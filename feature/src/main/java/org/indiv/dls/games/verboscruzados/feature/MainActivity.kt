@@ -39,18 +39,12 @@ import kotlin.math.roundToInt
 // TODO: fix imports
 // Complete other TODO items throughout code
 // TODO: use photos from Elissa, less sky in existing photo
-// TODO: update help
-// TODO: fix game options (include vosotros/singular/plural, horizontal ar/ir/er, gerund + past part)
 
 // TODO: optimizing drawing of puzzle (eliminate spacer views)
 // TODO: fix layout algorithm to use more short words & variability (80% rule)
+
+// TODO: more word density?
 // TODO: app icons
-
-
-//TODO: crossing letters - edit/delete char in both words, but not on infinitive
-//TODO consider how to display letter that conflicts in the two directions - edit both directions
-// TODO don't store 2 references to gameword
-//TODO consider when to show/hide keyboard - after game setup?
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
 // https://pixabay.com/en/canyon-desert-sky-huge-mountains-311233/
@@ -124,7 +118,9 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
         // Get keyboard height for use in keyboard animation
         keyboardHeight = resources.getDimension(R.dimen.keyboard_height)
-        hideKeyboard() // this will position the keyboard for animation when first shown.
+
+        // position the keyboard off screen for animation when first shown.
+        answer_keyboard.translationY = keyboardHeight
 
         // calculate available space for the puzzle
         val displayMetrics = resources.displayMetrics
@@ -540,28 +536,34 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         if (!isKeyboardVisible()) {
             // Set visible, then animate up to position
             answer_keyboard.visibility = View.VISIBLE
-            ObjectAnimator.ofFloat(answer_keyboard, "translationY", 0f)
-                    .setDuration(KEYBOARD_ANIMATION_TIME)
-                    .start()
+
+            // Delay very slightly so that animation is seen on app startup
+            answer_keyboard.postDelayed({
+                ObjectAnimator.ofFloat(answer_keyboard, "translationY", 0f)
+                        .setDuration(KEYBOARD_ANIMATION_TIME)
+                        .start()
+            }, 1)
         }
     }
 
     private fun hideKeyboard() {
-        // Animate off screen, then set invisible
-        val animator = ObjectAnimator.ofFloat(answer_keyboard, "translationY", keyboardHeight)
-                .setDuration(KEYBOARD_ANIMATION_TIME)
-        animator.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {}
-            override fun onAnimationStart(animation: Animator?) {}
-            override fun onAnimationCancel(animation: Animator?) {
-                answer_keyboard.visibility = View.INVISIBLE
-            }
+        if (isKeyboardVisible()) {
+            // Animate off screen, then set invisible
+            val animator = ObjectAnimator.ofFloat(answer_keyboard, "translationY", keyboardHeight)
+                    .setDuration(KEYBOARD_ANIMATION_TIME)
+            animator.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationStart(animation: Animator?) {}
+                override fun onAnimationCancel(animation: Animator?) {
+                    answer_keyboard.visibility = View.INVISIBLE
+                }
 
-            override fun onAnimationEnd(animation: Animator?) {
-                answer_keyboard.visibility = View.INVISIBLE
-            }
-        })
-        animator.start()
+                override fun onAnimationEnd(animation: Animator?) {
+                    answer_keyboard.visibility = View.INVISIBLE
+                }
+            })
+            animator.start()
+        }
     }
 
     //endregion
