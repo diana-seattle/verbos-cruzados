@@ -9,12 +9,8 @@
     <string name="action_showstats">Game Statistics</string>
     <string name="action_showgameoptions">Game Options</string>
 
-    <!--  status text -->
-    <string name="status_network_not_avail">Network must be available when setting up a new game. Please try again later.</string>
-
     <!-- dialog text for start new game prompt-->
     <string name="dialog_startnewgame_congrats">Congratulations! You win!</string>
-    <string name="dialog_startnewgame_congrats2">You have completed !games! games, !words! words!</string>
     <string name="dialog_startnewgame_prompt">Start a new game?</string>
     <string name="dialog_startnewgame_yes">Yes</string>
     <string name="dialog_startnewgame_yes_with_options">Game Options</string>
