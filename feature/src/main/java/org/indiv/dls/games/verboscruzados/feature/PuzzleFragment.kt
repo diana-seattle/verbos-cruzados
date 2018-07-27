@@ -232,7 +232,8 @@ class PuzzleFragment : Fragment() {
         currentGameWord?.let {
             it.setUserText(userText.take(it.word.length))
             updateUserEntryInPuzzle(it)
-            selectedCellIndex = (userText.length).coerceAtMost(it.word.length - 1)
+//            selectedCellIndex = (userText.length).coerceAtMost(it.word.length - 1)
+            selectedCellIndex = it.defaultSelectionIndex
             showAsSelected(it, true)
         }
     }
