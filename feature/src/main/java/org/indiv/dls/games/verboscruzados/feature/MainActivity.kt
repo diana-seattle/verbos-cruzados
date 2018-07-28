@@ -269,18 +269,14 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
         scrollSelectedCellIntoView()
 
-        // Note that the puzzle may be completed correctly while an individual word is not. It may
-        // have a wrong character that appears correct because of character in other direction.
-
         // if puzzle is complete and correct.
-        val currentWordIsCorrect = puzzleFragment.currentGameWord?.isAnsweredCorrectly == true
-        if (currentWordIsCorrect && puzzleFragment.isPuzzleComplete(true)) {
+        if (puzzleFragment.isPuzzleComplete(true)) {
             if (!statsPersisted) {
                 persistenceHelper.persistGameStats(currentGameWords)
                 statsPersisted = true
             }
 
-            // prompt user with congrats and new game
+            // prompt with congrats and new game
             val extraMessage = resources.getString(R.string.dialog_startnewgame_congrats)
             promptForNewGame(extraMessage)
 

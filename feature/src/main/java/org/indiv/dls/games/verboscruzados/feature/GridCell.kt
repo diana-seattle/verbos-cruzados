@@ -35,7 +35,7 @@ class GridCell(val char: Char) {
                 userCharAcross !=  userCharDown
 
     val isBlank: Boolean
-        get() = userCharAcross == GameWord.BLANK && userCharDown == GameWord.BLANK
+        get() = userChar == GameWord.BLANK
 
     val hasUserError: Boolean
         get() = userChar != char || isConflict

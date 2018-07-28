@@ -337,7 +337,7 @@ class PuzzleFragment : Fragment() {
     /**
      * Selects next empty or errored game word depending on parameter.
      *
-     * @param emptyOnly true if next empty game word should be selected, false if any errored game word shold be selected.
+     * @param emptyOnly true if next empty game word should be selected, false if any errored game word should be selected.
      */
     private fun selectNextGameWord(startingRow: Int, startingCol: Int, emptyOnly: Boolean): Boolean {
         var initialCol = startingCol
@@ -373,9 +373,28 @@ class PuzzleFragment : Fragment() {
     }
 
     private fun isEmptyOrErroredGameWord(gameWord: GameWord?, emptyOnly: Boolean): Boolean {
-        return gameWord?.let {
-            (emptyOnly && it.isEntryEmpty) || (!emptyOnly && !it.isAnsweredCorrectly)
-        } ?: false
+        gameWord?.let {
+            return emptyOnly && it.isEntryEmpty || !emptyOnly && (it.hasErroredCells || hasVisibleBlanks(it))
+        }
+        return false
+    }
+
+    private fun hasVisibleBlanks(gameWord: GameWord): Boolean {
+        var row = gameWord.row
+        var col = gameWord.col
+        for (i in 0 until gameWord.word.length) {
+            cellGrid[row][col]?.let {
+                if (it.isBlank) {
+                    return true
+                }
+            }
+            if (gameWord.isAcross) {
+                col++
+            } else {
+                row++
+            }
+        }
+        return false
     }
 
     /**
