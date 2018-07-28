@@ -7,6 +7,7 @@
 
     <!-- height of bottom margin to allow for scrolling puzzle above keyboard -->
     <dimen name="keyboard_height">228dp</dimen>
+    <dimen name="keyboard_height_plus_margin">244dp</dimen>
 
     <dimen name="keyboard_letter_size">@dimen/xx_large_fixed</dimen>
     <dimen name="keyboard_infinitive_size">@dimen/x_large_fixed</dimen>
@@ -14,7 +15,8 @@
     <!-- width of individual cell -->
     <dimen name="cell_width">30dp</dimen>
 
-    <dimen name="puzzle_margin">8dp</dimen>
+    <dimen name="puzzle_margin_top">16dp</dimen>
+    <dimen name="puzzle_margin_side">12dp</dimen>
 
     <dimen name="stats_map_height">500dp</dimen>
 

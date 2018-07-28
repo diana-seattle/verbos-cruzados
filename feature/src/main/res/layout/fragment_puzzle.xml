@@ -2,26 +2,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-    <LinearLayout
+    <TableLayout
+        android:id="@+id/cell_table_layout"
+        android:paddingTop="@dimen/puzzle_margin_top"
+        android:paddingBottom="@dimen/keyboard_height_plus_margin"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/puzzle_margin"
-        android:orientation="vertical">
-
-        <TableLayout
-            android:id="@+id/cell_table_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/cell_background_unused"
-            android:gravity="center_horizontal|top">
-        </TableLayout>
-
-        <!-- Blank area to allow bottom of puzzle to be scrolled above keyboard -->
-        <View android:layout_width="wrap_content"
-              android:layout_height="@dimen/keyboard_height"
-              android:layout_margin="@dimen/half_margin"
-              android:background="@color/transparent"/>
-
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:background="@drawable/cell_background_unused"
+        android:gravity="center_horizontal|top">
+    </TableLayout>
 
 </ScrollView>

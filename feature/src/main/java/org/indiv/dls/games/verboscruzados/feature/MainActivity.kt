@@ -24,7 +24,6 @@ import org.indiv.dls.games.verboscruzados.feature.dialog.GameOptionsDialogFragme
 import org.indiv.dls.games.verboscruzados.feature.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
 import kotlinx.android.synthetic.main.activity_main.*
-import org.indiv.dls.games.verboscruzados.feature.R.id.answer_keyboard
 import kotlin.math.roundToInt
 
 
@@ -82,7 +81,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     private var showingErrors = false
     private var keyboardHeight: Float = 0f
     private var viewablePuzzleHeight: Float = 0f
-    private var puzzleMarginPixels: Float = 0f
+    private var puzzleMarginTopPixels: Float = 0f
     private var pixelsPerCell: Float = 0f
 
     private var statsPersisted: Boolean = false
@@ -125,8 +124,10 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         // calculate available space for the puzzle
         val displayMetrics = resources.displayMetrics
         val configuration = resources.configuration
-        puzzleMarginPixels = resources.getDimension(R.dimen.puzzle_margin)
-        val totalPuzzleMarginPixels = puzzleMarginPixels * 2
+        puzzleMarginTopPixels = resources.getDimension(R.dimen.puzzle_margin_top)
+        val puzzleMarginSidePixels = resources.getDimension(R.dimen.puzzle_margin_side)
+        val totalPuzzleMarginTopPixels = puzzleMarginTopPixels * 2
+        val totalPuzzleMarginSidePixels = puzzleMarginSidePixels * 2
         val actionBarHeightPixels = getActionBarHeightInPixels(displayMetrics)
         val screenWidthDp = configuration.smallestScreenWidthDp
         val screenHeightDp = maxOf(configuration.screenHeightDp, configuration.screenWidthDp)
@@ -139,9 +140,9 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                 screenWidthDp.toFloat(), displayMetrics)
         val screenHeightPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 screenHeightDp.toFloat(), displayMetrics)
-        viewablePuzzleHeight = screenHeightPixels - actionBarHeightPixels - totalPuzzleMarginPixels
+        viewablePuzzleHeight = screenHeightPixels - actionBarHeightPixels - totalPuzzleMarginTopPixels
         val puzzleHeightPixels = viewablePuzzleHeight * heightFactor
-        val puzzleWidthPixels = screenWidthPixels - totalPuzzleMarginPixels
+        val puzzleWidthPixels = screenWidthPixels - totalPuzzleMarginSidePixels
 
         // calculate number of pixels equivalent to 24dp (24dp allows 13 cells on smallest screen supported by Android (320dp width, 426dp height))
         pixelsPerCell = resources.getDimension(R.dimen.cell_width)
@@ -473,17 +474,17 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             if (wordHeight < availableHeight) {
                 // if first cell is above visible area, scroll up to it, or if last cell is below visible area, scroll down to it
                 if (yOfFirstCell < puzzleFragment.scrollPosition) {
-                    puzzleFragment.scrollPosition = (yOfFirstCell - puzzleMarginPixels).roundToInt()
+                    puzzleFragment.scrollPosition = (yOfFirstCell - puzzleMarginTopPixels).roundToInt()
                 } else if (yOfFirstCell + wordHeight > puzzleFragment.scrollPosition + availableHeight) {
-                    puzzleFragment.scrollPosition = (yOfFirstCell + wordHeight - availableHeight + puzzleMarginPixels).roundToInt()
+                    puzzleFragment.scrollPosition = (yOfFirstCell + wordHeight - availableHeight + puzzleMarginTopPixels).roundToInt()
                 }
             } else {
                 if (defaultToTop) {
                     // scroll top of word to top of viewable area
-                    puzzleFragment.scrollPosition = (yOfFirstCell - puzzleMarginPixels).roundToInt()
+                    puzzleFragment.scrollPosition = (yOfFirstCell - puzzleMarginTopPixels).roundToInt()
                 } else {
                     // scroll bottom of word to bottom of viewable area
-                    puzzleFragment.scrollPosition = (yOfFirstCell + wordHeight - availableHeight + puzzleMarginPixels).roundToInt()
+                    puzzleFragment.scrollPosition = (yOfFirstCell + wordHeight - availableHeight + puzzleMarginTopPixels).roundToInt()
                 }
             }
         }
