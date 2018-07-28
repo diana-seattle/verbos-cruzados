@@ -173,7 +173,13 @@ class PuzzleFragment : Fragment() {
                         }
             }
         }
-        currentGameWord = firstGameWord
+
+        // make the initial word selection
+        if (!selectNextGameWord(0, -1, true)
+                && !selectNextGameWord(0, -1, false)) {
+            currentGameWord = firstGameWord
+            selectedCellIndex = currentGameWord?.defaultSelectionIndex ?: 0
+        }
     }
 
     /**
@@ -281,13 +287,9 @@ class PuzzleFragment : Fragment() {
                 val gridCell = it
                 val userChar = userEntry[charIndex]
                 if (isAcross) {
-//                    val inConflict = userChar != GameWord.BLANK && gridCell.userCharDown != GameWord.BLANK && userChar != gridCell.userCharDown
-//                    gridCell.userCharAcross = if (!inConflict) userChar else GameWord.BLANK
                     gridCell.userCharAcross = userChar
                     col++
                 } else {
-//                    val inConflict = userChar != GameWord.BLANK && gridCell.userCharAcross != GameWord.BLANK && userChar != gridCell.userCharAcross
-//                    gridCell.userCharDown = if (!inConflict) userChar else GameWord.BLANK
                     gridCell.userCharDown = userChar
                     row++
                 }

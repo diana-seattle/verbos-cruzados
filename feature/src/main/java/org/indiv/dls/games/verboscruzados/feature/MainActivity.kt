@@ -247,55 +247,6 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
     //endregion
 
-    //region INTERFACE FUNCTIONS (AnswerFragment.AnswerListener) ---------------------------
-
-//    /*
-//     * implements interface for receiving callback from AnswerFragment
-//     */
-//    override fun onUpdateAnswer(userText: String) {
-//        // This method may be called by answer dialog during setup (on text change)
-//        if (puzzleFragment.currentGameWord == null ||
-//                puzzleFragment.currentGameWord?.userText == userText) {
-//            return
-//        }
-//
-//        puzzleFragment.currentGameWord?.let {
-//            it.userText = userText
-//            puzzleFragment.updateUserEntryInPuzzle(it)
-//
-//            // update database with answer
-//            Thread { persistenceHelper.persistUserEntry(it) }.start()
-//        }
-//
-//        // update error indications
-//        if (showingErrors) {
-//            showErrors(showingErrors)
-//        }
-//
-//        // Note that the puzzle may be completed correctly while an individual word is not. It may be
-//        // too long or have a wrong character that appears correct because of character in other direction.
-//
-//        // if puzzle is complete and correct.
-//        val currentWordIsCorrect = currentGameWord?.isAnsweredCorrectly == true
-//        if (currentWordIsCorrect && puzzleFragment.isPuzzleComplete(true)) {
-//            if (!statsPersisted) {
-//                persistenceHelper.persistGameStats(currentGameWords)
-//                statsPersisted = true
-//            }
-//
-//            // prompt user with congrats and new game
-//            val extraMessage = resources.getString(R.string.dialog_startnewgame_congrats)
-//            promptForNewGame(extraMessage)
-//
-//            // else if puzzle is complete but not correct, show errors
-//        } else if (!showingErrors && puzzleFragment.isPuzzleComplete(false)) {
-//            showErrors(true)
-//        }
-//
-//    }
-
-    //endregion
-
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
     //endregion
 
@@ -304,7 +255,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     /**
      * Handles housekeeping after an answer has changed.
      */
-    fun onAnswerChanged() {
+    private fun onAnswerChanged() {
 
         puzzleFragment.currentGameWord?.let {
             // update database with answer
