@@ -11,6 +11,7 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.keyboard_minimal.view.*
 import org.indiv.dls.games.verboscruzados.feature.AnswerPresentation
 import org.indiv.dls.games.verboscruzados.feature.R
+import org.indiv.dls.games.verboscruzados.feature.Vibration
 
 /**
  * Minimal keyboard for entering answers while covering the least amount of puzzle possible.
@@ -24,10 +25,6 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
 
 
     //region COMPANION OBJECT ----------------------------------------------------------------------
-
-    companion object {
-        val VIBRATION_MSEC = 25L
-    }
     //endregion
 
 
@@ -37,11 +34,14 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
         inflate(context, R.layout.keyboard_minimal, this)
 
         // Get instance of Vibrator from current Context
+        val vibration = context?.let {
+            Vibration(it)
+        }
         val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
         val letterClickListener: (View) -> Unit = {
             (it as? TextView)?.let {
-                vibrator.vibrate(VIBRATION_MSEC)
+                vibration.vibrate()
                 letterClickListener?.invoke(it.text[0])
             }
         }
@@ -80,32 +80,32 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
         button_u_umlaut.setOnClickListener { letterClickListener.invoke(it) }
         button_n_tilde.setOnClickListener { letterClickListener.invoke(it) }
         button_hide_keyboard.setOnClickListener {
-            vibrator.vibrate(VIBRATION_MSEC)
+            vibration.vibrate()
             dismissClickListener?.invoke()
         }
         keyboard_button_infinitive.setOnClickListener {
-            vibrator.vibrate(VIBRATION_MSEC)
+            vibration.vibrate()
             infinitiveClickListener?.invoke(answerPresentation?.infinitive ?: "")
         }
         button_delete.setOnClickListener {
-            vibrator.vibrate(VIBRATION_MSEC)
+            vibration.vibrate()
             deleteClickListener?.invoke()
         }
         button_delete.setOnLongClickListener() {
-            vibrator.vibrate(VIBRATION_MSEC)
+            vibration.vibrate()
             deleteLongClickListener?.invoke()
             true
         }
         button_left_arrow.setOnClickListener {
-            vibrator.vibrate(VIBRATION_MSEC)
+            vibration.vibrate()
             leftClickListener?.invoke()
         }
         button_right_arrow.setOnClickListener {
-            vibrator.vibrate(VIBRATION_MSEC)
+            vibration.vibrate()
             rightClickListener?.invoke()
         }
         button_next_word.setOnClickListener {
-            vibrator.vibrate(VIBRATION_MSEC)
+            vibration.vibrate()
             nextWordClickListener?.invoke()
         }
     }

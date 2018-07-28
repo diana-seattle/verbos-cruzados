@@ -36,7 +36,7 @@ class PuzzleFragment : Fragment() {
 
     private var gridWidth: Int = 0
     private var gridHeight: Int = 0
-    private var vibrator: Vibrator? = null
+    private lateinit var vibration: Vibration
 
     //endregion
 
@@ -75,7 +75,9 @@ class PuzzleFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Get instance of Vibrator from current Context
-        vibrator = activity!!.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        context?.let {
+            vibration = Vibration(it)
+        }
     }
 
     //endregion
@@ -128,7 +130,7 @@ class PuzzleFragment : Fragment() {
     fun createGrid(puzzleListener: PuzzleListener) {
         val onPuzzleClickListener = OnClickListener { v ->
             getCellForView(v)?.let {
-                vibrator?.vibrate(25)
+                vibration.vibrate()
                 val gridCell = it
 
                 val sameWordSelected = currentGameWord == gridCell.gameWordDown || currentGameWord == gridCell.gameWordAcross
