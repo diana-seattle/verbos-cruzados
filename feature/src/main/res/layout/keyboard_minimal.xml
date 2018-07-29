@@ -263,25 +263,21 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:paddingBottom="1dp"
             android:background="@color/white"
             android:orientation="horizontal">
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".25"
-                android:visibility="invisible"/>
             <ImageView
                 android:id="@+id/button_hide_keyboard"
                 style="@style/answerOtherButton"
-                android:paddingEnd="6dp"
-                android:paddingStart="2dp"
+                android:paddingEnd="4dp"
+                android:paddingStart="4dp"
                 android:src="@drawable/ic_baseline_keyboard_hide_24px"
                 android:tint="@color/soft_black"/>
             <View
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight=".25"
+                android:layout_weight=".5"
                 android:visibility="invisible"/>
             <TextView
                 android:id="@+id/button_a_accent"
