@@ -274,7 +274,6 @@
             <ImageView
                 android:id="@+id/button_hide_keyboard"
                 style="@style/answerOtherButton"
-                android:layout_gravity="bottom"
                 android:paddingEnd="6dp"
                 android:paddingStart="2dp"
                 android:src="@drawable/ic_baseline_keyboard_hide_24px"
@@ -320,7 +319,6 @@
             <ImageView
                 android:id="@+id/button_delete"
                 style="@style/answerOtherButton"
-                android:layout_margin="2dp"
                 android:src="@drawable/ic_baseline_cancel_24px"
                 android:tint="@color/keyboard_delete_key"/>
 
