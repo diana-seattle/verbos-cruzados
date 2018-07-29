@@ -17,7 +17,7 @@
     <color name="red">#f44336</color>
     <color name="transparent">#00FFFFFF</color>
 
-    <color name="keyboard_delete_key">#c0ca33</color>
+    <color name="keyboard_delete_key">#c9c96f</color>
     <color name="keyboard_done_key">#4db6ac</color>
     <color name="keyboard_yellow_translucent">#faffffe6</color>
     <color name="keyboard_special_letters">#2962ff</color>

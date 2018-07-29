@@ -27,7 +27,6 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
     //region COMPANION OBJECT ----------------------------------------------------------------------
     //endregion
 
-
     //region INITIALIZER ---------------------------------------------------------------------------
 
     init {
@@ -148,14 +147,20 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
                 keyboard_translation.text = "($translation)"
                 keyboard_subject_pronoun_label.text = subjectPronounLabel
                 keyboard_subject_pronoun_label.visibility = if (subjectPronounLabel.isEmpty()) GONE else VISIBLE
-                button_left_arrow.rotation = if (across) 0f else 90f
-                button_right_arrow.rotation = if (across) 0f else 90f
+                button_left_arrow.setImageDrawable(if (across) backwardArrowDrawable else upArrowDrawable)
+                button_right_arrow.setImageDrawable(if (across) forwardArrowDrawable else downwardArrowDrawable)
             }
         }
 
     //endregion
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
+
+    val forwardArrowDrawable = resources.getDrawable(R.drawable.ic_baseline_arrow_forward_24px, null)
+    val backwardArrowDrawable = resources.getDrawable(R.drawable.ic_baseline_arrow_back_24px, null)
+    val upArrowDrawable = resources.getDrawable(R.drawable.ic_baseline_arrow_upward_24px, null)
+    val downwardArrowDrawable = resources.getDrawable(R.drawable.ic_baseline_arrow_downward_24px, null)
+
     //endregion
 
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
