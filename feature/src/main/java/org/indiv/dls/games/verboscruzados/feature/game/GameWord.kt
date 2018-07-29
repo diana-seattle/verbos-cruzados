@@ -14,6 +14,15 @@ class GameWord(val uniqueKey: String,            // unique key for use in persis
                val col: Int,                     // column in which the word begins
                val isAcross: Boolean,            // true if word appears in the across orientation, false if down
                var userEntry: CharArray = CharArray(word.length)) {   // text entered by the user
+    val isAnsweredCompletelyAndCorrectly: Boolean
+        get() {
+            userEntry.forEachIndexed { index, c ->
+                if (c != word.get(index)) {
+                    return false
+                }
+            }
+            return true
+        }
     val hasErroredCells: Boolean
         get() {
             userEntry.forEachIndexed { index, c ->

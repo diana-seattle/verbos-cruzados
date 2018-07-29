@@ -189,9 +189,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             scrollSelectedCellIntoView()
         }
         answer_keyboard.nextWordClickListener = {
-            if (puzzleFragment.selectNextGameWord(true) || puzzleFragment.selectNextGameWord(false)) {
-                setGameWord(puzzleFragment.currentGameWord!!)
-            }
+            selectNextGameWord()
         }
         answer_keyboard.dismissClickListener = {
             hideKeyboard()
@@ -252,6 +250,12 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
+    private fun selectNextGameWord() {
+        if (puzzleFragment.selectNextGameWord(true) || puzzleFragment.selectNextGameWord(false)) {
+            setGameWord(puzzleFragment.currentGameWord!!)
+        }
+    }
+
     /**
      * Handles housekeeping after an answer has changed.
      */
@@ -266,6 +270,10 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         if (showingErrors) {
             showErrors(showingErrors)
         }
+
+//        if (puzzleFragment.currentGameWord?.isAnsweredCompletelyAndCorrectly == true) {
+//            selectNextGameWord()
+//        }
 
         scrollSelectedCellIntoView()
 
