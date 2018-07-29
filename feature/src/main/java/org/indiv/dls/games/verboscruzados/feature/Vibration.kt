@@ -6,7 +6,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 
 class Vibration(context: Context) {
-    val VIBRATION_MSEC = 10L
+    val VIBRATION_MSEC = 15L
     val VIBRATION_MSEC_LEGACY = 5L
 
     private var vibrator: Vibrator? = null
