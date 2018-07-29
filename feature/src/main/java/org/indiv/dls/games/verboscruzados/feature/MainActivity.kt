@@ -2,9 +2,6 @@ package org.indiv.dls.games.verboscruzados.feature
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
-import org.indiv.dls.games.verboscruzados.feature.async.GameSetup
-import org.indiv.dls.games.verboscruzados.feature.game.GameWord
-
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -16,14 +13,15 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
+import org.indiv.dls.games.verboscruzados.feature.async.GameSetup
 import org.indiv.dls.games.verboscruzados.feature.dialog.GameOptionsDialogFragment
 import org.indiv.dls.games.verboscruzados.feature.dialog.StatsDialogFragment
+import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.math.roundToInt
 
 
@@ -43,7 +41,6 @@ import kotlin.math.roundToInt
 // TODO: fix layout algorithm to use more short words & variability (80% rule)
 
 // TODO: more word density?
-// TODO: app icons
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
 // https://pixabay.com/en/canyon-desert-sky-huge-mountains-311233/
@@ -271,6 +268,8 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             showErrors(showingErrors)
         }
 
+
+        // TODO: menu option for this?
 //        if (puzzleFragment.currentGameWord?.isAnsweredCompletelyAndCorrectly == true) {
 //            selectNextGameWord()
 //        }

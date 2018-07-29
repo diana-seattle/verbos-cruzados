@@ -1,16 +1,14 @@
 package org.indiv.dls.games.verboscruzados.feature.game
 
-import java.util.ArrayList
-
 import android.content.Context
 import android.content.SharedPreferences
-
 import com.google.gson.Gson
 import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.feature.model.IrregularityCategory
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import java.lang.Integer.parseInt
+import java.util.ArrayList
 
 /**
  * Manages reading and writing from persisted storage.

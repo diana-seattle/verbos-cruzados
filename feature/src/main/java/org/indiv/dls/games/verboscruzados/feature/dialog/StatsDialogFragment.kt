@@ -1,11 +1,10 @@
 package org.indiv.dls.games.verboscruzados.feature.dialog
 
-import org.indiv.dls.games.verboscruzados.feature.R
-
 import android.app.Dialog
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
+import org.indiv.dls.games.verboscruzados.feature.R
 import org.indiv.dls.games.verboscruzados.feature.component.StatsGraphicView
 import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
 import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType

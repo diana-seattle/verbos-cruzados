@@ -1,7 +1,6 @@
 package org.indiv.dls.games.verboscruzados.feature.component
 
 import android.content.Context
-import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.Html
 import android.util.AttributeSet

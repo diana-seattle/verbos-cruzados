@@ -1,8 +1,6 @@
 package org.indiv.dls.games.verboscruzados.feature.conjugation
 
 import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
-import org.indiv.dls.games.verboscruzados.feature.model.InfinitiveEnding
-import org.indiv.dls.games.verboscruzados.feature.model.Irregularity
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
 

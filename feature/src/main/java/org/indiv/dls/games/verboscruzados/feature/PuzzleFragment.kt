@@ -1,21 +1,18 @@
 package org.indiv.dls.games.verboscruzados.feature
 
-import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 
-
-import android.content.Context
 import android.os.Bundle
-import android.os.Vibrator
 import android.support.v4.app.Fragment
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.View.OnClickListener
+import android.view.ViewGroup
 import android.widget.ScrollView
 import android.widget.TableRow
 import kotlinx.android.synthetic.main.fragment_puzzle.*
 import org.indiv.dls.games.verboscruzados.feature.component.PuzzleCellTextView
+import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 
 
 /**
