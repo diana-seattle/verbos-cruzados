@@ -43,7 +43,7 @@ enum class IrregularityCategory(val text: String, val indexForStats: Int) {
  */
 enum class ConjugationType(val text: String, val indexForStats: Int) {
     PRESENT("Present", 0),
-    PRETERIT("Preterit", 1),
+    PRETERIT("Preterite", 1),
     IMPERFECT("Imperfect", 2),
     CONDITIONAL("Conditional", 3),
     FUTURE("Future", 4),

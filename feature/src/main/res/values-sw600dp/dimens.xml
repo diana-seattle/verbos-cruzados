@@ -9,7 +9,7 @@
     <dimen name="keyboard_height">228dp</dimen>
     <dimen name="keyboard_height_plus_margin">244dp</dimen>
 
-    <dimen name="keyboard_letter_size">@dimen/xx_large_fixed</dimen>
+    <dimen name="keyboard_letter_size">26dp</dimen>
     <dimen name="keyboard_infinitive_size">@dimen/x_large_fixed</dimen>
 
     <!-- width of individual cell -->

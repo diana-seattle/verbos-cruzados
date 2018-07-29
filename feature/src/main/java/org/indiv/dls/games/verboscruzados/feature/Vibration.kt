@@ -7,6 +7,7 @@ import android.os.Vibrator
 
 class Vibration(context: Context) {
     val VIBRATION_MSEC = 10L
+    val VIBRATION_MSEC_LEGACY = 5L
 
     private var vibrator: Vibrator? = null
     init {
@@ -17,9 +18,9 @@ class Vibration(context: Context) {
         vibrator?.let {
             if (it.hasVibrator()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    vibrator?.vibrate(VibrationEffect.createOneShot(10, VibrationEffect.DEFAULT_AMPLITUDE))
+                    vibrator?.vibrate(VibrationEffect.createOneShot(VIBRATION_MSEC, VibrationEffect.DEFAULT_AMPLITUDE))
                 } else {
-                    vibrator?.vibrate(VIBRATION_MSEC)
+                    vibrator?.vibrate(VIBRATION_MSEC_LEGACY)
                 }
             }
         }
