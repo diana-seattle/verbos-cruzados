@@ -1,6 +1,7 @@
 <resources>
 
     <!-- menu options -->
+    <string name="action_install">Install</string>
     <string name="action_startnewgame">Start New Game</string>
     <string name="action_startnewgame_condensed">New</string>
     <string name="action_showerrors">Show Errors</string>
@@ -14,7 +15,6 @@
     <string name="dialog_startnewgame_prompt">Start a new game?</string>
     <string name="dialog_startnewgame_yes">Yes</string>
     <string name="dialog_startnewgame_game_options">Game Options</string>
-    <string name="dialog_startnewgame_install">Install</string>
     <string name="dialog_startnewgame_no">No</string>
 
     <!-- shared dialog text for help and stats dialogs -->

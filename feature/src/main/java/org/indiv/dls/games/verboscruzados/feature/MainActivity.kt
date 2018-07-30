@@ -204,6 +204,12 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main_options, menu)
         optionsMenu = menu
+
+        // if instant app, make the "Install" menu item visible
+        if (InstantApps.isInstantApp(this)) {
+            menu.findItem(R.id.action_install)?.isVisible = true
+        }
+
         return true
     }
 
@@ -212,6 +218,11 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.action_install -> {
+                // TODO: use real parameters
+                InstantApps.showInstallPrompt(this, Intent(this, MainActivity::class.java),
+                        1, "Within instant app")
+            }
             R.id.action_showerrors -> showErrors(!showingErrors)
             R.id.action_startnewgame -> promptForNewGame(null)
             R.id.action_help -> showHelpDialog()
@@ -317,20 +328,11 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     private fun promptForNewGame(extraMessage: String?) {
         hideKeyboard()
 
-        val isInstantApp = InstantApps.isInstantApp(this)
-        val neutralButtonTextResId = if (isInstantApp) R.string.dialog_startnewgame_install else R.string.dialog_startnewgame_game_options
-
         val message = (if (extraMessage != null) extraMessage + "\n" else "") +
                 resources.getString(R.string.dialog_startnewgame_prompt)
         AlertDialog.Builder(this)
                 .setTitle(message)
-                .setNeutralButton(neutralButtonTextResId) { _, _ ->
-                    if (isInstantApp)
-                        // TODO: use real parameters, consider menu item instead
-                        InstantApps.showInstallPrompt(this, Intent(this, MainActivity::class.java), 1, "Within instant app")
-                    else
-                        showGameOptionsDialog()
-                }
+                .setNeutralButton(R.string.dialog_startnewgame_game_options) { _, _ -> showGameOptionsDialog() }
                 .setPositiveButton(R.string.dialog_startnewgame_yes) { _, _ -> setupNewGame() }
                 .setNegativeButton(R.string.dialog_startnewgame_no) { _, _ -> }
                 .show()
