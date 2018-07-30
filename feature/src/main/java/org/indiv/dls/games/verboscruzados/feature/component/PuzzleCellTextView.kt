@@ -19,8 +19,8 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
     : TextView(context, attrs, defStyleAttr) {
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
-
-    var fontColorBlack: Int = ResourcesCompat.getColor(resources, R.color.soft_black, null)
+    var fontColorBlack: Int = ResourcesCompat.getColor(resources,
+            org.indiv.dls.games.verboscruzados.R.color.soft_black, null) // workaround for sake of instant app
     var fontColorRed: Int = Color.RED
     val size = Math.round(resources.getDimension(R.dimen.cell_width))
     val fontHeight = size * FONT_SIZE_FRACTION

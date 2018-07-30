@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.AlertDialog
 import android.widget.CheckBox
 import org.indiv.dls.games.verboscruzados.feature.R
@@ -48,7 +49,8 @@ class GameOptionsDialogFragment : DialogFragment() {
                 .create()
 
         dialog.setOnShowListener {
-            val textColor = resources.getColor(R.color.colorAccent)
+            val textColor = ResourcesCompat.getColor(resources,
+                    org.indiv.dls.games.verboscruzados.R.color.colorAccent, null) // workaround for sake of instant app
             dialog.getButton(DialogInterface.BUTTON_NEUTRAL)?.setTextColor(textColor)
             dialog.getButton(DialogInterface.BUTTON_POSITIVE)?.setTextColor(textColor)
         }

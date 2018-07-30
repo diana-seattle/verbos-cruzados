@@ -10,19 +10,19 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustNothing">
+            <meta-data android:name="default-url"
+                       android:value="https://games.dls.indiv.or/verboscruzados" />
 
             <!-- For instant app -->
-            <!--<intent-filter android:order="1">-->
-                <!--<action android:name="android.intent.action.VIEW"/>-->
-
-                <!--<category android:name="android.intent.category.BROWSABLE"/>-->
-                <!--<category android:name="android.intent.category.DEFAULT"/>-->
-
-                <!--<data-->
-                    <!--android:host="games.dls.indiv.org"-->
-                    <!--android:pathPattern="/.*"-->
-                    <!--android:scheme="https"/>-->
-            <!--</intent-filter>-->
+            <intent-filter android:order="1">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data
+                    android:host="games.dls.indiv.org"
+                    android:path="/verboscruzados"
+                    android:scheme="https"/>
+            </intent-filter>
 
             <!-- Main activity launched on startup -->
             <intent-filter>

@@ -4,10 +4,10 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
+import android.support.v4.content.res.ResourcesCompat
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
-import org.indiv.dls.games.verboscruzados.feature.R
 
 /**
  * View for displaying game statistics.
@@ -45,7 +45,8 @@ open class StatsGraphicView @JvmOverloads constructor(context: Context,
 
     init {
         greenPaint.style = Paint.Style.FILL
-        greenPaint.color = resources.getColor(R.color.stats_green)
+        greenPaint.color = ResourcesCompat.getColor(resources,
+                org.indiv.dls.games.verboscruzados.R.color.stats_green, null) // workaround for sake of instant app
     }
 
     //endregion

@@ -27,20 +27,25 @@ import kotlin.math.roundToInt
 
 /*
  * Play Store: https://play.google.com/store/apps/details?id=org.indiv.dls.games.verboscruzados
+ *
+ * Instant app: https://play.google.com/store/apps/details?id=org.indiv.dls.games.verboscruzados&launch=true
+ * Or is it: https://games.dls.indiv.org/verboscruzados
+ *
  */
 
 // TODO: change fragments into components
 // TODO: more verbs - or message the user about selecting more options (https://www.e-spanyol.hu/en/grammar/irregular_ar.php)
 // TODO: test/fix conjugations
-// TODO: instant app
 // TODO: fix imports
-// Complete other TODO items throughout code
-// TODO: use photos from Elissa, less sky in existing photo
-
 // TODO: optimizing drawing of puzzle (eliminate spacer views)
 // TODO: fix layout algorithm to use more short words & variability (80% rule)
-
 // TODO: more word density?
+
+
+// TODO: instant app
+// TODO: use photos from Elissa, less sky in existing photo
+// Complete other TODO items throughout code
+
 
 // https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
 // https://pixabay.com/en/canyon-desert-sky-huge-mountains-311233/
