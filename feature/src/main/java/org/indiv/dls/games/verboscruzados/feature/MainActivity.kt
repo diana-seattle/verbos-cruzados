@@ -2,6 +2,7 @@ package org.indiv.dls.games.verboscruzados.feature
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -13,6 +14,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import com.google.android.instantapps.InstantApps
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -314,11 +316,21 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
     private fun promptForNewGame(extraMessage: String?) {
         hideKeyboard()
+
+        val isInstantApp = InstantApps.isInstantApp(this)
+        val neutralButtonTextResId = if (isInstantApp) R.string.dialog_startnewgame_install else R.string.dialog_startnewgame_game_options
+
         val message = (if (extraMessage != null) extraMessage + "\n" else "") +
                 resources.getString(R.string.dialog_startnewgame_prompt)
         AlertDialog.Builder(this)
                 .setTitle(message)
-                .setNeutralButton(R.string.dialog_startnewgame_yes_with_options) { _, _ -> showGameOptionsDialog() }
+                .setNeutralButton(neutralButtonTextResId) { _, _ ->
+                    if (isInstantApp)
+                        // TODO: use real parameters, consider menu item instead
+                        InstantApps.showInstallPrompt(this, Intent(this, MainActivity::class.java), 1, "Within instant app")
+                    else
+                        showGameOptionsDialog()
+                }
                 .setPositiveButton(R.string.dialog_startnewgame_yes) { _, _ -> setupNewGame() }
                 .setNegativeButton(R.string.dialog_startnewgame_no) { _, _ -> }
                 .show()

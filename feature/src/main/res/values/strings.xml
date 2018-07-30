@@ -13,7 +13,8 @@
     <string name="dialog_startnewgame_congrats">Congratulations! You win!</string>
     <string name="dialog_startnewgame_prompt">Start a new game?</string>
     <string name="dialog_startnewgame_yes">Yes</string>
-    <string name="dialog_startnewgame_yes_with_options">Game Options</string>
+    <string name="dialog_startnewgame_game_options">Game Options</string>
+    <string name="dialog_startnewgame_install">Install</string>
     <string name="dialog_startnewgame_no">No</string>
 
     <!-- shared dialog text for help and stats dialogs -->
