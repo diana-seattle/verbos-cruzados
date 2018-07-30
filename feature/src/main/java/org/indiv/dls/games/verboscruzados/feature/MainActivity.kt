@@ -198,6 +198,11 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         answer_keyboard.dismissClickListener = {
             hideKeyboard()
         }
+
+        // If not an instant app, we have additional image resources
+        if (!InstantApps.isInstantApp(this)) {
+//            main_activity_container_layout.background = resources.getDrawable(org.indiv.dls.games.verboscruzados.extraimages.R.drawable.testextra, null)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

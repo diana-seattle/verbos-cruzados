@@ -21,7 +21,8 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <RelativeLayout android:layout_width="match_parent"
+    <RelativeLayout android:id="@+id/main_activity_container_layout"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/pixnio325718cropped"
                     android:baselineAligned="false"

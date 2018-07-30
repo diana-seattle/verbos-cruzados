@@ -30,8 +30,10 @@ dependencies {
     api "io.reactivex.rxjava2:rxandroid:2.0.2"
     api "io.reactivex.rxjava2:rxkotlin:2.2.0"
     api "com.google.code.gson:gson:2.8.5"
+    api 'com.android.support:appcompat-v7:27.1.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     application project(':app')
     feature project(':feature')
+    feature project(":extraimages")
 }
