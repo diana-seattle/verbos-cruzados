@@ -363,6 +363,13 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             gameSetup.addToGrid(gameWord, puzzleFragment.cellGrid)
         }
         createGrid()
+
+        // If not an instant app, restore saved background image
+        if (!InstantApps.isInstantApp(this)) {
+            resources.getDrawable(ImageSelecter.instance.getImageResId(persistenceHelper.currentImageIndex), null)?.let {
+                main_activity_container_layout.background = it
+            }
+        }
     }
 
     /**
@@ -381,20 +388,22 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { gameWords ->
+                            // If not an instant app, select a new background image
+                            var imageIndex = 0
+                            if (!InstantApps.isInstantApp(this)) {
+                                imageIndex = ImageSelecter.instance.getNextImageIndex()
+                                resources.getDrawable(ImageSelecter.instance.getImageResId(imageIndex), null)?.let {
+                                    main_activity_container_layout.background = it
+                                }
+                            }
+
                             currentGameWords = gameWords
-                            persistenceHelper.persistGame(gameWords)
+                            persistenceHelper.persistGame(gameWords, imageIndex)
                             createGrid()
                             if (currentGameWords.size < 15) {
                                 Toast.makeText(this, R.string.not_enough_game_options, Toast.LENGTH_LONG).show()
                             }
                             statsPersisted = false
-
-                            // If not an instant app, we have additional image resources
-                            if (!InstantApps.isInstantApp(this)) {
-                                resources.getDrawable(ImageSelecter.instance.getNextImageResId(), null)?.let {
-                                    main_activity_container_layout.background = it
-                                }
-                            }
                         },
                         { error ->
                             Toast.makeText(this, R.string.error_game_setup_failure, Toast.LENGTH_SHORT).show()

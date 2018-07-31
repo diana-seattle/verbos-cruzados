@@ -43,17 +43,31 @@ class ImageSelecter {
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
     private var imageIndex: Int = 0
+    private var poolOfIndexes = (0 until photos.size).toMutableList()
 
     //endregion
 
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
 
-    fun getNextImageResId(): Int {
-        imageIndex++
-        if (imageIndex >= photos.size) {
-            imageIndex = 0
+    /**
+     * Get the next image index.
+     */
+    fun getNextImageIndex(): Int {
+        // Draw randomly from the pool until all have been drawn, then refill the pool.
+        if (poolOfIndexes.isEmpty()) {
+            poolOfIndexes.addAll(0 until photos.size)
         }
-        return photos[imageIndex]
+        val randomPoolIndex = Math.round(Math.random() * (poolOfIndexes.size - 1)).toInt()
+        return poolOfIndexes[randomPoolIndex]
+    }
+
+    /**
+     * @param index at which to get image resource id
+     * @return image resource id at specified index
+     */
+    fun getImageResId(imageIndex: Int): Int {
+        poolOfIndexes.remove(imageIndex) // remove from pool when drawn so as to include the index of the saved game
+        return photos[imageIndex.coerceAtMost(photos.size - 1)]
     }
 
     //endregion
