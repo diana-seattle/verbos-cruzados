@@ -333,7 +333,10 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         AlertDialog.Builder(this)
                 .setTitle(message)
                 .setNeutralButton(R.string.dialog_startnewgame_game_options) { _, _ -> showGameOptionsDialog() }
-                .setPositiveButton(R.string.dialog_startnewgame_yes) { _, _ -> setupNewGame() }
+                .setPositiveButton(R.string.dialog_startnewgame_yes) { _, _ ->
+                    setPuzzleBackgroundImage(ImageSelecter.instance.getNextImageIndex())
+                    setupNewGame()
+                }
                 .setNegativeButton(R.string.dialog_startnewgame_no) { _, _ -> }
                 .show()
     }
@@ -345,6 +348,8 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
         // get current game if any
         currentGameWords = persistenceHelper.currentGameWords
+
+        setPuzzleBackgroundImage(persistenceHelper.currentImageIndex)
 
         // if on very first game, or if no saved game (due to an error), create a new one, otherwise open existing game
         if (currentGameWords.isEmpty() || !puzzleFragment.doWordsFitInGrid(currentGameWords)) {
@@ -363,13 +368,6 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             gameSetup.addToGrid(gameWord, puzzleFragment.cellGrid)
         }
         createGrid()
-
-        // If not an instant app, restore saved background image
-        if (!InstantApps.isInstantApp(this)) {
-            resources.getDrawable(ImageSelecter.instance.getImageResId(persistenceHelper.currentImageIndex), null)?.let {
-                main_activity_container_layout.background = it
-            }
-        }
     }
 
     /**
@@ -388,17 +386,8 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { gameWords ->
-                            // If not an instant app, select a new background image
-                            var imageIndex = 0
-                            if (!InstantApps.isInstantApp(this)) {
-                                imageIndex = ImageSelecter.instance.getNextImageIndex()
-                                resources.getDrawable(ImageSelecter.instance.getImageResId(imageIndex), null)?.let {
-                                    main_activity_container_layout.background = it
-                                }
-                            }
-
                             currentGameWords = gameWords
-                            persistenceHelper.persistGame(gameWords, imageIndex)
+                            persistenceHelper.persistGame(gameWords)
                             createGrid()
                             if (currentGameWords.size < 15) {
                                 Toast.makeText(this, R.string.not_enough_game_options, Toast.LENGTH_LONG).show()
@@ -409,6 +398,16 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                             Toast.makeText(this, R.string.error_game_setup_failure, Toast.LENGTH_SHORT).show()
                             Log.e(TAG, "Error setting up game: " + error.message)
                         }))
+    }
+
+    private fun setPuzzleBackgroundImage(imageIndex: Int) {
+        // If not an instant app, set a new background image
+        if (!InstantApps.isInstantApp(this)) {
+            resources.getDrawable(ImageSelecter.instance.getImageResId(imageIndex), null)?.let {
+                main_activity_container_layout.background = it
+            }
+            persistenceHelper.persistImageIndex(imageIndex)
+        }
     }
 
     private fun createGrid() {

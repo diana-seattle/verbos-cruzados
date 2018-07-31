@@ -102,7 +102,7 @@ class PersistenceHelper constructor(private val mContext: Context) {
     /**
      * Persists the entire game.
      */
-    fun persistGame(gameWords: List<GameWord>, imageIndex: Int) {
+    fun persistGame(gameWords: List<GameWord>) {
         var prefsEditor: SharedPreferences.Editor = gameWordPrefs
                 .edit()
                 .clear()
@@ -110,8 +110,12 @@ class PersistenceHelper constructor(private val mContext: Context) {
             prefsEditor = prefsEditor.putString(gameWord.uniqueKey, gson.toJson(gameWord, GameWord::class.java))
         }
         prefsEditor.apply()
+    }
 
-        // also persist the image index
+    /**
+     * Persists the image index.
+     */
+    fun persistImageIndex(imageIndex: Int) {
         gamePrefs.edit()
                 .putInt(KEY_IMAGE_INDEX, imageIndex)
                 .apply()
