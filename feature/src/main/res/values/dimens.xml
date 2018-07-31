@@ -3,7 +3,9 @@
 
     <!-- height of bottom margin to allow for scrolling puzzle above keyboard -->
     <dimen name="keyboard_height">204dp</dimen>
-    <dimen name="keyboard_height_plus_margin">216dp</dimen>
+
+    <!-- give lots of room so user can scroll puzzle to see photo -->
+    <dimen name="puzzle_bottom_padding">600dp</dimen>
 
     <dimen name="keyboard_letter_size">22dp</dimen>
     <dimen name="keyboard_infinitive_size">@dimen/large_fixed</dimen>

@@ -198,11 +198,6 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         answer_keyboard.dismissClickListener = {
             hideKeyboard()
         }
-
-        // If not an instant app, we have additional image resources
-        if (!InstantApps.isInstantApp(this)) {
-//            main_activity_container_layout.background = resources.getDrawable(org.indiv.dls.games.verboscruzados.extraimages.R.drawable.testextra, null)
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -393,6 +388,13 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                                 Toast.makeText(this, R.string.not_enough_game_options, Toast.LENGTH_LONG).show()
                             }
                             statsPersisted = false
+
+                            // If not an instant app, we have additional image resources
+                            if (!InstantApps.isInstantApp(this)) {
+                                resources.getDrawable(ImageSelecter.instance.getNextImageResId(), null)?.let {
+                                    main_activity_container_layout.background = it
+                                }
+                            }
                         },
                         { error ->
                             Toast.makeText(this, R.string.error_game_setup_failure, Toast.LENGTH_SHORT).show()
