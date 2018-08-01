@@ -52,11 +52,6 @@ class PresentConjugator : Conjugator {
             }
             return root + suffix
         }
-
-
-        // TODO: fix empezar (empyezo)
-
-
     }
 
     private fun applyStemChange(root: String, subjectPronoun: SubjectPronoun, irregularities: List<Irregularity>): String {

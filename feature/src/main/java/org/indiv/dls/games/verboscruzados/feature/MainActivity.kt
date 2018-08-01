@@ -41,11 +41,9 @@ import kotlin.math.roundToInt
 // TODO: fix imports
 // TODO: optimizing drawing of puzzle (eliminate spacer views)
 // TODO: fix layout algorithm to use more short words & variability (80% rule)
-// TODO: more word density?
 
 
-// TODO: instant app
-// TODO: use photos from Elissa, less sky in existing photo
+// TODO: instant app - upgrade process?
 // Complete other TODO items throughout code
 
 
@@ -284,13 +282,12 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         // update error indications
         if (showingErrors) {
             showErrors(showingErrors)
+
+            // only do this when in error showing mode
+            if (puzzleFragment.currentGameWord?.isAnsweredCompletelyAndCorrectly == true) {
+                selectNextGameWord()
+            }
         }
-
-
-        // TODO: menu option for this?
-//        if (puzzleFragment.currentGameWord?.isAnsweredCompletelyAndCorrectly == true) {
-//            selectNextGameWord()
-//        }
 
         scrollSelectedCellIntoView()
 
