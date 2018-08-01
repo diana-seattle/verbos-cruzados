@@ -32,8 +32,10 @@ class GameSetup {
     companion object {
         private val TAG = GameSetup::class.java.simpleName
 
-        private val EL_ELLA_USTED_PRONOUNS = listOf("Él", "Ella", "Usted")
-        private val ELLOS_ELLAS_USTEDES_PRONOUNS = listOf("Ellos", "Ellas", "Ustedes")
+        private val USTED_PRONOUN = "Usted"
+        private val USTEDES_PRONOUN = "Ustedes"
+        private val EL_ELLA_USTED_PRONOUNS = listOf("Él", "Ella", USTED_PRONOUN)
+        private val ELLOS_ELLAS_USTEDES_PRONOUNS = listOf("Ellos", "Ellas", USTEDES_PRONOUN)
     }
 
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
@@ -175,17 +177,18 @@ class GameSetup {
             ConjugationType.PAST_PARTICIPLE, ConjugationType.GERUND -> "${wordCandidate.conjugationType.text} of"
             else -> "${wordCandidate.conjugationType.text} tense of"
         }
-        val subjectPronounLabel = wordCandidate.subjectPronoun?.let { getPronounText(it) } ?: ""
+        val isImperative = wordCandidate.conjugationType == ConjugationType.IMPERATIVE
+        val subjectPronounLabel = wordCandidate.subjectPronoun?.let { getPronounText(it, isImperative) } ?: ""
         val statsIndex = StatsDialogFragment.createStatsIndex(wordCandidate.conjugationType,
                 wordCandidate.infinitiveEnding, wordCandidate.irregularityCategory)
         return GameWord(uniqueKey, wordCandidate.word, conjugationTypeLabel, subjectPronounLabel,
                 wordCandidate.infinitive, wordCandidate.translation, statsIndex, row, col, isAcross)
     }
 
-    private fun getPronounText(subjectPronoun: SubjectPronoun): String {
+    private fun getPronounText(subjectPronoun: SubjectPronoun, isImperative: Boolean): String {
         return when (subjectPronoun) {
-            SubjectPronoun.EL_ELLA_USTED -> randomSelection(EL_ELLA_USTED_PRONOUNS, 1)[0]
-            SubjectPronoun.ELLOS_ELLAS_USTEDES -> randomSelection(ELLOS_ELLAS_USTEDES_PRONOUNS, 1)[0]
+            SubjectPronoun.EL_ELLA_USTED -> if (isImperative) USTED_PRONOUN else randomSelection(EL_ELLA_USTED_PRONOUNS, 1)[0]
+            SubjectPronoun.ELLOS_ELLAS_USTEDES -> if (isImperative) USTEDES_PRONOUN else randomSelection(ELLOS_ELLAS_USTEDES_PRONOUNS, 1)[0]
             else -> subjectPronoun.text
         }
     }
@@ -479,7 +482,6 @@ class GameSetup {
         // variables used by word placement algorithm to place word in puzzle
         private var lastAcrossPositionTried = -1
         private var lastDownPositionTried = -1
-
 
         fun getLastPositionTried(across: Boolean): Int {
             return if (across) this.lastAcrossPositionTried else this.lastDownPositionTried
