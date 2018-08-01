@@ -177,10 +177,9 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             conflictingGameWord?.let {
                 Thread { persistenceHelper.persistUserEntry(it) }.start()
             }
-            onAnswerChanged()
-
             puzzleFragment.advanceSelectedCellInPuzzle(false)
             scrollSelectedCellIntoView()
+            onAnswerChanged()
         }
         answer_keyboard.leftClickListener = {
             puzzleFragment.advanceSelectedCellInPuzzle(true)
@@ -274,16 +273,20 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
      */
     private fun onAnswerChanged() {
 
+        // persist the user's answer
         puzzleFragment.currentGameWord?.let {
-            // update database with answer
             Thread { persistenceHelper.persistUserEntry(it) }.start()
         }
 
-        // update error indications
-        if (showingErrors) {
-            showErrors(showingErrors)
+        val puzzleIsCompleteWithPossibleErrors = puzzleFragment.isPuzzleComplete(false)
+        val puzzleIsCompleteAndCorrect = puzzleIsCompleteWithPossibleErrors && puzzleFragment.isPuzzleComplete(true)
+        val puzzleIsCompleteWithErrors = puzzleIsCompleteWithPossibleErrors && !puzzleIsCompleteAndCorrect
 
-            // only do this when in error showing mode
+        // update error indications
+        if (showingErrors || puzzleIsCompleteWithErrors) {
+            showErrors(true)
+
+            // auto-advance to the next word when in error-showing mode
             if (puzzleFragment.currentGameWord?.isAnsweredCompletelyAndCorrectly == true) {
                 selectNextGameWord()
             }
@@ -291,8 +294,9 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
         scrollSelectedCellIntoView()
 
-        // if puzzle is complete and correct.
-        if (puzzleFragment.isPuzzleComplete(true)) {
+        if (puzzleIsCompleteAndCorrect) {
+
+            // persist the game stats
             if (!statsPersisted) {
                 persistenceHelper.persistGameStats(currentGameWords)
                 statsPersisted = true
@@ -301,10 +305,6 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             // prompt with congrats and new game
             val extraMessage = resources.getString(R.string.dialog_startnewgame_congrats)
             promptForNewGame(extraMessage)
-
-            // else if puzzle is complete but not correct, show errors
-        } else if (!showingErrors && puzzleFragment.isPuzzleComplete(false)) {
-            showErrors(true)
         }
     }
 
