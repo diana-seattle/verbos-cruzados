@@ -240,6 +240,7 @@ val regularArVerbs = listOf(
         Verb("estornudar", "sneeze"),
         Verb("estudiar", "study"),
         Verb("evitar", "avoid"),
+        Verb("exagerar", "exaggerate"),
         Verb("expresar", "express, state"),
         Verb("extrañar", "miss"),
         Verb("fallar", "fail"),
@@ -312,7 +313,7 @@ val regularArVerbs = listOf(
         Verb("peinar", "comb, style"),
         Verb("pelear", "fight"),
         Verb("perdonar", "pardon, forgive"),
-        Verb("pesar", "weigh"),
+        Verb("pesar", "weigh, be heavy"),
         Verb("pintar", "paint"),
         Verb("pisar", "step on, tread on"),
         Verb("preguntar", "ask"),
@@ -328,6 +329,7 @@ val regularArVerbs = listOf(
         Verb("rebajar", "reduce, lower price"),
         Verb("regresar", "return"),
         Verb("regalar", "give as a gift"),
+        Verb("registrar", "search, register, record"),
         Verb("relajar", "relax, calm"),
         Verb("reparar", "fix"),
         Verb("representar", "represent"),
@@ -410,7 +412,7 @@ val spellingChangeArVerbs = listOf(
         Verb("pagar", "pay", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("pegar", "hit, stick, glue", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("pescar", "fish", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
-        Verb("picar", "sting, itch", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
+        Verb("picar", "sting, itch, bite", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("practicar", "practice", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("propagar", "propagate", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
         Verb("provocar", "provoke, cause", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC)),
@@ -618,6 +620,7 @@ val regularIrVerbs = listOf(
         Verb("persuadir", "persuade"),
         Verb("pulir", "polish"),
         Verb("recibir", "receive"),
+        Verb("recurrir", "turn to, resort to"),
         Verb("sacudir", "shake, beat"),
         Verb("subir", "go up, climb"),
         Verb("sufrir", "suffer"),
@@ -752,6 +755,9 @@ val irregularIrVerbs = listOf(
         Verb("reproducir", "reproduce", altPreteritRoot = "reproduj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("traducir", "translate", altPreteritRoot = "traduj", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC, Irregularity.NO_ACCENT_ON_PRETERIT)),
         Verb("venir", "come", altPreteritRoot = "vin", altInfinitiveRoot = "vendr", irregularImperativeTu = "ven", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_GO, Irregularity.STEM_CHANGE_E_to_IE, Irregularity.NO_ACCENT_ON_PRETERIT)),
+
+        // c -> zc
+        Verb("lucir", "shine, wear", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC)),
 
         // Custom conjugations
         Verb("ir", "go", altPreteritRoot = "fu", irregularities = listOf(Irregularity.NO_ACCENT_ON_PRETERIT, Irregularity.SPELLING_CHANGE_PHONETIC, Irregularity.STEM_CHANGE_E_to_I)) { subjectPronoun: SubjectPronoun, conjugationType: ConjugationType ->

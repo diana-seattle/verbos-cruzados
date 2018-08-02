@@ -57,7 +57,7 @@ class ConjugatorTest {
 
     @Test fun testOneVerb() {
         val verb =
-                Verb("vencer", "defeat, overcome", irregularities = listOf(Irregularity.SPELLING_CHANGE_PHONETIC))
+                Verb("lucir", "shine, wear", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC))
         printResult(verb)
 
     }
@@ -66,7 +66,7 @@ class ConjugatorTest {
         val verbs = listOf(
                 Verb("absolver", "absolve, acquit", irregularPastParticiple = "absuelto", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE)),
                 Verb("conmover", "move emotionally, shake", irregularities = listOf(Irregularity.STEM_CHANGE_O_to_UE))
-                )
+        )
 
         printAllResults(verbs)
     }
@@ -75,18 +75,28 @@ class ConjugatorTest {
         println("regularArVerbs: " + regularArVerbs.size)
         println("regularIrVerbs: " + regularIrVerbs.size)
         println("regularErVerbs: " + regularErVerbs.size)
+        val totalRegular = regularArVerbs.size + regularIrVerbs.size + regularErVerbs.size
+        println("total regular: $totalRegular")
 
         println("spellingChangeArVerbs: " + spellingChangeArVerbs.size)
         println("spellingChangeIrVerbs: " + spellingChangeIrVerbs.size)
         println("spellingChangeErVerbs: " + spellingChangeErVerbs.size)
+        val totalSpellingChange = spellingChangeArVerbs.size + spellingChangeIrVerbs.size + spellingChangeErVerbs.size
+        println("total spelling change: $totalSpellingChange")
 
         println("stemChangeArVerbs: " + stemChangeArVerbs.size)
         println("stemChangeIrVerbs: " + stemChangeIrVerbs.size)
         println("stemChangeErVerbs: " + stemChangeErVerbs.size)
+        val totalStemChange = stemChangeArVerbs.size + stemChangeIrVerbs.size + stemChangeErVerbs.size
+        println("total stem change: $totalStemChange")
 
         println("irregularArVerbs: " + irregularArVerbs.size)
         println("irregularIrVerbs: " + irregularIrVerbs.size)
         println("irregularErVerbs: " + irregularErVerbs.size)
+        val totalIrregular = irregularArVerbs.size + irregularIrVerbs.size + irregularErVerbs.size
+        println("total irregular: $totalIrregular")
+
+        println("total: ${totalRegular + totalSpellingChange + totalStemChange + totalIrregular}")
     }
 
     @Test fun testRegular() {
