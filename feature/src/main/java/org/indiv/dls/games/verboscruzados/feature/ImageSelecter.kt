@@ -17,7 +17,6 @@ class ImageSelecter {
                 R.drawable.canyonrocksideandsky,
                 R.drawable.canyonsquirrel,
                 R.drawable.canyonsunlight,
-                R.drawable.canyonvividtree,
                 R.drawable.desert,
                 R.drawable.footbridge,
                 R.drawable.grandcanyongreen,
