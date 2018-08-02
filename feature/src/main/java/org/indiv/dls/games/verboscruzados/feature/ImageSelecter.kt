@@ -42,7 +42,6 @@ class ImageSelecter {
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
-    private var imageIndex: Int = 0
     private var poolOfIndexes = (0 until photos.size).toMutableList()
 
     //endregion

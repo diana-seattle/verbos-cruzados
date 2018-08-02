@@ -584,7 +584,7 @@ val irregularArVerbs = listOf(
 // IR verbs
 val regularIrVerbs = listOf(
         Verb("abatir", "shoot down, take down"),
-        Verb("aburrir", "bore"),
+        Verb("aburrir", "bore, tire"),
         Verb("acudir", "come, turn to"),
         Verb("admitir", "admit"),
         Verb("añadir", "add"),

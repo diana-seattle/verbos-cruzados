@@ -373,7 +373,7 @@ class PuzzleFragment : Fragment() {
 
     private fun isEmptyOrErroredGameWord(gameWord: GameWord?, emptyOnly: Boolean): Boolean {
         gameWord?.let {
-            return emptyOnly && it.isEntryEmpty || !emptyOnly && (it.hasErroredCells || hasVisibleBlanks(it))
+            return hasVisibleBlanks(it) || !emptyOnly && it.hasErroredCells
         }
         return false
     }
