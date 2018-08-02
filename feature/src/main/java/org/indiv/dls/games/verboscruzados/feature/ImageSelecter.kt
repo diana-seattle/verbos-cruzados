@@ -42,7 +42,7 @@ class ImageSelecter {
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
-    private var poolOfIndexes = (0 until photos.size).toMutableList()
+    private var poolOfImageIndexes = (0 until photos.size).toMutableList()
 
     //endregion
 
@@ -51,13 +51,10 @@ class ImageSelecter {
     /**
      * Get the next image index.
      */
-    fun getNextImageIndex(): Int {
-        // Draw randomly from the pool until all have been drawn, then refill the pool.
-        if (poolOfIndexes.isEmpty()) {
-            poolOfIndexes.addAll(0 until photos.size)
-        }
-        val randomPoolIndex = Math.round(Math.random() * (poolOfIndexes.size - 1)).toInt()
-        return poolOfIndexes[randomPoolIndex]
+    fun getRandomImageIndex(): Int {
+        // Draw randomly from the pool
+        val randomPoolIndex = Math.round(Math.random() * (poolOfImageIndexes.size - 1)).toInt()
+        return poolOfImageIndexes[randomPoolIndex]
     }
 
     /**
@@ -65,7 +62,16 @@ class ImageSelecter {
      * @return image resource id at specified index
      */
     fun getImageResId(imageIndex: Int): Int {
-        poolOfIndexes.remove(imageIndex) // remove from pool when drawn so as to include the index of the saved game
+        // remove from pool when drawn to be inclusive of the case where index is from the saved game
+        poolOfImageIndexes.remove(imageIndex)
+
+        // if pool is now empty, refill it with all but the one just drawn (to ensure it's not used back to back)
+        if (poolOfImageIndexes.isEmpty()) {
+            poolOfImageIndexes.addAll(0 until photos.size)
+            poolOfImageIndexes.remove(imageIndex)
+        }
+
+        // return image index, coerce maximum index in case from saved game and number of images reduced in upgrade.
         return photos[imageIndex.coerceAtMost(photos.size - 1)]
     }
 

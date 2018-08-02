@@ -331,7 +331,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                 .setTitle(message)
                 .setNeutralButton(R.string.dialog_startnewgame_game_options) { _, _ -> showGameOptionsDialog() }
                 .setPositiveButton(R.string.dialog_startnewgame_yes) { _, _ ->
-                    setPuzzleBackgroundImage(ImageSelecter.instance.getNextImageIndex())
+                    setPuzzleBackgroundImage(ImageSelecter.instance.getRandomImageIndex())
                     setupNewGame()
                 }
                 .setNegativeButton(R.string.dialog_startnewgame_no) { _, _ -> }

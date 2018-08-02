@@ -333,6 +333,7 @@ val regularArVerbs = listOf(
         Verb("relajar", "relax, calm"),
         Verb("reparar", "fix"),
         Verb("representar", "represent"),
+        Verb("respetar", "respect"),
         Verb("resultar", "result, turn out"),
         Verb("retirar", "withdraw, retire"),
         Verb("retrasar", "delay, postpone"),
