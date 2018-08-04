@@ -23,8 +23,10 @@ class ImageSelecter {
                 R.drawable.grandcanyonshortertree,
                 R.drawable.grandcanyontallertree,
                 R.drawable.lakelowcloud,
+                R.drawable.lakemountainclouds,
                 R.drawable.lakemysticalreflection,
                 R.drawable.laketreesilhouette,
+                R.drawable.mountainandriver,
                 R.drawable.riverstumpsky,
                 R.drawable.rockfacedarksky,
                 R.drawable.rocktreesmountainclouds,
@@ -32,7 +34,8 @@ class ImageSelecter {
                 R.drawable.skyupthrutrees,
                 R.drawable.treeshadowtrail,
                 R.drawable.waterfallcloseup,
-                R.drawable.yosemitemeadow)
+                R.drawable.yosemitemeadow
+        )
 
         val instance = ImageSelecter()
     }
