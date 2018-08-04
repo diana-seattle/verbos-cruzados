@@ -14,8 +14,8 @@
         <!-- Row for answer presentation and infinitive button -->
         <RelativeLayout android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="1.5"
-                        android:background="@color/keyboard_yellow_translucent"
+                        android:layout_weight="1.6"
+                        android:background="@color/keyboard_translucent"
                         android:paddingStart="@dimen/half_margin">
 
             <!-- Conjugation type (tense/mood) -->
@@ -57,16 +57,21 @@
                     android:id="@+id/keyboard_subject_pronoun_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:paddingEnd="2dp"
                     android:textColor="@color/soft_black"
-                    android:textSize="@dimen/keyboard_infinitive_size"/>
+                    android:textSize="@dimen/medium_fixed"/>
 
                 <!-- Infinitive -->
                 <TextView
                     android:id="@+id/keyboard_button_infinitive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
-                    android:paddingBottom="@dimen/quarter_margin"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/keyboard_special_letter_background"
+                    android:elevation="2dp"
+                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                    android:paddingBottom="2dp"
                     android:paddingEnd="@dimen/half_margin"
                     android:paddingStart="@dimen/half_margin"
                     android:textColor="@color/keyboard_special_letters"
@@ -78,6 +83,7 @@
                     android:id="@+id/keyboard_translation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/quarter_margin"
                     android:lines="1"
                     android:textColor="@color/medium_gray"
                     android:textSize="@dimen/small_fixed"
@@ -97,7 +103,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/white"
+            android:background="@color/soft_white"
             android:orientation="horizontal">
 
             <TextView
@@ -148,7 +154,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/white"
+            android:background="@color/soft_white"
             android:orientation="horizontal">
 
             <!-- A dummy view for the sake of spacing -->
@@ -207,7 +213,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/white"
+            android:background="@color/soft_white"
             android:orientation="horizontal">
 
             <View
@@ -245,13 +251,13 @@
                 android:text="m"/>
             <ImageView
                 android:id="@+id/button_left_arrow"
-                style="@style/answerLetterButton"
+                style="@style/answerLetterButton.special"
                 android:padding="3dp"
                 android:src="@drawable/ic_baseline_arrow_back_24px"
                 android:tint="@color/soft_black"/>
             <ImageView
                 android:id="@+id/button_right_arrow"
-                style="@style/answerLetterButton"
+                style="@style/answerLetterButton.special"
                 android:padding="3dp"
                 android:src="@drawable/ic_baseline_arrow_forward_24px"
                 android:tint="@color/soft_black"/>
@@ -263,9 +269,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:paddingBottom="1dp"
-            android:background="@color/white"
-            android:orientation="horizontal">
+            android:background="@color/soft_white"
+            android:orientation="horizontal"
+            android:paddingBottom="1dp">
 
             <ImageView
                 android:id="@+id/button_hide_keyboard"
