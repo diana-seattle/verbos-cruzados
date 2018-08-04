@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -365,6 +366,8 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             gameSetup.addToGrid(gameWord, puzzleFragment.cellGrid)
         }
         createGrid()
+
+        scrollSelectedCellIntoViewWithDelay()
     }
 
     /**
@@ -390,6 +393,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                                 Toast.makeText(this, R.string.not_enough_game_options, Toast.LENGTH_LONG).show()
                             }
                             statsPersisted = false
+                            scrollSelectedCellIntoViewWithDelay()
                         },
                         { error ->
                             Toast.makeText(this, R.string.error_game_setup_failure, Toast.LENGTH_SHORT).show()
@@ -421,6 +425,18 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         showKeyboard()
 
         scrollWordIntoView()
+    }
+
+    private fun scrollSelectedCellIntoViewWithDelay() {
+        Handler().postDelayed({
+            puzzleFragment.currentGameWord?.let {
+                if (it.isAcross) {
+                    scrollWordIntoView()
+                } else {
+                    scrollSelectedCellIntoView()
+                }
+            }
+        }, 50)
     }
 
     private fun scrollSelectedCellIntoView() {

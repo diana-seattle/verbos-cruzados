@@ -19,7 +19,7 @@
 
     <color name="keyboard_delete_key">#c9c96f</color>
     <color name="keyboard_done_key">#4db6ac</color>
-    <color name="keyboard_translucent">#f8ffffff</color>
+    <color name="keyboard_translucent">#f9ffffff</color>
     <color name="keyboard_special_letters">#2962ff</color>
 
 </resources>

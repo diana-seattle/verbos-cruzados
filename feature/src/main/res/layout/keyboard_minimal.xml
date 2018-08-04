@@ -44,7 +44,7 @@
                 android:paddingTop="@dimen/quarter_margin"
                 android:text="@string/keyboard_next"
                 android:textColor="@color/keyboard_special_letters"
-                android:textSize="@dimen/medium_fixed"
+                android:textSize="@dimen/large_fixed"
                 android:textStyle="italic"/>
 
             <LinearLayout android:layout_width="wrap_content"
@@ -58,7 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:paddingEnd="2dp"
+                    android:paddingEnd="3dp"
                     android:textColor="@color/soft_black"
                     android:textSize="@dimen/medium_fixed"/>
 
@@ -67,7 +67,10 @@
                     android:id="@+id/keyboard_button_infinitive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:layout_marginEnd="1dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginStart="1dp"
                     android:background="@drawable/keyboard_special_letter_background"
                     android:elevation="2dp"
                     android:foreground="?android:attr/selectableItemBackgroundBorderless"
