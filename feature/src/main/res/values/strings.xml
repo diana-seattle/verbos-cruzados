@@ -87,6 +87,7 @@
     <string name="option_tense_subjunctive_imperfect">Subjunctive Imperfect</string>
     <string name="option_tense_gerund">Gerund</string>
     <string name="option_tense_past_participle">Past Participle</string>
+    <string name="option_message">Applied on new game</string>
 
     <!--game options - subject pronouns -->
     <string name="option_title_subject_pronouns">Subject Pronouns</string>

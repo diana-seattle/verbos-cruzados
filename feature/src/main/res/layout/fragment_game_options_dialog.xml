@@ -42,8 +42,8 @@
 
         <!--Regularity-->
         <TextView style="@style/gameOptionHeadingText"
-            android:layout_marginTop="@dimen/three_quarter_margin"
-            android:text="@string/option_title_regularity"/>
+                  android:layout_marginTop="@dimen/three_quarter_margin"
+                  android:text="@string/option_title_regularity"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -85,8 +85,8 @@
 
         <!--Subject Pronouns-->
         <TextView style="@style/gameOptionHeadingText"
-            android:layout_marginTop="@dimen/three_quarter_margin"
-            android:text="@string/option_title_subject_pronouns"/>
+                  android:layout_marginTop="@dimen/three_quarter_margin"
+                  android:text="@string/option_title_subject_pronouns"/>
         <CheckBox
             android:id="@+id/option_subject_pronoun_singular"
             android:layout_width="wrap_content"
@@ -105,8 +105,8 @@
 
         <!--Tense/Mood-->
         <TextView style="@style/gameOptionHeadingText"
-            android:layout_marginTop="@dimen/three_quarter_margin"
-            android:text="@string/option_title_tense_mood"/>
+                  android:layout_marginTop="@dimen/three_quarter_margin"
+                  android:text="@string/option_title_tense_mood"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -177,7 +177,18 @@
             </LinearLayout>
 
         </LinearLayout>
-        
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/half_margin"
+            android:layout_marginStart="@dimen/quarter_margin"
+            android:layout_marginTop="@dimen/three_quarter_margin"
+            android:text="@string/option_message"
+            android:textColor="@color/medium_gray"
+            android:textSize="@dimen/medium"
+            android:textStyle="italic"/>
+
     </LinearLayout>
 
 </ScrollView>
