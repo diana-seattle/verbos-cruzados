@@ -320,6 +320,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     private fun showErrors(showErrors: Boolean) {
         showingErrors = showErrors
         setOptionsMenuText(R.id.action_showerrors, if (showingErrors) R.string.action_hideerrors else R.string.action_showerrors)
+        setOptionsMenuIcon(R.id.action_showerrors, if (showingErrors) R.drawable.ic_baseline_visibility_24px else R.drawable.ic_baseline_visibility_off_24px)
         puzzleFragment.showErrors(showErrors)
     }
 
@@ -493,6 +494,10 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
     private fun setOptionsMenuText(menuItemId: Int, textId: Int) {
         optionsMenu?.findItem(menuItemId)?.setTitle(textId)
+    }
+
+    private fun setOptionsMenuIcon(menuItemId: Int, iconResId: Int) {
+        optionsMenu?.findItem(menuItemId)?.setIcon(iconResId)
     }
 
     private fun showHelpDialog() {

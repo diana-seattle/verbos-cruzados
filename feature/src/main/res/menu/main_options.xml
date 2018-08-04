@@ -7,12 +7,12 @@
           app:showAsAction="ifRoom|withText"
           android:visible="false"/>
     <item android:id="@+id/action_startnewgame"
-          android:icon="@drawable/ic_replay_24px"
+          android:icon="@drawable/ic_baseline_refresh_24px"
           android:title="@string/action_startnewgame" 
           android:titleCondensed="@string/action_startnewgame_condensed" 
           app:showAsAction="ifRoom|withText" />
     <item android:id="@+id/action_showerrors"
-          android:icon="@drawable/ic_report_24px"
+          android:icon="@drawable/ic_baseline_visibility_off_24px"
           android:title="@string/action_showerrors"
           app:showAsAction="ifRoom|withText" />
     <item android:id="@+id/action_showgameoptions"

@@ -61,7 +61,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_replay_24px_gray"
+            android:drawableEnd="@drawable/ic_baseline_refresh_24px_gray"
             android:drawablePadding="@dimen/half_margin"
             android:text="@string/dialog_help_startnewgame"
             android:textColor="@color/soft_black"
@@ -71,7 +71,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_report_24px_gray"
+            android:drawableEnd="@drawable/ic_baseline_visibility_off_24px_gray"
             android:drawablePadding="@dimen/half_margin"
             android:text="@string/dialog_help_showerrors"
             android:textColor="@color/soft_black"
