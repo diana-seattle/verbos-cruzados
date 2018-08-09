@@ -1,6 +1,7 @@
 package org.indiv.dls.games.verboscruzados.feature
 
 import org.indiv.dls.games.verboscruzados.extraimages.R
+import kotlin.math.roundToInt
 
 class ImageSelecter {
 
@@ -55,7 +56,7 @@ class ImageSelecter {
      */
     fun getRandomImageIndex(): Int {
         // Draw randomly from the pool
-        val randomPoolIndex = Math.round(Math.random() * (poolOfImageIndexes.size - 1)).toInt()
+        val randomPoolIndex = (Math.random() * (poolOfImageIndexes.size - 1)).roundToInt()
         return poolOfImageIndexes[randomPoolIndex]
     }
 
