@@ -22,7 +22,7 @@ import org.indiv.dls.games.verboscruzados.feature.model.spellingChangeIrVerbs
 import org.indiv.dls.games.verboscruzados.feature.model.stemChangeArVerbs
 import org.indiv.dls.games.verboscruzados.feature.model.stemChangeErVerbs
 import org.indiv.dls.games.verboscruzados.feature.model.stemChangeIrVerbs
-import java.util.*
+import kotlin.math.roundToInt
 
 /**
  * Handles process of setting up a game.
@@ -114,32 +114,22 @@ class GameSetup {
         } else {
             subjectPronouns.filter { it != SubjectPronoun.YO }
         }
-
+        val finalRandomPercentageTaken = .8f
         val irregularityCategories = verbMap.keys
 
         // For each irregularity category
-        irregularityCategories.forEach {
-            val irregularityCategory = it
+        irregularityCategories.forEach { irregularityCategory ->
             val verbs = verbMap[irregularityCategory]!!
-            val lowOnVerbs = verbs.size < (.6f * numWords / irregularityCategories.size).toInt() // when less than 60% what it should be
-            val conjugationTypesPerVerb = when {
-                !lowOnVerbs -> 1
-                subjectPronouns.size < 3 -> 4
-                else -> 2
-            }
-            val subjectPronounsPerVerb = when {
-                !lowOnVerbs -> 1
-                conjugationTypes.size < 3 -> 4
-                else -> 2
-            }
+            val idealNumberPerIrregularityCategory = (numWords / finalRandomPercentageTaken) / irregularityCategories.size
+            val verbMultiplier = (idealNumberPerIrregularityCategory / verbs.size.toFloat()).coerceAtLeast(1f)
+            val subjectPronounsPerVerb = (verbMultiplier / conjugationTypes.size).roundToInt().coerceIn(1..subjectPronouns.size)
+            val conjugationTypesPerVerb = (verbMultiplier / subjectPronounsPerVerb).roundToInt().coerceIn(1..conjugationTypes.size)
 
-            // For each verb in irregularity category
-            verbs.forEach {
-                val verb = it
+            // For each verb in regularity category
+            verbs.forEach { verb ->
 
                 // For each conjugation type
-                randomSelection(conjugationTypes, conjugationTypesPerVerb).forEach {
-                    val conjugationType = it
+                randomSelection(conjugationTypes, conjugationTypesPerVerb).forEach { conjugationType ->
                     when (conjugationType) {
                         ConjugationType.GERUND ->
                             candidates.add(createWordCandidate(verb, verb.gerund, conjugationType, irregularityCategory, null))
@@ -159,7 +149,7 @@ class GameSetup {
         }
 
         // Take less than 100% of candidates to ensure variability
-        return randomSelection(candidates, minOf(numWords, (.8f * candidates.size).toInt()))
+        return randomSelection(candidates, minOf(numWords, (finalRandomPercentageTaken * candidates.size).toInt()))
     }
 
     private fun createWordCandidate(verb: Verb, word: String,
@@ -172,13 +162,14 @@ class GameSetup {
 
     private fun createGameWord(wordCandidate: WordCandidate, row: Int, col: Int, isAcross: Boolean): GameWord {
         // Conjugated verb can be duplicate between imperative and subjunctive or between sentar and sentir.
-        val uniqueKey = "${wordCandidate.infinitive}|${wordCandidate.conjugationType.name}|${wordCandidate.subjectPronoun?.name ?: "na"}"
+        val uniqueKey = "${wordCandidate.infinitive}|${wordCandidate.conjugationType.name}|${wordCandidate.subjectPronoun?.name
+                ?: "na"}"
         val conjugationTypeLabel = when (wordCandidate.conjugationType) {
             ConjugationType.PAST_PARTICIPLE, ConjugationType.GERUND -> "${wordCandidate.conjugationType.text} of"
             else -> "${wordCandidate.conjugationType.text} tense of"
         }
         val isImperative = wordCandidate.conjugationType == ConjugationType.IMPERATIVE
-        val subjectPronounLabel = wordCandidate.subjectPronoun?.let { getPronounText(it, isImperative) } ?: ""
+        val subjectPronounLabel = wordCandidate.subjectPronoun?.let { getPronounText(it, isImperative) }.orEmpty()
         val statsIndex = StatsDialogFragment.createStatsIndex(wordCandidate.conjugationType,
                 wordCandidate.infinitiveEnding, wordCandidate.irregularityCategory)
         return GameWord(uniqueKey, wordCandidate.word, conjugationTypeLabel, subjectPronounLabel,
@@ -494,6 +485,8 @@ class GameSetup {
                 this.lastDownPositionTried = position
             }
         }
+
+        override fun toString() = "$infinitive -> $word"
     }
 
     //endregion

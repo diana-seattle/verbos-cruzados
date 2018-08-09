@@ -76,27 +76,27 @@ class ConjugatorTest {
         println("regularIrVerbs: " + regularIrVerbs.size)
         println("regularErVerbs: " + regularErVerbs.size)
         val totalRegular = regularArVerbs.size + regularIrVerbs.size + regularErVerbs.size
-        println("total regular: $totalRegular")
+        println("Total regular: $totalRegular\n")
 
         println("spellingChangeArVerbs: " + spellingChangeArVerbs.size)
         println("spellingChangeIrVerbs: " + spellingChangeIrVerbs.size)
         println("spellingChangeErVerbs: " + spellingChangeErVerbs.size)
         val totalSpellingChange = spellingChangeArVerbs.size + spellingChangeIrVerbs.size + spellingChangeErVerbs.size
-        println("total spelling change: $totalSpellingChange")
+        println("Total spelling change: $totalSpellingChange\n")
 
         println("stemChangeArVerbs: " + stemChangeArVerbs.size)
         println("stemChangeIrVerbs: " + stemChangeIrVerbs.size)
         println("stemChangeErVerbs: " + stemChangeErVerbs.size)
         val totalStemChange = stemChangeArVerbs.size + stemChangeIrVerbs.size + stemChangeErVerbs.size
-        println("total stem change: $totalStemChange")
+        println("Total stem change: $totalStemChange\n")
 
         println("irregularArVerbs: " + irregularArVerbs.size)
         println("irregularIrVerbs: " + irregularIrVerbs.size)
         println("irregularErVerbs: " + irregularErVerbs.size)
         val totalIrregular = irregularArVerbs.size + irregularIrVerbs.size + irregularErVerbs.size
-        println("total irregular: $totalIrregular")
+        println("Total irregular: $totalIrregular\n")
 
-        println("total: ${totalRegular + totalSpellingChange + totalStemChange + totalIrregular}")
+        println("Total: ${totalRegular + totalSpellingChange + totalStemChange + totalIrregular}")
     }
 
     @Test fun testRegular() {

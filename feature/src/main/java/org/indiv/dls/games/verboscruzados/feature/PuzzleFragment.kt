@@ -126,9 +126,8 @@ class PuzzleFragment : Fragment() {
      */
     fun createGrid(puzzleListener: PuzzleListener) {
         val onPuzzleClickListener = OnClickListener { v ->
-            getCellForView(v)?.let {
+            getCellForView(v)?.let {gridCell ->
                 vibration.vibrate()
-                val gridCell = it
 
                 val sameWordSelected = currentGameWord == gridCell.gameWordDown || currentGameWord == gridCell.gameWordAcross
                 val newGameWord = if (sameWordSelected) {
@@ -283,13 +282,12 @@ class PuzzleFragment : Fragment() {
         var col = gameWord.col
         for (charIndex in 0 until wordLength) {
             cellGrid[row][col]?.let {
-                val gridCell = it
                 val userChar = userEntry[charIndex]
                 if (isAcross) {
-                    gridCell.userCharAcross = userChar
+                    it.userCharAcross = userChar
                     col++
                 } else {
-                    gridCell.userCharDown = userChar
+                    it.userCharDown = userChar
                     row++
                 }
                 fillTextView(it)

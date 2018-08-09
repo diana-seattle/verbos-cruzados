@@ -32,10 +32,6 @@ class GameWord(val uniqueKey: String,            // unique key for use in persis
             }
             return false
         }
-    val isEntryEmpty: Boolean
-        get() {
-            return userEntry.all { it == BLANK }
-        }
     val defaultSelectionIndex: Int
         get() {
             for (i in 0 until word.length) {

@@ -390,9 +390,6 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                             currentGameWords = gameWords
                             persistenceHelper.persistGame(gameWords)
                             createGrid()
-                            if (currentGameWords.size < 15) {
-                                Toast.makeText(this, R.string.not_enough_game_options, Toast.LENGTH_LONG).show()
-                            }
                             statsPersisted = false
                             scrollSelectedCellIntoViewWithDelay()
                         },
