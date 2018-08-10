@@ -235,7 +235,7 @@ val regularArVerbs = listOf(
         Verb("enseñar", "teach, show"),
         Verb("entrar", "enter"),
         Verb("escoltar", "escort"),
-        Verb("escuchar", "listen (to)"),
+        Verb("escuchar", "listen to"),
         Verb("esperar", "wait/hope for"),
         Verb("estornudar", "sneeze"),
         Verb("estudiar", "study"),

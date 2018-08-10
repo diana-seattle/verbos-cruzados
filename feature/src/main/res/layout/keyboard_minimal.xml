@@ -89,7 +89,7 @@
                     android:layout_marginStart="@dimen/quarter_margin"
                     android:layout_marginTop="1dp"
                     android:lines="1"
-                    android:textColor="@color/medium_gray"
+                    android:textColor="@color/light_gray"
                     android:textSize="@dimen/small_fixed"
                     android:textStyle="italic"/>
 
