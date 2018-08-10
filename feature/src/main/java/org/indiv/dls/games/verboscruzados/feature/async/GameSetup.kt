@@ -104,7 +104,8 @@ class GameSetup {
      * Gets list of words that are candidates for the next puzzle.
      */
     private fun getWordCandidates(numWords: Int, gameOptions: Map<String, Boolean>): List<WordCandidate> {
-        val verbMap = getQualifyingVerbs(gameOptions, numWords)
+        val finalRandomPercentageTaken = .8f
+        val verbMap = getQualifyingVerbs(gameOptions, (numWords / finalRandomPercentageTaken).roundToInt())
         val candidates = mutableListOf<WordCandidate>()
 
         val conjugationTypes = getQualifyingConjugationTypes(gameOptions)
@@ -114,7 +115,6 @@ class GameSetup {
         } else {
             subjectPronouns.filter { it != SubjectPronoun.YO }
         }
-        val finalRandomPercentageTaken = .8f
         val irregularityCategories = verbMap.keys
 
         // For each irregularity category
@@ -193,7 +193,7 @@ class GameSetup {
         // Don't count irregular AR as a combination since it only has 3 verbs
         val includesIrregularAr = infinitiveEndings.contains(InfinitiveEnding.AR) && irregularityCategories.contains(IrregularityCategory.IRREGULAR)
         val combinations = (infinitiveEndings.size * irregularityCategories.size - (if (includesIrregularAr) 1 else 0)).coerceAtLeast(1)
-        val minTargetQty = (1.5 * numWords / combinations).toInt() // go 50% over to make it more likely total target is met
+        val minTargetQty = (1.2 * numWords / combinations).toInt() // go 20% over to make it more likely total target is met
 
         irregularityCategories.forEach {
             val verbs = mutableListOf<Verb>()
