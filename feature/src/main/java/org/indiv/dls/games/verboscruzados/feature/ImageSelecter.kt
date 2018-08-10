@@ -71,8 +71,8 @@ class ImageSelecter {
         // if pool is now empty, refill it with all but the one just drawn (to ensure it's not used back to back)
         if (poolOfImageIndexes.isEmpty()) {
             poolOfImageIndexes.addAll(0 until photos.size)
-            poolOfImageIndexes.shuffle()
             poolOfImageIndexes.remove(imageIndex)
+            poolOfImageIndexes.shuffle()
         }
 
         // return image index, coerce maximum index in case from saved game and number of images reduced in upgrade.

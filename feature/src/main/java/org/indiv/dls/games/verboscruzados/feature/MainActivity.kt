@@ -287,9 +287,11 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         if (showingErrors || puzzleIsCompleteWithErrors) {
             showErrors(true)
 
-            // auto-advance to the next word when in error-showing mode
+            // auto-advance to the next word when in error-showing mode (with a small delay so it feels less abrupt)
             if (puzzleFragment.currentGameWord?.isAnsweredCompletelyAndCorrectly == true) {
-                selectNextGameWord()
+                Handler().postDelayed({
+                    selectNextGameWord()
+                }, 200)
             }
         }
 
