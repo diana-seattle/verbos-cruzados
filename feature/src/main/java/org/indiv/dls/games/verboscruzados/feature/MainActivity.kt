@@ -88,8 +88,6 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     private var puzzleMarginTopPixels: Float = 0f
     private var pixelsPerCell: Float = 0f
 
-    private var statsPersisted: Boolean = false
-
     //endregion
 
     //region OVERRIDDEN METHODS --------------------------------------------------------------------
@@ -304,10 +302,10 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
         if (puzzleIsCompleteAndCorrect) {
 
-            // persist the game stats
-            if (!statsPersisted) {
+            // persist the game stats if this is the first time the current game has been completed (as opposed to modified and recompleted)
+            if (!persistenceHelper.currentGameCompleted) {
                 persistenceHelper.persistGameStats(currentGameWords)
-                statsPersisted = true
+                persistenceHelper.currentGameCompleted = true
             }
 
             // prompt with congrats and new game
@@ -396,9 +394,9 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                 .subscribe(
                         { gameWords ->
                             currentGameWords = gameWords
-                            persistenceHelper.persistGame(gameWords)
+                            persistenceHelper.currentGameWords = gameWords
                             createGrid()
-                            statsPersisted = false
+                            persistenceHelper.currentGameCompleted = false
                             scrollSelectedCellIntoViewWithDelay()
                         },
                         { error ->
@@ -413,7 +411,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             resources.getDrawable(ImageSelecter.instance.getImageResId(imageIndex), null)?.let {
                 main_activity_container_layout.background = it
             }
-            persistenceHelper.persistImageIndex(imageIndex)
+            persistenceHelper.currentImageIndex = imageIndex
         }
     }
 

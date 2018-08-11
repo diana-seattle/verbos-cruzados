@@ -22,7 +22,11 @@ class PersistenceHelper constructor(private val mContext: Context) {
         private val PREFS_GAME_WORD_OPTIONS = "game options"
         private val PREFS_GAME_STATS = "game stats"
         private val PREFS_GAME = "game"
+
+        private val KEY_CURRENT_GAME_COMPLETED = "KEY_CURRENT_GAME_COMPLETED"
+        private val KEY_ELAPSED_SECONDS = "KEY_ELAPSED_SECONDS"
         private val KEY_IMAGE_INDEX = "KEY_IMAGE_INDEX"
+
         private val gson = Gson()
     }
 
@@ -31,9 +35,9 @@ class PersistenceHelper constructor(private val mContext: Context) {
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
 
     /**
-     * @return list of persisted game words
+     * list of persisted game words
      */
-    val currentGameWords: List<GameWord>
+    var currentGameWords: List<GameWord>
         get() {
             val gameWords = ArrayList<GameWord>()
             val map: Map<String, *> = gameWordPrefs.all
@@ -42,18 +46,48 @@ class PersistenceHelper constructor(private val mContext: Context) {
             }
             return gameWords
         }
+        set(gameWords) {
+            var prefsEditor: SharedPreferences.Editor = gameWordPrefs
+                    .edit()
+                    .clear()
+            for (gameWord in gameWords) {
+                prefsEditor = prefsEditor.putString(gameWord.uniqueKey, gson.toJson(gameWord, GameWord::class.java))
+            }
+            prefsEditor.apply()
+        }
 
     /**
-     * @return current index of image for the current game.
+     * True if current game has been completed at least once (user could modify and re-complete).
      */
-    val currentImageIndex: Int
+    var currentGameCompleted: Boolean
+        get() = gamePrefs.getBoolean(KEY_CURRENT_GAME_COMPLETED, false)
+        set(value) = gamePrefs.edit()
+                .putBoolean(KEY_CURRENT_GAME_COMPLETED, value)
+                .apply()
+
+    /**
+     * Index of image for the current game.
+     */
+    var currentImageIndex: Int
         get() = gamePrefs.getInt(KEY_IMAGE_INDEX, 0)
+        set(value) = gamePrefs.edit()
+                .putInt(KEY_IMAGE_INDEX, value)
+                .apply()
+
+    /**
+     * Elapsed seconds of current game.
+     */
+    var elapsedSeconds: Int
+        get() = gamePrefs.getInt(KEY_ELAPSED_SECONDS, 0)
+        set(value) = gamePrefs.edit()
+                .putInt(KEY_ELAPSED_SECONDS, value)
+                .apply()
 
     /**
      * @return map of persisted game options where the keys are of the following:
      * InfinitiveEnding.name, IrregularityCategory.name, SubjectPronoun.name, ConjugationType.name
      */
-    val currentGameOptions: Map<String, Boolean>
+    var currentGameOptions: Map<String, Boolean>
         get() {
             var map: Map<String, *> = gameOptionPrefs.all
             if (map.isEmpty()) {
@@ -64,6 +98,13 @@ class PersistenceHelper constructor(private val mContext: Context) {
                 optionMap[key] = map[key] as? Boolean ?: false
             }
             return optionMap.toMap()
+        }
+        set(optionsMap) {
+            val editor = gameOptionPrefs.edit()
+            for (key in optionsMap.keys) {
+                editor.putBoolean(key, optionsMap[key] ?: false)
+            }
+            editor.apply()
         }
 
     /**
@@ -100,28 +141,6 @@ class PersistenceHelper constructor(private val mContext: Context) {
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
 
     /**
-     * Persists the entire game.
-     */
-    fun persistGame(gameWords: List<GameWord>) {
-        var prefsEditor: SharedPreferences.Editor = gameWordPrefs
-                .edit()
-                .clear()
-        for (gameWord in gameWords) {
-            prefsEditor = prefsEditor.putString(gameWord.uniqueKey, gson.toJson(gameWord, GameWord::class.java))
-        }
-        prefsEditor.apply()
-    }
-
-    /**
-     * Persists the image index.
-     */
-    fun persistImageIndex(imageIndex: Int) {
-        gamePrefs.edit()
-                .putInt(KEY_IMAGE_INDEX, imageIndex)
-                .apply()
-    }
-
-    /**
      * Updates the persisted game with the user's entry for a word.
      *
      * @return number of rows updated
@@ -131,18 +150,6 @@ class PersistenceHelper constructor(private val mContext: Context) {
                 .edit()
                 .putString(gameWord.uniqueKey, gson.toJson(gameWord, GameWord::class.java))
                 .apply()
-    }
-
-    /**
-     * Persists the game options. Keys should be of of the following:
-     * InfinitiveEnding.name, IrregularityCategory.name, SubjectPronoun.name, ConjugationType.name
-     */
-    fun persistGameOptions(optionsMap: Map<String, Boolean>) {
-        val editor = gameOptionPrefs.edit()
-        for (key in optionsMap.keys) {
-            editor.putBoolean(key, optionsMap[key] ?: false)
-        }
-        editor.apply()
     }
 
     /**

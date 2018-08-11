@@ -112,7 +112,7 @@ class GameOptionsDialogFragment : DialogFragment() {
         }
 
         val persistenceHelper = PersistenceHelper(activity!!)
-        persistenceHelper.persistGameOptions(optionMap)
+        persistenceHelper.currentGameOptions = optionMap
     }
 
     //endregion

@@ -24,7 +24,7 @@ enum class Irregularity {
     STEM_CHANGE_E_to_ACCENTED_I,
     STEM_CHANGE_E_to_I,
     STEM_CHANGE_E_to_IE,
-    STEM_CHANGE_I_to_IE, // adquirir --> adquiero
+    STEM_CHANGE_I_to_IE, // adquirir --> adquiero, inquirir -> inquiero  (only 2)
     STEM_CHANGE_O_to_UE,
     STEM_CHANGE_U_to_UE
 }
