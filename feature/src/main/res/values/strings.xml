@@ -35,10 +35,8 @@
     <string name="dialog_help_showerrors_desc">Errored cells turn red</string>
     <string name="dialog_help_keyboard_infinitive">Tap infinitive to save typing</string>
     <string name="dialog_help_keyboard_arrows">Use arrows to navigate word</string>
-    <string name="dialog_help_gameoptions_infinitive_endings">Infinitive Endings</string>
-    <string name="dialog_help_gameoptions_tense_mood">Tense/Mood</string>
-    <string name="dialog_help_gameoptions_regularity">Regularity</string>
-    <string name="dialog_help_gameoptions_subject_pronouns">Subject Pronouns</string>
+    <string name="dialog_help_gameoptions_any_mix">Verb type and tense/mood</string>
+    <string name="dialog_help_gameoptions_vosotros">Pronoun options</string>
     <string name="dialog_help_gamestats_desc1">See your progress</string>
     <string name="dialog_help_gamestats_desc2">History for completed games</string>
     <string name="onboarding_message">Tap on the infinitive\nto prefill the puzzle.\nThen modify\nthe verb ending.</string>

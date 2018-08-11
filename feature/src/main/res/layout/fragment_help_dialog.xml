@@ -86,13 +86,9 @@
             android:textColor="@color/soft_black"
             android:textSize="@dimen/medium"/>
         <TextView style="@style/helpBulletText"
-                  android:text="@string/dialog_help_gameoptions_infinitive_endings"/>
+                  android:text="@string/dialog_help_gameoptions_any_mix"/>
         <TextView style="@style/helpBulletText"
-                  android:text="@string/dialog_help_gameoptions_regularity"/>
-        <TextView style="@style/helpBulletText"
-                  android:text="@string/dialog_help_gameoptions_subject_pronouns"/>
-        <TextView style="@style/helpBulletText"
-                  android:text="@string/dialog_help_gameoptions_tense_mood"/>
+                  android:text="@string/dialog_help_gameoptions_vosotros"/>
 
         <!-- showing game stats -->
         <TextView
