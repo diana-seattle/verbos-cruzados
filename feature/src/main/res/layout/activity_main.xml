@@ -35,6 +35,36 @@
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"/>
 
+        <!-- onboarding message -->
+        <LinearLayout
+            android:id="@+id/onboarding_message_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/answer_keyboard"
+            android:background="@drawable/onboarding_message_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_marginEnd="@dimen/default_margin"
+                      android:layout_marginStart="@dimen/default_margin"
+                      android:layout_marginTop="@dimen/default_margin"
+                      android:fontFamily="@font/latoregular"
+                      android:gravity="center_horizontal"
+                      android:text="@string/onboarding_message"
+                      android:textColor="@color/soft_black"
+                      android:textSize="@dimen/keyboard_infinitive_size"/>
+
+            <ImageView android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_gravity="center_horizontal"
+                       android:src="@drawable/ic_baseline_arrow_downward_24px"
+                       android:tint="@color/soft_black"/>
+        </LinearLayout>
+
         <!-- special keyboard for answer entry -->
         <org.indiv.dls.games.verboscruzados.feature.component.MinimalKeyboard
             android:id="@+id/answer_keyboard"

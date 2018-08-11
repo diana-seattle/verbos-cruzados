@@ -81,6 +81,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     private var toolbar: Toolbar? = null
     private lateinit var persistenceHelper: PersistenceHelper
 
+    private var showOnboarding = false
     private var showingErrors = false
     private var keyboardHeight: Float = 0f
     private var viewablePuzzleHeight: Float = 0f
@@ -161,6 +162,10 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         answer_keyboard.infinitiveClickListener = {
             puzzleFragment.updateUserTextInPuzzle(it)
             onAnswerChanged()
+            if (showOnboarding) {
+                showOnboarding = false
+                onboarding_message_layout.visibility = View.GONE
+            }
         }
         answer_keyboard.deleteLongClickListener = {
             puzzleFragment.updateUserTextInPuzzle("")
@@ -355,6 +360,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         // if on very first game, or if no saved game (due to an error), create a new one, otherwise open existing game
         if (currentGameWords.isEmpty() || !puzzleFragment.doWordsFitInGrid(currentGameWords)) {
             setupNewGame()
+            showOnboarding = true
         } else {
             restoreExistingGame()
         }
@@ -549,6 +555,10 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                         .setDuration(KEYBOARD_ANIMATION_TIME)
                         .start()
             }, 1)
+
+            if (showOnboarding) {
+                onboarding_message_layout.visibility = View.VISIBLE
+            }
         }
     }
 

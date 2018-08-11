@@ -41,6 +41,7 @@
     <string name="dialog_help_gameoptions_subject_pronouns">Subject Pronouns</string>
     <string name="dialog_help_gamestats_desc1">See your progress</string>
     <string name="dialog_help_gamestats_desc2">History for completed games</string>
+    <string name="onboarding_message">Tap on the infinitive\nto prefill the puzzle.\nThen modify\nthe verb ending.</string>
 
     <!-- dialog text for stats dialog-->
     <string name="dialog_stats_heading">Conjugation Coverage</string>
