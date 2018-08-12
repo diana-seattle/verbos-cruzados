@@ -46,6 +46,14 @@
             android:textColor="@color/soft_black"
             android:textSize="@dimen/medium"/>
 
+        <!-- step 5 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_help_step5"
+            android:textColor="@color/soft_black"
+            android:textSize="@dimen/medium"/>
+
         <!-- Menu heading -->
         <TextView
             android:layout_width="wrap_content"

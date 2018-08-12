@@ -12,7 +12,7 @@
 
     <!-- dialog text for start new game prompt-->
     <string name="dialog_startnewgame_prompt">Start a new game?</string>
-    <string name="dialog_startnewgame_completion_message">Completed %1$d words in %2$s\n(%3$.1f per min)</string>
+    <string name="dialog_startnewgame_completion_message">Completed %1$d words in %2$s (%3$.1f/min)</string>
     <string name="dialog_startnewgame_yes">Yes</string>
     <string name="dialog_startnewgame_game_options">Game Options</string>
     <string name="dialog_startnewgame_no">No</string>
@@ -26,6 +26,7 @@
     <string name="dialog_help_step2">2. See clue on keyboard</string>
     <string name="dialog_help_step3">3. Enter an answer</string>
     <string name="dialog_help_step4">4. Tap \"next\" to select next word</string>
+    <string name="dialog_help_step5">5. Background the app to pause the timer</string>
     <string name="dialog_help_accents">Accents are important!</string>
     <string name="dialog_help_menu_title">Menu</string>
     <string name="dialog_help_startnewgame">1. Start New Game</string>
