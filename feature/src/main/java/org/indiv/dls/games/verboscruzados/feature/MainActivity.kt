@@ -345,8 +345,9 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             }
 
             // prompt with congrats and new game
+            val completionRate = (currentGameWords.size * 60f) / elapsedGameSecondsRecorded
             val message = resources.getString(R.string.dialog_startnewgame_completion_message,
-                    getElapsedTimeText(elapsedGameSecondsRecorded))
+                    currentGameWords.size, getElapsedTimeText(elapsedGameSecondsRecorded), completionRate)
             promptForNewGame(message)
         }
     }
