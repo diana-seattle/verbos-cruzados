@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     companion object {
         private val TAG = MainActivity::class.java.simpleName
         private const val KEYBOARD_ANIMATION_TIME = 150L
-        private const val COUNTDOWN_MAX_TIME = 10000000000L // basically infinite
+        private const val COUNTDOWN_MAX_TIME = 100000000000L // basically infinite
         private const val COUNTDOWN_INTERVAL = 1000L // one second
     }
 
@@ -96,11 +96,10 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     private val countDownTimer: CountDownTimer = object : CountDownTimer(COUNTDOWN_MAX_TIME, COUNTDOWN_INTERVAL) {
         override fun onTick(millisUntilFinished: Long) {
             elapsedTimerMs = COUNTDOWN_MAX_TIME - millisUntilFinished
-            answer_keyboard.elapsedSeconds = elapsedGameSecondsRecorded + elapsedTimerMs / 1000
+            answer_keyboard.elapsedTime = getElapsedTimeText(elapsedGameSecondsRecorded + elapsedTimerMs / 1000)
         }
-        override fun onFinish() {
-            startTimer()
-        }
+
+        override fun onFinish() {}
     }
 
 
@@ -192,7 +191,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             }
             onAnswerChanged()
         }
-        answer_keyboard.letterClickListener = {char ->
+        answer_keyboard.letterClickListener = { char ->
             val conflictingGameWord = puzzleFragment.updateLetterInPuzzle(char)
             conflictingGameWord?.let {
                 Thread { persistenceHelper.persistUserEntry(it) }.start()
@@ -241,7 +240,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                         1, "Within instant app")
             }
             R.id.action_showerrors -> showErrors(!showingErrors)
-            R.id.action_startnewgame -> promptForNewGame(null)
+            R.id.action_startnewgame -> promptForNewGame()
             R.id.action_help -> showHelpDialog()
             R.id.action_showstats -> showStatsDialog()
             R.id.action_showgameoptions -> showGameOptionsDialog()
@@ -261,7 +260,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     override fun onResume() {
         super.onResume()
         elapsedGameSecondsRecorded = persistenceHelper.elapsedSeconds
-        answer_keyboard.elapsedSeconds = elapsedGameSecondsRecorded
+        answer_keyboard.elapsedTime = getElapsedTimeText(elapsedGameSecondsRecorded)
         if (!persistenceHelper.currentGameCompleted) {
             startTimer()
         }
@@ -346,8 +345,9 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             }
 
             // prompt with congrats and new game
-            val extraMessage = resources.getString(R.string.dialog_startnewgame_congrats)
-            promptForNewGame(extraMessage)
+            val message = resources.getString(R.string.dialog_startnewgame_completion_message,
+                    getElapsedTimeText(elapsedGameSecondsRecorded))
+            promptForNewGame(message)
         }
     }
 
@@ -366,13 +366,12 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         puzzleFragment.showErrors(showErrors)
     }
 
-    private fun promptForNewGame(extraMessage: String?) {
+    private fun promptForNewGame(completionMessage: CharSequence? = null) {
         hideKeyboard()
 
-        val message = (if (extraMessage != null) extraMessage + "\n" else "") +
-                resources.getString(R.string.dialog_startnewgame_prompt)
         AlertDialog.Builder(this)
-                .setTitle(message)
+                .setTitle(resources.getString(R.string.dialog_startnewgame_prompt))
+                .setMessage(completionMessage)
                 .setNeutralButton(R.string.dialog_startnewgame_game_options) { _, _ -> showGameOptionsDialog() }
                 .setPositiveButton(R.string.dialog_startnewgame_yes) { _, _ ->
                     setPuzzleBackgroundImage(ImageSelecter.instance.getRandomImageIndex())
@@ -437,7 +436,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                             scrollSelectedCellIntoViewWithDelay()
                             persistenceHelper.elapsedSeconds = 0L
                             elapsedGameSecondsRecorded = 0L
-                            answer_keyboard.elapsedSeconds = 0L
+                            answer_keyboard.elapsedTime = getElapsedTimeText(0L)
                             startTimer()
                         },
                         { error ->
@@ -619,6 +618,12 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             })
             animator.start()
         }
+    }
+
+    private fun getElapsedTimeText(elapsedMs: Long): String {
+        val minutes = elapsedMs / 60L
+        val seconds = elapsedMs % 60L
+        return "$minutes:${seconds.toString().padStart(2, '0')}"
     }
 
     private fun startTimer() {

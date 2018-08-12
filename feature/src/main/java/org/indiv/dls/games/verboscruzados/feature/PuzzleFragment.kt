@@ -43,9 +43,6 @@ class PuzzleFragment : Fragment() {
     lateinit var cellGrid: Array<Array<GridCell?>>
 
     var selectedCellIndex = 0
-        private set(value) {
-            field = value
-        }
 
     var currentGameWord: GameWord? = null
         private set(gameWord) {
@@ -175,8 +172,8 @@ class PuzzleFragment : Fragment() {
         // make the initial word selection
         if (!selectNextGameWord(0, -1, true)
                 && !selectNextGameWord(0, -1, false)) {
+            selectedCellIndex = firstGameWord?.defaultSelectionIndex ?: 0
             currentGameWord = firstGameWord
-            selectedCellIndex = currentGameWord?.defaultSelectionIndex ?: 0
         }
     }
 
