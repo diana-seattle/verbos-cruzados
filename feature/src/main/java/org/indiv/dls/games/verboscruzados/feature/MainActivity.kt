@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     companion object {
         private val TAG = MainActivity::class.java.simpleName
         private const val KEYBOARD_ANIMATION_TIME = 150L
-        private const val COUNTDOWN_MAX_TIME = 1000000000L // basically infinite
+        private const val COUNTDOWN_MAX_TIME = 10000000000L // basically infinite
         private const val COUNTDOWN_INTERVAL = 1000L // one second
     }
 

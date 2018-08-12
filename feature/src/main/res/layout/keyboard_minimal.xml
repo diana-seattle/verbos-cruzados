@@ -229,7 +229,7 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/latoregular"
                 android:gravity="center_horizontal|bottom"
-                android:textColor="@color/dark_gray"
+                android:textColor="@color/medium_gray"
                 android:textSize="@dimen/timer_text_size"/>
             <TextView
                 android:id="@+id/button_z"
