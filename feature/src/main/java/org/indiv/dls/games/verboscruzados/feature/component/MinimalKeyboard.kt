@@ -150,6 +150,14 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
             }
         }
 
+    var elapsedSeconds: Long = 0
+        set(value) {
+            field = value
+            val minutes = value / 60
+            val seconds = value % 60
+            keyboard_timer.text = "$minutes:${seconds.toString().padStart(2, '0')}"
+        }
+
     //endregion
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------

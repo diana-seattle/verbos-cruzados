@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Handler
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -25,6 +26,9 @@ import org.indiv.dls.games.verboscruzados.feature.dialog.GameOptionsDialogFragme
 import org.indiv.dls.games.verboscruzados.feature.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
+import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.ScheduledThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 
@@ -66,6 +70,8 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     companion object {
         private val TAG = MainActivity::class.java.simpleName
         private const val KEYBOARD_ANIMATION_TIME = 150L
+        private const val COUNTDOWN_MAX_TIME = 1000000000L // basically infinite
+        private const val COUNTDOWN_INTERVAL = 1000L // one second
     }
 
     //endregion
@@ -87,6 +93,18 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     private var viewablePuzzleHeight: Float = 0f
     private var puzzleMarginTopPixels: Float = 0f
     private var pixelsPerCell: Float = 0f
+
+    private var elapsedSeconds = 0L
+    private val countDownTimer: CountDownTimer = object : CountDownTimer(COUNTDOWN_MAX_TIME, COUNTDOWN_INTERVAL) {
+        override fun onTick(millisUntilFinished: Long) {
+            elapsedSeconds++
+            answer_keyboard.elapsedSeconds = elapsedSeconds
+        }
+        override fun onFinish() {
+            start()
+        }
+    }
+
 
     //endregion
 
@@ -242,6 +260,24 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        elapsedSeconds = persistenceHelper.elapsedSeconds
+        if (!persistenceHelper.currentGameCompleted) {
+            startTimer()
+        } else {
+            answer_keyboard.elapsedSeconds = elapsedSeconds
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (!persistenceHelper.currentGameCompleted) {
+            stopTimer()
+            persistenceHelper.elapsedSeconds = elapsedSeconds
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.clear()
@@ -306,6 +342,8 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             if (!persistenceHelper.currentGameCompleted) {
                 persistenceHelper.persistGameStats(currentGameWords)
                 persistenceHelper.currentGameCompleted = true
+                stopTimer()
+                persistenceHelper.elapsedSeconds = elapsedSeconds
             }
 
             // prompt with congrats and new game
@@ -395,9 +433,13 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                         { gameWords ->
                             currentGameWords = gameWords
                             persistenceHelper.currentGameWords = gameWords
-                            createGrid()
                             persistenceHelper.currentGameCompleted = false
+                            createGrid()
                             scrollSelectedCellIntoViewWithDelay()
+                            persistenceHelper.elapsedSeconds = 0
+                            elapsedSeconds = 0
+                            answer_keyboard.elapsedSeconds = 0
+                            startTimer()
                         },
                         { error ->
                             Toast.makeText(this, R.string.error_game_setup_failure, Toast.LENGTH_SHORT).show()
@@ -578,6 +620,14 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             })
             animator.start()
         }
+    }
+
+    private fun startTimer() {
+        countDownTimer.start()
+    }
+
+    private fun stopTimer() {
+        countDownTimer.cancel()
     }
 
     //endregion

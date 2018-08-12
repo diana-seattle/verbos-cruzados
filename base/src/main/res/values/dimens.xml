@@ -16,6 +16,7 @@
     <dimen name="large">18sp</dimen>
     <dimen name="x_large">20sp</dimen>
     <dimen name="xx_large">24sp</dimen>
+    <dimen name="timer_text_size">8dp</dimen>
 
     <!-- Text sizes - fixed -->
     <dimen name="x_small_fixed">12dp</dimen>

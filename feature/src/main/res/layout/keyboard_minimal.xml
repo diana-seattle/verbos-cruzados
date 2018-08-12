@@ -220,11 +220,17 @@
             android:background="@color/soft_white"
             android:orientation="horizontal">
 
-            <View
+            <TextView
+                android:id="@+id/keyboard_timer"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginStart="1dp"
+                android:layout_marginBottom="3dp"
                 android:layout_weight="1"
-                android:visibility="invisible"/>
+                android:fontFamily="@font/latoregular"
+                android:gravity="center_horizontal|bottom"
+                android:textColor="@color/dark_gray"
+                android:textSize="@dimen/timer_text_size"/>
             <TextView
                 android:id="@+id/button_z"
                 style="@style/answerLetterButton"

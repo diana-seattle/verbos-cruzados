@@ -77,10 +77,10 @@ class PersistenceHelper constructor(private val mContext: Context) {
     /**
      * Elapsed seconds of current game.
      */
-    var elapsedSeconds: Int
-        get() = gamePrefs.getInt(KEY_ELAPSED_SECONDS, 0)
+    var elapsedSeconds: Long
+        get() = gamePrefs.getLong(KEY_ELAPSED_SECONDS, 0)
         set(value) = gamePrefs.edit()
-                .putInt(KEY_ELAPSED_SECONDS, value)
+                .putLong(KEY_ELAPSED_SECONDS, value)
                 .apply()
 
     /**
