@@ -26,9 +26,6 @@ import org.indiv.dls.games.verboscruzados.feature.dialog.GameOptionsDialogFragme
 import org.indiv.dls.games.verboscruzados.feature.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.feature.game.GameWord
 import org.indiv.dls.games.verboscruzados.feature.game.PersistenceHelper
-import java.util.concurrent.ScheduledFuture
-import java.util.concurrent.ScheduledThreadPoolExecutor
-import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 
@@ -94,14 +91,15 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     private var puzzleMarginTopPixels: Float = 0f
     private var pixelsPerCell: Float = 0f
 
-    private var elapsedSeconds = 0L
+    private var elapsedGameSecondsRecorded = 0L
+    private var elapsedTimerMs = 0L
     private val countDownTimer: CountDownTimer = object : CountDownTimer(COUNTDOWN_MAX_TIME, COUNTDOWN_INTERVAL) {
         override fun onTick(millisUntilFinished: Long) {
-            elapsedSeconds++
-            answer_keyboard.elapsedSeconds = elapsedSeconds
+            elapsedTimerMs = COUNTDOWN_MAX_TIME - millisUntilFinished
+            answer_keyboard.elapsedSeconds = elapsedGameSecondsRecorded + elapsedTimerMs / 1000
         }
         override fun onFinish() {
-            start()
+            startTimer()
         }
     }
 
@@ -194,8 +192,8 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             }
             onAnswerChanged()
         }
-        answer_keyboard.letterClickListener = {
-            val conflictingGameWord = puzzleFragment.updateLetterInPuzzle(it)
+        answer_keyboard.letterClickListener = {char ->
+            val conflictingGameWord = puzzleFragment.updateLetterInPuzzle(char)
             conflictingGameWord?.let {
                 Thread { persistenceHelper.persistUserEntry(it) }.start()
             }
@@ -262,11 +260,10 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
     override fun onResume() {
         super.onResume()
-        elapsedSeconds = persistenceHelper.elapsedSeconds
+        elapsedGameSecondsRecorded = persistenceHelper.elapsedSeconds
+        answer_keyboard.elapsedSeconds = elapsedGameSecondsRecorded
         if (!persistenceHelper.currentGameCompleted) {
             startTimer()
-        } else {
-            answer_keyboard.elapsedSeconds = elapsedSeconds
         }
     }
 
@@ -274,7 +271,8 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         super.onPause()
         if (!persistenceHelper.currentGameCompleted) {
             stopTimer()
-            persistenceHelper.elapsedSeconds = elapsedSeconds
+            elapsedGameSecondsRecorded += elapsedTimerMs / 1000
+            persistenceHelper.elapsedSeconds = elapsedGameSecondsRecorded
         }
     }
 
@@ -343,7 +341,8 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                 persistenceHelper.persistGameStats(currentGameWords)
                 persistenceHelper.currentGameCompleted = true
                 stopTimer()
-                persistenceHelper.elapsedSeconds = elapsedSeconds
+                elapsedGameSecondsRecorded += elapsedTimerMs / 1000
+                persistenceHelper.elapsedSeconds = elapsedGameSecondsRecorded
             }
 
             // prompt with congrats and new game
@@ -436,9 +435,9 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                             persistenceHelper.currentGameCompleted = false
                             createGrid()
                             scrollSelectedCellIntoViewWithDelay()
-                            persistenceHelper.elapsedSeconds = 0
-                            elapsedSeconds = 0
-                            answer_keyboard.elapsedSeconds = 0
+                            persistenceHelper.elapsedSeconds = 0L
+                            elapsedGameSecondsRecorded = 0L
+                            answer_keyboard.elapsedSeconds = 0L
                             startTimer()
                         },
                         { error ->
@@ -623,6 +622,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     }
 
     private fun startTimer() {
+        elapsedTimerMs = 0L
         countDownTimer.start()
     }
 
