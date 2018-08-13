@@ -563,7 +563,10 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     private fun showGameOptionsDialog() {
         hideKeyboard()
         val dlg = GameOptionsDialogFragment()
-        dlg.startNewGameListener = { setupNewGame() }
+        dlg.startNewGameListener = {
+            setPuzzleBackgroundImage(ImageSelecter.instance.getRandomImageIndex())
+            setupNewGame()
+        }
         dlg.show(supportFragmentManager, "fragment_showoptions")
     }
 
