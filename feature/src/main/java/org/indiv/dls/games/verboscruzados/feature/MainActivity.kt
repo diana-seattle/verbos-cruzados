@@ -621,6 +621,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                 }
             })
             animator.start()
+            onboarding_message_layout.visibility = View.GONE
         }
     }
 
