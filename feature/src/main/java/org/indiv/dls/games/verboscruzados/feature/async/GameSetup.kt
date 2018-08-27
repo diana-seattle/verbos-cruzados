@@ -127,9 +127,10 @@ class GameSetup {
 
             // For each verb in regularity category
             verbs.forEach { verb ->
+                val bonus = if (verb.frequency > 2) 1 else 0
 
                 // For each conjugation type
-                randomSelection(conjugationTypes, conjugationTypesPerVerb).forEach { conjugationType ->
+                randomSelection(conjugationTypes, conjugationTypesPerVerb + bonus).forEach { conjugationType ->
                     when (conjugationType) {
                         ConjugationType.GERUND ->
                             candidates.add(createWordCandidate(verb, verb.gerund, conjugationType, irregularityCategory, null))
@@ -139,7 +140,7 @@ class GameSetup {
                             val conjugator = conjugatorMap[conjugationType]!!
                             val relevantSubjectPronouns = if (conjugationType == ConjugationType.IMPERATIVE)
                                 subjectPronounsForImperative else subjectPronouns
-                            randomSelection(relevantSubjectPronouns, subjectPronounsPerVerb).forEach {
+                            randomSelection(relevantSubjectPronouns, subjectPronounsPerVerb + bonus).forEach {
                                 candidates.add(createWordCandidate(verb, conjugator.conjugate(verb, it), conjugationType, irregularityCategory, it))
                             }
                         }
@@ -199,24 +200,24 @@ class GameSetup {
             val verbs = mutableListOf<Verb>()
             when (it) {
                 IrregularityCategory.REGULAR -> {
-                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(randomSelection(regularArVerbs, minTargetQty))
-                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(randomSelection(regularIrVerbs, minTargetQty))
-                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(randomSelection(regularErVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(randomVerbSelection(regularArVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(randomVerbSelection(regularIrVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(randomVerbSelection(regularErVerbs, minTargetQty))
                 }
                 IrregularityCategory.SPELLING_CHANGE -> {
-                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(randomSelection(spellingChangeArVerbs, minTargetQty))
-                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(randomSelection(spellingChangeIrVerbs, minTargetQty))
-                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(randomSelection(spellingChangeErVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(randomVerbSelection(spellingChangeArVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(randomVerbSelection(spellingChangeIrVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(randomVerbSelection(spellingChangeErVerbs, minTargetQty))
                 }
                 IrregularityCategory.STEM_CHANGE -> {
-                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(randomSelection(stemChangeArVerbs, minTargetQty))
-                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(randomSelection(stemChangeIrVerbs, minTargetQty))
-                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(randomSelection(stemChangeErVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(randomVerbSelection(stemChangeArVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(randomVerbSelection(stemChangeIrVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(randomVerbSelection(stemChangeErVerbs, minTargetQty))
                 }
                 IrregularityCategory.IRREGULAR -> {
                     if (infinitiveEndings.contains(InfinitiveEnding.AR)) verbs.addAll(irregularArVerbs) // this category only has 3
-                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(randomSelection(irregularIrVerbs, minTargetQty))
-                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(randomSelection(irregularErVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.IR)) verbs.addAll(randomVerbSelection(irregularIrVerbs, minTargetQty))
+                    if (infinitiveEndings.contains(InfinitiveEnding.ER)) verbs.addAll(randomVerbSelection(irregularErVerbs, minTargetQty))
                 }
             }
             verbMap[it] = verbs.toList()
@@ -248,6 +249,26 @@ class GameSetup {
         return if (filteredValues.isEmpty()) allValues.toList() else filteredValues
     }
 
+    private fun randomVerbSelection(items: List<Verb>, numItems: Int): List<Verb> {
+        val selectedVerbs = mutableListOf<Verb>()
+        val verbsByFrequency = items.groupBy { it.frequency }
+        verbsByFrequency.keys.forEach {
+            val factor = when {
+                it > 2 -> 1.5
+                it > 1 -> 1.2
+                else -> 1.0
+            }
+            val verbs = verbsByFrequency[it]!!
+            val count = (factor * numItems * verbs.size / items.size.coerceAtLeast(1)).roundToInt()
+            selectedVerbs.addAll(randomSelection(verbs, count))
+        }
+        return selectedVerbs.toList()
+    }
+
+    private fun <T> randomSelection(items: List<T>, fraction: Double): List<T> {
+        return randomSelection(items, (items.size * fraction).roundToInt())
+    }
+
     private fun <T> randomSelection(items: List<T>, numItems: Int): List<T> {
         val sourceList = items.toMutableList()
         val destinationList = mutableListOf<T>()
@@ -259,7 +280,7 @@ class GameSetup {
                 return sourceList
             }
 
-            // randomly move an item from one list to the other
+            // randomly move an item from the source list to the destination list
             val randomIndex = getRandomIndex(sourceList.size)
             destinationList.add(sourceList.removeAt(randomIndex))
 

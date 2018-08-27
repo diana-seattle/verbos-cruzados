@@ -13,8 +13,8 @@ android {
         applicationId "org.indiv.dls.games.verboscruzados"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 4
-        versionName "1.01"
+        versionCode 5
+        versionName "1.02"
     }
 
     buildTypes {
