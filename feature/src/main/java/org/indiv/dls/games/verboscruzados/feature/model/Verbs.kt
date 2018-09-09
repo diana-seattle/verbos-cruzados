@@ -497,6 +497,7 @@ val stemChangeArVerbs = listOf(
 
         // stem change e -> ie
         Verb("acertar", "guess correctly", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
+        Verb("alentar", "encourage", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("apretar", "press, squeeze", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("atravesar", "cross", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
         Verb("calentar", "warm", irregularities = listOf(Irregularity.STEM_CHANGE_E_to_IE)),
