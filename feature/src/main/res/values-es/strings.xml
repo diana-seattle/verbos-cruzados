@@ -1,0 +1,103 @@
+<resources>
+
+    <!-- menu options -->
+    <string name="action_install">Instalar</string>
+    <string name="action_startnewgame">Iniciar Juego Nuevo</string>
+    <string name="action_startnewgame_condensed">Nuevo</string>
+    <string name="action_showerrors">Mostrar Errores</string>
+    <string name="action_hideerrors">Ocultar Errores</string>
+    <string name="action_help">Ayuda</string>
+    <string name="action_showstats">Estadísticas del Juego</string>
+    <string name="action_showgameoptions">Opciones de Juego</string>
+
+    <!-- dialog text for start new game prompt-->
+    <string name="dialog_startnewgame_prompt">Iniciar un juego nuevo?</string>
+    <string name="dialog_startnewgame_completion_message">Completado %1$d palabras en %2$s (%3$.1f/min)</string>
+    <string name="dialog_startnewgame_yes">Sí</string>
+    <string name="dialog_startnewgame_game_options">Opciones de Juego</string>
+    <string name="dialog_startnewgame_no">No</string>
+
+    <!-- shared dialog text for help and stats dialogs -->
+    <string name="dialog_ok">Bien</string>
+
+    <!-- dialog text for help dialog-->
+    <string name="dialog_help_title">Instrucciones del Juego</string>
+    <string name="dialog_help_step1">1. Toque una palabra del puzzle</string>
+    <string name="dialog_help_step2">2. Mire pista en el teclado</string>
+    <string name="dialog_help_step3">3. Escriba una respuesta</string>
+    <string name="dialog_help_step4">4. Toque \"siguiente\" para seleccionar la palabra siguiente</string>
+    <string name="dialog_help_step5">5. Ponga en fondo la aplicación para pausar el minutero</string>
+    <string name="dialog_help_accents">Los acentos son importantes!</string>
+    <string name="dialog_help_menu_title">Menú</string>
+    <string name="dialog_help_startnewgame">1. Iniciar Juego Nuevo</string>
+    <string name="dialog_help_showerrors">2. Mostrar/Ocultar Errores</string>
+    <string name="dialog_help_gameoptions">3. Opciones de Juego</string>
+    <string name="dialog_help_gamestats">4. Estadísticas del Juego</string>
+    <string name="dialog_help_showerrors_desc">Las celdas con error se vuelven rojas</string>
+    <string name="dialog_help_keyboard_infinitive">Toque el infinitivo para ahorrar esfuerzo</string>
+    <string name="dialog_help_keyboard_arrows">Utilice las flechas para navegar la palabra</string>
+    <string name="dialog_help_gameoptions_any_mix">Typo de verbo y tense/mood</string>
+    <string name="dialog_help_gameoptions_vosotros">Opciones de pronombres</string>
+    <string name="dialog_help_gamestats_desc1">Mirar su progreso</string>
+    <string name="dialog_help_gamestats_desc2">Historia de juegos completados</string>
+    <string name="onboarding_message">Toque en el infinitivo\npara inicializar el puzzle.\nEntonces modifique\nterminación del verbo.</string>
+
+    <!-- dialog text for stats dialog-->
+    <string name="dialog_stats_heading">Cobertura de Conjugación</string>
+    <string name="stats_label_regular">Regular</string>
+    <string name="stats_label_spelling_change">Ortográfico</string>
+    <string name="stats_label_stem_change">Raíz</string>
+    <string name="stats_label_other_irregular">Otro</string>
+    <string name="stats_label_ar">ar</string>
+    <string name="stats_label_ir">ir</string>
+    <string name="stats_label_er">er</string>
+    <string name="stats_label_present">Presente</string>
+    <string name="stats_label_gerund">Gerundio</string>
+
+    <!-- toast text-->
+    <string name="toast_noerrorsfound">No errores</string>
+
+    <!-- dialog text for game options prompt-->
+    <string name="dialog_options_newgame">Juego Nuevo</string>
+    <string name="dialog_options_okay">Guardar</string>
+    <string name="dialog_options_cancel">Cancelar</string>
+
+    <!--game options - regularity-->
+    <string name="option_title_regularity">Regularidad</string>
+    <string name="option_regularity_regular">Regular</string>
+    <string name="option_regularity_spelling_change">Cambio ortográfico</string>
+    <string name="option_regularity_stem_change">Cambio de raíz</string>
+    <string name="option_regularity_other_irregular">Otros Irregulares</string>
+
+    <!--game options - infinitive endings -->
+    <string name="option_title_infinitive_endings">Terminaciones de infinitivos</string>
+    <string name="option_infinitive_ending_ar">-ar</string>
+    <string name="option_infinitive_ending_ir">-ir</string>
+    <string name="option_infinitive_ending_er">-er</string>
+
+    <!--game options - tense/mood -->
+    <string name="option_title_tense_mood">Tiempo/Modo</string>
+    <string name="option_tense_present">Presente</string>
+    <string name="option_tense_preterit">Pretérito</string>
+    <string name="option_tense_imperfect">Imperfecto</string>
+    <string name="option_tense_conditional">Condicional</string>
+    <string name="option_tense_future">Futuro</string>
+    <string name="option_tense_imperative">Imperativo</string>
+    <string name="option_tense_subjunctive_present">Presente de subjuntivo</string>
+    <string name="option_tense_subjunctive_imperfect">Imperfecto de subjuntivo</string>
+    <string name="option_tense_gerund">Gerundio</string>
+    <string name="option_tense_past_participle">Participio pasado</string>
+    <string name="option_message">Aplicado en juego nuevo</string>
+
+    <!--game options - subject pronouns -->
+    <string name="option_title_subject_pronouns">Pronombres del sujeto</string>
+    <string name="option_subject_pronoun_singular">Yo, Tú, Él/Ella/Ud. (singular)</string>
+    <string name="option_subject_pronoun_plural">Nosotros, Ellos/Ellas/Uds. (plural)</string>
+    <string name="option_subject_pronoun_vosotros">Vosotros</string>
+
+    <!-- error messages -->
+    <string name="error_game_setup_failure">No se puede configurar el juego</string>
+    <string name="error_initial_setup_failure">No se puede completar la configuración inicial</string>
+    <string name="keyboard_next">siguiente</string>
+
+</resources>
