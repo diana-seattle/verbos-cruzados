@@ -25,7 +25,7 @@
     <string name="dialog_help_step1">1. Toque una palabra del puzzle</string>
     <string name="dialog_help_step2">2. Mire pista en el teclado</string>
     <string name="dialog_help_step3">3. Escriba una respuesta</string>
-    <string name="dialog_help_step4">4. Toque \"siguiente\" para seleccionar la palabra siguiente</string>
+    <string name="dialog_help_step4">4. Toque \"próxima\" para seleccionar la próxima palabra</string>
     <string name="dialog_help_step5">5. Ponga en fondo la aplicación para pausar el minutero</string>
     <string name="dialog_help_accents">Los acentos son importantes!</string>
     <string name="dialog_help_menu_title">Menú</string>
@@ -40,7 +40,7 @@
     <string name="dialog_help_gameoptions_vosotros">Opciones de pronombres</string>
     <string name="dialog_help_gamestats_desc1">Mirar su progreso</string>
     <string name="dialog_help_gamestats_desc2">Historia de juegos completados</string>
-    <string name="onboarding_message">Toque en el infinitivo\npara inicializar el puzzle.\nEntonces modifique\nterminación del verbo.</string>
+    <string name="onboarding_message">Toque el infinitivo\npara inicializar el puzzle.\nEntonces modifique la\nterminación del verbo.</string>
 
     <!-- dialog text for stats dialog-->
     <string name="dialog_stats_heading">Cobertura de Conjugación</string>
@@ -98,6 +98,6 @@
     <!-- error messages -->
     <string name="error_game_setup_failure">No se puede configurar el juego</string>
     <string name="error_initial_setup_failure">No se puede completar la configuración inicial</string>
-    <string name="keyboard_next">siguiente</string>
+    <string name="keyboard_next">próxima</string>
 
 </resources>
