@@ -1,5 +1,6 @@
 package org.indiv.dls.games.verboscruzados.feature.async
 
+import android.content.res.Resources
 import io.reactivex.Single
 import org.indiv.dls.games.verboscruzados.feature.GridCell
 import org.indiv.dls.games.verboscruzados.feature.conjugation.conjugatorMap
@@ -43,7 +44,7 @@ class GameSetup {
     /**
      * Creates a new game.
      */
-    fun newGame(cellGrid: Array<Array<GridCell?>>, gameOptions: Map<String, Boolean>): Single<List<GameWord>> {
+    fun newGame(resources: Resources, cellGrid: Array<Array<GridCell?>>, gameOptions: Map<String, Boolean>): Single<List<GameWord>> {
         return Single.fromCallable {
 
             // retrieve random list of words
@@ -54,7 +55,7 @@ class GameSetup {
             val wordCandidates = getWordCandidates(numWords, gameOptions).toMutableList()
 
             // determine layout
-            val gameWords = layoutWords(cellGrid, wordCandidates)
+            val gameWords = layoutWords(resources, cellGrid, wordCandidates)
             if (gameWords.isEmpty()) {
                 throw Exception("Failure during words layout")
             }
@@ -161,14 +162,11 @@ class GameSetup {
                 irregularityCategory, conjugationType, subjectPronoun)
     }
 
-    private fun createGameWord(wordCandidate: WordCandidate, row: Int, col: Int, isAcross: Boolean): GameWord {
+    private fun createGameWord(resources: Resources, wordCandidate: WordCandidate, row: Int, col: Int, isAcross: Boolean): GameWord {
         // Conjugated verb can be duplicate between imperative and subjunctive or between sentar and sentir.
         val uniqueKey = "${wordCandidate.infinitive}|${wordCandidate.conjugationType.name}|${wordCandidate.subjectPronoun?.name
                 ?: "na"}"
-        val conjugationTypeLabel = when (wordCandidate.conjugationType) {
-            ConjugationType.PAST_PARTICIPLE, ConjugationType.GERUND -> "${wordCandidate.conjugationType.text} of"
-            else -> "${wordCandidate.conjugationType.text} tense of"
-        }
+        val conjugationTypeLabel = resources.getString(wordCandidate.conjugationType.textResId)
         val isImperative = wordCandidate.conjugationType == ConjugationType.IMPERATIVE
         val subjectPronounLabel = wordCandidate.subjectPronoun?.let { getPronounText(it, isImperative) }.orEmpty()
         val statsIndex = StatsDialogFragment.createStatsIndex(wordCandidate.conjugationType,
@@ -313,7 +311,7 @@ class GameSetup {
         return result
     }
 
-    private fun layoutWords(cellGrid: Array<Array<GridCell?>>, wordCandidates: MutableList<WordCandidate>): List<GameWord> {
+    private fun layoutWords(resources: Resources, cellGrid: Array<Array<GridCell?>>, wordCandidates: MutableList<WordCandidate>): List<GameWord> {
         // sort so that longest words are first
         val sortedCandidates = sortCandidates(wordCandidates)
 
@@ -325,7 +323,7 @@ class GameSetup {
         var i = 0
         while (i < sortedCandidates.size) {
             val word = sortedCandidates[i]
-            val gameWord = placeInGrid(cellGrid, gameWords, word, across, firstWord)
+            val gameWord = placeInGrid(resources, cellGrid, gameWords, word, across, firstWord)
 
             if (gameWord != null) {
                 gameWords.add(gameWord)
@@ -347,7 +345,8 @@ class GameSetup {
         return gameWords
     }
 
-    private fun placeInGrid(cellGrid: Array<Array<GridCell?>>,
+    private fun placeInGrid(resources: Resources,
+                            cellGrid: Array<Array<GridCell?>>,
                             gameWords: List<GameWord>,
                             wordCandidate: WordCandidate,
                             across: Boolean,
@@ -404,7 +403,7 @@ class GameSetup {
         }
 
         if (locationFound) {
-            gameWord = createGameWord(wordCandidate, row, col, across)
+            gameWord = createGameWord(resources, wordCandidate, row, col, across)
             addToGrid(gameWord, cellGrid)
         }
 

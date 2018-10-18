@@ -89,6 +89,18 @@
     <string name="option_tense_past_participle">Past Participle</string>
     <string name="option_message">Applied on new game</string>
 
+    <!--Clue text - tense/mood -->
+    <string name="clue_tense_present">Present tense of</string>
+    <string name="clue_tense_preterit">Preterite tense of</string>
+    <string name="clue_tense_imperfect">Imperfect tense of</string>
+    <string name="clue_tense_conditional">Conditional tense of</string>
+    <string name="clue_tense_future">Future tense of</string>
+    <string name="clue_tense_imperative">Imperative of</string>
+    <string name="clue_tense_subjunctive_present">Subjunctive Present tense of</string>
+    <string name="clue_tense_subjunctive_imperfect">Subjunctive Imperfect tense of</string>
+    <string name="clue_tense_gerund">Gerund of</string>
+    <string name="clue_tense_past_participle">Past Participle of</string>
+
     <!--game options - subject pronouns -->
     <string name="option_title_subject_pronouns">Subject Pronouns</string>
     <string name="option_subject_pronoun_singular">Yo, Tú, Él/Ella/Ud. (singular)</string>

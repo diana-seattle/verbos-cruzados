@@ -5,7 +5,7 @@ package org.indiv.dls.games.verboscruzados.feature.game
  */
 class GameWord(val uniqueKey: String,            // unique key for use in persistence
                val word: String,                 // word conjugated verb used in the puzzle
-               val conjugationTypeLabel: String, // conjugation type label (e.g. "Preterite")
+               val conjugationTypeLabel: String, // conjugation type label (e.g. "Preterite tense of")
                val subjectPronounLabel: String,  // subject pronoun label (e.g. "Nosotros" or "" for gerund/past participle)
                val infinitive: String,           // infinitive clue (e.g. "hablar (to speak)")
                val translation: String,          // English translation

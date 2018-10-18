@@ -425,7 +425,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         showErrors(false)
 
         // setup new game
-        compositeDisposable.add(gameSetup.newGame(puzzleFragment.cellGrid, persistenceHelper.currentGameOptions)
+        compositeDisposable.add(gameSetup.newGame(resources, puzzleFragment.cellGrid, persistenceHelper.currentGameOptions)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

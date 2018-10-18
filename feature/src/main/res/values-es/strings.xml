@@ -89,6 +89,18 @@
     <string name="option_tense_past_participle">Participio pasado</string>
     <string name="option_message">Aplicado en juego nuevo</string>
 
+    <!--Clue text - tense/mood -->
+    <string name="clue_tense_present">Presente de</string>
+    <string name="clue_tense_preterit">Pretérito de</string>
+    <string name="clue_tense_imperfect">Imperfecto de</string>
+    <string name="clue_tense_conditional">Condicional de</string>
+    <string name="clue_tense_future">Futuro de</string>
+    <string name="clue_tense_imperative">Imperativo de</string>
+    <string name="clue_tense_subjunctive_present">Presente de subjuntivo de</string>
+    <string name="clue_tense_subjunctive_imperfect">Imperfecto de subjuntivo de</string>
+    <string name="clue_tense_gerund">Gerundio de</string>
+    <string name="clue_tense_past_participle">Participio pasado de</string>
+
     <!--game options - subject pronouns -->
     <string name="option_title_subject_pronouns">Pronombres del sujeto</string>
     <string name="option_subject_pronoun_singular">Yo, Tú, Él/Ella/Ud. (singular)</string>

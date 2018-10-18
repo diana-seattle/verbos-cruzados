@@ -1,5 +1,6 @@
 package org.indiv.dls.games.verboscruzados.feature.conjugation
 
+import org.indiv.dls.games.verboscruzados.feature.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.feature.model.Irregularity
 import org.indiv.dls.games.verboscruzados.feature.model.SubjectPronoun
 import org.indiv.dls.games.verboscruzados.feature.model.Verb
@@ -144,8 +145,20 @@ class ConjugatorTest {
         val labelBuilder = StringBuilder()
                 .append("\n${"".padEnd(firstColumnWidth)}")
         for ((conjugationType, conjugator) in conjugatorMap.entries) {
-            val columnWidth = max(conjugationType.text.length + 2, verb.infinitive.length + 7)
-            labelBuilder.append(conjugationType.text.toUpperCase().padEnd(columnWidth))
+            val conjugationTypeHeading = when(conjugationType) {
+                ConjugationType.PRESENT -> "Present"
+                ConjugationType.PRETERIT -> "Preterite"
+                ConjugationType.IMPERFECT -> "Imperfect"
+                ConjugationType.CONDITIONAL -> "Conditional"
+                ConjugationType.FUTURE -> "Future"
+                ConjugationType.IMPERATIVE -> "Imperative"
+                ConjugationType.SUBJUNCTIVE_PRESENT -> "Subjunctive Present"
+                ConjugationType.SUBJUNCTIVE_IMPERFECT -> "Subjunctive Imperfect"
+                ConjugationType.PAST_PARTICIPLE -> "Past Participle"
+                ConjugationType.GERUND -> "Gerund"
+            }
+            val columnWidth = max(conjugationTypeHeading.length + 2, verb.infinitive.length + 7)
+            labelBuilder.append(conjugationTypeHeading.toUpperCase().padEnd(columnWidth))
             for (subjectPronoun in SubjectPronoun.values()) {
                 val result = conjugator.conjugate(verb, subjectPronoun)
                 mapOfBuilders[subjectPronoun]!!.append(result.padEnd(columnWidth))

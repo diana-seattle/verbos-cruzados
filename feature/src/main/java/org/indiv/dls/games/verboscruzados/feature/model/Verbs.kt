@@ -1,5 +1,6 @@
 package org.indiv.dls.games.verboscruzados.feature.model
 
+import org.indiv.dls.games.verboscruzados.feature.R
 import org.indiv.dls.games.verboscruzados.feature.conjugation.getIrAlteredRoot
 
 //
@@ -29,11 +30,11 @@ enum class Irregularity {
     STEM_CHANGE_U_to_UE
 }
 
-enum class IrregularityCategory(val text: String, val indexForStats: Int) {
-    REGULAR("Regular", 0),
-    SPELLING_CHANGE("Spelling Change", 1),
-    STEM_CHANGE("Stem Change", 2),
-    IRREGULAR("Irregular", 3)
+enum class IrregularityCategory(val indexForStats: Int) {
+    REGULAR(0),
+    SPELLING_CHANGE(1),
+    STEM_CHANGE(2),
+    IRREGULAR(3)
 }
 
 /**
@@ -41,17 +42,17 @@ enum class IrregularityCategory(val text: String, val indexForStats: Int) {
  *
  * @param text name of the conjugation type
  */
-enum class ConjugationType(val text: String, val indexForStats: Int) {
-    PRESENT("Present", 0),
-    PRETERIT("Preterite", 1),
-    IMPERFECT("Imperfect", 2),
-    CONDITIONAL("Conditional", 3),
-    FUTURE("Future", 4),
-    IMPERATIVE("Imperative", 5),
-    SUBJUNCTIVE_PRESENT("Subjunctive Present", 6),
-    SUBJUNCTIVE_IMPERFECT("Subjunctive Imperfect", 7),
-    PAST_PARTICIPLE("Past Participle", 8),
-    GERUND("Gerund", 9)
+enum class ConjugationType(val textResId: Int, val indexForStats: Int) {
+    PRESENT(R.string.clue_tense_present, 0),
+    PRETERIT(R.string.clue_tense_preterit, 1),
+    IMPERFECT(R.string.clue_tense_imperfect, 2),
+    CONDITIONAL(R.string.clue_tense_conditional, 3),
+    FUTURE(R.string.clue_tense_future, 4),
+    IMPERATIVE(R.string.clue_tense_imperative, 5),
+    SUBJUNCTIVE_PRESENT(R.string.clue_tense_subjunctive_present, 6),
+    SUBJUNCTIVE_IMPERFECT(R.string.clue_tense_subjunctive_imperfect, 7),
+    PAST_PARTICIPLE(R.string.clue_tense_past_participle, 8),
+    GERUND(R.string.clue_tense_gerund, 9)
 }
 
 enum class SubjectPronoun(val text: String, val isThirdPerson: Boolean = false) {
@@ -113,6 +114,7 @@ data class Verb(val infinitive: String,
     override fun equals(other: Any?): Boolean {
         return infinitive == (other as? Verb)?.infinitive
     }
+
     override fun hashCode(): Int {
         return infinitive.hashCode()
     }
