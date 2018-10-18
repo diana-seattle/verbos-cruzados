@@ -60,7 +60,6 @@
     <!-- dialog text for game options prompt-->
     <string name="dialog_options_newgame">Juego Nuevo</string>
     <string name="dialog_options_okay">Guardar</string>
-    <string name="dialog_options_cancel">Cancelar</string>
 
     <!--game options - regularity-->
     <string name="option_title_regularity">Regularidad</string>

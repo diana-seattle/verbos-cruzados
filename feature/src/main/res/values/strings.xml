@@ -60,7 +60,6 @@
     <!-- dialog text for game options prompt-->
     <string name="dialog_options_newgame">New Game</string>
     <string name="dialog_options_okay">Save</string>
-    <string name="dialog_options_cancel">Cancel</string>
 
     <!--game options - regularity-->
     <string name="option_title_regularity">Regularity</string>

@@ -44,7 +44,6 @@ class GameOptionsDialogFragment : DialogFragment() {
                     startNewGameListener?.invoke()
                 }
                 .setPositiveButton(R.string.dialog_options_okay) { _, _ -> saveOptions() }
-                .setNegativeButton(R.string.dialog_options_cancel) { _, _ -> }
                 .setView(v)
                 .create()
 
