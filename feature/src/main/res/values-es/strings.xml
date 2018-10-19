@@ -26,7 +26,7 @@
     <string name="dialog_help_step2">2. Mire pista en el teclado</string>
     <string name="dialog_help_step3">3. Escriba una respuesta</string>
     <string name="dialog_help_step4">4. Toque \"próxima\" para seleccionar la próxima palabra</string>
-    <string name="dialog_help_step5">5. Ponga en fondo la aplicación para pausar el minutero</string>
+    <string name="dialog_help_step5">5. Ponga en fondo la aplicación para pausar el temporizador</string>
     <string name="dialog_help_accents">Los acentos son importantes!</string>
     <string name="dialog_help_menu_title">Menú</string>
     <string name="dialog_help_startnewgame">1. Iniciar Juego Nuevo</string>
