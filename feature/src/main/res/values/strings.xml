@@ -100,6 +100,9 @@
     <string name="clue_tense_gerund">Gerund of</string>
     <string name="clue_tense_past_participle">Past Participle of</string>
 
+    <!-- keyboard -->
+    <string name="keyboard_next">next</string>
+
     <!--game options - subject pronouns -->
     <string name="option_title_subject_pronouns">Subject Pronouns</string>
     <string name="option_subject_pronoun_singular">Yo, Tú, Él/Ella/Ud. (singular)</string>
@@ -109,6 +112,5 @@
     <!-- error messages -->
     <string name="error_game_setup_failure">Unable to set up game</string>
     <string name="error_initial_setup_failure">Unable to complete initial set up</string>
-    <string name="keyboard_next">next</string>
 
 </resources>

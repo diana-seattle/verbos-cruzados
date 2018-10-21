@@ -12,7 +12,7 @@
 
     <!-- dialog text for start new game prompt-->
     <string name="dialog_startnewgame_prompt">Iniciar un juego nuevo?</string>
-    <string name="dialog_startnewgame_completion_message">Completado %1$d palabras en %2$s (%3$.1f/min)</string>
+    <string name="dialog_startnewgame_completion_message">Se completaron %1$d palabras en %2$s (%3$.1f/min)</string>
     <string name="dialog_startnewgame_yes">Sí</string>
     <string name="dialog_startnewgame_game_options">Opciones de Juego</string>
     <string name="dialog_startnewgame_no">No</string>
@@ -36,7 +36,7 @@
     <string name="dialog_help_showerrors_desc">Las celdas con error se vuelven rojas</string>
     <string name="dialog_help_keyboard_infinitive">Toque el infinitivo para ahorrar esfuerzo</string>
     <string name="dialog_help_keyboard_arrows">Utilice las flechas para navegar la palabra</string>
-    <string name="dialog_help_gameoptions_any_mix">Typo de verbo y tense/mood</string>
+    <string name="dialog_help_gameoptions_any_mix">Typo de verbo y tiempo/modo</string>
     <string name="dialog_help_gameoptions_vosotros">Opciones de pronombres</string>
     <string name="dialog_help_gamestats_desc1">Mirar su progreso</string>
     <string name="dialog_help_gamestats_desc2">Historia de juegos completados</string>
@@ -86,7 +86,7 @@
     <string name="option_tense_subjunctive_imperfect">Imperfecto de subjuntivo</string>
     <string name="option_tense_gerund">Gerundio</string>
     <string name="option_tense_past_participle">Participio pasado</string>
-    <string name="option_message">Aplicado en juego nuevo</string>
+    <string name="option_message">Se aplicará en juego nuevo</string>
 
     <!--Clue text - tense/mood -->
     <string name="clue_tense_present">Presente de</string>
@@ -100,6 +100,9 @@
     <string name="clue_tense_gerund">Gerundio de</string>
     <string name="clue_tense_past_participle">Participio pasado de</string>
 
+    <!-- keyboard -->
+    <string name="keyboard_next">próxima</string>
+
     <!--game options - subject pronouns -->
     <string name="option_title_subject_pronouns">Pronombres del sujeto</string>
     <string name="option_subject_pronoun_singular">Yo, Tú, Él/Ella/Ud. (singular)</string>
@@ -109,6 +112,5 @@
     <!-- error messages -->
     <string name="error_game_setup_failure">No se puede configurar el juego</string>
     <string name="error_initial_setup_failure">No se puede completar la configuración inicial</string>
-    <string name="keyboard_next">próxima</string>
 
 </resources>
