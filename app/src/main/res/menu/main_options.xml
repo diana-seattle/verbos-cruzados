@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" 
+      xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+<!--    <item android:id="@+id/action_install"-->
+<!--          android:icon="@drawable/ic_baseline_get_app_24px"-->
+<!--          android:title="@string/action_install"-->
+<!--          app:showAsAction="ifRoom|withText"-->
+<!--          android:visible="false"/>-->
+    <item android:id="@+id/action_startnewgame"
+          android:icon="@drawable/ic_baseline_refresh_24px"
+          android:title="@string/action_startnewgame" 
+          android:titleCondensed="@string/action_startnewgame_condensed" 
+          app:showAsAction="ifRoom|withText" />
+    <item android:id="@+id/action_showerrors"
+          android:icon="@drawable/ic_baseline_visibility_off_24px"
+          android:title="@string/action_showerrors"
+          app:showAsAction="ifRoom|withText" />
+    <item android:id="@+id/action_showgameoptions"
+          android:title="@string/action_showgameoptions" />
+    <item android:id="@+id/action_showstats"
+          android:title="@string/action_showstats" />
+    <item android:id="@+id/action_help"
+          android:icon="@drawable/ic_help_24px"
+          android:title="@string/action_help"
+          app:showAsAction="ifRoom|withText" />
+</menu>

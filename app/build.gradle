@@ -1,25 +1,51 @@
 apply plugin: 'com.android.application'
 
-android {
-    compileSdkVersion 27
+apply plugin: 'kotlin-android'
 
+apply plugin: 'kotlin-android-extensions'
+androidExtensions {
+    // needed for use of @Parcelize annotation
+    experimental = true
+}
+
+android {
     // Java version compile options
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    compileSdkVersion 27
     defaultConfig {
         applicationId "org.indiv.dls.games.verboscruzados"
         minSdkVersion 21
         targetSdkVersion 27
         versionCode 6
         versionName "1.03"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
     }
 }
 
 dependencies {
-    implementation project(':feature')
-    implementation project(':extraimages')
-    implementation project(':base')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    api "com.android.support:appcompat-v7:$android_support_version"
+    api "com.android.support.constraint:constraint-layout:1.1.2"
+    api "com.android.support:design:$android_support_version"
+    api "io.reactivex.rxjava2:rxjava:2.1.14"
+    api "io.reactivex.rxjava2:rxandroid:2.0.2"
+    api "io.reactivex.rxjava2:rxkotlin:2.2.0"
+    api "com.google.code.gson:gson:2.8.5"
+    api 'com.android.support:appcompat-v7:27.1.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
