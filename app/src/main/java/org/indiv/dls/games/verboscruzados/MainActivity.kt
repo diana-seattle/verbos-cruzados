@@ -30,30 +30,24 @@ import kotlin.math.roundToInt
 /*
  * Play Store: https://play.google.com/store/apps/details?id=org.indiv.dls.games.verboscruzados
  *
- * Instant app: https://play.google.com/store/apps/details?id=org.indiv.dls.games.verboscruzados&launch=true
- * Or is it: https://games.dls.indiv.org/verboscruzados
+ * Image resources:
+ * https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
+ * https://pixabay.com/en/canyon-desert-sky-huge-mountains-311233/
+ * https://www.pexels.com/photo/america-arid-bushes-california-221148/
  *
+ * Font info:
+ * Lato font: https://fonts.google.com/specimen/Lato
+ * Font guide: https://developer.android.com/guide/topics/ui/look-and-feel/fonts-in-xml
+ * System icons: https://developer.android.com/design/downloads/
+ *
+ * Conjugation resources:
+ * https://www.e-spanyol.hu/en/grammar/irregular_ar.php
  */
 
-// TODO: change fragments into components
-// TODO: more verbs - or message the user about selecting more options (https://www.e-spanyol.hu/en/grammar/irregular_ar.php)
-// TODO: test/fix conjugations
-// TODO: fix imports
-// TODO: optimizing drawing of puzzle (eliminate spacer views)
-// TODO: fix layout algorithm to use more short words & variability (80% rule)
-
-
-// TODO: instant app - upgrade process?
-// Complete other TODO items throughout code
-
-
-// https://pixnio.com/nature-landscapes/deserts/desert-landscape-herb-canyon-dry-geology-mountain
-// https://pixabay.com/en/canyon-desert-sky-huge-mountains-311233/
-// https://www.pexels.com/photo/america-arid-bushes-california-221148/
-
-// Lato font: https://fonts.google.com/specimen/Lato
-// Font guide: https://developer.android.com/guide/topics/ui/look-and-feel/fonts-in-xml
-// System icons: https://developer.android.com/design/downloads/
+// todo: view binding
+// todo: target api 30
+// todo: use androidx
+// todo: fix tablet pixel C api 30
 
 /**
  * This is the main activity. It houses [PuzzleFragment].
@@ -232,11 +226,6 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-//            R.id.action_install -> {
-//                // TODO: use real parameters
-//                InstantApps.showInstallPrompt(this, Intent(this, MainActivity::class.java),
-//                        1, "Within instant app")
-//            }
             R.id.action_showerrors -> showErrors(!showingErrors)
             R.id.action_startnewgame -> promptForNewGame()
             R.id.action_help -> showHelpDialog()

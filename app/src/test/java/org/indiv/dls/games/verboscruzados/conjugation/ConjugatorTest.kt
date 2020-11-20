@@ -55,13 +55,13 @@ class ConjugatorTest {
         val duplicates = allVerbs.groupBy { it.infinitive }
                 .filter { it.value.size > 1 }
         assertEquals(0, duplicates.size)
+
+        println("Total verbs: ${allVerbs.size}")
     }
 
     @Test fun testOneVerb() {
-        val verb =
-                Verb("lucir", "shine, wear", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC))
+        val verb = Verb("lucir", "shine, wear", irregularities = listOf(Irregularity.SPELLING_CHANGE_YO_ZC))
         printResult(verb)
-
     }
 
     @Test fun testListOfVerbs() {
