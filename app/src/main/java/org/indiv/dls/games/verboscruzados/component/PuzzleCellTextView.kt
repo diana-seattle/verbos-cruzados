@@ -6,17 +6,18 @@ import androidx.core.content.res.ResourcesCompat
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
-import android.widget.TextView
+//import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import org.indiv.dls.games.verboscruzados.R
 
 
 /**
- * Styled [TextView] used in puzzle.
+ * Styled TextView used in puzzle.
  */
 open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
                                                         attrs: AttributeSet? = null,
-                                                        defStyleAttr: Int = 0)
-    : TextView(context, attrs, defStyleAttr) {
+                                                        defStyleAttr: Int = 0
+) : AppCompatTextView(context, attrs, defStyleAttr) {
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
     var fontColorBlack: Int = ResourcesCompat.getColor(resources,
