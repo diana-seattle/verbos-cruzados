@@ -3,9 +3,9 @@ package org.indiv.dls.games.verboscruzados.dialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v4.content.res.ResourcesCompat
-import android.support.v7.app.AlertDialog
+import androidx.fragment.app.DialogFragment
+import androidx.core.content.res.ResourcesCompat
+import androidx.appcompat.app.AlertDialog
 import android.widget.CheckBox
 import org.indiv.dls.games.verboscruzados.R
 import org.indiv.dls.games.verboscruzados.game.PersistenceHelper
