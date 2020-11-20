@@ -1,6 +1,5 @@
 package org.indiv.dls.games.verboscruzados
 
-import org.indiv.dls.games.verboscruzados.R
 import kotlin.math.roundToInt
 
 class ImageSelecter {
@@ -9,29 +8,29 @@ class ImageSelecter {
 
     companion object {
         val photos = listOf(
-                R.drawable.pixnio325718cropped,
-                R.drawable.balicoast,
-                R.drawable.balisunset,
-                R.drawable.brokenrockside,
-                R.drawable.canyonandtrees,
-                R.drawable.canyonsunlight,
-                R.drawable.desert,
-                R.drawable.footbridge,
-                R.drawable.grandcanyongreen,
-                R.drawable.grandcanyonshortertree,
-                R.drawable.grandcanyontallertree,
-                R.drawable.lakemountainclouds,
-                R.drawable.lakemysticalreflection,
-                R.drawable.laketreesilhouette,
-                R.drawable.mountainandriver,
-                R.drawable.riverstumpsky,
-                R.drawable.rockfacedarksky,
-                R.drawable.rocktreesmountainclouds,
-                R.drawable.sandtreessky,
-                R.drawable.skyupthrutrees,
-                R.drawable.treeshadowtrail,
-                R.drawable.waterfallcloseup,
-                R.drawable.yosemitemeadow
+                R.drawable.scene_desertrocks,
+                R.drawable.scene_balicoast,
+                R.drawable.scene_balisunset,
+                R.drawable.scene_brokenrockside,
+                R.drawable.scene_canyonandtrees,
+                R.drawable.scene_canyonsunlight,
+                R.drawable.scene_desert,
+                R.drawable.scene_footbridge,
+                R.drawable.scene_grandcanyongreen,
+                R.drawable.scene_grandcanyonshortertree,
+                R.drawable.scene_grandcanyontallertree,
+                R.drawable.scene_lakemountainclouds,
+                R.drawable.scene_lakemysticalreflection,
+                R.drawable.scene_laketreesilhouette,
+                R.drawable.scene_mountainandriver,
+                R.drawable.scene_riverstumpsky,
+                R.drawable.scene_rockfacedarksky,
+                R.drawable.scene_rocktreesmountainclouds,
+                R.drawable.scene_sandtreessky,
+                R.drawable.scene_skyupthrutrees,
+                R.drawable.scene_treeshadowtrail,
+                R.drawable.scene_waterfallcloseup,
+                R.drawable.scene_yosemitemeadow
         )
 
         val instance = ImageSelecter()

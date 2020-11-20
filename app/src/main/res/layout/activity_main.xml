@@ -24,7 +24,7 @@
     <RelativeLayout android:id="@+id/main_activity_container_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/pixnio325718cropped"
+                    android:background="@drawable/scene_desertrocks"
                     android:baselineAligned="false"
                     android:orientation="vertical"
                     tools:context=".MainActivity">
