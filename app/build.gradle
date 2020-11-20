@@ -10,11 +10,11 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    compileSdkVersion 28
+    compileSdkVersion 30
     defaultConfig {
         applicationId "org.indiv.dls.games.verboscruzados"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 7
         versionName "1.04"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
