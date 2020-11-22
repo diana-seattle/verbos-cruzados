@@ -45,7 +45,6 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
         val vibration = context?.let {
             Vibration(it)
         }
-        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
         val letterClickListener: (View) -> Unit = {
             (it as? TextView)?.let {

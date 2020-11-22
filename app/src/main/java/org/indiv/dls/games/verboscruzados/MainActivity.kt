@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.os.Looper
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -44,8 +45,7 @@ import kotlin.math.roundToInt
  * https://www.e-spanyol.hu/en/grammar/irregular_ar.php
  */
 
-// todo: view binding
-// todo: target api 30 - read about
+// todo: fix all lint warnings
 // todo: add tests
 // todo review all code
 // todo: fix tablet pixel C api 30
@@ -112,7 +112,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         setSupportActionBar(binding.toolbar)
         if (BuildConfig.BUILD_TYPE === "debug") {
             // This is a special debug-build-only hack that allows the developer/tester to complete a game immediately.
-            binding.toolbar.setOnLongClickListener { v ->
+            binding.toolbar.setOnLongClickListener { _ ->
                 do {
                     puzzleFragment.currentGameWord?.let {
                         puzzleFragment.updateUserTextInPuzzle(it.word)
@@ -309,7 +309,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
             // auto-advance to the next word when in error-showing mode (with a small delay so it feels less abrupt)
             if (puzzleFragment.currentGameWord?.isAnsweredCompletelyAndCorrectly == true) {
-                Handler().postDelayed({
+                Handler(Looper.getMainLooper()).postDelayed({
                     selectNextGameWord()
                 }, 200)
             }
@@ -454,7 +454,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     }
 
     private fun scrollSelectedCellIntoViewWithDelay() {
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             puzzleFragment.currentGameWord?.let {
                 if (it.isAcross) {
                     scrollWordIntoView()
