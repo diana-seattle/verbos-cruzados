@@ -49,7 +49,7 @@ import kotlin.math.roundToInt
 // todo review all code
 // todo: add tests
 // todo: yellow color
-// todo: night mode
+// todo: dark mode
 // todo: view model / livedata
 // todo: fix tablet pixel C api 30
 // todo: fix on foldables

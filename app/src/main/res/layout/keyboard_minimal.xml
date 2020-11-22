@@ -265,13 +265,13 @@
                 style="@style/answerLetterButton.special"
                 android:padding="3dp"
                 app:srcCompat="@drawable/ic_baseline_arrow_back_24px"
-                android:tint="@color/soft_black"/>
+                app:tint="@color/soft_black"/>
             <ImageView
                 android:id="@+id/button_right_arrow"
                 style="@style/answerLetterButton.special"
                 android:padding="3dp"
                 app:srcCompat="@drawable/ic_baseline_arrow_forward_24px"
-                android:tint="@color/soft_black"/>
+                app:tint="@color/soft_black"/>
 
         </LinearLayout>
 
@@ -290,7 +290,7 @@
                 android:paddingEnd="4dp"
                 android:paddingStart="4dp"
                 app:srcCompat="@drawable/ic_baseline_keyboard_hide_24px"
-                android:tint="@color/soft_black"/>
+                app:tint="@color/soft_black" />
             <View
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -333,7 +333,7 @@
                 android:id="@+id/button_delete"
                 style="@style/answerOtherButton"
                 app:srcCompat="@drawable/ic_baseline_cancel_24px"
-                android:tint="@color/keyboard_delete_key"/>
+                app:tint="@color/keyboard_delete_key"/>
 
         </LinearLayout>
     </LinearLayout>
