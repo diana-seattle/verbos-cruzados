@@ -46,9 +46,13 @@ import kotlin.math.roundToInt
  */
 
 // todo: fix all lint warnings
-// todo: add tests
 // todo review all code
+// todo: add tests
+// todo: yellow color
+// todo: night mode
+// todo: view model / livedata
 // todo: fix tablet pixel C api 30
+// todo: fix on foldables
 
 /**
  * This is the main activity. It houses [PuzzleFragment].
