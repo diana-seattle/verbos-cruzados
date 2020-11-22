@@ -10,7 +10,6 @@ import androidx.appcompat.app.AlertDialog
 import android.widget.CheckBox
 import org.indiv.dls.games.verboscruzados.R
 import org.indiv.dls.games.verboscruzados.databinding.FragmentGameOptionsDialogBinding
-import org.indiv.dls.games.verboscruzados.databinding.FragmentPuzzleBinding
 import org.indiv.dls.games.verboscruzados.game.PersistenceHelper
 import org.indiv.dls.games.verboscruzados.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.model.InfinitiveEnding
@@ -52,8 +51,7 @@ class GameOptionsDialogFragment : DialogFragment() {
                 .create()
 
         dialog.setOnShowListener {
-            val textColor = ResourcesCompat.getColor(resources,
-                    org.indiv.dls.games.verboscruzados.R.color.colorAccent, null) // workaround for sake of instant app
+            val textColor = ResourcesCompat.getColor(resources, R.color.colorAccent, null)
             dialog.getButton(DialogInterface.BUTTON_NEUTRAL)?.setTextColor(textColor)
             dialog.getButton(DialogInterface.BUTTON_POSITIVE)?.setTextColor(textColor)
         }

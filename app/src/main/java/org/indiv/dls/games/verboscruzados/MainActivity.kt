@@ -215,11 +215,6 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         menuInflater.inflate(R.menu.main_options, menu)
         optionsMenu = menu
 
-        // if instant app, make the "Install" menu item visible
-//        if (InstantApps.isInstantApp(this)) {
-//            menu.findItem(R.id.action_install)?.isVisible = true
-//        }
-
         return true
     }
 

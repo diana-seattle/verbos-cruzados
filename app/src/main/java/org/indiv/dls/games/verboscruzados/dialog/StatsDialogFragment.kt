@@ -7,7 +7,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.appcompat.app.AlertDialog
 import org.indiv.dls.games.verboscruzados.R
 import org.indiv.dls.games.verboscruzados.component.StatsGraphicView
-import org.indiv.dls.games.verboscruzados.databinding.FragmentGameOptionsDialogBinding
 import org.indiv.dls.games.verboscruzados.databinding.FragmentStatsDialogBinding
 import org.indiv.dls.games.verboscruzados.game.PersistenceHelper
 import org.indiv.dls.games.verboscruzados.model.ConjugationType

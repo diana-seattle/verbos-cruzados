@@ -1,7 +1,7 @@
 <resources>
+    <string name="app_name">Verbos Cruzados</string>
 
     <!-- menu options -->
-    <string name="action_install">Instalar</string>
     <string name="action_startnewgame">Iniciar Juego Nuevo</string>
     <string name="action_startnewgame_condensed">Nuevo</string>
     <string name="action_showerrors">Mostrar Errores</string>
