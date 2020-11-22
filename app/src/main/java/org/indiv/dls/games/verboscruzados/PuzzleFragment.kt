@@ -10,8 +10,8 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.ScrollView
 import android.widget.TableRow
-import kotlinx.android.synthetic.main.fragment_puzzle.*
 import org.indiv.dls.games.verboscruzados.component.PuzzleCellTextView
+import org.indiv.dls.games.verboscruzados.databinding.FragmentPuzzleBinding
 import org.indiv.dls.games.verboscruzados.game.GameWord
 
 
@@ -30,6 +30,10 @@ class PuzzleFragment : Fragment() {
     //endregion
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
+
+    // binding is only valid between onCreateView and onDestroyView
+    private var _binding: FragmentPuzzleBinding? = null
+    private val binding get() = _binding!!
 
     private var gridWidth: Int = 0
     private var gridHeight: Int = 0
@@ -62,7 +66,8 @@ class PuzzleFragment : Fragment() {
     //region OVERRIDDEN FUNCTIONS ------------------------------------------------------------------
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_puzzle, container)
+        _binding = FragmentPuzzleBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -89,7 +94,7 @@ class PuzzleFragment : Fragment() {
         for (row in 0 until gridHeight) {
             val tableRow = TableRow(activity)
             tableRow.gravity = Gravity.CENTER
-            cell_table_layout.addView(tableRow)
+            binding.cellTableLayout.addView(tableRow)
         }
 
         initialized = true
@@ -110,7 +115,7 @@ class PuzzleFragment : Fragment() {
         // clear out any existing data
         currentGameWord = null
         for (row in 0 until gridHeight) {
-            val tableRow = cell_table_layout.getChildAt(row) as TableRow
+            val tableRow = binding.cellTableLayout.getChildAt(row) as TableRow
             tableRow.removeAllViews()
             cellGrid[row].fill(null)
         }
@@ -146,7 +151,7 @@ class PuzzleFragment : Fragment() {
         // add views into table rows and columns
         var firstGameWord: GameWord? = null
         for (row in 0 until gridHeight) {
-            val tableRow = cell_table_layout.getChildAt(row) as TableRow
+            val tableRow = binding.cellTableLayout.getChildAt(row) as TableRow
             tableRow.removeAllViews()
             for (col in 0 until gridWidth) {
                 cellGrid[row][col]?.let {

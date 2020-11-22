@@ -3,13 +3,14 @@ package org.indiv.dls.games.verboscruzados.component
 import android.content.Context
 import android.os.Vibrator
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import kotlinx.android.synthetic.main.keyboard_minimal.view.*
 import org.indiv.dls.games.verboscruzados.AnswerPresentation
 import org.indiv.dls.games.verboscruzados.R
 import org.indiv.dls.games.verboscruzados.Vibration
+import org.indiv.dls.games.verboscruzados.databinding.KeyboardMinimalBinding
 
 /**
  * Minimal keyboard for entering answers while covering the least amount of puzzle possible.
@@ -21,6 +22,16 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
                                                      defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
+    //region PRIVATE PROPERTIES --------------------------------------------------------------------
+
+    private var binding: KeyboardMinimalBinding
+
+    private val forwardArrowDrawable = resources.getDrawable(R.drawable.ic_baseline_arrow_forward_24px, null)
+    private val backwardArrowDrawable = resources.getDrawable(R.drawable.ic_baseline_arrow_back_24px, null)
+    private val upArrowDrawable = resources.getDrawable(R.drawable.ic_baseline_arrow_upward_24px, null)
+    private val downwardArrowDrawable = resources.getDrawable(R.drawable.ic_baseline_arrow_downward_24px, null)
+
+    //endregion
 
     //region COMPANION OBJECT ----------------------------------------------------------------------
     //endregion
@@ -28,7 +39,7 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
     //region INITIALIZER ---------------------------------------------------------------------------
 
     init {
-        inflate(context, R.layout.keyboard_minimal, this)
+        binding = KeyboardMinimalBinding.inflate(LayoutInflater.from(context), this)
 
         // Get instance of Vibrator from current Context
         val vibration = context?.let {
@@ -43,65 +54,65 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
             }
         }
 
-        button_a.setOnClickListener { letterClickListener.invoke(it) }
-        button_b.setOnClickListener { letterClickListener.invoke(it) }
-        button_c.setOnClickListener { letterClickListener.invoke(it) }
-        button_d.setOnClickListener { letterClickListener.invoke(it) }
-        button_e.setOnClickListener { letterClickListener.invoke(it) }
-        button_f.setOnClickListener { letterClickListener.invoke(it) }
-        button_g.setOnClickListener { letterClickListener.invoke(it) }
-        button_h.setOnClickListener { letterClickListener.invoke(it) }
-        button_i.setOnClickListener { letterClickListener.invoke(it) }
-        button_j.setOnClickListener { letterClickListener.invoke(it) }
-        button_k.setOnClickListener { letterClickListener.invoke(it) }
-        button_l.setOnClickListener { letterClickListener.invoke(it) }
-        button_m.setOnClickListener { letterClickListener.invoke(it) }
-        button_n.setOnClickListener { letterClickListener.invoke(it) }
-        button_o.setOnClickListener { letterClickListener.invoke(it) }
-        button_p.setOnClickListener { letterClickListener.invoke(it) }
-        button_q.setOnClickListener { letterClickListener.invoke(it) }
-        button_r.setOnClickListener { letterClickListener.invoke(it) }
-        button_s.setOnClickListener { letterClickListener.invoke(it) }
-        button_t.setOnClickListener { letterClickListener.invoke(it) }
-        button_u.setOnClickListener { letterClickListener.invoke(it) }
-        button_v.setOnClickListener { letterClickListener.invoke(it) }
-        button_w.setOnClickListener { letterClickListener.invoke(it) }
-        button_x.setOnClickListener { letterClickListener.invoke(it) }
-        button_y.setOnClickListener { letterClickListener.invoke(it) }
-        button_z.setOnClickListener { letterClickListener.invoke(it) }
-        button_a_accent.setOnClickListener { letterClickListener.invoke(it) }
-        button_e_accent.setOnClickListener { letterClickListener.invoke(it) }
-        button_i_accent.setOnClickListener { letterClickListener.invoke(it) }
-        button_o_accent.setOnClickListener { letterClickListener.invoke(it) }
-        button_u_accent.setOnClickListener { letterClickListener.invoke(it) }
-        button_u_umlaut.setOnClickListener { letterClickListener.invoke(it) }
-        button_n_tilde.setOnClickListener { letterClickListener.invoke(it) }
-        button_hide_keyboard.setOnClickListener {
+        binding.buttonA.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonB.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonC.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonD.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonE.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonF.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonG.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonH.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonI.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonJ.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonK.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonL.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonM.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonN.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonO.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonP.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonQ.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonR.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonS.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonT.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonU.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonV.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonW.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonX.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonY.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonZ.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonAAccent.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonEAccent.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonIAccent.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonOAccent.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonUAccent.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonUUmlaut.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonNTilde.setOnClickListener { letterClickListener.invoke(it) }
+        binding.buttonHideKeyboard.setOnClickListener {
             vibration.vibrate()
             dismissClickListener?.invoke()
         }
-        keyboard_button_infinitive.setOnClickListener {
+        binding.keyboardButtonInfinitive.setOnClickListener {
             vibration.vibrate()
             infinitiveClickListener?.invoke(answerPresentation?.infinitive ?: "")
         }
-        button_delete.setOnClickListener {
+        binding.buttonDelete.setOnClickListener {
             vibration.vibrate()
             deleteClickListener?.invoke()
         }
-        button_delete.setOnLongClickListener() {
+        binding.buttonDelete.setOnLongClickListener() {
             vibration.vibrate()
             deleteLongClickListener?.invoke()
             true
         }
-        button_left_arrow.setOnClickListener {
+        binding.buttonLeftArrow.setOnClickListener {
             vibration.vibrate()
             leftClickListener?.invoke()
         }
-        button_right_arrow.setOnClickListener {
+        binding.buttonRightArrow.setOnClickListener {
             vibration.vibrate()
             rightClickListener?.invoke()
         }
-        button_next_word.setOnClickListener {
+        binding.buttonNextWord.setOnClickListener {
             vibration.vibrate()
             nextWordClickListener?.invoke()
         }
@@ -140,30 +151,21 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
         set(value) {
             field = value
             value?.apply {
-                keyboard_conjugation_type_label.text = conjugationTypeLabel
-                keyboard_button_infinitive.text = infinitive
-                keyboard_translation.text = "($translation)"
-                keyboard_subject_pronoun_label.text = subjectPronounLabel
-                keyboard_subject_pronoun_label.visibility = if (subjectPronounLabel.isEmpty()) GONE else VISIBLE
-                button_left_arrow.setImageDrawable(if (across) backwardArrowDrawable else upArrowDrawable)
-                button_right_arrow.setImageDrawable(if (across) forwardArrowDrawable else downwardArrowDrawable)
+                binding.keyboardConjugationTypeLabel.text = conjugationTypeLabel
+                binding.keyboardButtonInfinitive.text = infinitive
+                binding.keyboardTranslation.text = "($translation)"
+                binding.keyboardSubjectPronounLabel.text = subjectPronounLabel
+                binding.keyboardSubjectPronounLabel.visibility = if (subjectPronounLabel.isEmpty()) GONE else VISIBLE
+                binding.buttonLeftArrow.setImageDrawable(if (across) backwardArrowDrawable else upArrowDrawable)
+                binding.buttonRightArrow.setImageDrawable(if (across) forwardArrowDrawable else downwardArrowDrawable)
             }
         }
 
     var elapsedTime: String = ""
         set(value) {
             field = value
-            keyboard_timer.text = value
+            binding.keyboardTimer.text = value
         }
-
-    //endregion
-
-    //region PRIVATE PROPERTIES --------------------------------------------------------------------
-
-    val forwardArrowDrawable = resources.getDrawable(R.drawable.ic_baseline_arrow_forward_24px, null)
-    val backwardArrowDrawable = resources.getDrawable(R.drawable.ic_baseline_arrow_back_24px, null)
-    val upArrowDrawable = resources.getDrawable(R.drawable.ic_baseline_arrow_upward_24px, null)
-    val downwardArrowDrawable = resources.getDrawable(R.drawable.ic_baseline_arrow_downward_24px, null)
 
     //endregion
 

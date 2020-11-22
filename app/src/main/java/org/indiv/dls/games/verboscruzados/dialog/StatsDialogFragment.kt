@@ -2,10 +2,13 @@ package org.indiv.dls.games.verboscruzados.dialog
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.DialogFragment
 import androidx.appcompat.app.AlertDialog
 import org.indiv.dls.games.verboscruzados.R
 import org.indiv.dls.games.verboscruzados.component.StatsGraphicView
+import org.indiv.dls.games.verboscruzados.databinding.FragmentGameOptionsDialogBinding
+import org.indiv.dls.games.verboscruzados.databinding.FragmentStatsDialogBinding
 import org.indiv.dls.games.verboscruzados.game.PersistenceHelper
 import org.indiv.dls.games.verboscruzados.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.model.InfinitiveEnding
@@ -51,22 +54,21 @@ class StatsDialogFragment : DialogFragment() {
     //endregion
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
-    //endregion
 
-    //region PUBLIC INTERFACES ---------------------------------------------------------------------
+    private lateinit var binding: FragmentStatsDialogBinding
+
     //endregion
 
     //region OVERRIDDEN FUNCTIONS ------------------------------------------------------------------
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val inflater = activity!!.layoutInflater
-        val v = inflater.inflate(R.layout.fragment_stats_dialog, null)
+        binding = FragmentStatsDialogBinding.inflate(LayoutInflater.from(context))
 
         val dialog = AlertDialog.Builder(activity!!)
                 .setTitle(R.string.dialog_stats_heading)
                 .setNeutralButton(R.string.action_showgameoptions) { _, _ -> showGameOptionsListener?.invoke() }
                 .setPositiveButton(R.string.dialog_ok) { dialog, id -> }
-                .setView(v)
+                .setView(binding.root)
                 .create()
 
         // fill in stats
@@ -74,7 +76,7 @@ class StatsDialogFragment : DialogFragment() {
         val statsMap = persistenceHelper.allGameStats
                 .mapKeys { getCoordinates(it.key) }
 
-        val statsGraphicView: StatsGraphicView = v.findViewById(R.id.stats_dialog_graphic)
+        val statsGraphicView: StatsGraphicView = binding.statsDialogGraphic
         statsGraphicView.setStats(rowCount, columnCount, statsMap)
 
         return dialog

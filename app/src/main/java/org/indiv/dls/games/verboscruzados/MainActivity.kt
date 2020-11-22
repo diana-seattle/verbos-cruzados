@@ -18,8 +18,8 @@ import android.widget.Toast
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_main.*
 import org.indiv.dls.games.verboscruzados.async.GameSetup
+import org.indiv.dls.games.verboscruzados.databinding.ActivityMainBinding
 import org.indiv.dls.games.verboscruzados.dialog.GameOptionsDialogFragment
 import org.indiv.dls.games.verboscruzados.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.game.GameWord
@@ -45,8 +45,9 @@ import kotlin.math.roundToInt
  */
 
 // todo: view binding
-// todo: target api 30
-// todo: use androidx
+// todo: target api 30 - read about
+// todo: add tests
+// todo review all code
 // todo: fix tablet pixel C api 30
 
 /**
@@ -67,13 +68,14 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
+    private lateinit var binding: ActivityMainBinding
+
     private val compositeDisposable = CompositeDisposable()
     private var currentGameWords: List<GameWord> = emptyList()
     private val gameSetup = GameSetup()
     private lateinit var puzzleFragment: PuzzleFragment
 
     private var optionsMenu: Menu? = null
-    private var toolbar: Toolbar? = null
     private lateinit var persistenceHelper: PersistenceHelper
 
     private var showOnboarding = false
@@ -88,7 +90,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     private val countDownTimer: CountDownTimer = object : CountDownTimer(COUNTDOWN_MAX_TIME, COUNTDOWN_INTERVAL) {
         override fun onTick(millisUntilFinished: Long) {
             elapsedTimerMs = COUNTDOWN_MAX_TIME - millisUntilFinished
-            answer_keyboard.elapsedTime = getElapsedTimeText(elapsedGameSecondsRecorded + elapsedTimerMs / 1000)
+            binding.answerKeyboard.elapsedTime = getElapsedTimeText(elapsedGameSecondsRecorded + elapsedTimerMs / 1000)
         }
 
         override fun onFinish() {}
@@ -101,16 +103,16 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         persistenceHelper = PersistenceHelper(this)
 
         // Set up toolbar
-        toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
         if (BuildConfig.BUILD_TYPE === "debug") {
             // This is a special debug-build-only hack that allows the developer/tester to complete a game immediately.
-            toolbar?.setOnLongClickListener { v ->
+            binding.toolbar.setOnLongClickListener { v ->
                 do {
                     puzzleFragment.currentGameWord?.let {
                         puzzleFragment.updateUserTextInPuzzle(it.word)
@@ -128,7 +130,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         keyboardHeight = resources.getDimension(R.dimen.keyboard_height)
 
         // position the keyboard off screen for animation when first shown.
-        answer_keyboard.translationY = keyboardHeight
+        binding.answerKeyboard.translationY = keyboardHeight
 
         // calculate available space for the puzzle
         val displayMetrics = resources.displayMetrics
@@ -164,26 +166,26 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         }
 
         // pass the InputConnection from the EditText to the keyboard
-        answer_keyboard.infinitiveClickListener = {
+        binding.answerKeyboard.infinitiveClickListener = {
             puzzleFragment.updateUserTextInPuzzle(it)
             onAnswerChanged()
             if (showOnboarding) {
                 showOnboarding = false
-                onboarding_message_layout.visibility = View.GONE
+                binding.onboardingMessageLayout.visibility = View.GONE
             }
         }
-        answer_keyboard.deleteLongClickListener = {
+        binding.answerKeyboard.deleteLongClickListener = {
             puzzleFragment.updateUserTextInPuzzle("")
             onAnswerChanged()
         }
-        answer_keyboard.deleteClickListener = {
+        binding.answerKeyboard.deleteClickListener = {
             val conflictingGameWord = puzzleFragment.deleteLetterInPuzzle()
             conflictingGameWord?.let {
                 Thread { persistenceHelper.persistUserEntry(it) }.start()
             }
             onAnswerChanged()
         }
-        answer_keyboard.letterClickListener = { char ->
+        binding.answerKeyboard.letterClickListener = { char ->
             val conflictingGameWord = puzzleFragment.updateLetterInPuzzle(char)
             conflictingGameWord?.let {
                 Thread { persistenceHelper.persistUserEntry(it) }.start()
@@ -192,18 +194,18 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             scrollSelectedCellIntoView()
             onAnswerChanged()
         }
-        answer_keyboard.leftClickListener = {
+        binding.answerKeyboard.leftClickListener = {
             puzzleFragment.advanceSelectedCellInPuzzle(true)
             scrollSelectedCellIntoView()
         }
-        answer_keyboard.rightClickListener = {
+        binding.answerKeyboard.rightClickListener = {
             puzzleFragment.advanceSelectedCellInPuzzle(false)
             scrollSelectedCellIntoView()
         }
-        answer_keyboard.nextWordClickListener = {
+        binding.answerKeyboard.nextWordClickListener = {
             selectNextGameWord()
         }
-        answer_keyboard.dismissClickListener = {
+        binding.answerKeyboard.dismissClickListener = {
             hideKeyboard()
         }
     }
@@ -247,7 +249,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     override fun onResume() {
         super.onResume()
         elapsedGameSecondsRecorded = persistenceHelper.elapsedSeconds
-        answer_keyboard.elapsedTime = getElapsedTimeText(elapsedGameSecondsRecorded)
+        binding.answerKeyboard.elapsedTime = getElapsedTimeText(elapsedGameSecondsRecorded)
         if (!persistenceHelper.currentGameCompleted) {
             startTimer()
         }
@@ -424,7 +426,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                             scrollSelectedCellIntoViewWithDelay()
                             persistenceHelper.elapsedSeconds = 0L
                             elapsedGameSecondsRecorded = 0L
-                            answer_keyboard.elapsedTime = getElapsedTimeText(0L)
+                            binding.answerKeyboard.elapsedTime = getElapsedTimeText(0L)
                             startTimer()
                         },
                         { error ->
@@ -434,13 +436,10 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     }
 
     private fun setPuzzleBackgroundImage(imageIndex: Int) {
-        // If not an instant app, set a new background image
-//        if (!InstantApps.isInstantApp(this)) {
-            resources.getDrawable(ImageSelecter.instance.getImageResId(imageIndex), null)?.let {
-                main_activity_container_layout.background = it
-            }
-            persistenceHelper.currentImageIndex = imageIndex
-//        }
+        resources.getDrawable(ImageSelecter.instance.getImageResId(imageIndex), null)?.let {
+            binding.mainActivityContainerLayout.background = it
+        }
+        persistenceHelper.currentImageIndex = imageIndex
     }
 
     private fun createGrid() {
@@ -452,7 +451,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
     private fun setGameWord(gameWord: GameWord) {
         // Update keyboard with answer info
-        answer_keyboard.answerPresentation = createAnswerPresentation(gameWord)
+        binding.answerKeyboard.answerPresentation = createAnswerPresentation(gameWord)
 
         showKeyboard()
 
@@ -570,23 +569,23 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     }
 
     private fun isKeyboardVisible(): Boolean {
-        return answer_keyboard.visibility == View.VISIBLE
+        return binding.answerKeyboard.visibility == View.VISIBLE
     }
 
     private fun showKeyboard() {
         if (!isKeyboardVisible()) {
             // Set visible, then animate up to position
-            answer_keyboard.visibility = View.VISIBLE
+            binding.answerKeyboard.visibility = View.VISIBLE
 
             // Delay very slightly so that animation is seen on app startup
-            answer_keyboard.postDelayed({
-                ObjectAnimator.ofFloat(answer_keyboard, "translationY", 0f)
+            binding.answerKeyboard.postDelayed({
+                ObjectAnimator.ofFloat(binding.answerKeyboard, "translationY", 0f)
                         .setDuration(KEYBOARD_ANIMATION_TIME)
                         .start()
             }, 1)
 
             if (showOnboarding) {
-                onboarding_message_layout.visibility = View.VISIBLE
+                binding.onboardingMessageLayout.visibility = View.VISIBLE
             }
         }
     }
@@ -594,21 +593,21 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     private fun hideKeyboard() {
         if (isKeyboardVisible()) {
             // Animate off screen, then set invisible
-            val animator = ObjectAnimator.ofFloat(answer_keyboard, "translationY", keyboardHeight)
+            val animator = ObjectAnimator.ofFloat(binding.answerKeyboard, "translationY", keyboardHeight)
                     .setDuration(KEYBOARD_ANIMATION_TIME)
             animator.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationRepeat(animation: Animator?) {}
                 override fun onAnimationStart(animation: Animator?) {}
                 override fun onAnimationCancel(animation: Animator?) {
-                    answer_keyboard.visibility = View.INVISIBLE
+                    binding.answerKeyboard.visibility = View.INVISIBLE
                 }
 
                 override fun onAnimationEnd(animation: Animator?) {
-                    answer_keyboard.visibility = View.INVISIBLE
+                    binding.answerKeyboard.visibility = View.INVISIBLE
                 }
             })
             animator.start()
-            onboarding_message_layout.visibility = View.GONE
+            binding.onboardingMessageLayout.visibility = View.GONE
         }
     }
 
