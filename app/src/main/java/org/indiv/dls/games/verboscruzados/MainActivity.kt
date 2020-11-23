@@ -2,13 +2,13 @@ package org.indiv.dls.games.verboscruzados
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
@@ -434,8 +434,20 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                         }))
     }
 
+    private fun isNightMode(): Boolean {
+        val currentNightMode = resources.getConfiguration().uiMode and Configuration.UI_MODE_NIGHT_MASK
+        return currentNightMode == Configuration.UI_MODE_NIGHT_YES
+    }
+
     private fun setPuzzleBackgroundImage(imageIndex: Int) {
-        resources.getDrawable(ImageSelecter.instance.getImageResId(imageIndex), null)?.let {
+        // If night mode, override the specified image with the nighttime image.
+        val imageResourceId = if (isNightMode()) {
+            R.drawable.scene_night
+        } else {
+            ImageSelecter.instance.getImageResId(imageIndex)
+        }
+
+        resources.getDrawable(imageResourceId, null)?.let {
             binding.mainActivityContainerLayout.background = it
         }
         persistenceHelper.currentImageIndex = imageIndex
