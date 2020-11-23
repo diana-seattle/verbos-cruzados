@@ -11,8 +11,9 @@
     <string name="action_showgameoptions">Opciones de Juego</string>
 
     <!-- dialog text for start new game prompt-->
+    <string name="dialog_startnewgame_prompt_after_winning">Ganado!</string>
     <string name="dialog_startnewgame_prompt">Iniciar un juego nuevo?</string>
-    <string name="dialog_startnewgame_completion_message">Se completaron %1$d palabras en %2$s (%3$.1f/min)</string>
+    <string name="dialog_startnewgame_completion_message">%1$d palabras en %2$s (%3$.1f/min)\n\nIniciar un juego nuevo?</string>
     <string name="dialog_startnewgame_yes">Sí</string>
     <string name="dialog_startnewgame_game_options">Opciones de Juego</string>
     <string name="dialog_startnewgame_no">No</string>

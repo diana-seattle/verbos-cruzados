@@ -48,8 +48,6 @@ import kotlin.math.roundToInt
 // todo: fix all lint warnings
 // todo: review all code
 // todo: add tests
-// todo: dark mode *
-// todo: game completion message
 // todo: view model / livedata
 // todo: fix tablet pixel C api 30
 // todo: fix on foldables
@@ -358,8 +356,11 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     private fun promptForNewGame(completionMessage: CharSequence? = null) {
         hideKeyboard()
 
+        val titleResId = completionMessage?.let { R.string.dialog_startnewgame_prompt_after_winning }
+                ?: R.string.dialog_startnewgame_prompt
+
         AlertDialog.Builder(this)
-                .setTitle(resources.getString(R.string.dialog_startnewgame_prompt))
+                .setTitle(titleResId)
                 .setMessage(completionMessage)
                 .setNeutralButton(R.string.dialog_startnewgame_game_options) { _, _ -> showGameOptionsDialog() }
                 .setPositiveButton(R.string.dialog_startnewgame_yes) { _, _ ->

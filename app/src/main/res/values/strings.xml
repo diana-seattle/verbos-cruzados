@@ -11,8 +11,9 @@
     <string name="action_showgameoptions">Game Options</string>
 
     <!-- dialog text for start new game prompt-->
+    <string name="dialog_startnewgame_prompt_after_winning">You won!</string>
     <string name="dialog_startnewgame_prompt">Start a new game?</string>
-    <string name="dialog_startnewgame_completion_message">Completed %1$d words in %2$s (%3$.1f/min)</string>
+    <string name="dialog_startnewgame_completion_message">%1$d words in %2$s (%3$.1f/min)\n\nStart a new game?</string>
     <string name="dialog_startnewgame_yes">Yes</string>
     <string name="dialog_startnewgame_game_options">Game Options</string>
     <string name="dialog_startnewgame_no">No</string>
