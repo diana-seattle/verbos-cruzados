@@ -3,8 +3,8 @@ package org.indiv.dls.games.verboscruzados.dialog
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.fragment.app.DialogFragment
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDialogFragment
 import org.indiv.dls.games.verboscruzados.R
 import org.indiv.dls.games.verboscruzados.component.StatsGraphicView
 import org.indiv.dls.games.verboscruzados.databinding.FragmentStatsDialogBinding
@@ -16,7 +16,7 @@ import org.indiv.dls.games.verboscruzados.model.IrregularityCategory
 /**
  * Dialog for showing game stats.
  */
-class StatsDialogFragment : DialogFragment() {
+class StatsDialogFragment : AppCompatDialogFragment() {
 
     //region COMPANION OBJECT ----------------------------------------------------------------------
 

@@ -4,10 +4,10 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.fragment.app.DialogFragment
 import androidx.core.content.res.ResourcesCompat
 import androidx.appcompat.app.AlertDialog
 import android.widget.CheckBox
+import androidx.appcompat.app.AppCompatDialogFragment
 import org.indiv.dls.games.verboscruzados.R
 import org.indiv.dls.games.verboscruzados.databinding.FragmentGameOptionsDialogBinding
 import org.indiv.dls.games.verboscruzados.game.PersistenceHelper
@@ -19,7 +19,7 @@ import org.indiv.dls.games.verboscruzados.model.SubjectPronoun
 /**
  * Dialog for selecting game options.
  */
-class GameOptionsDialogFragment : DialogFragment() {
+class GameOptionsDialogFragment : AppCompatDialogFragment() {
 
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
 
@@ -49,12 +49,6 @@ class GameOptionsDialogFragment : DialogFragment() {
                 .setPositiveButton(R.string.dialog_options_okay) { _, _ -> saveOptions() }
                 .setView(binding.root)
                 .create()
-
-        dialog.setOnShowListener {
-            val textColor = ResourcesCompat.getColor(resources, R.color.colorAccent, null)
-            dialog.getButton(DialogInterface.BUTTON_NEUTRAL)?.setTextColor(textColor)
-            dialog.getButton(DialogInterface.BUTTON_POSITIVE)?.setTextColor(textColor)
-        }
 
         // Set up map of option keys to checkboxes for easy access later.
         checkboxMap[IrregularityCategory.REGULAR.name] = binding.optionRegularityRegular

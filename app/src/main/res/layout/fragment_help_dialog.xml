@@ -16,7 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dialog_help_step1"
-            android:textColor="@color/soft_black"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/medium"/>
 
         <!-- step 2 -->
@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dialog_help_step2"
-            android:textColor="@color/soft_black"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/medium"/>
 
         <!-- step 3 -->
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dialog_help_step3"
-            android:textColor="@color/soft_black"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/medium"/>
         <TextView style="@style/helpBulletText" android:text="@string/dialog_help_keyboard_infinitive"/>
         <TextView style="@style/helpBulletText" android:text="@string/dialog_help_keyboard_arrows"/>
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dialog_help_step4"
-            android:textColor="@color/soft_black"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/medium"/>
 
         <!-- step 5 -->
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dialog_help_step5"
-            android:textColor="@color/soft_black"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/medium"/>
 
         <!-- Menu heading -->
@@ -61,7 +61,7 @@
             android:paddingBottom="@dimen/half_margin"
             android:paddingTop="@dimen/default_margin"
             android:text="@string/dialog_help_menu_title"
-            android:textColor="@color/soft_black"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/large"
             android:textStyle="bold"/>
 
@@ -72,7 +72,7 @@
             android:drawableEnd="@drawable/ic_baseline_refresh_24px_gray"
             android:drawablePadding="@dimen/half_margin"
             android:text="@string/dialog_help_startnewgame"
-            android:textColor="@color/soft_black"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/medium"/>
 
         <!-- showing errors -->
@@ -82,7 +82,7 @@
             android:drawableEnd="@drawable/ic_baseline_visibility_off_24px_gray"
             android:drawablePadding="@dimen/half_margin"
             android:text="@string/dialog_help_showerrors"
-            android:textColor="@color/soft_black"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/medium"/>
         <TextView style="@style/helpBulletText" android:text="@string/dialog_help_showerrors_desc"/>
 
@@ -91,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dialog_help_gameoptions"
-            android:textColor="@color/soft_black"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/medium"/>
         <TextView style="@style/helpBulletText"
                   android:text="@string/dialog_help_gameoptions_any_mix"/>
@@ -103,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dialog_help_gamestats"
-            android:textColor="@color/soft_black"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/medium"/>
         <TextView style="@style/helpBulletText" android:text="@string/dialog_help_gamestats_desc1"/>
         <TextView style="@style/helpBulletText" android:text="@string/dialog_help_gamestats_desc2"/>

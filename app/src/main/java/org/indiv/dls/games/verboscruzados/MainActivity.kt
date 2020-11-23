@@ -46,10 +46,10 @@ import kotlin.math.roundToInt
  */
 
 // todo: fix all lint warnings
-// todo review all code
+// todo: review all code
 // todo: add tests
-// todo: yellow color
-// todo: dark mode
+// todo: dark mode *
+// todo: game completion message
 // todo: view model / livedata
 // todo: fix tablet pixel C api 30
 // todo: fix on foldables
