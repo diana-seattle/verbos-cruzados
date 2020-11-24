@@ -32,6 +32,10 @@ class GameWord(val uniqueKey: String,            // unique key for use in persis
             }
             return false
         }
+
+    /**
+     * When a word is auto-selected, the first letter of the word that needs changing is selected by default.
+     */
     val defaultSelectionIndex: Int
         get() {
             for (i in 0 until word.length) {

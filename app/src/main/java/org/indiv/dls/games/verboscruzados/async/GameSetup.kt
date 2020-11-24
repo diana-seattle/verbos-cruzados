@@ -47,11 +47,11 @@ class GameSetup {
     fun newGame(resources: Resources, cellGrid: Array<Array<GridCell?>>, gameOptions: Map<String, Boolean>): Single<List<GameWord>> {
         return Single.fromCallable {
 
-            // retrieve random list of words
             val gridHeight = cellGrid.size
             val gridWidth = cellGrid[0].size
 
-            val numWords = Math.round(((gridWidth * gridHeight) / 5 + 20).toFloat())  // get more than we need to maximize density of layout
+            // retrieve random list of words, getting more than we need to maximize density of layout
+            val numWords = Math.round(((gridWidth * gridHeight) / 5 + 20).toFloat())
             val wordCandidates = getWordCandidates(numWords, gameOptions).toMutableList()
 
             // determine layout

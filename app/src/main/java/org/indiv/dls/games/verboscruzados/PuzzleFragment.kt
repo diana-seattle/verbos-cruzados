@@ -183,9 +183,11 @@ class PuzzleFragment : Fragment() {
     }
 
     /**
-     * Selects next empty or errored game word depending on parameter.
+     * Selects next empty or errored game word depending on parameter. Starts with current game word,
+     * searches to the end, then wraps around to the beginning.
      *
-     * @param emptyOnly true if next empty game word should be selected, false if any errored game word shold be selected.
+     * @param shouldSelectEmptyOnly true if next empty game word should be selected, false if any errored game word should be selected.
+     * @return true if word found and selected.
      */
     fun selectNextGameWord(emptyOnly: Boolean): Boolean {
         return selectNextGameWord(currentGameWord?.row ?: 0, currentGameWord?.col
