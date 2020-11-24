@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                         puzzleFragment.updateUserTextInPuzzle(it.word)
                         onAnswerChanged()
                     }
-                } while (puzzleFragment.selectNextGameWord(false))
+                } while (puzzleFragment.selectNextGameWordAfterCurrent(shouldSelectEmptyOnly = false))
                 true
             }
         }
@@ -286,7 +286,9 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
     private fun selectNextGameWord() {
-        if (puzzleFragment.selectNextGameWord(true) || puzzleFragment.selectNextGameWord(false)) {
+        if (puzzleFragment.selectNextGameWordAfterCurrent(shouldSelectEmptyOnly = true)
+                || puzzleFragment.selectNextGameWordAfterCurrent(shouldSelectEmptyOnly = false)) {
+            // Update this activity with the newly selected word from the puzzle fragment.
             setGameWord(puzzleFragment.currentGameWord!!)
         }
     }

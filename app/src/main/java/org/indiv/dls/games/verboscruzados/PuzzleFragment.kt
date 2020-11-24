@@ -174,9 +174,12 @@ class PuzzleFragment : Fragment() {
             }
         }
 
-        // make the initial word selection
-        if (!selectNextGameWord(0, -1, true)
-                && !selectNextGameWord(0, -1, false)) {
+        // Make the initial word selection, in this priority:
+        // 1. Select first empty word if any
+        // 2. Select first errored word if any
+        // 3. Select first word (this can happen if user returns to a finished game)
+        if (!selectNextGameWord(0, 0, true)
+                && !selectNextGameWord(0, 0, false)) {
             selectedCellIndex = firstGameWord?.defaultSelectionIndex ?: 0
             currentGameWord = firstGameWord
         }
@@ -189,10 +192,12 @@ class PuzzleFragment : Fragment() {
      * @param shouldSelectEmptyOnly true if next empty game word should be selected, false if any errored game word should be selected.
      * @return true if word found and selected.
      */
-    fun selectNextGameWord(emptyOnly: Boolean): Boolean {
-        return selectNextGameWord(currentGameWord?.row ?: 0, currentGameWord?.col
-                ?: 0, emptyOnly) ||
-                selectNextGameWord(0, -1, emptyOnly)
+    fun selectNextGameWordAfterCurrent(shouldSelectEmptyOnly: Boolean): Boolean {
+        return selectNextGameWord(
+                startingRow = currentGameWord?.row ?: 0,
+                startingCol = currentGameWord?.col ?: 0,
+                emptyOnly = shouldSelectEmptyOnly
+        ) || selectNextGameWord(0, 0, shouldSelectEmptyOnly)
     }
 
     /**
@@ -336,48 +341,60 @@ class PuzzleFragment : Fragment() {
     }
 
     /**
-     * Selects next empty or errored game word depending on parameter.
+     * Searches for and selects next empty or errored game word depending on parameter, starting at specified cell.
      *
+     * @param startingRow starting row to start searching for next word to select.
+     * @param startingCol starting col to start searching for next word to select.
      * @param emptyOnly true if next empty game word should be selected, false if any errored game word should be selected.
+     * @return true if new word found and selected, false if no selection made.
      */
     private fun selectNextGameWord(startingRow: Int, startingCol: Int, emptyOnly: Boolean): Boolean {
-        var initialCol = startingCol
-        for (row in 0 until gridHeight) {
-            if (row >= startingRow) {
-                for (col in 0 until gridWidth) {
-                    if (col >= initialCol) {
-                        cellGrid[row][col]?.let {
-                            var nextGameWord: GameWord? = null
-                            if (row > startingRow || col > initialCol) {
-                                // if the cell's word begins in the cell, then select it
-                                if (it.gameWordAcross?.col == col && it.gameWordAcross != currentGameWord && isEmptyOrErroredGameWord(it.gameWordAcross, emptyOnly)) {
-                                    nextGameWord = it.gameWordAcross
-                                } else if (it.gameWordDown?.row == row && it.gameWordDown != currentGameWord && isEmptyOrErroredGameWord(it.gameWordDown, emptyOnly)) {
-                                    nextGameWord = it.gameWordDown
-                                }
-                            } else if (it.gameWordDown?.row == row && it.gameWordDown != currentGameWord && isEmptyOrErroredGameWord(it.gameWordDown, emptyOnly)) {
-                                nextGameWord = it.gameWordDown
-                            }
-                            nextGameWord?.let {
-                                selectedCellIndex = it.defaultSelectionIndex
-                                currentGameWord = it
-                                return true
-                            }
-                        }
+        // If current word is vertical and starts on starting cell, do NOT select the horizontal word starting on that cell
+        // or we'll end up circularly going back and forth between the vertical and horizontal on that cell.
+        val currentWordIsVerticalAndStartsOnStartingPosition = currentGameWord?.let {
+            !it.isAcross && it.row == startingRow && it.col == startingCol
+        } ?: false
+
+        // This variable will be set back to zero after we're done searching the starting row
+        var initialCol = if (currentWordIsVerticalAndStartsOnStartingPosition) startingCol + 1 else startingCol
+
+        // Iterate from starting cell, left to right, and down to bottom
+        for (row in startingRow until gridHeight) {
+
+            // For each column from initial of the starting row to the end, then from 0 to end for subsequent columns
+            for (col in initialCol until gridWidth) {
+
+                // If the current grid position contains a game cell
+                cellGrid[row][col]?.let { cell ->
+
+                    var nextGameWord: GameWord? = null
+
+                    // If cell is the beginning of an across word that is NOT already selected, choose it.
+                    if (cell.gameWordAcross?.col == col && cell.gameWordAcross != currentGameWord && isEmptyOrErroredGameWord(cell.gameWordAcross, emptyOnly)) {
+                        nextGameWord = cell.gameWordAcross
+                    } else if (cell.gameWordDown?.row == row && cell.gameWordDown != currentGameWord && isEmptyOrErroredGameWord(cell.gameWordDown, emptyOnly)) {
+                        // Vertical word starts in the row of this cell, select it
+                        nextGameWord = cell.gameWordDown
+                    }
+
+                    // If a word was found, select it and return
+                    nextGameWord?.let {
+                        selectedCellIndex = it.defaultSelectionIndex
+                        currentGameWord = it
+                        return true
                     }
                 }
-                // for subsequent rows, start at first column
-                initialCol = 0
             }
+            // for subsequent rows, start at first column
+            initialCol = 0
         }
         return false
     }
 
     private fun isEmptyOrErroredGameWord(gameWord: GameWord?, emptyOnly: Boolean): Boolean {
-        gameWord?.let {
+        return gameWord?.let {
             return hasVisibleBlanks(it) || !emptyOnly && it.hasErroredCells
-        }
-        return false
+        } ?: false
     }
 
     private fun hasVisibleBlanks(gameWord: GameWord): Boolean {
