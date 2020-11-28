@@ -16,6 +16,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -323,7 +324,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
         if (puzzleIsCompleteAndCorrect) {
 
-            // persist the game stats if this is the first time the current game has been completed (as opposed to modified and recompleted)
+            // persist the game stats if this is the first time the current game has been completed (as opposed to modified and re-completed)
             if (!persistenceHelper.currentGameCompleted) {
                 persistenceHelper.persistGameStats(currentGameWords)
                 persistenceHelper.currentGameCompleted = true
@@ -350,8 +351,9 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
      */
     private fun showErrors(showErrors: Boolean) {
         showingErrors = showErrors
-        setOptionsMenuText(R.id.action_showerrors, if (showingErrors) R.string.action_hideerrors else R.string.action_showerrors)
-        setOptionsMenuIcon(R.id.action_showerrors, if (showingErrors) R.drawable.ic_baseline_visibility_24px else R.drawable.ic_baseline_visibility_off_24px)
+        val showErrorsMenuItem = optionsMenu?.findItem(R.id.action_showerrors)
+        showErrorsMenuItem?.setTitle(if (showingErrors) R.string.action_hideerrors else R.string.action_showerrors)
+        showErrorsMenuItem?.setIcon(if (showingErrors) R.drawable.ic_baseline_visibility_24px else R.drawable.ic_baseline_visibility_off_24px)
         puzzleFragment.showErrors(showErrors)
     }
 
@@ -438,7 +440,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     }
 
     private fun isNightMode(): Boolean {
-        val currentNightMode = resources.getConfiguration().uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         return currentNightMode == Configuration.UI_MODE_NIGHT_YES
     }
 
@@ -450,7 +452,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             ImageSelecter.instance.getImageResId(imageIndex)
         }
 
-        resources.getDrawable(imageResourceId, null)?.let {
+        ResourcesCompat.getDrawable(resources, imageResourceId, null)?.let {
             binding.mainActivityContainerLayout.background = it
         }
         persistenceHelper.currentImageIndex = imageIndex
@@ -534,14 +536,6 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
                 }
             }
         }
-    }
-
-    private fun setOptionsMenuText(menuItemId: Int, textId: Int) {
-        optionsMenu?.findItem(menuItemId)?.setTitle(textId)
-    }
-
-    private fun setOptionsMenuIcon(menuItemId: Int, iconResId: Int) {
-        optionsMenu?.findItem(menuItemId)?.setIcon(iconResId)
     }
 
     private fun showHelpDialog() {

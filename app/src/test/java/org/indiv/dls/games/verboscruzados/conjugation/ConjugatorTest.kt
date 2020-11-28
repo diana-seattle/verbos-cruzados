@@ -1,6 +1,5 @@
 package org.indiv.dls.games.verboscruzados.conjugation
 
-import org.indiv.dls.games.verboscruzados.conjugation.conjugatorMap
 import org.indiv.dls.games.verboscruzados.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.model.Irregularity
 import org.indiv.dls.games.verboscruzados.model.SubjectPronoun
@@ -28,6 +27,7 @@ class ConjugatorTest {
 
     //region PROPERTIES ----------------------------------------------------------------------------
 
+    // Width of the first printed column should be that of the widest pronoun plus padding.
     private val firstColumnWidth = SubjectPronoun.ELLOS_ELLAS_USTEDES.text.length + 2
 
     //endregion
@@ -145,7 +145,7 @@ class ConjugatorTest {
                 createPronounLineBuilder(SubjectPronoun.ELLOS_ELLAS_USTEDES))
         val labelBuilder = StringBuilder()
                 .append("\n${"".padEnd(firstColumnWidth)}")
-        for ((conjugationType, conjugator) in conjugatorMap.entries) {
+        conjugatorMap.forEach { (conjugationType, conjugator) ->
             val conjugationTypeHeading = when(conjugationType) {
                 ConjugationType.PRESENT -> "Present"
                 ConjugationType.PRETERIT -> "Preterite"
@@ -160,9 +160,9 @@ class ConjugatorTest {
             }
             val columnWidth = max(conjugationTypeHeading.length + 2, verb.infinitive.length + 7)
             labelBuilder.append(conjugationTypeHeading.toUpperCase().padEnd(columnWidth))
-            for (subjectPronoun in SubjectPronoun.values()) {
+            mapOfBuilders.forEach { (subjectPronoun, stringBuilder) ->
                 val result = conjugator.conjugate(verb, subjectPronoun)
-                mapOfBuilders[subjectPronoun]!!.append(result.padEnd(columnWidth))
+                stringBuilder.append(result.padEnd(columnWidth))
             }
         }
 

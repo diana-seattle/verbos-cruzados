@@ -43,14 +43,14 @@ class PuzzleFragment : Fragment() {
 
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
 
-    var initialized = false
+    private var initialized = false
     lateinit var cellGrid: Array<Array<GridCell?>>
 
     var selectedCellIndex = 0
 
     var currentGameWord: GameWord? = null
         private set(gameWord) {
-            field?.let { showAsSelected(it, false) }   // unselect previous word
+            field?.let { showAsSelected(it, false) }   // deselect previous word
             gameWord?.let { showAsSelected(it, true) } // select new word
             field = gameWord
         }
@@ -88,7 +88,7 @@ class PuzzleFragment : Fragment() {
         this.gridHeight = gridHeight
 
         // set up grid
-        cellGrid = Array(gridHeight) { arrayOfNulls<GridCell>(gridWidth) }
+        cellGrid = Array(gridHeight) { arrayOfNulls(gridWidth) }
 
         // create table rows
         for (row in 0 until gridHeight) {
@@ -220,7 +220,7 @@ class PuzzleFragment : Fragment() {
 
     /**
      * @param correctly true if puzzle considered complete when everything filled in correctly, false if puzzle
-     * considered complete when everthing filled in regardless of correctness.
+     * considered complete when everything filled in regardless of correctness.
      * @return true if puzzle is completely filled in.
      */
     fun isPuzzleComplete(correctly: Boolean): Boolean {
@@ -266,10 +266,10 @@ class PuzzleFragment : Fragment() {
 
     fun advanceSelectedCellInPuzzle(backwardDirection: Boolean) {
         currentGameWord?.let {
-            if (backwardDirection) {
-                selectedCellIndex = (selectedCellIndex - 1).coerceAtLeast(0)
+            selectedCellIndex = if (backwardDirection) {
+                (selectedCellIndex - 1).coerceAtLeast(0)
             } else {
-                selectedCellIndex = (selectedCellIndex + 1).coerceAtMost(it.word.length - 1)
+                (selectedCellIndex + 1).coerceAtMost(it.word.length - 1)
             }
             showAsSelected(it, true)
         }
@@ -311,31 +311,31 @@ class PuzzleFragment : Fragment() {
      */
     private fun updateUserLetterInPuzzle(userChar: Char, isAcross: Boolean, row: Int, col: Int): GameWord? {
         var conflictingGameWord: GameWord? = null
-        cellGrid[row][col]?.let {
+        cellGrid[row][col]?.let { cell ->
             if (isAcross) {
-                val inConflict = it.userCharDown != GameWord.BLANK && userChar != it.userCharDown
-                it.userCharAcross = userChar
+                val inConflict = cell.userCharDown != GameWord.BLANK && userChar != cell.userCharDown
+                cell.userCharAcross = userChar
                 if (inConflict) {
-                    it.userCharDown = userChar
-                    val index = it.downIndex
-                    conflictingGameWord = it.gameWordDown
+                    cell.userCharDown = userChar
+                    val index = cell.downIndex
+                    conflictingGameWord = cell.gameWordDown
                     conflictingGameWord?.let {
                         it.userEntry[index] = userChar
                     }
                 }
             } else {
-                val inConflict = it.userCharAcross != GameWord.BLANK && userChar != it.userCharAcross
-                it.userCharDown = userChar
+                val inConflict = cell.userCharAcross != GameWord.BLANK && userChar != cell.userCharAcross
+                cell.userCharDown = userChar
                 if (inConflict) {
-                    it.userCharAcross = userChar
-                    val index = it.acrossIndex
-                    conflictingGameWord = it.gameWordAcross
+                    cell.userCharAcross = userChar
+                    val index = cell.acrossIndex
+                    conflictingGameWord = cell.gameWordAcross
                     conflictingGameWord?.let {
                         it.userEntry[index] = userChar
                     }
                 }
             }
-            fillTextView(it)
+            fillTextView(cell)
         }
         return conflictingGameWord
     }
@@ -400,7 +400,7 @@ class PuzzleFragment : Fragment() {
     private fun hasVisibleBlanks(gameWord: GameWord): Boolean {
         var row = gameWord.row
         var col = gameWord.col
-        for (i in 0 until gameWord.word.length) {
+        for (i in gameWord.word.indices) {
             cellGrid[row][col]?.let {
                 if (it.isBlank) {
                     return true
@@ -425,7 +425,7 @@ class PuzzleFragment : Fragment() {
         gameWord?.let {
             var row = it.row
             var col = it.col
-            for (i in 0 until it.word.length) {
+            for (i in it.word.indices) {
                 if (asSelected && i == selectedCellIndex) {
                     cellGrid[row][col]?.view?.setIndividualSelection(true)
                 } else {
@@ -462,10 +462,10 @@ class PuzzleFragment : Fragment() {
      * @param v view to get [GridCell] for.
      */
     private fun getCellForView(v: View): GridCell? {
-        cellGrid.forEach {
-            it.forEach {
-                if (v === it?.view) {
-                    return it
+        cellGrid.forEach { row ->
+            row.forEach { cell ->
+                if (v === cell?.view) {
+                    return cell
                 }
             }
         }

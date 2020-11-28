@@ -18,14 +18,14 @@ class PersistenceHelper constructor(private val mContext: Context) {
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
     companion object {
-        private val PREFS_GAME_WORDS = "game words"
-        private val PREFS_GAME_WORD_OPTIONS = "game options"
-        private val PREFS_GAME_STATS = "game stats"
-        private val PREFS_GAME = "game"
+        private const val PREFS_GAME_WORDS = "game words"
+        private const val PREFS_GAME_WORD_OPTIONS = "game options"
+        private const val PREFS_GAME_STATS = "game stats"
+        private const val PREFS_GAME = "game"
 
-        private val KEY_CURRENT_GAME_COMPLETED = "KEY_CURRENT_GAME_COMPLETED"
-        private val KEY_ELAPSED_SECONDS = "KEY_ELAPSED_SECONDS"
-        private val KEY_IMAGE_INDEX = "KEY_IMAGE_INDEX"
+        private const val KEY_CURRENT_GAME_COMPLETED = "KEY_CURRENT_GAME_COMPLETED"
+        private const val KEY_ELAPSED_SECONDS = "KEY_ELAPSED_SECONDS"
+        private const val KEY_IMAGE_INDEX = "KEY_IMAGE_INDEX"
 
         private val gson = Gson()
     }

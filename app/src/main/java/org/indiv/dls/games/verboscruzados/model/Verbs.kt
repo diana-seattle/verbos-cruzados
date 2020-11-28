@@ -40,7 +40,8 @@ enum class IrregularityCategory(val indexForStats: Int) {
 /**
  * Conjugation type enum
  *
- * @param text name of the conjugation type
+ * @param textResId descriptive text for the conjugation type, displayed on the keyboard.
+ * @param indexForStats index of the conjugation type's position in the stats heat map.
  */
 enum class ConjugationType(val textResId: Int, val indexForStats: Int) {
     PRESENT(R.string.clue_tense_present, 0),

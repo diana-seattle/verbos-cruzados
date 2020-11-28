@@ -66,7 +66,7 @@ class StatsDialogFragment : AppCompatDialogFragment() {
         val dialog = AlertDialog.Builder(activity!!)
                 .setTitle(R.string.dialog_stats_heading)
                 .setNeutralButton(R.string.action_showgameoptions) { _, _ -> showGameOptionsListener?.invoke() }
-                .setPositiveButton(R.string.dialog_ok) { dialog, id -> }
+                .setPositiveButton(R.string.dialog_ok) { _, _ -> }
                 .setView(binding.root)
                 .create()
 

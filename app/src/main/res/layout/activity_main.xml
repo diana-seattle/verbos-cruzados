@@ -62,7 +62,7 @@
                        android:layout_height="wrap_content"
                        android:layout_gravity="center_horizontal"
                        app:srcCompat="@drawable/ic_baseline_arrow_downward_24px"
-                       android:tint="@color/soft_black"/>
+                       app:tint="@color/soft_black"/>
         </LinearLayout>
 
         <!-- special keyboard for answer entry -->

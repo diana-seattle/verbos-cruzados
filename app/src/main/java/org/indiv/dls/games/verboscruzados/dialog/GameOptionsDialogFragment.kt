@@ -1,10 +1,8 @@
 package org.indiv.dls.games.verboscruzados.dialog
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.core.content.res.ResourcesCompat
 import androidx.appcompat.app.AlertDialog
 import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatDialogFragment
