@@ -2,6 +2,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+    <!--
+    The very large bottom padding on the table layout is so the puzzle can be scrolled all the way
+    up to reveal the full photo in the background.
+    -->
     <TableLayout
         android:id="@+id/cell_table_layout"
         android:paddingTop="@dimen/puzzle_margin_top"

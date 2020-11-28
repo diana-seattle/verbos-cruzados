@@ -50,15 +50,19 @@ class PuzzleFragment : Fragment() {
 
     var currentGameWord: GameWord? = null
         private set(gameWord) {
-            field?.let { showAsSelected(it, false) }   // deselect previous word
-            gameWord?.let { showAsSelected(it, true) } // select new word
+            // deselect previous word if any
+            field?.let { showAsSelected(it, false) }
+
+            // select new word if any
+            gameWord?.let { showAsSelected(it, true) }
+
             field = gameWord
         }
 
     var scrollPosition: Int
-        get() = (view as? ScrollView)?.scrollY ?: 0
+        get() = binding.root.scrollY
         set(value) {
-            (view as? ScrollView)?.smoothScrollTo(0, value)
+            binding.root.smoothScrollTo(0, value)
         }
 
     //endregion
