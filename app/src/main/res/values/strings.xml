@@ -91,7 +91,7 @@
 
     <!--Clue text - tense/mood -->
     <string name="clue_tense_present">Present tense of</string>
-    <string name="clue_tense_preterit">Preterite tense of</string>
+    <string name="clue_tense_preterite">Preterite tense of</string>
     <string name="clue_tense_imperfect">Imperfect tense of</string>
     <string name="clue_tense_conditional">Conditional tense of</string>
     <string name="clue_tense_future">Future tense of</string>

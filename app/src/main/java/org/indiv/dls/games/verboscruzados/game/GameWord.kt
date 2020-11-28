@@ -17,7 +17,7 @@ class GameWord(val uniqueKey: String,            // unique key for use in persis
     val isAnsweredCompletelyAndCorrectly: Boolean
         get() {
             userEntry.forEachIndexed { index, c ->
-                if (c != word.get(index)) {
+                if (c != word[index]) {
                     return false
                 }
             }
@@ -38,7 +38,7 @@ class GameWord(val uniqueKey: String,            // unique key for use in persis
      */
     val defaultSelectionIndex: Int
         get() {
-            for (i in 0 until word.length) {
+            for (i in word.indices) {
                 if (userEntry[i] != word[i]) {
                     return i
                 }
@@ -51,7 +51,7 @@ class GameWord(val uniqueKey: String,            // unique key for use in persis
     }
 
     fun setUserText(userText: String) {
-        for (i in 0 until userEntry.size) {
+        for (i in userEntry.indices) {
             userEntry[i] = if (i < userText.length) userText[i] else BLANK
         }
     }

@@ -9,6 +9,8 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import org.indiv.dls.games.verboscruzados.R
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 /**
  * View for displaying game statistics.
@@ -37,8 +39,8 @@ open class StatsGraphicView @JvmOverloads constructor(context: Context,
     private var cellWidth = 0f
     private var cellHeight = 0f
 
-    val borderPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics).toInt()
-    val borderPixelsOneSide = borderPixels / 2
+    private val borderPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics).toInt()
+    private val borderPixelsOneSide = borderPixels / 2
 
     //endregion
 
@@ -90,24 +92,18 @@ open class StatsGraphicView @JvmOverloads constructor(context: Context,
     }
 
     private fun calculateAlpha(statsValue: Int): Int {
-
-        // Score: 1  2    4    8   16   32   64   128  256  512  1024 2048 4096 8182 16364 32728
-        // Sqrt:  1  1.4  2    3   4    5.5  8    11   16   23   32   45   64   90
-        // Log2:  0  1    2    3   4    5    6    7    8    9    10   11   12   13   14    15
-        // Ln:    0  .7   1.4  2   2.8  3.5  4.1  4.8  5.5  6.2  7
-
         val fullAlpha = (0xff).toDouble()
-        val factor = Math.min(Math.sqrt(statsValue.toDouble()), 20.0) / 20.0
-        return Math.round(fullAlpha * factor).toInt()
+        val factor = sqrt(statsValue.toDouble()).coerceAtMost(20.0) / 20.0
+        return (fullAlpha * factor).roundToInt()
     }
 
     private fun calculateRect(statsPosition: Pair<Int, Int>): Rect {
         val x = statsPosition.first.coerceIn(0 until columnCount)
         val y = statsPosition.second.coerceIn(0 until rowCount)
-        val left = Math.round(x * cellWidth + borderPixelsOneSide)
-        val right = Math.round((x+1) * cellWidth + borderPixelsOneSide)
-        val top = Math.round(y * cellHeight + borderPixelsOneSide)
-        val bottom = Math.round((y+1) * cellHeight + borderPixelsOneSide)
+        val left = (x * cellWidth + borderPixelsOneSide).roundToInt()
+        val right = ((x + 1) * cellWidth + borderPixelsOneSide).roundToInt()
+        val top = (y * cellHeight + borderPixelsOneSide).roundToInt()
+        val bottom = ((y + 1) * cellHeight + borderPixelsOneSide).roundToInt()
         return Rect(left, top, right, bottom)
     }
 

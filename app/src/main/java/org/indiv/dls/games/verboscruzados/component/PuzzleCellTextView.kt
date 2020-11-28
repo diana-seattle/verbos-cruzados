@@ -8,6 +8,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import androidx.appcompat.widget.AppCompatTextView
 import org.indiv.dls.games.verboscruzados.R
+import kotlin.math.roundToInt
 
 
 /**
@@ -19,11 +20,12 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
 ) : AppCompatTextView(context, attrs, defStyleAttr) {
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
-    var fontColorBlack: Int = ResourcesCompat.getColor(resources, R.color.soft_black, null)
-    var fontColorRed: Int = Color.RED
-    val size = Math.round(resources.getDimension(R.dimen.cell_width))
-    val fontHeight = size * FONT_SIZE_FRACTION
-    val fontHeightForCompoundText = size * FONT_SIZE_FRACTION * .7f
+
+    private val fontColorBlack: Int = ResourcesCompat.getColor(resources, R.color.soft_black, null)
+    private val fontColorRed: Int = Color.RED
+    private val size = resources.getDimension(R.dimen.cell_width).roundToInt()
+    private val fontHeight = size * FONT_SIZE_FRACTION
+    private val fontHeightForCompoundText = size * FONT_SIZE_FRACTION * .7f
 
     //endregion
 
@@ -35,11 +37,10 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
         typeface = ResourcesCompat.getFont(context, R.font.latoregular)
 
         // need to create Drawable object for each TextView
-        background = resources.getDrawable(R.drawable.cell_drawable, null)
+        background = ResourcesCompat.getDrawable(resources, R.drawable.cell_drawable, null)
         width = size
         height = size
         background.level = CELL_BKGD_LEVEL_NORMAL // default to normal text cell background (i.e. no error indication)
-        //		setSoundEffectsEnabled(false); // true by default, consider disabling since we're providing our own vibration (except not all devices have vibration)
     }
 
     //endregion
@@ -47,14 +48,14 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
     companion object {
-        private val FONT_SIZE_FRACTION = .82f
+        private const val FONT_SIZE_FRACTION = .82f
 
-        private val CELL_BKGD_LEVEL_NORMAL = 1
-        private val CELL_BKGD_LEVEL_ERRORED = 2
-        private val CELL_BKGD_LEVEL_SELECTED = 3
-        private val CELL_BKGD_LEVEL_ERRORED_SELECTED = 4
-        private val CELL_BKGD_LEVEL_SELECTED_INDIV = 5 // Individual cell selected within selected word
-        private val CELL_BKGD_LEVEL_ERRORED_SELECTED_INDIV = 6
+        private const val CELL_BKGD_LEVEL_NORMAL = 1
+        private const val CELL_BKGD_LEVEL_ERRORED = 2
+        private const val CELL_BKGD_LEVEL_SELECTED = 3
+        private const val CELL_BKGD_LEVEL_ERRORED_SELECTED = 4
+        private const val CELL_BKGD_LEVEL_SELECTED_INDIV = 5 // Individual cell selected within selected word
+        private const val CELL_BKGD_LEVEL_ERRORED_SELECTED_INDIV = 6
 
         private val ERRORED_BACKGROUND_LEVELS = listOf(CELL_BKGD_LEVEL_ERRORED,
                 CELL_BKGD_LEVEL_ERRORED_SELECTED,
@@ -68,9 +69,10 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
 
     /**
-     * Fills [TextView] with the character from the user's answer.
+     * Fills TextView with the text from the user's answer. This can be longer than one character when there is a
+     * conflict between the vertical and horizontal entries.
      *
-     * @param userChar the character to fill the textview with.
+     * @param userText the text to fill the textview with.
      */
     fun fillTextView(userText: String?) {
         text = userText

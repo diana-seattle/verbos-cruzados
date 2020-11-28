@@ -1,12 +1,12 @@
 package org.indiv.dls.games.verboscruzados.component
 
 import android.content.Context
-import android.os.Vibrator
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import org.indiv.dls.games.verboscruzados.AnswerPresentation
 import org.indiv.dls.games.verboscruzados.R
 import org.indiv.dls.games.verboscruzados.Vibration
@@ -26,10 +26,10 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
 
     private var binding: KeyboardMinimalBinding
 
-    private val forwardArrowDrawable = resources.getDrawable(R.drawable.ic_baseline_arrow_forward_24px, null)
-    private val backwardArrowDrawable = resources.getDrawable(R.drawable.ic_baseline_arrow_back_24px, null)
-    private val upArrowDrawable = resources.getDrawable(R.drawable.ic_baseline_arrow_upward_24px, null)
-    private val downwardArrowDrawable = resources.getDrawable(R.drawable.ic_baseline_arrow_downward_24px, null)
+    private val forwardArrowDrawable = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_arrow_forward_24px, null)
+    private val backwardArrowDrawable = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_arrow_back_24px, null)
+    private val upArrowDrawable = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_arrow_upward_24px, null)
+    private val downwardArrowDrawable = ResourcesCompat.getDrawable(resources, R.drawable.ic_baseline_arrow_downward_24px, null)
 
     //endregion
 
@@ -42,7 +42,7 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
         binding = KeyboardMinimalBinding.inflate(LayoutInflater.from(context), this)
 
         // Get instance of Vibrator from current Context
-        val vibration = context?.let {
+        val vibration = context.let {
             Vibration(it)
         }
 

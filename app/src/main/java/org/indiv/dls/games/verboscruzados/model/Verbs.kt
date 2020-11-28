@@ -44,7 +44,7 @@ enum class IrregularityCategory(val indexForStats: Int) {
  */
 enum class ConjugationType(val textResId: Int, val indexForStats: Int) {
     PRESENT(R.string.clue_tense_present, 0),
-    PRETERIT(R.string.clue_tense_preterit, 1),
+    PRETERIT(R.string.clue_tense_preterite, 1),
     IMPERFECT(R.string.clue_tense_imperfect, 2),
     CONDITIONAL(R.string.clue_tense_conditional, 3),
     FUTURE(R.string.clue_tense_future, 4),

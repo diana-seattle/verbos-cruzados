@@ -48,7 +48,7 @@ import kotlin.math.roundToInt
 // todo: fix all lint warnings
 // todo: review all code
 // todo: add tests
-// todo: view model / livedata
+// todo: view model / livedata - replace rxjava?
 // todo: fix tablet pixel C api 30
 // todo: fix on foldables
 
