@@ -128,7 +128,7 @@ class PuzzleFragment : Fragment() {
      */
     fun createGrid(puzzleListener: PuzzleListener) {
         val onPuzzleClickListener = OnClickListener { v ->
-            getCellForView(v)?.let {gridCell ->
+            getCellForView(v)?.let { gridCell ->
                 vibration.vibrate()
 
                 val sameWordSelected = currentGameWord == gridCell.gameWordDown || currentGameWord == gridCell.gameWordAcross

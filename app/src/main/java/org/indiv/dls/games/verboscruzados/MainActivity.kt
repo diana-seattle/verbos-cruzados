@@ -46,7 +46,6 @@ import kotlin.math.roundToInt
  * https://www.e-spanyol.hu/en/grammar/irregular_ar.php
  */
 
-// todo: fix all lint warnings
 // todo: review all code
 // todo: add tests
 // todo: view model / livedata - replace rxjava?
