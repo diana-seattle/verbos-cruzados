@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
-import android.widget.ScrollView
 import android.widget.TableRow
+import androidx.fragment.app.activityViewModels
 import org.indiv.dls.games.verboscruzados.component.PuzzleCellTextView
 import org.indiv.dls.games.verboscruzados.databinding.FragmentPuzzleBinding
 import org.indiv.dls.games.verboscruzados.game.GameWord
@@ -20,44 +20,28 @@ import org.indiv.dls.games.verboscruzados.game.GameWord
  */
 class PuzzleFragment : Fragment() {
 
-    //region PUBLIC INTERFACES ---------------------------------------------------------------------
-
-    // interface for activity to implement to receive touch event
-    interface PuzzleListener {
-        fun onPuzzleClick(gameWord: GameWord)
-    }
-
-    //endregion
-
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
     // binding is only valid between onCreateView and onDestroyView
     private var _binding: FragmentPuzzleBinding? = null
     private val binding get() = _binding!!
 
+    private val viewModel by activityViewModels<MainActivityViewModel>()
+
+    private var initialized = false
     private var gridWidth: Int = 0
     private var gridHeight: Int = 0
     private lateinit var vibration: Vibration
+
+    private var gameWordWithSelection: GameWord? = null
 
     //endregion
 
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
 
-    private var initialized = false
     lateinit var cellGrid: Array<Array<GridCell?>>
 
     var selectedCellIndex = 0
-
-    var currentGameWord: GameWord? = null
-        private set(gameWord) {
-            // deselect previous word if any
-            field?.let { showAsSelected(it, false) }
-
-            // select new word if any
-            gameWord?.let { showAsSelected(it, true) }
-
-            field = gameWord
-        }
 
     var scrollPosition: Int
         get() = binding.root.scrollY
@@ -76,6 +60,16 @@ class PuzzleFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.currentGameWord.observe(viewLifecycleOwner) { gameWord ->
+            // deselect word that currently has selection, if any
+            gameWordWithSelection?.let { showAsSelected(it, false) }
+
+            // select new word if any
+            gameWord?.let { showAsSelected(it, true) }
+
+            gameWordWithSelection = gameWord
+        }
 
         // Get instance of Vibrator from current Context
         context?.let {
@@ -117,7 +111,7 @@ class PuzzleFragment : Fragment() {
 
     fun clearExistingGame() {
         // clear out any existing data
-        currentGameWord = null
+        viewModel.currentGameWord.value = null
         for (row in 0 until gridHeight) {
             val tableRow = binding.cellTableLayout.getChildAt(row) as TableRow
             tableRow.removeAllViews()
@@ -127,27 +121,25 @@ class PuzzleFragment : Fragment() {
 
     /**
      * Creates grid of textviews making up the puzzle.
-     *
-     * @param puzzleListener implementation of the [PuzzleListener] interface that listens for clicks on the puzzle.
      */
-    fun createGrid(puzzleListener: PuzzleListener) {
+    fun createGrid() {
         val onPuzzleClickListener = OnClickListener { v ->
             getCellForView(v)?.let { gridCell ->
                 vibration.vibrate()
 
-                val sameWordSelected = currentGameWord == gridCell.gameWordDown || currentGameWord == gridCell.gameWordAcross
+                val sameWordSelected = gameWordWithSelection == gridCell.gameWordDown || gameWordWithSelection == gridCell.gameWordAcross
                 val newGameWord = if (sameWordSelected) {
-                    currentGameWord
+                    gameWordWithSelection
                 } else {
+                    // If user clicks on an intersecting cell, favor the vertical word, otherwise select the horizontal word.
                     gridCell.gameWordDown ?: gridCell.gameWordAcross
                 }
 
                 newGameWord?.let {
                     selectedCellIndex = if (it.isAcross) gridCell.acrossIndex else gridCell.downIndex
-                    currentGameWord = newGameWord  // this assignment will call setter which will take care of showing word and cell as selected
 
-                    // Notify the listener regardless of whether new word selected or not (e.g. so keyboard can be shown).
-                    puzzleListener.onPuzzleClick(it)
+                    // this assignment will cause us to be notified which will take care of showing word and cell as selected
+                    viewModel.currentGameWord.value = newGameWord
                 }
             }
         }
@@ -160,7 +152,7 @@ class PuzzleFragment : Fragment() {
             for (col in 0 until gridWidth) {
                 cellGrid[row][col]?.let {
                     // create text view for this row and column
-                    val textView = PuzzleCellTextView(context!!)
+                    val textView = PuzzleCellTextView(requireContext())
                     textView.setOnClickListener(onPuzzleClickListener)
                     tableRow.addView(textView, col)
                     it.view = textView
@@ -185,7 +177,7 @@ class PuzzleFragment : Fragment() {
         if (!selectNextGameWord(0, 0, true)
                 && !selectNextGameWord(0, 0, false)) {
             selectedCellIndex = firstGameWord?.defaultSelectionIndex ?: 0
-            currentGameWord = firstGameWord
+            viewModel.currentGameWord.value = firstGameWord
         }
     }
 
@@ -198,8 +190,8 @@ class PuzzleFragment : Fragment() {
      */
     fun selectNextGameWordAfterCurrent(shouldSelectEmptyOnly: Boolean): Boolean {
         return selectNextGameWord(
-                startingRow = currentGameWord?.row ?: 0,
-                startingCol = currentGameWord?.col ?: 0,
+                startingRow = gameWordWithSelection?.row ?: 0,
+                startingCol = gameWordWithSelection?.col ?: 0,
                 emptyOnly = shouldSelectEmptyOnly
         ) || selectNextGameWord(0, 0, shouldSelectEmptyOnly)
     }
@@ -214,9 +206,11 @@ class PuzzleFragment : Fragment() {
         for (row in 0 until gridHeight) {
             for (col in 0 until gridWidth) {
                 // if cell is part of currently selected game word, adjust the level to set the background color
-                cellGrid[row][col]?.let {
-                    val isSelected = currentGameWord == it.gameWordAcross || currentGameWord == it.gameWordDown
-                    it.view?.setStyle(isSelected, showErrors && it.hasUserError)
+                cellGrid[row][col]?.let { cell ->
+                    val isSelected = gameWordWithSelection?.let {
+                        it == cell.gameWordAcross || it == cell.gameWordDown
+                    } ?: false
+                    cell.view?.setStyle(isSelected, showErrors && cell.hasUserError)
                 }
             }
         }
@@ -246,7 +240,7 @@ class PuzzleFragment : Fragment() {
      * Fills in the puzzle with the user's answer for the specified game word.
      */
     fun updateUserTextInPuzzle(userText: String) {
-        currentGameWord?.let {
+        gameWordWithSelection?.let {
             it.setUserText(userText.take(it.word.length))
             updateUserEntryInPuzzle(it)
             selectedCellIndex = it.defaultSelectionIndex
@@ -259,7 +253,7 @@ class PuzzleFragment : Fragment() {
     }
 
     fun updateLetterInPuzzle(userChar: Char): GameWord? {
-        currentGameWord?.let {
+        gameWordWithSelection?.let {
             it.userEntry[selectedCellIndex] = userChar
             val row = if (it.isAcross) it.row else it.row + selectedCellIndex
             val col = if (it.isAcross) it.col + selectedCellIndex else it.col
@@ -269,7 +263,7 @@ class PuzzleFragment : Fragment() {
     }
 
     fun advanceSelectedCellInPuzzle(backwardDirection: Boolean) {
-        currentGameWord?.let {
+        gameWordWithSelection?.let {
             selectedCellIndex = if (backwardDirection) {
                 (selectedCellIndex - 1).coerceAtLeast(0)
             } else {
@@ -355,7 +349,7 @@ class PuzzleFragment : Fragment() {
     private fun selectNextGameWord(startingRow: Int, startingCol: Int, emptyOnly: Boolean): Boolean {
         // If current word is vertical and starts on starting cell, do NOT select the horizontal word starting on that cell
         // or we'll end up circularly going back and forth between the vertical and horizontal on that cell.
-        val currentWordIsVerticalAndStartsOnStartingPosition = currentGameWord?.let {
+        val currentWordIsVerticalAndStartsOnStartingPosition = gameWordWithSelection?.let {
             !it.isAcross && it.row == startingRow && it.col == startingCol
         } ?: false
 
@@ -374,9 +368,9 @@ class PuzzleFragment : Fragment() {
                     var nextGameWord: GameWord? = null
 
                     // If cell is the beginning of an across word that is NOT already selected, choose it.
-                    if (cell.gameWordAcross?.col == col && cell.gameWordAcross != currentGameWord && isEmptyOrErroredGameWord(cell.gameWordAcross, emptyOnly)) {
+                    if (cell.gameWordAcross?.col == col && cell.gameWordAcross != gameWordWithSelection && isEmptyOrErroredGameWord(cell.gameWordAcross, emptyOnly)) {
                         nextGameWord = cell.gameWordAcross
-                    } else if (cell.gameWordDown?.row == row && cell.gameWordDown != currentGameWord && isEmptyOrErroredGameWord(cell.gameWordDown, emptyOnly)) {
+                    } else if (cell.gameWordDown?.row == row && cell.gameWordDown != gameWordWithSelection && isEmptyOrErroredGameWord(cell.gameWordDown, emptyOnly)) {
                         // Vertical word starts in the row of this cell, select it
                         nextGameWord = cell.gameWordDown
                     }
@@ -384,7 +378,7 @@ class PuzzleFragment : Fragment() {
                     // If a word was found, select it and return
                     nextGameWord?.let {
                         selectedCellIndex = it.defaultSelectionIndex
-                        currentGameWord = it
+                        viewModel.currentGameWord.value = it
                         return true
                     }
                 }

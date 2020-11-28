@@ -7,8 +7,6 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.TypedValue
@@ -16,6 +14,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -55,7 +56,7 @@ import kotlin.math.roundToInt
 /**
  * This is the main activity. It houses [PuzzleFragment].
  */
-class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
+class MainActivity : AppCompatActivity() {
 
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
@@ -71,6 +72,8 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
     private lateinit var binding: ActivityMainBinding
+
+    private val viewModel by viewModels<MainActivityViewModel>()
 
     private val compositeDisposable = CompositeDisposable()
     private var currentGameWords: List<GameWord> = emptyList()
@@ -108,6 +111,13 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel.currentGameWord.observe(this) { gameWord ->
+            gameWord?.let {
+                // Update this activity with the newly selected word.
+                setGameWord(it)
+            }
+        }
+
         persistenceHelper = PersistenceHelper(this)
 
         // Set up toolbar
@@ -116,7 +126,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             // This is a special debug-build-only hack that allows the developer/tester to complete a game immediately.
             binding.toolbar.setOnLongClickListener { _ ->
                 do {
-                    puzzleFragment.currentGameWord?.let {
+                    viewModel.currentGameWord.value?.let {
                         puzzleFragment.updateUserTextInPuzzle(it.word)
                         onAnswerChanged()
                     }
@@ -269,28 +279,14 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
     //endregion
 
-    //region INTERFACE METHODS (PuzzleFragment.PuzzleListener) -------------------------------------
-
-    /*
-     * implements PuzzleListener interface for callback from PuzzleFragment
-     */
-    override fun onPuzzleClick(gameWord: GameWord) {
-        setGameWord(gameWord)
-    }
-
-    //endregion
-
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
     //endregion
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
-    private fun selectNextGameWord() {
-        if (puzzleFragment.selectNextGameWordAfterCurrent(shouldSelectEmptyOnly = true)
-                || puzzleFragment.selectNextGameWordAfterCurrent(shouldSelectEmptyOnly = false)) {
-            // Update this activity with the newly selected word from the puzzle fragment.
-            setGameWord(puzzleFragment.currentGameWord!!)
-        }
+    private fun selectNextGameWord(): Boolean {
+        return puzzleFragment.selectNextGameWordAfterCurrent(shouldSelectEmptyOnly = true)
+                || puzzleFragment.selectNextGameWordAfterCurrent(shouldSelectEmptyOnly = false)
     }
 
     /**
@@ -299,7 +295,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     private fun onAnswerChanged() {
 
         // persist the user's answer
-        puzzleFragment.currentGameWord?.let {
+        viewModel.currentGameWord.value?.let {
             Thread { persistenceHelper.persistUserEntry(it) }.start()
         }
 
@@ -312,7 +308,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             showErrors(true)
 
             // auto-advance to the next word when in error-showing mode (with a small delay so it feels less abrupt)
-            if (puzzleFragment.currentGameWord?.isAnsweredCompletelyAndCorrectly == true) {
+            if (viewModel.currentGameWord.value?.isAnsweredCompletelyAndCorrectly == true) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     selectNextGameWord()
                 }, 200)
@@ -458,10 +454,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     }
 
     private fun createGrid() {
-        puzzleFragment.createGrid(this)
-        puzzleFragment.currentGameWord?.let {
-            setGameWord(it)
-        }
+        puzzleFragment.createGrid()
     }
 
     private fun setGameWord(gameWord: GameWord) {
@@ -475,7 +468,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
     private fun scrollSelectedCellIntoViewWithDelay() {
         Handler(Looper.getMainLooper()).postDelayed({
-            puzzleFragment.currentGameWord?.let {
+            viewModel.currentGameWord.value?.let {
                 if (it.isAcross) {
                     scrollWordIntoView()
                 } else {
@@ -486,7 +479,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     }
 
     private fun scrollSelectedCellIntoView() {
-        puzzleFragment.currentGameWord?.let {
+        viewModel.currentGameWord.value?.let {
             if (!it.isAcross) {
                 val rowOfSelectedCell = it.row + puzzleFragment.selectedCellIndex
                 val yOfSelectedCell = rowOfSelectedCell * pixelsPerCell
@@ -505,7 +498,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
     }
 
     private fun scrollWordIntoView(defaultToTop: Boolean = true) {
-        puzzleFragment.currentGameWord?.let {
+        viewModel.currentGameWord.value?.let {
             val firstRowPosition = it.row
             val lastRowPosition = when {
                 it.isAcross -> it.row
