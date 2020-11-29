@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
-import android.widget.ScrollView
 import android.widget.TableRow
 import org.indiv.dls.games.verboscruzados.component.PuzzleCellTextView
 import org.indiv.dls.games.verboscruzados.databinding.FragmentPuzzleBinding
@@ -35,6 +34,7 @@ class PuzzleFragment : Fragment() {
     private var _binding: FragmentPuzzleBinding? = null
     private val binding get() = _binding!!
 
+    private var initialized = false
     private var gridWidth: Int = 0
     private var gridHeight: Int = 0
     private lateinit var vibration: Vibration
@@ -43,7 +43,6 @@ class PuzzleFragment : Fragment() {
 
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
 
-    private var initialized = false
     lateinit var cellGrid: Array<Array<GridCell?>>
 
     var selectedCellIndex = 0
@@ -160,7 +159,7 @@ class PuzzleFragment : Fragment() {
             for (col in 0 until gridWidth) {
                 cellGrid[row][col]?.let {
                     // create text view for this row and column
-                    val textView = PuzzleCellTextView(context!!)
+                    val textView = PuzzleCellTextView(requireContext())
                     textView.setOnClickListener(onPuzzleClickListener)
                     tableRow.addView(textView, col)
                     it.view = textView
@@ -214,9 +213,11 @@ class PuzzleFragment : Fragment() {
         for (row in 0 until gridHeight) {
             for (col in 0 until gridWidth) {
                 // if cell is part of currently selected game word, adjust the level to set the background color
-                cellGrid[row][col]?.let {
-                    val isSelected = currentGameWord == it.gameWordAcross || currentGameWord == it.gameWordDown
-                    it.view?.setStyle(isSelected, showErrors && it.hasUserError)
+                cellGrid[row][col]?.let { cell ->
+                    val isSelected = currentGameWord?.let {
+                        it == cell.gameWordAcross || it == cell.gameWordDown
+                    } ?: false
+                    cell.view?.setStyle(isSelected, showErrors && cell.hasUserError)
                 }
             }
         }
