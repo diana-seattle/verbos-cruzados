@@ -141,7 +141,7 @@ class PuzzleFragment : Fragment() {
                 } ?: gridCell.gameWordDown ?: gridCell.gameWordAcross
 
                 newGameWord?.let {
-                    selectedCellIndex = if (it.isAcross) gridCell.acrossIndex else gridCell.downIndex
+                    selectedCellIndex = if (it.isAcross) gridCell.acrossCharIndex else gridCell.downCharIndex
                     currentGameWord = newGameWord  // this assignment will call setter which will take care of showing word and cell as selected
 
                     // Notify the listener regardless of whether new word selected or not (e.g. so keyboard can be shown).
@@ -322,7 +322,7 @@ class PuzzleFragment : Fragment() {
                 cell.userCharAcross = userChar
                 if (inConflict) {
                     cell.userCharDown = userChar
-                    val index = cell.downIndex
+                    val index = cell.downCharIndex
                     conflictingGameWord = cell.gameWordDown
                     conflictingGameWord?.let {
                         it.userEntry[index] = userChar
@@ -333,7 +333,7 @@ class PuzzleFragment : Fragment() {
                 cell.userCharDown = userChar
                 if (inConflict) {
                     cell.userCharAcross = userChar
-                    val index = cell.acrossIndex
+                    val index = cell.acrossCharIndex
                     conflictingGameWord = cell.gameWordAcross
                     conflictingGameWord?.let {
                         it.userEntry[index] = userChar
