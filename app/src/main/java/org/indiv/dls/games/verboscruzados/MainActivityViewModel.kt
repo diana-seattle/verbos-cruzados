@@ -1,10 +1,15 @@
 package org.indiv.dls.games.verboscruzados
 
 import android.content.Context
-import android.content.res.loader.ResourcesProvider
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import org.indiv.dls.games.verboscruzados.game.GameWord
+import org.indiv.dls.games.verboscruzados.game.PersistenceHelper
 
 
 class MainActivityViewModel(val context: Context) : ViewModel() {
@@ -13,6 +18,8 @@ class MainActivityViewModel(val context: Context) : ViewModel() {
 
     // Make the mutable live data private and only update it internally via a setter function.
     private val _currentGameWord = MutableLiveData<GameWord?>()
+
+    private val persistenceHelper = PersistenceHelper(context)
 
     //endregion
 
@@ -25,10 +32,11 @@ class MainActivityViewModel(val context: Context) : ViewModel() {
     // The character index within the selected word of the selected cell.
     var charIndexOfSelectedCell = 0
 
-    //    val cellGrid: LiveData<Array<Array<GridCell?>>> = liveData(context = viewModelScope.coroutineContext + Dispatchers.Default) {
-//        val data = database.loadUser() // loadUser is a suspend function.
-//        emit(data)
-//    }
+    // Game words loaded from StoredPreferences
+    val reloadedGameWords: LiveData<List<GameWord>> = liveData(context = viewModelScope.coroutineContext + Dispatchers.Default) {
+        val gameWords = persistenceHelper.currentGameWords
+        emit(gameWords)
+    }
 
     //endregion
 
@@ -42,6 +50,26 @@ class MainActivityViewModel(val context: Context) : ViewModel() {
         this.charIndexOfSelectedCell = charIndexOfSelectedCell
         _currentGameWord.value = gameWord
     }
+
+    //endregion
+
+    //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
+
+//    private fun /*suspend*/ loadNewOrExistingGame(): List<GameWord> {
+//        // get current game if any
+//        val gameWords = persistenceHelper.currentGameWords
+//
+//        setPuzzleBackgroundImage(persistenceHelper.currentImageIndex)
+//
+//        // if on very first game, or if no saved game (due to an error), create a new one, otherwise open existing game
+//        if (gameWords.isEmpty() || !puzzleFragment.doWordsFitInGrid(gameWords)) {
+//            gameSetup.newGame(resources, puzzleFragment.cellGrid, persistenceHelper.currentGameOptions)
+//            showOnboarding = true
+//        } else {
+//            restoreExistingGame()
+//        }
+//
+//    }
 
     //endregion
 

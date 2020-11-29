@@ -385,32 +385,27 @@ class MainActivity : AppCompatActivity() {
      * this is called when db setup completes
      */
     private fun loadNewOrExistingGame() {
-
-        // get current game if any
-        currentGameWords = persistenceHelper.currentGameWords
-
         setPuzzleBackgroundImage(persistenceHelper.currentImageIndex)
 
-        // if on very first game, or if no saved game (due to an error), create a new one, otherwise open existing game
-        if (currentGameWords.isEmpty() || !puzzleFragment.doWordsFitInGrid(currentGameWords)) {
-            setupNewGame()
-            showOnboarding = true
-        } else {
-            restoreExistingGame()
-        }
-    }
+        // get current game if any
+        viewModel.reloadedGameWords.observe(this) { gameWords ->
 
-    /**
-     * open existing game
-     */
-    private fun restoreExistingGame() {
-        // copy game words to cell grid
-        for (gameWord in currentGameWords) {
-            gameSetup.addToGrid(gameWord, puzzleFragment.cellGrid)
-        }
-        puzzleFragment.createGrid()
+            // if on very first game, or if no saved game (due to an error), create a new one, otherwise open existing game
+            if (gameWords.isEmpty() || !puzzleFragment.doWordsFitInGrid(gameWords)) {
+                setupNewGame()
+                showOnboarding = true
+            } else {
+                // Apply the loaded game to the puzzle fragment
+                gameWords.forEach {
+                    gameSetup.addToGrid(it, puzzleFragment.cellGrid)
+                }
+                puzzleFragment.createGridViews()
+                scrollSelectedCellIntoViewWithDelay()
 
-        scrollSelectedCellIntoViewWithDelay()
+                // todo remove this instance variable
+                currentGameWords = gameWords
+            }
+        }
     }
 
     /**
@@ -432,7 +427,7 @@ class MainActivity : AppCompatActivity() {
                             currentGameWords = gameWords
                             persistenceHelper.currentGameWords = gameWords
                             persistenceHelper.currentGameCompleted = false
-                            puzzleFragment.createGrid()
+                            puzzleFragment.createGridViews()
                             scrollSelectedCellIntoViewWithDelay()
                             persistenceHelper.elapsedSeconds = 0L
                             elapsedGameSecondsRecorded = 0L

@@ -121,7 +121,8 @@ class PuzzleFragment : Fragment() {
     /**
      * Creates grid of textviews making up the puzzle.
      */
-    fun createGrid() {
+    fun createGridViews() {
+
         val onPuzzleClickListener = OnClickListener { v ->
             getCellForView(v)?.let { gridCell ->
                 vibration.vibrate()
@@ -142,6 +143,7 @@ class PuzzleFragment : Fragment() {
         }
 
         // add views into table rows and columns
+        val activityContext = requireContext()
         var firstGameWord: GameWord? = null
         for (row in 0 until gridHeight) {
             val tableRow = binding.cellTableLayout.getChildAt(row) as TableRow
@@ -149,7 +151,7 @@ class PuzzleFragment : Fragment() {
             for (col in 0 until gridWidth) {
                 cellGrid[row][col]?.let {
                     // create text view for this row and column
-                    val textView = PuzzleCellTextView(requireContext())
+                    val textView = PuzzleCellTextView(activityContext)
                     textView.setOnClickListener(onPuzzleClickListener)
                     tableRow.addView(textView, col)
                     it.view = textView
@@ -160,10 +162,9 @@ class PuzzleFragment : Fragment() {
                     if (firstGameWord == null) {
                         firstGameWord = it.gameWordAcross ?: it.gameWordDown
                     }
+                } ?: run {
+                    tableRow.addView(View(activityContext), col)
                 }
-                        ?: run {
-                            tableRow.addView(View(activity), col)
-                        }
             }
         }
 
