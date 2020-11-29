@@ -190,7 +190,7 @@ class PuzzleFragment : Fragment() {
         val wordFoundAfterPosition = viewModel.currentGameWord.value?.let {
             selectNextGameWord(startingRow = it.row, startingCol = it.col, emptyOnly = shouldSelectEmptyOnly)
         } ?: false
-
+        // If word not found after position, wrap around to beginning and look for word from start.
         return wordFoundAfterPosition || selectNextGameWord(startingRow = 0, startingCol = 0, emptyOnly = shouldSelectEmptyOnly)
     }
 
