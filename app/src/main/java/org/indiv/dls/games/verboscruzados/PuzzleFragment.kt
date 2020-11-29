@@ -134,12 +134,11 @@ class PuzzleFragment : Fragment() {
             getCellForView(v)?.let { gridCell ->
                 vibration.vibrate()
 
-                val sameWordSelected = currentGameWord == gridCell.gameWordDown || currentGameWord == gridCell.gameWordAcross
-                val newGameWord = if (sameWordSelected) {
-                    currentGameWord
-                } else {
-                    gridCell.gameWordDown ?: gridCell.gameWordAcross
-                }
+                // If clicked-on cell is part of the already selected word, let it remain the selected word, otherwise
+                // choose the vertical word if exists, otherwise the horizontal word.
+                val newGameWord = currentGameWord?.takeIf {
+                    it == gridCell.gameWordDown || it == gridCell.gameWordAcross
+                } ?: gridCell.gameWordDown ?: gridCell.gameWordAcross
 
                 newGameWord?.let {
                     selectedCellIndex = if (it.isAcross) gridCell.acrossIndex else gridCell.downIndex
@@ -196,11 +195,12 @@ class PuzzleFragment : Fragment() {
      * @return true if word found and selected.
      */
     fun selectNextGameWordAfterCurrent(shouldSelectEmptyOnly: Boolean): Boolean {
-        return selectNextGameWord(
-                startingRow = currentGameWord?.row ?: 0,
-                startingCol = currentGameWord?.col ?: 0,
-                emptyOnly = shouldSelectEmptyOnly
-        ) || selectNextGameWord(0, 0, shouldSelectEmptyOnly)
+        val wordFoundAfterPosition = currentGameWord?.let {
+            selectNextGameWord(startingRow = it.row, startingCol = it.col, emptyOnly = shouldSelectEmptyOnly)
+        } ?: false
+
+        // If word not found after position, wrap around to beginning and look for word from start.
+        return wordFoundAfterPosition || selectNextGameWord(startingRow = 0, startingCol = 0, emptyOnly = shouldSelectEmptyOnly)
     }
 
     /**
@@ -209,7 +209,7 @@ class PuzzleFragment : Fragment() {
      * @param showErrors true if errors should be indicated, false if not.
      */
     fun showErrors(showErrors: Boolean) {
-        // update background of cells based on whether text is correct or not
+        // update background of cells based on whether text is correct or not, and whether selected or not.
         for (row in 0 until gridHeight) {
             for (col in 0 until gridWidth) {
                 // if cell is part of currently selected game word, adjust the level to set the background color
@@ -374,10 +374,14 @@ class PuzzleFragment : Fragment() {
 
                     var nextGameWord: GameWord? = null
 
+                    val (wordAcrossIsSelected, wordDownIsSelected) = currentGameWord?.let {
+                        Pair(cell.gameWordAcross == it, cell.gameWordDown == it)
+                    } ?: Pair(false, false)
+
                     // If cell is the beginning of an across word that is NOT already selected, choose it.
-                    if (cell.gameWordAcross?.col == col && cell.gameWordAcross != currentGameWord && isEmptyOrErroredGameWord(cell.gameWordAcross, emptyOnly)) {
+                    if (cell.wordAcrossStartsInCol(col) && !wordAcrossIsSelected && isEmptyOrErroredGameWord(cell.gameWordAcross, emptyOnly)) {
                         nextGameWord = cell.gameWordAcross
-                    } else if (cell.gameWordDown?.row == row && cell.gameWordDown != currentGameWord && isEmptyOrErroredGameWord(cell.gameWordDown, emptyOnly)) {
+                    } else if (cell.wordDownStartsInRow(row) && !wordDownIsSelected && isEmptyOrErroredGameWord(cell.gameWordDown, emptyOnly)) {
                         // Vertical word starts in the row of this cell, select it
                         nextGameWord = cell.gameWordDown
                     }
