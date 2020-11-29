@@ -11,8 +11,8 @@ class GridCell(val char: Char) {
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
 
     var view: PuzzleCellTextView? = null
-    var acrossIndex: Int = 0
-    var downIndex: Int = 0
+    var acrossCharIndex: Int = 0
+    var downCharIndex: Int = 0
     var gameWordAcross: GameWord? = null
     var gameWordDown: GameWord? = null
     var userCharAcross: Char = GameWord.BLANK

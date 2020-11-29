@@ -83,12 +83,12 @@ class GameSetup {
                 if (gameWord.isAcross) {
                     gameWordAcross = gameWord
                     userCharAcross = userEntryChar
-                    acrossIndex = charIndex
+                    acrossCharIndex = charIndex
                     col++
                 } else {
                     gameWordDown = gameWord
                     userCharDown = userEntryChar
-                    downIndex = charIndex
+                    downCharIndex = charIndex
                     row++
                 }
                 charIndex++

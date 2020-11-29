@@ -134,7 +134,7 @@ class PuzzleFragment : Fragment() {
                 } ?: gridCell.gameWordDown ?: gridCell.gameWordAcross
 
                 newGameWord?.let {
-                    selectedCellIndex = if (it.isAcross) gridCell.acrossIndex else gridCell.downIndex
+                    selectedCellIndex = if (it.isAcross) gridCell.acrossCharIndex else gridCell.downCharIndex
 
                     // this assignment will cause us to be notified which will take care of showing word and cell as selected
                     viewModel.currentGameWord.value = newGameWord
@@ -313,7 +313,7 @@ class PuzzleFragment : Fragment() {
                 cell.userCharAcross = userChar
                 if (inConflict) {
                     cell.userCharDown = userChar
-                    val index = cell.downIndex
+                    val index = cell.downCharIndex
                     conflictingGameWord = cell.gameWordDown
                     conflictingGameWord?.let {
                         it.userEntry[index] = userChar
@@ -324,7 +324,7 @@ class PuzzleFragment : Fragment() {
                 cell.userCharDown = userChar
                 if (inConflict) {
                     cell.userCharAcross = userChar
-                    val index = cell.acrossIndex
+                    val index = cell.acrossCharIndex
                     conflictingGameWord = cell.gameWordAcross
                     conflictingGameWord?.let {
                         it.userEntry[index] = userChar
