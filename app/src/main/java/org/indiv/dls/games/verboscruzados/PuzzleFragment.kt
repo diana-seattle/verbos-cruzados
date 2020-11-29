@@ -41,8 +41,6 @@ class PuzzleFragment : Fragment() {
 
     lateinit var cellGrid: Array<Array<GridCell?>>
 
-    var selectedCellIndex = 0
-
     var scrollPosition: Int
         get() = binding.root.scrollY
         set(value) {
@@ -111,7 +109,7 @@ class PuzzleFragment : Fragment() {
 
     fun clearExistingGame() {
         // clear out any existing data
-        viewModel.currentGameWord.value = null
+        viewModel.selectNewGameWord(null, 0)
         for (row in 0 until gridHeight) {
             val tableRow = binding.cellTableLayout.getChildAt(row) as TableRow
             tableRow.removeAllViews()
@@ -134,10 +132,10 @@ class PuzzleFragment : Fragment() {
                 } ?: gridCell.gameWordDown ?: gridCell.gameWordAcross
 
                 newGameWord?.let {
-                    selectedCellIndex = if (it.isAcross) gridCell.acrossCharIndex else gridCell.downCharIndex
+                    val charIndexOfSelectedCell = if (it.isAcross) gridCell.acrossCharIndex else gridCell.downCharIndex
 
-                    // this assignment will cause us to be notified which will take care of showing word and cell as selected
-                    viewModel.currentGameWord.value = newGameWord
+                    // This will cause us to be notified, which will take care of showing word and cell as selected
+                    viewModel.selectNewGameWord(newGameWord, charIndexOfSelectedCell)
                 }
             }
         }
@@ -174,8 +172,7 @@ class PuzzleFragment : Fragment() {
         // 3. Select first word (this can happen if user returns to a finished game)
         if (!selectNextGameWord(0, 0, true)
                 && !selectNextGameWord(0, 0, false)) {
-            selectedCellIndex = firstGameWord?.defaultSelectionIndex ?: 0
-            viewModel.currentGameWord.value = firstGameWord
+            viewModel.selectNewGameWord(firstGameWord, firstGameWord?.defaultSelectionIndex ?: 0)
         }
     }
 
@@ -241,7 +238,7 @@ class PuzzleFragment : Fragment() {
         viewModel.currentGameWord.value?.let {
             it.setUserText(userText.take(it.word.length))
             updateUserEntryInPuzzle(it)
-            selectedCellIndex = it.defaultSelectionIndex
+            viewModel.charIndexOfSelectedCell = it.defaultSelectionIndex
             showAsSelected(it, true)
         }
     }
@@ -252,9 +249,9 @@ class PuzzleFragment : Fragment() {
 
     fun updateLetterInPuzzle(userChar: Char): GameWord? {
         viewModel.currentGameWord.value?.let {
-            it.userEntry[selectedCellIndex] = userChar
-            val row = if (it.isAcross) it.row else it.row + selectedCellIndex
-            val col = if (it.isAcross) it.col + selectedCellIndex else it.col
+            it.userEntry[viewModel.charIndexOfSelectedCell] = userChar
+            val row = if (it.isAcross) it.row else it.row + viewModel.charIndexOfSelectedCell
+            val col = if (it.isAcross) it.col + viewModel.charIndexOfSelectedCell else it.col
             return updateUserLetterInPuzzle(userChar, it.isAcross, row, col)
         }
         return null
@@ -262,10 +259,10 @@ class PuzzleFragment : Fragment() {
 
     fun advanceSelectedCellInPuzzle(backwardDirection: Boolean) {
         viewModel.currentGameWord.value?.let {
-            selectedCellIndex = if (backwardDirection) {
-                (selectedCellIndex - 1).coerceAtLeast(0)
+            viewModel.charIndexOfSelectedCell = if (backwardDirection) {
+                (viewModel.charIndexOfSelectedCell - 1).coerceAtLeast(0)
             } else {
-                (selectedCellIndex + 1).coerceAtMost(it.word.length - 1)
+                (viewModel.charIndexOfSelectedCell + 1).coerceAtMost(it.word.length - 1)
             }
             showAsSelected(it, true)
         }
@@ -379,8 +376,7 @@ class PuzzleFragment : Fragment() {
 
                     // If a word was found, select it and return
                     nextGameWord?.let {
-                        selectedCellIndex = it.defaultSelectionIndex
-                        viewModel.currentGameWord.value = it
+                        viewModel.selectNewGameWord(it, it.defaultSelectionIndex)
                         return true
                     }
                 }
@@ -426,7 +422,7 @@ class PuzzleFragment : Fragment() {
             var row = it.row
             var col = it.col
             for (i in it.word.indices) {
-                if (asSelected && i == selectedCellIndex) {
+                if (asSelected && i == viewModel.charIndexOfSelectedCell) {
                     cellGrid[row][col]?.view?.setIndividualSelection(true)
                 } else {
                     cellGrid[row][col]?.view?.setSelection(asSelected)

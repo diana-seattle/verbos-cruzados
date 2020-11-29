@@ -477,7 +477,7 @@ class MainActivity : AppCompatActivity() {
     private fun scrollSelectedCellIntoView() {
         viewModel.currentGameWord.value?.let {
             if (!it.isAcross) {
-                val rowOfSelectedCell = it.row + puzzleFragment.selectedCellIndex
+                val rowOfSelectedCell = it.row + viewModel.charIndexOfSelectedCell
                 val yOfSelectedCell = rowOfSelectedCell * pixelsPerCell
 
                 val heightForKeyboard = if (isKeyboardVisible()) keyboardHeight else 0f
