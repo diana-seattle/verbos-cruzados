@@ -42,4 +42,20 @@ class GridCell(val char: Char) {
 
     //endregion
 
+    //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
+
+    fun wordAcrossStartsInCol(col: Int): Boolean {
+       return gameWordAcross?.let {
+           it.col == col
+       } ?: false
+    }
+
+    fun wordDownStartsInRow(row: Int): Boolean {
+       return gameWordDown?.let {
+           it.row == row
+       } ?: false
+    }
+
+    //endregion
+
 }
