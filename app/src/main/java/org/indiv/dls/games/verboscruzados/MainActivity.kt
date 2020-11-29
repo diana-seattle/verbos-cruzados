@@ -14,10 +14,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.ViewModelProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -49,7 +49,7 @@ import kotlin.math.roundToInt
 
 // todo: review all code
 // todo: add tests
-// todo: view model / livedata - replace rxjava?
+// todo: view model / livedata - replace rxjava for game setup? also for SharedPreferences?
 // todo: fix tablet pixel C api 30
 // todo: fix on foldables
 
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val viewModel by viewModels<MainActivityViewModel>()
+    private lateinit var viewModel: MainActivityViewModel
 
     private val compositeDisposable = CompositeDisposable()
     private var currentGameWords: List<GameWord> = emptyList()
@@ -110,6 +110,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        viewModel = ViewModelProvider(this, MainActivityViewModel.Factory(applicationContext))
+                .get(MainActivityViewModel::class.java)
 
         // Observe changes to the currently selected word.
         viewModel.currentGameWord.observe(this) { gameWord ->
@@ -148,6 +151,9 @@ class MainActivity : AppCompatActivity() {
 
         // position the keyboard off screen for animation when first shown.
         binding.answerKeyboard.translationY = keyboardHeight
+
+
+        // TODO move to view model
 
         // calculate available space for the puzzle
         val displayMetrics = resources.displayMetrics
@@ -402,7 +408,7 @@ class MainActivity : AppCompatActivity() {
         for (gameWord in currentGameWords) {
             gameSetup.addToGrid(gameWord, puzzleFragment.cellGrid)
         }
-        createGrid()
+        puzzleFragment.createGrid()
 
         scrollSelectedCellIntoViewWithDelay()
     }
@@ -426,7 +432,7 @@ class MainActivity : AppCompatActivity() {
                             currentGameWords = gameWords
                             persistenceHelper.currentGameWords = gameWords
                             persistenceHelper.currentGameCompleted = false
-                            createGrid()
+                            puzzleFragment.createGrid()
                             scrollSelectedCellIntoViewWithDelay()
                             persistenceHelper.elapsedSeconds = 0L
                             elapsedGameSecondsRecorded = 0L
@@ -456,10 +462,6 @@ class MainActivity : AppCompatActivity() {
             binding.mainActivityContainerLayout.background = it
         }
         persistenceHelper.currentImageIndex = imageIndex
-    }
-
-    private fun createGrid() {
-        puzzleFragment.createGrid()
     }
 
     private fun scrollSelectedCellIntoViewWithDelay() {

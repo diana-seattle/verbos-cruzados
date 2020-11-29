@@ -10,6 +10,7 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.TableRow
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import org.indiv.dls.games.verboscruzados.component.PuzzleCellTextView
 import org.indiv.dls.games.verboscruzados.databinding.FragmentPuzzleBinding
 import org.indiv.dls.games.verboscruzados.game.GameWord
@@ -26,9 +27,8 @@ class PuzzleFragment : Fragment() {
     private var _binding: FragmentPuzzleBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel by activityViewModels<MainActivityViewModel>()
+    private lateinit var viewModel: MainActivityViewModel
 
-    private var initialized = false
     private var gridWidth: Int = 0
     private var gridHeight: Int = 0
     private lateinit var vibration: Vibration
@@ -58,6 +58,9 @@ class PuzzleFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel = ViewModelProvider(requireActivity(), MainActivityViewModel.Factory(requireActivity().applicationContext))
+                .get(MainActivityViewModel::class.java)
 
         viewModel.currentGameWord.observe(viewLifecycleOwner) { gameWord ->
             // deselect word that currently has selection, if any
@@ -92,8 +95,6 @@ class PuzzleFragment : Fragment() {
             tableRow.gravity = Gravity.CENTER
             binding.cellTableLayout.addView(tableRow)
         }
-
-        initialized = true
     }
 
     fun doWordsFitInGrid(gameWords: List<GameWord>): Boolean {
