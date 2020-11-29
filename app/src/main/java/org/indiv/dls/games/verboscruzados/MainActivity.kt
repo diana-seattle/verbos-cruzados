@@ -111,10 +111,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Observe changes to the currently selected word.
         viewModel.currentGameWord.observe(this) { gameWord ->
             gameWord?.let {
-                // Update this activity with the newly selected word.
-                setGameWord(it)
+                // Update keyboard with answer info, and make sure visible.
+                binding.answerKeyboard.answerPresentation = createAnswerPresentation(it)
+                showKeyboard()
+
+                // Make sure entire word is visible.
+                scrollWordIntoView()
             }
         }
 
@@ -455,15 +460,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun createGrid() {
         puzzleFragment.createGrid()
-    }
-
-    private fun setGameWord(gameWord: GameWord) {
-        // Update keyboard with answer info
-        binding.answerKeyboard.answerPresentation = createAnswerPresentation(gameWord)
-
-        showKeyboard()
-
-        scrollWordIntoView()
     }
 
     private fun scrollSelectedCellIntoViewWithDelay() {
