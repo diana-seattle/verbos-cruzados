@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             binding.toolbar.setOnLongClickListener { _ ->
                 do {
                     puzzleFragment.currentGameWord?.let {
-                        puzzleFragment.updateUserTextInPuzzle(it.word)
+                        puzzleFragment.updateTextInPuzzleWord(it.word)
                         onAnswerChanged()
                     }
                 } while (puzzleFragment.selectNextGameWordAfterCurrent(shouldSelectEmptyOnly = false))
@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             }
         }
 
-        // get puzzle and answer fragments
+        // get puzzle fragment
         puzzleFragment = supportFragmentManager.findFragmentById(R.id.puzzle_fragment) as PuzzleFragment
 
         // Get keyboard height for use in keyboard animation
@@ -167,49 +167,7 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
             loadNewOrExistingGame()
         }
 
-        // pass the InputConnection from the EditText to the keyboard
-        binding.answerKeyboard.infinitiveClickListener = {
-            puzzleFragment.updateUserTextInPuzzle(it)
-            onAnswerChanged()
-            if (showOnboarding) {
-                showOnboarding = false
-                binding.onboardingMessageLayout.visibility = View.GONE
-            }
-        }
-        binding.answerKeyboard.deleteLongClickListener = {
-            puzzleFragment.updateUserTextInPuzzle("")
-            onAnswerChanged()
-        }
-        binding.answerKeyboard.deleteClickListener = {
-            val conflictingGameWord = puzzleFragment.deleteLetterInPuzzle()
-            conflictingGameWord?.let {
-                Thread { persistenceHelper.persistUserEntry(it) }.start()
-            }
-            onAnswerChanged()
-        }
-        binding.answerKeyboard.letterClickListener = { char ->
-            val conflictingGameWord = puzzleFragment.updateLetterInPuzzle(char)
-            conflictingGameWord?.let {
-                Thread { persistenceHelper.persistUserEntry(it) }.start()
-            }
-            puzzleFragment.advanceSelectedCellInPuzzle(false)
-            scrollSelectedCellIntoView()
-            onAnswerChanged()
-        }
-        binding.answerKeyboard.leftClickListener = {
-            puzzleFragment.advanceSelectedCellInPuzzle(true)
-            scrollSelectedCellIntoView()
-        }
-        binding.answerKeyboard.rightClickListener = {
-            puzzleFragment.advanceSelectedCellInPuzzle(false)
-            scrollSelectedCellIntoView()
-        }
-        binding.answerKeyboard.nextWordClickListener = {
-            selectNextGameWord()
-        }
-        binding.answerKeyboard.dismissClickListener = {
-            hideKeyboard()
-        }
+        addKeyboardListeners()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -280,10 +238,52 @@ class MainActivity : AppCompatActivity(), PuzzleFragment.PuzzleListener {
 
     //endregion
 
-    //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
-    //endregion
-
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
+
+    private fun addKeyboardListeners() {
+        binding.answerKeyboard.infinitiveClickListener = {
+            puzzleFragment.updateTextInPuzzleWord(it)
+            onAnswerChanged()
+            if (showOnboarding) {
+                showOnboarding = false
+                binding.onboardingMessageLayout.visibility = View.GONE
+            }
+        }
+        binding.answerKeyboard.deleteLongClickListener = {
+            puzzleFragment.updateTextInPuzzleWord("")
+            onAnswerChanged()
+        }
+        binding.answerKeyboard.deleteClickListener = {
+            val conflictingGameWord = puzzleFragment.deleteLetterInPuzzle()
+            conflictingGameWord?.let {
+                Thread { persistenceHelper.persistUserEntry(it) }.start()
+            }
+            onAnswerChanged()
+        }
+        binding.answerKeyboard.letterClickListener = { char ->
+            val conflictingGameWord = puzzleFragment.updateLetterInPuzzle(char)
+            conflictingGameWord?.let {
+                Thread { persistenceHelper.persistUserEntry(it) }.start()
+            }
+            puzzleFragment.advanceSelectedCellInPuzzle(false)
+            scrollSelectedCellIntoView()
+            onAnswerChanged()
+        }
+        binding.answerKeyboard.leftClickListener = {
+            puzzleFragment.advanceSelectedCellInPuzzle(true)
+            scrollSelectedCellIntoView()
+        }
+        binding.answerKeyboard.rightClickListener = {
+            puzzleFragment.advanceSelectedCellInPuzzle(false)
+            scrollSelectedCellIntoView()
+        }
+        binding.answerKeyboard.nextWordClickListener = {
+            selectNextGameWord()
+        }
+        binding.answerKeyboard.dismissClickListener = {
+            hideKeyboard()
+        }
+    }
 
     private fun selectNextGameWord() {
         if (puzzleFragment.selectNextGameWordAfterCurrent(shouldSelectEmptyOnly = true)

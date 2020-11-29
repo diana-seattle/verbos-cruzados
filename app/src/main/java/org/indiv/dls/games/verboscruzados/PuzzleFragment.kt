@@ -244,9 +244,9 @@ class PuzzleFragment : Fragment() {
     }
 
     /**
-     * Fills in the puzzle with the user's answer for the specified game word.
+     * Fills in the entire word with the specified text.
      */
-    fun updateUserTextInPuzzle(userText: String) {
+    fun updateTextInPuzzleWord(userText: String) {
         currentGameWord?.let {
             it.setUserText(userText.take(it.word.length))
             updateUserEntryInPuzzle(it)
