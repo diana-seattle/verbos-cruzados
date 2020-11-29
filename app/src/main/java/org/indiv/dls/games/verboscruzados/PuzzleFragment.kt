@@ -28,8 +28,6 @@ class PuzzleFragment : Fragment() {
 
     private lateinit var viewModel: MainActivityViewModel
 
-    private var gridWidth: Int = 0
-    private var gridHeight: Int = 0
     private lateinit var vibration: Vibration
 
     private var gameWordLastSelected: GameWord? = null
@@ -43,8 +41,6 @@ class PuzzleFragment : Fragment() {
     //endregion
 
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
-
-    lateinit var cellGrid: Array<Array<GridCell?>>
 
     var scrollPosition: Int
         get() = binding.root.scrollY
@@ -64,7 +60,7 @@ class PuzzleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity(), MainActivityViewModel.Factory(requireActivity().applicationContext))
+        viewModel = ViewModelProvider(requireActivity(), MainActivityViewModel.Factory(requireActivity()))
                 .get(MainActivityViewModel::class.java)
 
         viewModel.currentGameWord.observe(viewLifecycleOwner) { gameWord ->
@@ -87,15 +83,9 @@ class PuzzleFragment : Fragment() {
 
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
 
-    fun initialize(gridWidth: Int, gridHeight: Int) {
-        this.gridWidth = gridWidth
-        this.gridHeight = gridHeight
-
-        // set up grid
-        cellGrid = Array(gridHeight) { arrayOfNulls(gridWidth) }
-
+    fun initialize() {
         // create table rows
-        for (row in 0 until gridHeight) {
+        for (row in 0 until viewModel.gridHeight) {
             val tableRow = TableRow(activity)
             tableRow.gravity = Gravity.CENTER
             binding.cellTableLayout.addView(tableRow)
@@ -104,9 +94,9 @@ class PuzzleFragment : Fragment() {
 
     fun doWordsFitInGrid(gameWords: List<GameWord>): Boolean {
         gameWords.forEach {
-            if ((it.row >= gridHeight || it.col >= gridWidth) ||
-                    (it.isAcross && it.col + it.word.length > gridWidth) ||
-                    (!it.isAcross && it.row + it.word.length > gridHeight)) {
+            if ((it.row >= viewModel.gridHeight || it.col >= viewModel.gridWidth) ||
+                    (it.isAcross && it.col + it.word.length > viewModel.gridWidth) ||
+                    (!it.isAcross && it.row + it.word.length > viewModel.gridHeight)) {
                 return false
             }
         }
@@ -116,10 +106,12 @@ class PuzzleFragment : Fragment() {
     fun clearExistingGame() {
         // clear out any existing data
         viewModel.selectNewGameWord(null, 0)
-        for (row in 0 until gridHeight) {
+        for (row in 0 until viewModel.gridHeight) {
             val tableRow = binding.cellTableLayout.getChildAt(row) as TableRow
             tableRow.removeAllViews()
-            cellGrid[row].fill(null)
+
+            // TODO move this
+            viewModel.cellGrid[row].fill(null)
         }
     }
 
@@ -150,11 +142,11 @@ class PuzzleFragment : Fragment() {
         // add views into table rows and columns
         val activityContext = requireContext()
         var firstGameWord: GameWord? = null
-        for (row in 0 until gridHeight) {
+        for (row in 0 until viewModel.gridHeight) {
             val tableRow = binding.cellTableLayout.getChildAt(row) as TableRow
             tableRow.removeAllViews()
-            for (col in 0 until gridWidth) {
-                cellGrid[row][col]?.let {
+            for (col in 0 until viewModel.gridWidth) {
+                viewModel.cellGrid[row][col]?.let {
                     // create text view for this row and column
                     val textView = PuzzleCellTextView(activityContext)
                     textView.setOnClickListener(onPuzzleClickListener)
@@ -208,12 +200,12 @@ class PuzzleFragment : Fragment() {
      */
     fun showErrors(showErrors: Boolean) {
         // update background of cells based on whether text is correct or not, and whether selected or not.
-        for (row in 0 until gridHeight) {
-            for (col in 0 until gridWidth) {
+        for (row in 0 until viewModel.gridHeight) {
+            for (col in 0 until viewModel.gridWidth) {
                 val position = Position(row, col)
 
                 // if cell is part of currently selected game word, adjust the level to set the background color
-                cellGrid[row][col]?.let { cell ->
+                viewModel.cellGrid[row][col]?.let { cell ->
                     val isSelected = viewModel.currentGameWord.value?.let {
                         it == cell.gameWordAcross || it == cell.gameWordDown
                     } ?: false
@@ -230,9 +222,9 @@ class PuzzleFragment : Fragment() {
      * @return true if puzzle is completely filled in.
      */
     fun isPuzzleComplete(correctly: Boolean): Boolean {
-        for (row in 0 until gridHeight) {
-            for (col in 0 until gridWidth) {
-                val gridCell = cellGrid[row][col]
+        for (row in 0 until viewModel.gridHeight) {
+            for (col in 0 until viewModel.gridWidth) {
+                val gridCell = viewModel.cellGrid[row][col]
                 if (gridCell != null) {
                     // if cell is empty, then not complete
                     if (gridCell.userChar == GameWord.BLANK || correctly && gridCell.hasUserError) {
@@ -297,7 +289,7 @@ class PuzzleFragment : Fragment() {
         var col = gameWord.col
         for (charIndex in 0 until wordLength) {
             val position = Position(row, col)
-            cellGrid[row][col]?.let {
+            viewModel.cellGrid[row][col]?.let {
                 val userChar = userEntry[charIndex]
                 if (isAcross) {
                     it.userCharAcross = userChar
@@ -319,7 +311,7 @@ class PuzzleFragment : Fragment() {
     private fun updateUserLetterInPuzzle(userChar: Char, isAcross: Boolean, row: Int, col: Int): GameWord? {
         var conflictingGameWord: GameWord? = null
         val position = Position(row, col)
-        cellGrid[row][col]?.let { cell ->
+        viewModel.cellGrid[row][col]?.let { cell ->
             if (isAcross) {
                 val inConflict = cell.userCharDown != GameWord.BLANK && userChar != cell.userCharDown
                 cell.userCharAcross = userChar
@@ -367,13 +359,13 @@ class PuzzleFragment : Fragment() {
         var initialCol = if (currentWordIsVerticalAndStartsOnStartingPosition) startingCol + 1 else startingCol
 
         // Iterate from starting cell, left to right, and down to bottom
-        for (row in startingRow until gridHeight) {
+        for (row in startingRow until viewModel.gridHeight) {
 
             // For each column from initial of the starting row to the end, then from 0 to end for subsequent columns
-            for (col in initialCol until gridWidth) {
+            for (col in initialCol until viewModel.gridWidth) {
 
                 // If the current grid position contains a game cell
-                cellGrid[row][col]?.let { cell ->
+                viewModel.cellGrid[row][col]?.let { cell ->
 
                     var nextGameWord: GameWord? = null
 
@@ -412,7 +404,7 @@ class PuzzleFragment : Fragment() {
         var row = gameWord.row
         var col = gameWord.col
         for (i in gameWord.word.indices) {
-            cellGrid[row][col]?.let {
+            viewModel.cellGrid[row][col]?.let {
                 if (it.isBlank) {
                     return true
                 }
@@ -474,7 +466,7 @@ class PuzzleFragment : Fragment() {
      */
     private fun getCellForView(v: View): GridCell? {
         return positionOfViewMap[v]?.let {
-            cellGrid[it.row][it.col]
+            viewModel.cellGrid[it.row][it.col]
         }
     }
 

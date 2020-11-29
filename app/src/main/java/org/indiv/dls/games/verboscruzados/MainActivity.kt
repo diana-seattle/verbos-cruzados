@@ -85,10 +85,6 @@ class MainActivity : AppCompatActivity() {
 
     private var showOnboarding = false
     private var showingErrors = false
-    private var keyboardHeight: Float = 0f
-    private var viewablePuzzleHeight: Float = 0f
-    private var puzzleMarginTopPixels: Float = 0f
-    private var pixelsPerCell: Float = 0f
 
     private var elapsedGameSecondsRecorded = 0L
     private var elapsedTimerMs = 0L
@@ -111,7 +107,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this, MainActivityViewModel.Factory(applicationContext))
+        viewModel = ViewModelProvider(this, MainActivityViewModel.Factory(this))
                 .get(MainActivityViewModel::class.java)
 
         // Observe changes to the currently selected word.
@@ -146,45 +142,11 @@ class MainActivity : AppCompatActivity() {
         // get puzzle fragment
         puzzleFragment = supportFragmentManager.findFragmentById(R.id.puzzle_fragment) as PuzzleFragment
 
-        // Get keyboard height for use in keyboard animation
-        keyboardHeight = resources.getDimension(R.dimen.keyboard_height)
-
         // position the keyboard off screen for animation when first shown.
-        binding.answerKeyboard.translationY = keyboardHeight
+        binding.answerKeyboard.translationY = viewModel.keyboardHeight
 
-
-        // TODO move to view model
-
-        // calculate available space for the puzzle
-        val displayMetrics = resources.displayMetrics
-        val configuration = resources.configuration
-        puzzleMarginTopPixels = resources.getDimension(R.dimen.puzzle_margin_top)
-        val puzzleMarginSidePixels = resources.getDimension(R.dimen.puzzle_margin_side)
-        val totalPuzzleMarginTopPixels = puzzleMarginTopPixels * 2
-        val totalPuzzleMarginSidePixels = puzzleMarginSidePixels * 2
-        val actionBarHeightPixels = getActionBarHeightInPixels(displayMetrics)
-        val screenWidthDp = configuration.smallestScreenWidthDp
-        val screenHeightDp = maxOf(configuration.screenHeightDp, configuration.screenWidthDp)
-        val heightFactor = when {
-            screenWidthDp < 350 -> 2f
-            screenWidthDp < 450 -> 1.5f
-            else -> 1f
-        }
-        val screenWidthPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                screenWidthDp.toFloat(), displayMetrics)
-        val screenHeightPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                screenHeightDp.toFloat(), displayMetrics)
-        viewablePuzzleHeight = screenHeightPixels - actionBarHeightPixels - totalPuzzleMarginTopPixels
-        val puzzleHeightPixels = viewablePuzzleHeight * heightFactor
-        val puzzleWidthPixels = screenWidthPixels - totalPuzzleMarginSidePixels
-
-        // calculate number of pixels equivalent to 24dp (24dp allows 13 cells on smallest screen supported by Android (320dp width, 426dp height))
-        pixelsPerCell = resources.getDimension(R.dimen.cell_width)
-        val gridHeight = (puzzleHeightPixels / pixelsPerCell).toInt()
-        val gridWidth = (puzzleWidthPixels / pixelsPerCell).toInt()
-
-        if (gridWidth > 0 && gridHeight > 0) {
-            puzzleFragment.initialize(gridWidth, gridHeight)
+        if (viewModel.gridWidth > 0 && viewModel.gridHeight > 0) {
+            puzzleFragment.initialize()
             loadNewOrExistingGame()
         }
 
@@ -397,7 +359,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 // Apply the loaded game to the puzzle fragment
                 gameWords.forEach {
-                    gameSetup.addToGrid(it, puzzleFragment.cellGrid)
+                    gameSetup.addToGrid(it, viewModel.cellGrid)
                 }
                 puzzleFragment.createGridViews()
                 scrollSelectedCellIntoViewWithDelay()
@@ -419,7 +381,7 @@ class MainActivity : AppCompatActivity() {
         showErrors(false)
 
         // setup new game
-        compositeDisposable.add(gameSetup.newGame(resources, puzzleFragment.cellGrid, persistenceHelper.currentGameOptions)
+        compositeDisposable.add(gameSetup.newGame(resources, viewModel.cellGrid, persistenceHelper.currentGameOptions)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -475,15 +437,15 @@ class MainActivity : AppCompatActivity() {
         viewModel.currentGameWord.value?.let {
             if (!it.isAcross) {
                 val rowOfSelectedCell = it.row + viewModel.charIndexOfSelectedCell
-                val yOfSelectedCell = rowOfSelectedCell * pixelsPerCell
+                val yOfSelectedCell = rowOfSelectedCell * viewModel.pixelsPerCell
 
-                val heightForKeyboard = if (isKeyboardVisible()) keyboardHeight else 0f
-                val availableHeight = viewablePuzzleHeight - heightForKeyboard
+                val heightForKeyboard = if (isKeyboardVisible()) viewModel.keyboardHeight else 0f
+                val availableHeight = viewModel.viewablePuzzleHeight - heightForKeyboard
 
                 // if cell above viewable area, scroll up to it, if below, scroll down to it
                 if (yOfSelectedCell < puzzleFragment.scrollPosition) {
                     scrollWordIntoView(true)
-                } else if (yOfSelectedCell + pixelsPerCell > puzzleFragment.scrollPosition + availableHeight) {
+                } else if (yOfSelectedCell + viewModel.pixelsPerCell > puzzleFragment.scrollPosition + availableHeight) {
                     scrollWordIntoView(false)
                 }
             }
@@ -497,27 +459,27 @@ class MainActivity : AppCompatActivity() {
                 it.isAcross -> it.row
                 else -> it.row + it.word.length - 1
             }
-            val yOfFirstCell = firstRowPosition * pixelsPerCell
+            val yOfFirstCell = firstRowPosition * viewModel.pixelsPerCell
 
-            val heightForKeyboard = if (isKeyboardVisible()) keyboardHeight else 0f
-            val availableHeight = viewablePuzzleHeight - heightForKeyboard
-            val wordHeight = (lastRowPosition - firstRowPosition + 1) * pixelsPerCell
+            val heightForKeyboard = if (isKeyboardVisible()) viewModel.keyboardHeight else 0f
+            val availableHeight = viewModel.viewablePuzzleHeight - heightForKeyboard
+            val wordHeight = (lastRowPosition - firstRowPosition + 1) * viewModel.pixelsPerCell
 
             // if there's room to display the whole word
             if (wordHeight < availableHeight) {
                 // if first cell is above visible area, scroll up to it, or if last cell is below visible area, scroll down to it
                 if (yOfFirstCell < puzzleFragment.scrollPosition) {
-                    puzzleFragment.scrollPosition = (yOfFirstCell - puzzleMarginTopPixels).roundToInt()
+                    puzzleFragment.scrollPosition = (yOfFirstCell - viewModel.puzzleMarginTopPixels).roundToInt()
                 } else if (yOfFirstCell + wordHeight > puzzleFragment.scrollPosition + availableHeight) {
-                    puzzleFragment.scrollPosition = (yOfFirstCell + wordHeight - availableHeight + puzzleMarginTopPixels).roundToInt()
+                    puzzleFragment.scrollPosition = (yOfFirstCell + wordHeight - availableHeight + viewModel.puzzleMarginTopPixels).roundToInt()
                 }
             } else {
                 if (defaultToTop) {
                     // scroll top of word to top of viewable area
-                    puzzleFragment.scrollPosition = (yOfFirstCell - puzzleMarginTopPixels).roundToInt()
+                    puzzleFragment.scrollPosition = (yOfFirstCell - viewModel.puzzleMarginTopPixels).roundToInt()
                 } else {
                     // scroll bottom of word to bottom of viewable area
-                    puzzleFragment.scrollPosition = (yOfFirstCell + wordHeight - availableHeight + puzzleMarginTopPixels).roundToInt()
+                    puzzleFragment.scrollPosition = (yOfFirstCell + wordHeight - availableHeight + viewModel.puzzleMarginTopPixels).roundToInt()
                 }
             }
         }
@@ -586,7 +548,7 @@ class MainActivity : AppCompatActivity() {
     private fun hideKeyboard() {
         if (isKeyboardVisible()) {
             // Animate off screen, then set invisible
-            val animator = ObjectAnimator.ofFloat(binding.answerKeyboard, "translationY", keyboardHeight)
+            val animator = ObjectAnimator.ofFloat(binding.answerKeyboard, "translationY", viewModel.keyboardHeight)
                     .setDuration(KEYBOARD_ANIMATION_TIME)
             animator.addListener(object : Animator.AnimatorListener {
                 override fun onAnimationRepeat(animation: Animator?) {}
