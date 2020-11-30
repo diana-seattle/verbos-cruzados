@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import org.indiv.dls.games.verboscruzados.async.GameSetup
 import org.indiv.dls.games.verboscruzados.game.GameWord
 import org.indiv.dls.games.verboscruzados.game.PersistenceHelper
+import kotlin.math.roundToInt
 
 
 class MainActivityViewModel(val activity: Activity) : ViewModel() {
@@ -251,6 +252,46 @@ class MainActivityViewModel(val activity: Activity) : ViewModel() {
             initialCol = 0
         }
         return false
+    }
+
+    /**
+     * Calculates new scroll position necessary to display the currently selected word, or null if no scrolling needed.
+     */
+    fun newScrollPositionShowingFullWord(currentScrollPosition: Int): Int? {
+        currentGameWord.value?.let {
+            val firstRowPosition = it.row
+            val lastRowPosition = when {
+                it.isAcross -> it.row
+                else -> it.row + it.word.length - 1
+            }
+            val yOfFirstCell = firstRowPosition * pixelsPerCell
+
+            val availableHeight = viewablePuzzleHeight - keyboardHeight
+            val wordHeight = (lastRowPosition - firstRowPosition + 1) * pixelsPerCell
+
+            // if there's room to display the whole word
+            if (wordHeight < availableHeight) {
+                // if first cell is above visible area, scroll up to it, or if last cell is below visible area, scroll down to it
+                if (yOfFirstCell < currentScrollPosition) {
+                    return (yOfFirstCell - puzzleMarginTopPixels).roundToInt()
+                } else if (yOfFirstCell + wordHeight > currentScrollPosition + availableHeight) {
+                    return (yOfFirstCell + wordHeight - availableHeight + puzzleMarginTopPixels).roundToInt()
+                }
+            } else {
+                // There is not room for the whole word vertically, so make sure the selected cell is at least visible.
+                // (This scenario should only happen with a vertical word.)
+                val rowOfSelectedCell = it.row + charIndexOfSelectedCell
+                val yOfSelectedCell = rowOfSelectedCell * pixelsPerCell
+                if (yOfSelectedCell < currentScrollPosition) {
+                    // scroll top of cell to top of viewable area
+                    return (yOfSelectedCell - puzzleMarginTopPixels).roundToInt()
+                } else if (yOfSelectedCell + pixelsPerCell > currentScrollPosition + availableHeight) {
+                    // scroll bottom of cell to bottom of viewable area
+                    return (yOfSelectedCell + pixelsPerCell - availableHeight + puzzleMarginTopPixels).roundToInt()
+                }
+            }
+        }
+        return null
     }
 
     //endregion

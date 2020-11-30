@@ -20,7 +20,6 @@ import org.indiv.dls.games.verboscruzados.databinding.ActivityMainBinding
 import org.indiv.dls.games.verboscruzados.dialog.GameOptionsDialogFragment
 import org.indiv.dls.games.verboscruzados.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.game.GameWord
-import kotlin.math.roundToInt
 
 
 /*
@@ -112,7 +111,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.newlyCreatedGameWords.observe(this) { gameWords ->
             if (gameWords.isNotEmpty()) {
                 puzzleFragment.createGridViewsAndSelectWord()
-                scrollSelectedCellIntoViewWithDelay()
+                scrollWordIntoViewWithDelay()
                 binding.answerKeyboard.elapsedTime = getElapsedTimeText(0L)
                 startTimer()
             } else {
@@ -126,7 +125,7 @@ class MainActivity : AppCompatActivity() {
             if (gameWords.isNotEmpty()) {
                 // Apply the loaded game to the puzzle fragment
                 puzzleFragment.createGridViewsAndSelectWord()
-                scrollSelectedCellIntoViewWithDelay()
+                scrollWordIntoViewWithDelay()
             } else {
                 // This will happen if on very first game, or if no saved game (due to an error).
                 setupNewGame()
@@ -248,26 +247,26 @@ class MainActivity : AppCompatActivity() {
                 viewModel.persistUserEntry(it)
             }
             puzzleFragment.advanceSelectedCellInPuzzle(false)
-            scrollSelectedCellIntoView()
+            scrollWordIntoView()
             onAnswerChanged()
         }
         binding.answerKeyboard.leftClickListener = {
             puzzleFragment.advanceSelectedCellInPuzzle(true)
-            scrollSelectedCellIntoView()
+            scrollWordIntoView()
         }
         binding.answerKeyboard.rightClickListener = {
             puzzleFragment.advanceSelectedCellInPuzzle(false)
-            scrollSelectedCellIntoView()
+            scrollWordIntoView()
         }
         binding.answerKeyboard.nextWordClickListener = {
-            selectNextGameWord()
+            selectNextGameWordFavoringEmpty()
         }
         binding.answerKeyboard.dismissClickListener = {
             hideKeyboard()
         }
     }
 
-    private fun selectNextGameWord(): Boolean {
+    private fun selectNextGameWordFavoringEmpty(): Boolean {
         return viewModel.selectNextGameWordAndWrapAround(shouldSelectEmptyOnly = true)
                 || viewModel.selectNextGameWordAndWrapAround(shouldSelectEmptyOnly = false)
     }
@@ -293,12 +292,12 @@ class MainActivity : AppCompatActivity() {
             // auto-advance to the next word when in error-showing mode (with a small delay so it feels less abrupt)
             if (viewModel.currentGameWord.value?.isAnsweredCompletelyAndCorrectly == true) {
                 Handler(Looper.getMainLooper()).postDelayed({
-                    selectNextGameWord()
+                    selectNextGameWordFavoringEmpty()
                 }, 200)
             }
         }
 
-        scrollSelectedCellIntoView()
+        scrollWordIntoView()
 
         if (puzzleIsCompleteAndCorrect) {
 
@@ -386,67 +385,13 @@ class MainActivity : AppCompatActivity() {
         viewModel.currentImageIndex = imageIndex
     }
 
-    private fun scrollSelectedCellIntoViewWithDelay() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            viewModel.currentGameWord.value?.let {
-                if (it.isAcross) {
-                    scrollWordIntoView()
-                } else {
-                    scrollSelectedCellIntoView()
-                }
-            }
-        }, 50)
+    private fun scrollWordIntoViewWithDelay() {
+        Handler(Looper.getMainLooper()).postDelayed(this::scrollWordIntoView, 50)
     }
 
-    private fun scrollSelectedCellIntoView() {
-        viewModel.currentGameWord.value?.let {
-            if (!it.isAcross) {
-                val rowOfSelectedCell = it.row + viewModel.charIndexOfSelectedCell
-                val yOfSelectedCell = rowOfSelectedCell * viewModel.pixelsPerCell
-
-                val heightForKeyboard = if (isKeyboardVisible()) viewModel.keyboardHeight else 0f
-                val availableHeight = viewModel.viewablePuzzleHeight - heightForKeyboard
-
-                // if cell above viewable area, scroll up to it, if below, scroll down to it
-                if (yOfSelectedCell < puzzleFragment.scrollPosition) {
-                    scrollWordIntoView(true)
-                } else if (yOfSelectedCell + viewModel.pixelsPerCell > puzzleFragment.scrollPosition + availableHeight) {
-                    scrollWordIntoView(false)
-                }
-            }
-        }
-    }
-
-    private fun scrollWordIntoView(defaultToTop: Boolean = true) {
-        viewModel.currentGameWord.value?.let {
-            val firstRowPosition = it.row
-            val lastRowPosition = when {
-                it.isAcross -> it.row
-                else -> it.row + it.word.length - 1
-            }
-            val yOfFirstCell = firstRowPosition * viewModel.pixelsPerCell
-
-            val heightForKeyboard = if (isKeyboardVisible()) viewModel.keyboardHeight else 0f
-            val availableHeight = viewModel.viewablePuzzleHeight - heightForKeyboard
-            val wordHeight = (lastRowPosition - firstRowPosition + 1) * viewModel.pixelsPerCell
-
-            // if there's room to display the whole word
-            if (wordHeight < availableHeight) {
-                // if first cell is above visible area, scroll up to it, or if last cell is below visible area, scroll down to it
-                if (yOfFirstCell < puzzleFragment.scrollPosition) {
-                    puzzleFragment.scrollPosition = (yOfFirstCell - viewModel.puzzleMarginTopPixels).roundToInt()
-                } else if (yOfFirstCell + wordHeight > puzzleFragment.scrollPosition + availableHeight) {
-                    puzzleFragment.scrollPosition = (yOfFirstCell + wordHeight - availableHeight + viewModel.puzzleMarginTopPixels).roundToInt()
-                }
-            } else {
-                if (defaultToTop) {
-                    // scroll top of word to top of viewable area
-                    puzzleFragment.scrollPosition = (yOfFirstCell - viewModel.puzzleMarginTopPixels).roundToInt()
-                } else {
-                    // scroll bottom of word to bottom of viewable area
-                    puzzleFragment.scrollPosition = (yOfFirstCell + wordHeight - availableHeight + viewModel.puzzleMarginTopPixels).roundToInt()
-                }
-            }
+    private fun scrollWordIntoView() {
+        viewModel.newScrollPositionShowingFullWord(puzzleFragment.scrollPosition)?.let {
+            puzzleFragment.scrollPosition = it
         }
     }
 
