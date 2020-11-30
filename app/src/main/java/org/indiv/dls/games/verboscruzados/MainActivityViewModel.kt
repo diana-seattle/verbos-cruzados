@@ -184,6 +184,75 @@ class MainActivityViewModel(val activity: Activity) : ViewModel() {
         }
     }
 
+    /**
+     * Selects next empty or errored game word depending on parameter. Starts with current game word,
+     * searches to the end, then wraps around to the beginning.
+     *
+     * @param shouldSelectEmptyOnly true if next empty game word should be selected, false if any errored game word should be selected.
+     * @return true if word found and selected.
+     */
+    fun selectNextGameWordAndWrapAround(shouldSelectEmptyOnly: Boolean): Boolean {
+        val wordFoundAfterPosition = currentGameWord.value?.let {
+            selectNextGameWord(startingRow = it.row, startingCol = it.col, emptyOnly = shouldSelectEmptyOnly)
+        } ?: false
+        // If word not found after position, wrap around to beginning and look for word from start.
+        return wordFoundAfterPosition || selectNextGameWord(startingRow = 0, startingCol = 0, emptyOnly = shouldSelectEmptyOnly)
+    }
+
+    /**
+     * Searches for and selects next empty or errored game word depending on parameter, starting at specified cell.
+     *
+     * @param startingRow starting row to start searching for next word to select.
+     * @param startingCol starting col to start searching for next word to select.
+     * @param emptyOnly true if next empty game word should be selected, false if any errored game word should be selected.
+     * @return true if new word found and selected, false if no selection made.
+     */
+    fun selectNextGameWord(startingRow: Int, startingCol: Int, emptyOnly: Boolean): Boolean {
+        // If current word is vertical and starts on starting cell, do NOT select the horizontal word starting on that cell
+        // or we'll end up circularly going back and forth between the vertical and horizontal on that cell.
+        val currentWordIsVerticalAndStartsOnStartingPosition = currentGameWord.value?.let {
+            !it.isAcross && it.row == startingRow && it.col == startingCol
+        } ?: false
+
+        // This variable will be set back to zero after we're done searching the starting row
+        var initialCol = if (currentWordIsVerticalAndStartsOnStartingPosition) startingCol + 1 else startingCol
+
+        // Iterate from starting cell, left to right, and down to bottom
+        for (row in startingRow until gridHeight) {
+
+            // For each column from initial of the starting row to the end, then from 0 to end for subsequent columns
+            for (col in initialCol until gridWidth) {
+
+                // If the current grid position contains a game cell
+                cellGrid[row][col]?.let { cell ->
+
+                    var nextGameWord: GameWord? = null
+
+                    val (wordAcrossIsSelected, wordDownIsSelected) = currentGameWord.value?.let {
+                        Pair(cell.gameWordAcross == it, cell.gameWordDown == it)
+                    } ?: Pair(false, false)
+
+                    // If cell is the beginning of an across word that is NOT already selected, choose it.
+                    if (cell.wordAcrossStartsInCol(col) && !wordAcrossIsSelected && isEmptyOrErroredGameWord(cell.gameWordAcross, emptyOnly)) {
+                        nextGameWord = cell.gameWordAcross
+                    } else if (cell.wordDownStartsInRow(row) && !wordDownIsSelected && isEmptyOrErroredGameWord(cell.gameWordDown, emptyOnly)) {
+                        // Vertical word starts in the row of this cell, select it
+                        nextGameWord = cell.gameWordDown
+                    }
+
+                    // If a word was found, select it and return
+                    nextGameWord?.let {
+                        selectNewGameWord(it, it.defaultSelectionIndex)
+                        return true
+                    }
+                }
+            }
+            // for subsequent rows, start at first column
+            initialCol = 0
+        }
+        return false
+    }
+
     //endregion
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
@@ -197,6 +266,26 @@ class MainActivityViewModel(val activity: Activity) : ViewModel() {
             actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, displayMetrics)
         }
         return actionBarHeight
+    }
+
+    private fun isEmptyOrErroredGameWord(gameWord: GameWord?, emptyOnly: Boolean): Boolean {
+        return gameWord?.let {
+            return hasVisibleBlanks(it) || !emptyOnly && it.hasErroredCells
+        } ?: false
+    }
+
+    private fun hasVisibleBlanks(gameWord: GameWord): Boolean {
+        var row = gameWord.row
+        var col = gameWord.col
+        for (i in gameWord.word.indices) {
+            cellGrid[row][col]?.let {
+                if (it.isBlank) {
+                    return true
+                }
+            }
+            if (gameWord.isAcross) col++ else row++
+        }
+        return false
     }
 
     //endregion
