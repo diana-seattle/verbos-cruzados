@@ -55,9 +55,22 @@ class GameSetup {
     }
 
     /**
+     * Adds list of game words to the layout.
+     */
+    fun addToGrid(gameWords: List<GameWord>, cellGrid: Array<Array<GridCell?>>) {
+        gameWords.forEach {
+            addToGrid(it, cellGrid)
+        }
+    }
+
+    //endregion
+
+    //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
+
+    /**
      * Adds existing game word to layout.
      */
-    fun addToGrid(gameWord: GameWord, cellGrid: Array<Array<GridCell?>>) {
+    private fun addToGrid(gameWord: GameWord, cellGrid: Array<Array<GridCell?>>) {
         var row = gameWord.row
         var col = gameWord.col
         val word = gameWord.word
@@ -85,10 +98,6 @@ class GameSetup {
             }
         }
     }
-
-    //endregion
-
-    //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
     /**
      * Gets list of words that are candidates for the next puzzle.

@@ -21,7 +21,6 @@ import org.indiv.dls.games.verboscruzados.databinding.ActivityMainBinding
 import org.indiv.dls.games.verboscruzados.dialog.GameOptionsDialogFragment
 import org.indiv.dls.games.verboscruzados.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.game.GameWord
-import org.indiv.dls.games.verboscruzados.game.PersistenceHelper
 import kotlin.math.roundToInt
 
 
@@ -74,7 +73,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var puzzleFragment: PuzzleFragment
 
     private var optionsMenu: Menu? = null
-    private lateinit var persistenceHelper: PersistenceHelper
 
     private var showOnboarding = false
     private var showingErrors = false
@@ -83,7 +81,7 @@ class MainActivity : AppCompatActivity() {
     private val countDownTimer: CountDownTimer = object : CountDownTimer(COUNTDOWN_MAX_TIME, COUNTDOWN_INTERVAL) {
         override fun onTick(millisUntilFinished: Long) {
             elapsedTimerMs = COUNTDOWN_MAX_TIME - millisUntilFinished
-            binding.answerKeyboard.elapsedTime = getElapsedTimeText(viewModel.elapsedGameSecondsRecorded + elapsedTimerMs / 1000)
+            binding.answerKeyboard.elapsedTime = getElapsedTimeText(viewModel.elapsedSecondsSnapshot + elapsedTimerMs / 1000)
         }
 
         override fun onFinish() {}
@@ -130,9 +128,6 @@ class MainActivity : AppCompatActivity() {
         viewModel.reloadedGameWords.observe(this) { gameWords ->
             if (gameWords.isNotEmpty() && puzzleFragment.doWordsFitInGrid(gameWords)) {
                 // Apply the loaded game to the puzzle fragment
-                gameWords.forEach {
-                    gameSetup.addToGrid(it, viewModel.cellGrid)
-                }
                 puzzleFragment.createGridViews()
                 scrollSelectedCellIntoViewWithDelay()
             } else {
@@ -141,8 +136,6 @@ class MainActivity : AppCompatActivity() {
                 showOnboarding = true
             }
         }
-
-        persistenceHelper = PersistenceHelper(this)
 
         // Set up toolbar
         setSupportActionBar(binding.toolbar)
@@ -167,7 +160,7 @@ class MainActivity : AppCompatActivity() {
 
         if (viewModel.gridWidth > 0 && viewModel.gridHeight > 0) {
             puzzleFragment.initialize()
-            setPuzzleBackgroundImage(persistenceHelper.currentImageIndex)
+            setPuzzleBackgroundImage(viewModel.currentImageIndex)
 
             // Attempt to load existing game, observer will create new on if not found.
             viewModel.loadExistingGame()
@@ -209,19 +202,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.elapsedGameSecondsRecorded = persistenceHelper.elapsedSeconds
-        binding.answerKeyboard.elapsedTime = getElapsedTimeText(viewModel.elapsedGameSecondsRecorded)
-        if (!persistenceHelper.currentGameCompleted) {
+        binding.answerKeyboard.elapsedTime = getElapsedTimeText(viewModel.persistedElapsedSeconds)
+        if (!viewModel.currentGameCompleted) {
             startTimer()
         }
     }
 
     override fun onPause() {
         super.onPause()
-        if (!persistenceHelper.currentGameCompleted) {
+        if (!viewModel.currentGameCompleted) {
             stopTimer()
-            viewModel.elapsedGameSecondsRecorded += elapsedTimerMs / 1000
-            persistenceHelper.elapsedSeconds = viewModel.elapsedGameSecondsRecorded
+            viewModel.addToElapsedSeconds(elapsedTimerMs / 1000)
         }
     }
 
@@ -250,14 +241,14 @@ class MainActivity : AppCompatActivity() {
         binding.answerKeyboard.deleteClickListener = {
             val conflictingGameWord = puzzleFragment.deleteLetterInPuzzle()
             conflictingGameWord?.let {
-                Thread { persistenceHelper.persistUserEntry(it) }.start()
+                viewModel.persistUserEntry(it)
             }
             onAnswerChanged()
         }
         binding.answerKeyboard.letterClickListener = { char ->
             val conflictingGameWord = puzzleFragment.updateLetterInPuzzle(char)
             conflictingGameWord?.let {
-                Thread { persistenceHelper.persistUserEntry(it) }.start()
+                viewModel.persistUserEntry(it)
             }
             puzzleFragment.advanceSelectedCellInPuzzle(false)
             scrollSelectedCellIntoView()
@@ -291,7 +282,7 @@ class MainActivity : AppCompatActivity() {
 
         // persist the user's answer
         viewModel.currentGameWord.value?.let {
-            Thread { persistenceHelper.persistUserEntry(it) }.start()
+            viewModel.persistUserEntry(it)
         }
 
         val puzzleIsCompleteWithPossibleErrors = puzzleFragment.isPuzzleComplete(false)
@@ -315,18 +306,17 @@ class MainActivity : AppCompatActivity() {
         if (puzzleIsCompleteAndCorrect) {
 
             // persist the game stats if this is the first time the current game has been completed (as opposed to modified and re-completed)
-            if (!persistenceHelper.currentGameCompleted) {
-                persistenceHelper.persistGameStats(viewModel.currentGameWords)
-                persistenceHelper.currentGameCompleted = true
+            if (!viewModel.currentGameCompleted) {
+                viewModel.persistGameStatistics()
+                viewModel.currentGameCompleted = true
                 stopTimer()
-                viewModel.elapsedGameSecondsRecorded += elapsedTimerMs / 1000
-                persistenceHelper.elapsedSeconds = viewModel.elapsedGameSecondsRecorded
+                viewModel.addToElapsedSeconds(elapsedTimerMs / 1000)
             }
 
             // prompt with congrats and new game
-            val completionRate = (viewModel.currentGameWords.size * 60f) / viewModel.elapsedGameSecondsRecorded
+            val completionRate = (viewModel.currentGameWords.size * 60f) / viewModel.elapsedSecondsSnapshot
             val message = resources.getString(R.string.dialog_startnewgame_completion_message,
-                    viewModel.currentGameWords.size, getElapsedTimeText(viewModel.elapsedGameSecondsRecorded), completionRate)
+                    viewModel.currentGameWords.size, getElapsedTimeText(viewModel.elapsedSecondsSnapshot), completionRate)
             promptForNewGame(message)
         }
     }
@@ -395,7 +385,7 @@ class MainActivity : AppCompatActivity() {
         ResourcesCompat.getDrawable(resources, imageResourceId, null)?.let {
             binding.mainActivityContainerLayout.background = it
         }
-        persistenceHelper.currentImageIndex = imageIndex
+        viewModel.currentImageIndex = imageIndex
     }
 
     private fun scrollSelectedCellIntoViewWithDelay() {

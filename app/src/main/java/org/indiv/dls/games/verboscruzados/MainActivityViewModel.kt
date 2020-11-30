@@ -59,7 +59,25 @@ class MainActivityViewModel(val activity: Activity) : ViewModel() {
     val gridHeight: Int
     val gridWidth: Int
 
-    var elapsedGameSecondsRecorded = 0L
+
+    var currentImageIndex: Int
+        get() = persistenceHelper.currentImageIndex
+        set(value) {
+            persistenceHelper.currentImageIndex = value
+        }
+
+    var currentGameCompleted: Boolean
+        get() = persistenceHelper.currentGameCompleted
+        set(value) {
+            persistenceHelper.currentGameCompleted = value
+        }
+
+    var elapsedSecondsSnapshot = 0L // Last set or retrieved elapsed seconds value
+    val persistedElapsedSeconds: Long
+        get() {
+            elapsedSecondsSnapshot = persistenceHelper.elapsedSeconds
+            return elapsedSecondsSnapshot
+        }
 
     //endregion
 
@@ -120,7 +138,7 @@ class MainActivityViewModel(val activity: Activity) : ViewModel() {
             persistenceHelper.currentGameWords = gameWords
             persistenceHelper.currentGameCompleted = false
             persistenceHelper.elapsedSeconds = 0L
-            elapsedGameSecondsRecorded = 0L
+            elapsedSecondsSnapshot = 0L
             currentGameWords = gameWords
             _newlyCreatedGameWords.postValue(gameWords)
         }
@@ -133,7 +151,25 @@ class MainActivityViewModel(val activity: Activity) : ViewModel() {
         viewModelScope.launch(context = Dispatchers.Default) {
             val gameWords = persistenceHelper.currentGameWords
             currentGameWords = gameWords
+            gameSetup.addToGrid(gameWords, cellGrid)
             _reloadedGameWords.postValue(gameWords)
+        }
+    }
+
+    fun addToElapsedSeconds(seconds: Long) {
+        elapsedSecondsSnapshot += seconds
+        persistenceHelper.elapsedSeconds = elapsedSecondsSnapshot
+    }
+
+    fun persistUserEntry(gameWord: GameWord) {
+        viewModelScope.launch(context = Dispatchers.Default) {
+            persistenceHelper.persistUserEntry(gameWord)
+        }
+    }
+
+    fun persistGameStatistics() {
+        viewModelScope.launch(context = Dispatchers.Default) {
+            persistenceHelper.persistGameStats(currentGameWords)
         }
     }
 
