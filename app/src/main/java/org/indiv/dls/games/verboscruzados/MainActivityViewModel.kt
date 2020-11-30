@@ -17,7 +17,11 @@ import org.indiv.dls.games.verboscruzados.game.PersistenceHelper
 import kotlin.math.roundToInt
 
 
-class MainActivityViewModel(val activity: Activity) : ViewModel() {
+class MainActivityViewModel(
+        private val activity: Activity,
+        private val persistenceHelper: PersistenceHelper,
+        private val gameSetup: GameSetup
+) : ViewModel() {
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
@@ -33,9 +37,6 @@ class MainActivityViewModel(val activity: Activity) : ViewModel() {
     private val _newlyCreatedGameWords: MutableLiveData<List<GameWord>> by lazy {
         MutableLiveData<List<GameWord>>()
     }
-
-    private val persistenceHelper = PersistenceHelper(activity)
-    private val gameSetup = GameSetup()
 
     //endregion
 
@@ -334,14 +335,15 @@ class MainActivityViewModel(val activity: Activity) : ViewModel() {
     //region INNER CLASSES -------------------------------------------------------------------------
 
     /**
-     * Factory class for creating this view model with an application context.
+     * Factory class for creating this view model.
      */
     class Factory(private val activity: Activity) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(MainActivityViewModel::class.java)) {
-                return MainActivityViewModel(activity) as T
+                return MainActivityViewModel(activity, PersistenceHelper(activity), GameSetup()) as T
             }
-            throw IllegalArgumentException("Unknown ViewModel class")        }
+            throw IllegalArgumentException("Unknown ViewModel class")
+        }
     }
 
     //endregion
