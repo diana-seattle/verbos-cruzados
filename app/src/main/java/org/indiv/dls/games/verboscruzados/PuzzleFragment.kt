@@ -83,12 +83,14 @@ class PuzzleFragment : Fragment() {
                 .get(MainActivityViewModel::class.java)
 
         viewModel.currentGameWord.observe(viewLifecycleOwner) { gameWord ->
+
             // deselect word that currently has selection, if any
             gameWordLastSelected?.let { showAsSelected(it, false) }
 
             // select new word if any
             gameWord?.let { showAsSelected(it, true) }
 
+            // Remember last selected so we can deselect it later.
             gameWordLastSelected = gameWord
         }
 
@@ -111,18 +113,7 @@ class PuzzleFragment : Fragment() {
         }
     }
 
-    fun doWordsFitInGrid(gameWords: List<GameWord>): Boolean {
-        gameWords.forEach {
-            if ((it.row >= viewModel.gridHeight || it.col >= viewModel.gridWidth) ||
-                    (it.isAcross && it.col + it.word.length > viewModel.gridWidth) ||
-                    (!it.isAcross && it.row + it.word.length > viewModel.gridHeight)) {
-                return false
-            }
-        }
-        return true
-    }
-
-    fun clearExistingGame() {
+    fun clearExistingGameViews() {
         // clear out any existing data
         for (row in 0 until viewModel.gridHeight) {
             val tableRow = binding.cellTableLayout.getChildAt(row) as TableRow

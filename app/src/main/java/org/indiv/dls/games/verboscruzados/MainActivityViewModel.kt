@@ -150,9 +150,13 @@ class MainActivityViewModel(val activity: Activity) : ViewModel() {
     fun loadExistingGame() {
         viewModelScope.launch(context = Dispatchers.Default) {
             val gameWords = persistenceHelper.currentGameWords
-            currentGameWords = gameWords
-            gameSetup.addToGrid(gameWords, cellGrid)
-            _reloadedGameWords.postValue(gameWords)
+            if (gameSetup.doWordsFitInGrid(gameWords, gridWidth, gridHeight)) {
+                currentGameWords = gameWords
+                gameSetup.addToGrid(gameWords, cellGrid)
+                _reloadedGameWords.postValue(gameWords)
+            } else {
+                _reloadedGameWords.postValue(emptyList())
+            }
         }
     }
 

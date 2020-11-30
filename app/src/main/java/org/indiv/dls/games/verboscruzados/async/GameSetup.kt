@@ -63,6 +63,17 @@ class GameSetup {
         }
     }
 
+    fun doWordsFitInGrid(gameWords: List<GameWord>, gridWidth: Int, gridHeight: Int): Boolean {
+        gameWords.forEach {
+            if ((it.row >= gridHeight || it.col >= gridWidth) ||
+                    (it.isAcross && it.col + it.word.length > gridWidth) ||
+                    (!it.isAcross && it.row + it.word.length > gridHeight)) {
+                return false
+            }
+        }
+        return true
+    }
+
     //endregion
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------

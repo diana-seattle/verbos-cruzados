@@ -123,7 +123,7 @@ class MainActivity : AppCompatActivity() {
 
         // Observe loading of existing game
         viewModel.reloadedGameWords.observe(this) { gameWords ->
-            if (gameWords.isNotEmpty() && puzzleFragment.doWordsFitInGrid(gameWords)) {
+            if (gameWords.isNotEmpty()) {
                 // Apply the loaded game to the puzzle fragment
                 puzzleFragment.createGridViewsAndSelectWord()
                 scrollSelectedCellIntoViewWithDelay()
@@ -360,7 +360,7 @@ class MainActivity : AppCompatActivity() {
 
         // clear puzzle fragment of existing game if any
         viewModel.clearGame()
-        puzzleFragment.clearExistingGame()
+        puzzleFragment.clearExistingGameViews()
         showErrors(false)
 
         // setup new game
