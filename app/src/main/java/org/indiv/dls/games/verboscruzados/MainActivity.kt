@@ -18,9 +18,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import org.indiv.dls.games.verboscruzados.async.GameSetup
 import org.indiv.dls.games.verboscruzados.databinding.ActivityMainBinding
 import org.indiv.dls.games.verboscruzados.dialog.GameOptionsDialogFragment
@@ -75,8 +72,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainActivityViewModel
 
-    private val compositeDisposable = CompositeDisposable()
-    private var currentGameWords: List<GameWord> = emptyList()
     private val gameSetup = GameSetup()
     private lateinit var puzzleFragment: PuzzleFragment
 
@@ -86,17 +81,15 @@ class MainActivity : AppCompatActivity() {
     private var showOnboarding = false
     private var showingErrors = false
 
-    private var elapsedGameSecondsRecorded = 0L
     private var elapsedTimerMs = 0L
     private val countDownTimer: CountDownTimer = object : CountDownTimer(COUNTDOWN_MAX_TIME, COUNTDOWN_INTERVAL) {
         override fun onTick(millisUntilFinished: Long) {
             elapsedTimerMs = COUNTDOWN_MAX_TIME - millisUntilFinished
-            binding.answerKeyboard.elapsedTime = getElapsedTimeText(elapsedGameSecondsRecorded + elapsedTimerMs / 1000)
+            binding.answerKeyboard.elapsedTime = getElapsedTimeText(viewModel.elapsedGameSecondsRecorded + elapsedTimerMs / 1000)
         }
 
         override fun onFinish() {}
     }
-
 
     //endregion
 
@@ -121,6 +114,20 @@ class MainActivity : AppCompatActivity() {
                 scrollWordIntoView()
             }
         }
+
+        // Observe creation of new game
+        viewModel.newlyCreatedGameWords.observe(this) { gameWords ->
+            if (gameWords.isNotEmpty()) {
+                puzzleFragment.createGridViews()
+                scrollSelectedCellIntoViewWithDelay()
+                binding.answerKeyboard.elapsedTime = getElapsedTimeText(0L)
+                startTimer()
+            } else {
+                Toast.makeText(this, R.string.error_game_setup_failure, Toast.LENGTH_SHORT).show()
+                Log.e(TAG, "Error setting up game")
+            }
+        }
+
 
         persistenceHelper = PersistenceHelper(this)
 
@@ -186,8 +193,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        elapsedGameSecondsRecorded = persistenceHelper.elapsedSeconds
-        binding.answerKeyboard.elapsedTime = getElapsedTimeText(elapsedGameSecondsRecorded)
+        viewModel.elapsedGameSecondsRecorded = persistenceHelper.elapsedSeconds
+        binding.answerKeyboard.elapsedTime = getElapsedTimeText(viewModel.elapsedGameSecondsRecorded)
         if (!persistenceHelper.currentGameCompleted) {
             startTimer()
         }
@@ -197,14 +204,13 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         if (!persistenceHelper.currentGameCompleted) {
             stopTimer()
-            elapsedGameSecondsRecorded += elapsedTimerMs / 1000
-            persistenceHelper.elapsedSeconds = elapsedGameSecondsRecorded
+            viewModel.elapsedGameSecondsRecorded += elapsedTimerMs / 1000
+            persistenceHelper.elapsedSeconds = viewModel.elapsedGameSecondsRecorded
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        compositeDisposable.clear()
         showingErrors = false
     }
 
@@ -294,17 +300,17 @@ class MainActivity : AppCompatActivity() {
 
             // persist the game stats if this is the first time the current game has been completed (as opposed to modified and re-completed)
             if (!persistenceHelper.currentGameCompleted) {
-                persistenceHelper.persistGameStats(currentGameWords)
+                persistenceHelper.persistGameStats(viewModel.currentGameWords)
                 persistenceHelper.currentGameCompleted = true
                 stopTimer()
-                elapsedGameSecondsRecorded += elapsedTimerMs / 1000
-                persistenceHelper.elapsedSeconds = elapsedGameSecondsRecorded
+                viewModel.elapsedGameSecondsRecorded += elapsedTimerMs / 1000
+                persistenceHelper.elapsedSeconds = viewModel.elapsedGameSecondsRecorded
             }
 
             // prompt with congrats and new game
-            val completionRate = (currentGameWords.size * 60f) / elapsedGameSecondsRecorded
+            val completionRate = (viewModel.currentGameWords.size * 60f) / viewModel.elapsedGameSecondsRecorded
             val message = resources.getString(R.string.dialog_startnewgame_completion_message,
-                    currentGameWords.size, getElapsedTimeText(elapsedGameSecondsRecorded), completionRate)
+                    viewModel.currentGameWords.size, getElapsedTimeText(viewModel.elapsedGameSecondsRecorded), completionRate)
             promptForNewGame(message)
         }
     }
@@ -363,9 +369,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 puzzleFragment.createGridViews()
                 scrollSelectedCellIntoViewWithDelay()
-
-                // todo remove this instance variable
-                currentGameWords = gameWords
             }
         }
     }
@@ -381,25 +384,7 @@ class MainActivity : AppCompatActivity() {
         showErrors(false)
 
         // setup new game
-        compositeDisposable.add(gameSetup.newGame(resources, viewModel.cellGrid, persistenceHelper.currentGameOptions)
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { gameWords ->
-                            currentGameWords = gameWords
-                            persistenceHelper.currentGameWords = gameWords
-                            persistenceHelper.currentGameCompleted = false
-                            puzzleFragment.createGridViews()
-                            scrollSelectedCellIntoViewWithDelay()
-                            persistenceHelper.elapsedSeconds = 0L
-                            elapsedGameSecondsRecorded = 0L
-                            binding.answerKeyboard.elapsedTime = getElapsedTimeText(0L)
-                            startTimer()
-                        },
-                        { error ->
-                            Toast.makeText(this, R.string.error_game_setup_failure, Toast.LENGTH_SHORT).show()
-                            Log.e(TAG, "Error setting up game: " + error.message)
-                        }))
+        viewModel.launchNewGame()
     }
 
     private fun isNightMode(): Boolean {

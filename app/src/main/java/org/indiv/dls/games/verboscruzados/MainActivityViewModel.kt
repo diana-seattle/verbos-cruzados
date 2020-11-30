@@ -11,11 +11,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.indiv.dls.games.verboscruzados.async.GameSetup
 import org.indiv.dls.games.verboscruzados.game.GameWord
 import org.indiv.dls.games.verboscruzados.game.PersistenceHelper
 
 
-class MainActivityViewModel(activity: Activity) : ViewModel() {
+class MainActivityViewModel(val activity: Activity) : ViewModel() {
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
@@ -23,6 +26,7 @@ class MainActivityViewModel(activity: Activity) : ViewModel() {
     private val _currentGameWord = MutableLiveData<GameWord?>()
 
     private val persistenceHelper = PersistenceHelper(activity)
+    private val gameSetup = GameSetup()
 
     //endregion
 
@@ -35,10 +39,18 @@ class MainActivityViewModel(activity: Activity) : ViewModel() {
     // The character index within the selected word of the selected cell.
     var charIndexOfSelectedCell = 0
 
+    var currentGameWords: List<GameWord> = emptyList()
+
     // Game words loaded from StoredPreferences
     val reloadedGameWords: LiveData<List<GameWord>> = liveData(context = viewModelScope.coroutineContext + Dispatchers.Default) {
         val gameWords = persistenceHelper.currentGameWords
+        currentGameWords = gameWords
         emit(gameWords)
+    }
+
+    // Game words newly generated
+    val newlyCreatedGameWords: MutableLiveData<List<GameWord>> by lazy {
+        MutableLiveData<List<GameWord>>()
     }
 
     // Grid of cells making up the puzzle, plus various dimensions
@@ -49,6 +61,13 @@ class MainActivityViewModel(activity: Activity) : ViewModel() {
     val pixelsPerCell: Float
     val gridHeight: Int
     val gridWidth: Int
+
+    var elapsedGameSecondsRecorded = 0L
+
+    //endregion
+
+    //region INITIALIZER ---------------------------------------------------------------------------
+
     init {
         val resources = activity.resources
         keyboardHeight = resources.getDimension(R.dimen.keyboard_height)
@@ -95,25 +114,21 @@ class MainActivityViewModel(activity: Activity) : ViewModel() {
         _currentGameWord.value = gameWord
     }
 
+    fun launchNewGame() {
+        viewModelScope.launch(context = Dispatchers.Default) {
+            val gameWords = gameSetup.newGame(activity.resources, cellGrid, persistenceHelper.currentGameOptions)
+            persistenceHelper.currentGameWords = gameWords
+            persistenceHelper.currentGameCompleted = false
+            persistenceHelper.elapsedSeconds = 0L
+            elapsedGameSecondsRecorded = 0L
+            currentGameWords = gameWords
+            newlyCreatedGameWords.postValue(gameWords)
+        }
+    }
+
     //endregion
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
-
-//    private fun /*suspend*/ loadNewOrExistingGame(): List<GameWord> {
-//        // get current game if any
-//        val gameWords = persistenceHelper.currentGameWords
-//
-//        setPuzzleBackgroundImage(persistenceHelper.currentImageIndex)
-//
-//        // if on very first game, or if no saved game (due to an error), create a new one, otherwise open existing game
-//        if (gameWords.isEmpty() || !puzzleFragment.doWordsFitInGrid(gameWords)) {
-//            gameSetup.newGame(resources, puzzleFragment.cellGrid, persistenceHelper.currentGameOptions)
-//            showOnboarding = true
-//        } else {
-//            restoreExistingGame()
-//        }
-//
-//    }
 
     private fun getActionBarHeightInPixels(displayMetrics: DisplayMetrics, theme: Resources.Theme): Int {
         // actionBar.getHeight() returns zero in onCreate (i.e. before it is shown)

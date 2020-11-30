@@ -1,7 +1,6 @@
 package org.indiv.dls.games.verboscruzados.async
 
 import android.content.res.Resources
-import io.reactivex.Single
 import org.indiv.dls.games.verboscruzados.GridCell
 import org.indiv.dls.games.verboscruzados.conjugation.conjugatorMap
 import org.indiv.dls.games.verboscruzados.dialog.StatsDialogFragment
@@ -43,25 +42,16 @@ class GameSetup {
     /**
      * Creates a new game.
      */
-    fun newGame(resources: Resources, cellGrid: Array<Array<GridCell?>>, gameOptions: Map<String, Boolean>): Single<List<GameWord>> {
-        return Single.fromCallable {
+    fun newGame(resources: Resources, cellGrid: Array<Array<GridCell?>>, gameOptions: Map<String, Boolean>): List<GameWord> {
+        val gridHeight = cellGrid.size
+        val gridWidth = cellGrid[0].size
 
-            val gridHeight = cellGrid.size
-            val gridWidth = cellGrid[0].size
+        // retrieve random list of words, getting more than we need to maximize density of layout
+        val numWords = Math.round(((gridWidth * gridHeight) / 5 + 20).toFloat())
+        val wordCandidates = getWordCandidates(numWords, gameOptions).toMutableList()
 
-            // retrieve random list of words, getting more than we need to maximize density of layout
-            val numWords = Math.round(((gridWidth * gridHeight) / 5 + 20).toFloat())
-            val wordCandidates = getWordCandidates(numWords, gameOptions).toMutableList()
-
-            // determine layout
-            val gameWords = layoutWords(resources, cellGrid, wordCandidates)
-            if (gameWords.isEmpty()) {
-                throw Exception("Failure during words layout")
-            }
-
-            // return game
-            gameWords
-        }
+        // determine layout and return the game words
+        return layoutWords(resources, cellGrid, wordCandidates)
     }
 
     /**
