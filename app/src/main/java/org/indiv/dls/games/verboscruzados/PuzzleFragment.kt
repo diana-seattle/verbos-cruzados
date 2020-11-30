@@ -38,6 +38,25 @@ class PuzzleFragment : Fragment() {
     // Used to find the position of a view
     private var positionOfViewMap: MutableMap<PuzzleCellTextView, Position> = mutableMapOf()
 
+    private val onPuzzleClickListener = OnClickListener { v ->
+        getCellForView(v)?.let { gridCell ->
+            vibration.vibrate()
+
+            // If clicked-on cell is part of the already selected word, let it remain the selected word, otherwise
+            // choose the vertical word if exists, otherwise the horizontal word.
+            val newGameWord = viewModel.currentGameWord.value?.takeIf {
+                it == gridCell.gameWordDown || it == gridCell.gameWordAcross
+            } ?: gridCell.gameWordDown ?: gridCell.gameWordAcross
+
+            newGameWord?.let {
+                val charIndexOfSelectedCell = if (it.isAcross) gridCell.acrossCharIndex else gridCell.downCharIndex
+
+                // This will cause us to be notified, which will take care of showing word and cell as selected
+                viewModel.selectNewGameWord(newGameWord, charIndexOfSelectedCell)
+            }
+        }
+    }
+
     //endregion
 
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
@@ -114,26 +133,7 @@ class PuzzleFragment : Fragment() {
     /**
      * Creates grid of textviews making up the puzzle.
      */
-    fun createGridViews() {
-
-        val onPuzzleClickListener = OnClickListener { v ->
-            getCellForView(v)?.let { gridCell ->
-                vibration.vibrate()
-
-                // If clicked-on cell is part of the already selected word, let it remain the selected word, otherwise
-                // choose the vertical word if exists, otherwise the horizontal word.
-                val newGameWord = viewModel.currentGameWord.value?.takeIf {
-                    it == gridCell.gameWordDown || it == gridCell.gameWordAcross
-                } ?: gridCell.gameWordDown ?: gridCell.gameWordAcross
-
-                newGameWord?.let {
-                    val charIndexOfSelectedCell = if (it.isAcross) gridCell.acrossCharIndex else gridCell.downCharIndex
-
-                    // This will cause us to be notified, which will take care of showing word and cell as selected
-                    viewModel.selectNewGameWord(newGameWord, charIndexOfSelectedCell)
-                }
-            }
-        }
+    fun createGridViewsAndSelectWord() {
 
         // add views into table rows and columns
         val activityContext = requireContext()

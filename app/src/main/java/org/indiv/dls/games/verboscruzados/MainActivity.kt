@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity() {
         // Observe creation of new game
         viewModel.newlyCreatedGameWords.observe(this) { gameWords ->
             if (gameWords.isNotEmpty()) {
-                puzzleFragment.createGridViews()
+                puzzleFragment.createGridViewsAndSelectWord()
                 scrollSelectedCellIntoViewWithDelay()
                 binding.answerKeyboard.elapsedTime = getElapsedTimeText(0L)
                 startTimer()
@@ -125,7 +125,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.reloadedGameWords.observe(this) { gameWords ->
             if (gameWords.isNotEmpty() && puzzleFragment.doWordsFitInGrid(gameWords)) {
                 // Apply the loaded game to the puzzle fragment
-                puzzleFragment.createGridViews()
+                puzzleFragment.createGridViewsAndSelectWord()
                 scrollSelectedCellIntoViewWithDelay()
             } else {
                 // This will happen if on very first game, or if no saved game (due to an error).
