@@ -156,6 +156,13 @@ class MainActivityViewModel(val activity: Activity) : ViewModel() {
         }
     }
 
+    fun clearGame() {
+        selectNewGameWord(null, 0)
+        for (row in 0 until gridHeight) {
+            cellGrid[row].fill(null)
+        }
+    }
+
     fun addToElapsedSeconds(seconds: Long) {
         elapsedSecondsSnapshot += seconds
         persistenceHelper.elapsedSeconds = elapsedSecondsSnapshot

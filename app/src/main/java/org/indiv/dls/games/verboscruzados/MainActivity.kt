@@ -16,7 +16,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
-import org.indiv.dls.games.verboscruzados.async.GameSetup
 import org.indiv.dls.games.verboscruzados.databinding.ActivityMainBinding
 import org.indiv.dls.games.verboscruzados.dialog.GameOptionsDialogFragment
 import org.indiv.dls.games.verboscruzados.dialog.StatsDialogFragment
@@ -69,7 +68,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainActivityViewModel
 
-    private val gameSetup = GameSetup()
     private lateinit var puzzleFragment: PuzzleFragment
 
     private var optionsMenu: Menu? = null
@@ -83,7 +81,6 @@ class MainActivity : AppCompatActivity() {
             elapsedTimerMs = COUNTDOWN_MAX_TIME - millisUntilFinished
             binding.answerKeyboard.elapsedTime = getElapsedTimeText(viewModel.elapsedSecondsSnapshot + elapsedTimerMs / 1000)
         }
-
         override fun onFinish() {}
     }
 
@@ -362,6 +359,7 @@ class MainActivity : AppCompatActivity() {
         hideKeyboard()
 
         // clear puzzle fragment of existing game if any
+        viewModel.clearGame()
         puzzleFragment.clearExistingGame()
         showErrors(false)
 

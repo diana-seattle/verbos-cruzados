@@ -105,13 +105,9 @@ class PuzzleFragment : Fragment() {
 
     fun clearExistingGame() {
         // clear out any existing data
-        viewModel.selectNewGameWord(null, 0)
         for (row in 0 until viewModel.gridHeight) {
             val tableRow = binding.cellTableLayout.getChildAt(row) as TableRow
             tableRow.removeAllViews()
-
-            // TODO move this
-            viewModel.cellGrid[row].fill(null)
         }
     }
 
