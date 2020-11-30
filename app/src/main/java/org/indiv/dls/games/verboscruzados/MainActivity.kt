@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity() {
                         puzzleFragment.updateTextInPuzzleWord(it.word)
                         onAnswerChanged()
                     }
-                } while (viewModel.selectNextGameWordAndWrapAround(shouldSelectEmptyOnly = false))
+                } while (viewModel.selectNextGameWordWithWrapAround(shouldSelectEmptyOnly = false))
                 true
             }
         }
@@ -154,9 +154,10 @@ class MainActivity : AppCompatActivity() {
         // position the keyboard off screen for animation when first shown.
         binding.answerKeyboard.translationY = viewModel.keyboardHeight
 
+        setPuzzleBackgroundImage(viewModel.currentImageIndex)
+
         if (viewModel.gridWidth > 0 && viewModel.gridHeight > 0) {
             puzzleFragment.initialize()
-            setPuzzleBackgroundImage(viewModel.currentImageIndex)
 
             // Attempt to load existing game, observer will create new on if not found.
             viewModel.loadExistingGame()
@@ -267,8 +268,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun selectNextGameWordFavoringEmpty(): Boolean {
-        return viewModel.selectNextGameWordAndWrapAround(shouldSelectEmptyOnly = true)
-                || viewModel.selectNextGameWordAndWrapAround(shouldSelectEmptyOnly = false)
+        return viewModel.selectNextGameWordWithWrapAround(shouldSelectEmptyOnly = true)
+                || viewModel.selectNextGameWordWithWrapAround(shouldSelectEmptyOnly = false)
     }
 
     /**
@@ -359,7 +360,7 @@ class MainActivity : AppCompatActivity() {
 
         // clear puzzle fragment of existing game if any
         viewModel.clearGame()
-        puzzleFragment.clearExistingGameViews()
+        puzzleFragment.clearExistingGame()
         showErrors(false)
 
         // setup new game

@@ -38,6 +38,10 @@ class MainActivityViewModel(
         MutableLiveData<List<GameWord>>()
     }
 
+    private val viewablePuzzleHeight: Float
+    private val puzzleMarginTopPixels: Float
+    private val pixelsPerCell: Float
+
     //endregion
 
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
@@ -52,15 +56,11 @@ class MainActivityViewModel(
 
     var currentGameWords: List<GameWord> = emptyList()
 
-    // Grid of cells making up the puzzle, plus various dimensions
+    // Grid of cells making up the puzzle, plus some dimensions
     val cellGrid: Array<Array<GridCell?>>
     val keyboardHeight: Float
-    val viewablePuzzleHeight: Float
-    val puzzleMarginTopPixels: Float
-    val pixelsPerCell: Float
     val gridHeight: Int
     val gridWidth: Int
-
 
     var currentImageIndex: Int
         get() = persistenceHelper.currentImageIndex
@@ -126,7 +126,7 @@ class MainActivityViewModel(
      * Allows callers on the main thread to update the current game word together with the char index of the selected cell.
      */
     fun selectNewGameWord(gameWord: GameWord?, charIndexOfSelectedCell: Int) {
-        // Set the index first so that it's available to observers of the game word.
+        // Set the index first so that it's available to observers of the game word change.
         this.charIndexOfSelectedCell = charIndexOfSelectedCell
         _currentGameWord.value = gameWord
     }
@@ -193,7 +193,7 @@ class MainActivityViewModel(
      * @param shouldSelectEmptyOnly true if next empty game word should be selected, false if any errored game word should be selected.
      * @return true if word found and selected.
      */
-    fun selectNextGameWordAndWrapAround(shouldSelectEmptyOnly: Boolean): Boolean {
+    fun selectNextGameWordWithWrapAround(shouldSelectEmptyOnly: Boolean): Boolean {
         val wordFoundAfterPosition = currentGameWord.value?.let {
             selectNextGameWord(startingRow = it.row, startingCol = it.col, emptyOnly = shouldSelectEmptyOnly)
         } ?: false

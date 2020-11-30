@@ -113,12 +113,15 @@ class PuzzleFragment : Fragment() {
         }
     }
 
-    fun clearExistingGameViews() {
+    fun clearExistingGame() {
         // clear out any existing data
         for (row in 0 until viewModel.gridHeight) {
             val tableRow = binding.cellTableLayout.getChildAt(row) as TableRow
             tableRow.removeAllViews()
         }
+        viewByPositionMap.clear()
+        positionOfViewMap.clear()
+        gameWordLastSelected = null
     }
 
     /**
@@ -174,15 +177,13 @@ class PuzzleFragment : Fragment() {
         // update background of cells based on whether text is correct or not, and whether selected or not.
         for (row in 0 until viewModel.gridHeight) {
             for (col in 0 until viewModel.gridWidth) {
-                val position = Position(row, col)
-
                 // if cell is part of currently selected game word, adjust the level to set the background color
                 viewModel.cellGrid[row][col]?.let { cell ->
                     val isSelected = viewModel.currentGameWord.value?.let {
                         it == cell.gameWordAcross || it == cell.gameWordDown
                     } ?: false
 
-                    viewByPositionMap[position]?.setStyle(isSelected, showErrors && cell.hasUserError)
+                    viewByPositionMap[Position(row, col)]?.setStyle(isSelected, indicateError = showErrors && cell.hasUserError)
                 }
             }
         }
@@ -260,7 +261,6 @@ class PuzzleFragment : Fragment() {
         var row = gameWord.row
         var col = gameWord.col
         for (charIndex in 0 until wordLength) {
-            val position = Position(row, col)
             viewModel.cellGrid[row][col]?.let {
                 val userChar = userEntry[charIndex]
                 if (isAcross) {
@@ -270,7 +270,7 @@ class PuzzleFragment : Fragment() {
                     it.userCharDown = userChar
                     row++
                 }
-                fillTextView(it, viewByPositionMap[position])
+                fillTextView(it, viewByPositionMap[Position(row, col)])
             }
         }
     }
@@ -282,7 +282,6 @@ class PuzzleFragment : Fragment() {
      */
     private fun updateUserLetterInPuzzle(userChar: Char, isAcross: Boolean, row: Int, col: Int): GameWord? {
         var conflictingGameWord: GameWord? = null
-        val position = Position(row, col)
         viewModel.cellGrid[row][col]?.let { cell ->
             if (isAcross) {
                 val inConflict = cell.userCharDown != GameWord.BLANK && userChar != cell.userCharDown
@@ -307,7 +306,7 @@ class PuzzleFragment : Fragment() {
                     }
                 }
             }
-            fillTextView(cell, viewByPositionMap[position])
+            fillTextView(cell, viewByPositionMap[Position(row, col)])
         }
         return conflictingGameWord
     }
