@@ -8,11 +8,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.indiv.dls.games.verboscruzados.async.GameSetup
 import org.indiv.dls.games.verboscruzados.game.GameWord
 import org.indiv.dls.games.verboscruzados.game.PersistenceHelper
@@ -22,8 +20,18 @@ class MainActivityViewModel(val activity: Activity) : ViewModel() {
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
-    // Make the mutable live data private and only update it internally via a setter function.
+    // Currently selected word in a game. Allows callers to read the current value from the immutable reference.
     private val _currentGameWord = MutableLiveData<GameWord?>()
+
+    // Game words loaded from StoredPreferences
+    private val _reloadedGameWords: MutableLiveData<List<GameWord>> by lazy {
+        MutableLiveData<List<GameWord>>()
+    }
+
+    // Game words newly generated
+    private val _newlyCreatedGameWords: MutableLiveData<List<GameWord>> by lazy {
+        MutableLiveData<List<GameWord>>()
+    }
 
     private val persistenceHelper = PersistenceHelper(activity)
     private val gameSetup = GameSetup()
@@ -32,26 +40,15 @@ class MainActivityViewModel(val activity: Activity) : ViewModel() {
 
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
 
-    // Currently selected word in a game. Allows callers to read the current value from the immutable reference.
-    // It must be set thru the setter function.
+    // Public immutable accessors
     val currentGameWord = _currentGameWord as LiveData<GameWord?>
+    val reloadedGameWords = _reloadedGameWords as LiveData<List<GameWord>>
+    val newlyCreatedGameWords = _newlyCreatedGameWords as LiveData<List<GameWord>>
 
     // The character index within the selected word of the selected cell.
     var charIndexOfSelectedCell = 0
 
     var currentGameWords: List<GameWord> = emptyList()
-
-    // Game words loaded from StoredPreferences
-    val reloadedGameWords: LiveData<List<GameWord>> = liveData(context = viewModelScope.coroutineContext + Dispatchers.Default) {
-        val gameWords = persistenceHelper.currentGameWords
-        currentGameWords = gameWords
-        emit(gameWords)
-    }
-
-    // Game words newly generated
-    val newlyCreatedGameWords: MutableLiveData<List<GameWord>> by lazy {
-        MutableLiveData<List<GameWord>>()
-    }
 
     // Grid of cells making up the puzzle, plus various dimensions
     val cellGrid: Array<Array<GridCell?>>
@@ -114,6 +111,9 @@ class MainActivityViewModel(val activity: Activity) : ViewModel() {
         _currentGameWord.value = gameWord
     }
 
+    /**
+     * Launches new game, setting up on a worker thread.
+     */
     fun launchNewGame() {
         viewModelScope.launch(context = Dispatchers.Default) {
             val gameWords = gameSetup.newGame(activity.resources, cellGrid, persistenceHelper.currentGameOptions)
@@ -122,7 +122,18 @@ class MainActivityViewModel(val activity: Activity) : ViewModel() {
             persistenceHelper.elapsedSeconds = 0L
             elapsedGameSecondsRecorded = 0L
             currentGameWords = gameWords
-            newlyCreatedGameWords.postValue(gameWords)
+            _newlyCreatedGameWords.postValue(gameWords)
+        }
+    }
+
+    /**
+     * Loads existing game on a worker thread.
+     */
+    fun loadExistingGame() {
+        viewModelScope.launch(context = Dispatchers.Default) {
+            val gameWords = persistenceHelper.currentGameWords
+            currentGameWords = gameWords
+            _reloadedGameWords.postValue(gameWords)
         }
     }
 

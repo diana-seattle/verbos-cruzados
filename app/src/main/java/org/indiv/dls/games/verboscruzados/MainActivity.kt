@@ -7,9 +7,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
-import android.util.DisplayMetrics
 import android.util.Log
-import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -128,6 +126,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Observe loading of existing game
+        viewModel.reloadedGameWords.observe(this) { gameWords ->
+            if (gameWords.isNotEmpty() && puzzleFragment.doWordsFitInGrid(gameWords)) {
+                // Apply the loaded game to the puzzle fragment
+                gameWords.forEach {
+                    gameSetup.addToGrid(it, viewModel.cellGrid)
+                }
+                puzzleFragment.createGridViews()
+                scrollSelectedCellIntoViewWithDelay()
+            } else {
+                // This will happen if on very first game, or if no saved game (due to an error).
+                setupNewGame()
+                showOnboarding = true
+            }
+        }
 
         persistenceHelper = PersistenceHelper(this)
 
@@ -154,7 +167,10 @@ class MainActivity : AppCompatActivity() {
 
         if (viewModel.gridWidth > 0 && viewModel.gridHeight > 0) {
             puzzleFragment.initialize()
-            loadNewOrExistingGame()
+            setPuzzleBackgroundImage(persistenceHelper.currentImageIndex)
+
+            // Attempt to load existing game, observer will create new on if not found.
+            viewModel.loadExistingGame()
         }
 
         addKeyboardListeners()
@@ -350,30 +366,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * this is called when db setup completes
-     */
-    private fun loadNewOrExistingGame() {
-        setPuzzleBackgroundImage(persistenceHelper.currentImageIndex)
-
-        // get current game if any
-        viewModel.reloadedGameWords.observe(this) { gameWords ->
-
-            // if on very first game, or if no saved game (due to an error), create a new one, otherwise open existing game
-            if (gameWords.isEmpty() || !puzzleFragment.doWordsFitInGrid(gameWords)) {
-                setupNewGame()
-                showOnboarding = true
-            } else {
-                // Apply the loaded game to the puzzle fragment
-                gameWords.forEach {
-                    gameSetup.addToGrid(it, viewModel.cellGrid)
-                }
-                puzzleFragment.createGridViews()
-                scrollSelectedCellIntoViewWithDelay()
-            }
-        }
-    }
-
-    /**
      * Creates new game (called first time app run, or when user starts new game)
      */
     private fun setupNewGame() {
@@ -494,18 +486,6 @@ class MainActivity : AppCompatActivity() {
             setupNewGame()
         }
         dlg.show(supportFragmentManager, "fragment_showoptions")
-    }
-
-    // note that with api level 13 and above we can use getResources().getConfiguration().screenHeightDp/screenWidthDp to get available screen size
-    private fun getActionBarHeightInPixels(displayMetrics: DisplayMetrics): Int {
-        // actionBar.getHeight() returns zero in onCreate (i.e. before it is shown)
-        // for the following solution, see: http://stackoverflow.com/questions/12301510/how-to-get-the-actionbar-height/13216807#13216807
-        var actionBarHeight = 0  // actionBar.getHeight() returns zero in onCreate
-        val tv = TypedValue()
-        if (theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, displayMetrics)
-        }
-        return actionBarHeight
     }
 
     private fun isKeyboardVisible(): Boolean {
