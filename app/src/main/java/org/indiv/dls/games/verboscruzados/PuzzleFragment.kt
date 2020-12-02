@@ -97,6 +97,13 @@ class PuzzleFragment : Fragment() {
             }
         }
 
+        // create table rows
+        for (row in 0 until viewModel.gridHeight) {
+            val tableRow = TableRow(activity)
+            tableRow.gravity = Gravity.CENTER
+            binding.cellTableLayout.addView(tableRow)
+        }
+
         // Get instance of Vibrator from current Context
         context?.let {
             vibration = Vibration(it)
@@ -106,15 +113,6 @@ class PuzzleFragment : Fragment() {
     //endregion
 
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
-
-    fun initializeRows() {
-        // create table rows
-        for (row in 0 until viewModel.gridHeight) {
-            val tableRow = TableRow(activity)
-            tableRow.gravity = Gravity.CENTER
-            binding.cellTableLayout.addView(tableRow)
-        }
-    }
 
     fun clearExistingGame() {
         // clear out any existing data
