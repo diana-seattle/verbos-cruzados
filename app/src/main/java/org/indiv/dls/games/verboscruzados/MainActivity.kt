@@ -157,7 +157,7 @@ class MainActivity : AppCompatActivity() {
         setPuzzleBackgroundImage(viewModel.currentImageIndex)
 
         if (viewModel.gridWidth > 0 && viewModel.gridHeight > 0) {
-            puzzleFragment.initialize()
+            puzzleFragment.initializeRows()
 
             // Attempt to load existing game, observer will create new on if not found.
             viewModel.loadExistingGame()

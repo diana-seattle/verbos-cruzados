@@ -28,7 +28,7 @@ import kotlin.random.Random
 /**
  * Handles process of setting up a game.
  */
-class GameSetup {
+open class GameSetup {
 
     companion object {
         private val USTED_PRONOUN = "Usted"

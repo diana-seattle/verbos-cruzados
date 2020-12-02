@@ -18,7 +18,8 @@ import kotlin.math.roundToInt
 
 
 class MainActivityViewModel(
-        private val activity: Activity,
+        private val resources: Resources,
+        theme: Resources.Theme,
         private val persistenceHelper: PersistenceHelper,
         private val gameSetup: GameSetup
 ) : ViewModel() {
@@ -46,7 +47,7 @@ class MainActivityViewModel(
 
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
 
-    // Public immutable accessors
+    // Public immutable LiveData accessors
     val currentGameWord = _currentGameWord as LiveData<GameWord?>
     val reloadedGameWords = _reloadedGameWords as LiveData<List<GameWord>>
     val newlyCreatedGameWords = _newlyCreatedGameWords as LiveData<List<GameWord>>
@@ -86,7 +87,6 @@ class MainActivityViewModel(
     //region INITIALIZER ---------------------------------------------------------------------------
 
     init {
-        val resources = activity.resources
         keyboardHeight = resources.getDimension(R.dimen.keyboard_height)
         val displayMetrics = resources.displayMetrics
         val configuration = resources.configuration
@@ -94,7 +94,7 @@ class MainActivityViewModel(
         val puzzleMarginSidePixels = resources.getDimension(R.dimen.puzzle_margin_side)
         val totalPuzzleMarginTopPixels = puzzleMarginTopPixels * 2
         val totalPuzzleMarginSidePixels = puzzleMarginSidePixels * 2
-        val actionBarHeightPixels = getActionBarHeightInPixels(displayMetrics, activity.theme)
+        val actionBarHeightPixels = getActionBarHeightInPixels(displayMetrics, theme)
         val screenWidthDp = configuration.smallestScreenWidthDp
         val screenHeightDp = maxOf(configuration.screenHeightDp, configuration.screenWidthDp)
         val heightFactor = when {
@@ -136,7 +136,7 @@ class MainActivityViewModel(
      */
     fun launchNewGame() {
         viewModelScope.launch(context = Dispatchers.Default) {
-            val gameWords = gameSetup.newGame(activity.resources, cellGrid, persistenceHelper.currentGameOptions)
+            val gameWords = gameSetup.newGame(resources, cellGrid, persistenceHelper.currentGameOptions)
             persistenceHelper.currentGameWords = gameWords
             persistenceHelper.currentGameCompleted = false
             persistenceHelper.elapsedSeconds = 0L
@@ -147,17 +147,20 @@ class MainActivityViewModel(
     }
 
     /**
-     * Loads existing game on a worker thread.
+     * Loads existing game on an IO thread.
      */
     fun loadExistingGame() {
-        viewModelScope.launch(context = Dispatchers.Default) {
-            val gameWords = persistenceHelper.currentGameWords
-            if (gameSetup.doWordsFitInGrid(gameWords, gridWidth, gridHeight)) {
-                currentGameWords = gameWords
-                gameSetup.addToGrid(gameWords, cellGrid)
-                _reloadedGameWords.postValue(gameWords)
-            } else {
-                _reloadedGameWords.postValue(emptyList())
+        // On app startup, the word list will be empty, but on a config change it likely won't be so no need to re-load.
+        if (currentGameWords.isEmpty()) {
+            viewModelScope.launch(context = Dispatchers.IO) {
+                val gameWords = persistenceHelper.currentGameWords
+                if (gameSetup.doWordsFitInGrid(gameWords, gridWidth, gridHeight)) {
+                    currentGameWords = gameWords
+                    gameSetup.addToGrid(gameWords, cellGrid)
+                    _reloadedGameWords.postValue(gameWords)
+                } else {
+                    _reloadedGameWords.postValue(emptyList())
+                }
             }
         }
     }
@@ -175,13 +178,13 @@ class MainActivityViewModel(
     }
 
     fun persistUserEntry(gameWord: GameWord) {
-        viewModelScope.launch(context = Dispatchers.Default) {
+        viewModelScope.launch(context = Dispatchers.IO) {
             persistenceHelper.persistUserEntry(gameWord)
         }
     }
 
     fun persistGameStatistics() {
-        viewModelScope.launch(context = Dispatchers.Default) {
+        viewModelScope.launch(context = Dispatchers.IO) {
             persistenceHelper.persistGameStats(currentGameWords)
         }
     }
@@ -340,7 +343,12 @@ class MainActivityViewModel(
     class Factory(private val activity: Activity) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(MainActivityViewModel::class.java)) {
-                return MainActivityViewModel(activity, PersistenceHelper(activity), GameSetup()) as T
+                return MainActivityViewModel(
+                        activity.resources,
+                        activity.theme,
+                        PersistenceHelper(activity),
+                        GameSetup()
+                ) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

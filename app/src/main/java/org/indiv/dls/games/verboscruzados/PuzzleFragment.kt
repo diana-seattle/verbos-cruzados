@@ -32,6 +32,8 @@ class PuzzleFragment : Fragment() {
 
     private var gameWordLastSelected: GameWord? = null
 
+    private var gameInitialized = false;
+
     // Used to find a view based on a position value
     private var viewByPositionMap: MutableMap<Position, PuzzleCellTextView> = mutableMapOf()
 
@@ -83,15 +85,16 @@ class PuzzleFragment : Fragment() {
                 .get(MainActivityViewModel::class.java)
 
         viewModel.currentGameWord.observe(viewLifecycleOwner) { gameWord ->
+            if (gameInitialized) {
+                // deselect word that currently has selection, if any
+                gameWordLastSelected?.let { showAsSelected(it, false) }
 
-            // deselect word that currently has selection, if any
-            gameWordLastSelected?.let { showAsSelected(it, false) }
+                // select new word if any
+                gameWord?.let { showAsSelected(it, true) }
 
-            // select new word if any
-            gameWord?.let { showAsSelected(it, true) }
-
-            // Remember last selected so we can deselect it later.
-            gameWordLastSelected = gameWord
+                // Remember last selected so we can deselect it later.
+                gameWordLastSelected = gameWord
+            }
         }
 
         // Get instance of Vibrator from current Context
@@ -104,7 +107,7 @@ class PuzzleFragment : Fragment() {
 
     //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
 
-    fun initialize() {
+    fun initializeRows() {
         // create table rows
         for (row in 0 until viewModel.gridHeight) {
             val tableRow = TableRow(activity)
@@ -122,6 +125,7 @@ class PuzzleFragment : Fragment() {
         viewByPositionMap.clear()
         positionOfViewMap.clear()
         gameWordLastSelected = null
+        gameInitialized = false
     }
 
     /**
@@ -157,6 +161,7 @@ class PuzzleFragment : Fragment() {
                 }
             }
         }
+        gameInitialized = true
 
         // Make the initial word selection, in this priority:
         // 1. Select first empty word if any
@@ -263,6 +268,7 @@ class PuzzleFragment : Fragment() {
         for (charIndex in 0 until wordLength) {
             viewModel.cellGrid[row][col]?.let {
                 val userChar = userEntry[charIndex]
+                val position = Position(row, col)
                 if (isAcross) {
                     it.userCharAcross = userChar
                     col++
@@ -270,7 +276,7 @@ class PuzzleFragment : Fragment() {
                     it.userCharDown = userChar
                     row++
                 }
-                fillTextView(it, viewByPositionMap[Position(row, col)])
+                fillTextView(it, viewByPositionMap[position])
             }
         }
     }
