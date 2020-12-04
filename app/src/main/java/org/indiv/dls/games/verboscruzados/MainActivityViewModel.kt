@@ -52,7 +52,7 @@ class MainActivityViewModel(
     // The character index within the selected word of the selected cell.
     var charIndexOfSelectedCell = 0
 
-
+    // Set to true when saved data indicates initial installation
     var showOnboardingMessage = false
 
     // Grid of cells making up the puzzle, plus some dimensions
@@ -192,21 +192,22 @@ class MainActivityViewModel(
      */
     fun selectNextGameWordWithWrapAround(shouldSelectEmptyOnly: Boolean): Boolean {
         val wordFoundAfterPosition = currentGameWord.value?.let {
-            selectNextGameWord(startingRow = it.row, startingCol = it.col, emptyOnly = shouldSelectEmptyOnly)
+            selectNextGameWord(startingRow = it.row, startingCol = it.col, havingEmptyCells = shouldSelectEmptyOnly)
         } ?: false
         // If word not found after position, wrap around to beginning and look for word from start.
-        return wordFoundAfterPosition || selectNextGameWord(startingRow = 0, startingCol = 0, emptyOnly = shouldSelectEmptyOnly)
+        return wordFoundAfterPosition || selectNextGameWord(startingRow = 0, startingCol = 0, havingEmptyCells = shouldSelectEmptyOnly)
     }
 
     /**
-     * Searches for and selects next empty or errored game word depending on parameter, starting at specified cell.
+     * Searches for and selects next game word with empty or errored cells depending on parameter, starting at specified cell.
      *
      * @param startingRow starting row to start searching for next word to select.
      * @param startingCol starting col to start searching for next word to select.
-     * @param emptyOnly true if next empty game word should be selected, false if any errored game word should be selected.
+     * @param havingEmptyCells true if next game word having empty cells should be selected, false if any word with
+     *   empty or errored cells should be selected.
      * @return true if new word found and selected, false if no selection made.
      */
-    fun selectNextGameWord(startingRow: Int, startingCol: Int, emptyOnly: Boolean): Boolean {
+    fun selectNextGameWord(startingRow: Int, startingCol: Int, havingEmptyCells: Boolean): Boolean {
         // If current word is vertical and starts on starting cell, do NOT select the horizontal word starting on that cell
         // or we'll end up circularly going back and forth between the vertical and horizontal on that cell.
         val currentWordIsVerticalAndStartsOnStartingPosition = currentGameWord.value?.let {
@@ -232,9 +233,9 @@ class MainActivityViewModel(
                     } ?: Pair(false, false)
 
                     // If cell is the beginning of an across word that is NOT already selected, choose it.
-                    if (cell.wordAcrossStartsInCol(col) && !wordAcrossIsSelected && isEmptyOrErroredGameWord(cell.gameWordAcross, emptyOnly)) {
+                    if (cell.wordAcrossStartsInCol(col) && !wordAcrossIsSelected && isEmptyOrErroredGameWord(cell.gameWordAcross, havingEmptyCells)) {
                         nextGameWord = cell.gameWordAcross
-                    } else if (cell.wordDownStartsInRow(row) && !wordDownIsSelected && isEmptyOrErroredGameWord(cell.gameWordDown, emptyOnly)) {
+                    } else if (cell.wordDownStartsInRow(row) && !wordDownIsSelected && isEmptyOrErroredGameWord(cell.gameWordDown, havingEmptyCells)) {
                         // Vertical word starts in the row of this cell, select it
                         nextGameWord = cell.gameWordDown
                     }
@@ -320,12 +321,16 @@ class MainActivityViewModel(
         return actionBarHeight
     }
 
-    private fun isEmptyOrErroredGameWord(gameWord: GameWord?, emptyOnly: Boolean): Boolean {
+    private fun isEmptyOrErroredGameWord(gameWord: GameWord?, havingEmptyCells: Boolean): Boolean {
         return gameWord?.let {
-            return hasVisibleBlanks(it) || !emptyOnly && it.hasErroredCells
+            return hasVisibleBlanks(it) || !havingEmptyCells && it.hasErroredCells
         } ?: false
     }
 
+    /**
+     * Returns true if word has cells that are visibly blank. That is, we ignore cells that are intersecting and
+     * filled in in only one direction.
+     */
     private fun hasVisibleBlanks(gameWord: GameWord): Boolean {
         var row = gameWord.row
         var col = gameWord.col

@@ -161,13 +161,19 @@ class PuzzleFragment : Fragment() {
         }
         gameInitialized = true
 
-        // Make the initial word selection, in this priority:
-        // 1. Select first empty word if any
-        // 2. Select first errored word if any
-        // 3. Select first word (this can happen if user returns to a finished game)
-        if (!viewModel.selectNextGameWord(0, 0, true)
-                && !viewModel.selectNextGameWord(0, 0, false)) {
-            viewModel.selectNewGameWord(firstGameWord, firstGameWord?.defaultSelectionIndex ?: 0)
+        // If a game word is selected already, this represents a config change. Reselect the same word so we can observe
+        // it and update the views accordingly.
+        viewModel.currentGameWord.value?.let {
+            viewModel.selectNewGameWord(it, it.defaultSelectionIndex)
+        } ?: run {
+            // Otherwise, no selection has been made yet. Choose a word in this priority:
+            // 1. Select first word with empty cells if any
+            // 2. Select first word with errored cells if any
+            // 3. Select first word (this can happen if user returns to a finished game)
+            if (!viewModel.selectNextGameWord(0, 0, true)
+                    && !viewModel.selectNextGameWord(0, 0, false)) {
+                viewModel.selectNewGameWord(firstGameWord, firstGameWord?.defaultSelectionIndex ?: 0)
+            }
         }
     }
 
