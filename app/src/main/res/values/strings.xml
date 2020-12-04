@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Verbos Cruzados</string>
+    <string name="app_name" translatable="false">Verbos Cruzados</string>
 
     <!-- menu options -->
     <string name="action_startnewgame">Start New Game</string>
@@ -112,6 +112,5 @@
 
     <!-- error messages -->
     <string name="error_game_setup_failure">Unable to set up game</string>
-    <string name="error_initial_setup_failure">Unable to complete initial set up</string>
 
 </resources>

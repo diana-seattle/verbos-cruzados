@@ -41,7 +41,7 @@ import org.indiv.dls.games.verboscruzados.game.GameWord
 
 // todo: review all code
 // todo: add tests
-// todo: view model / livedata - replace rxjava for game setup? also for SharedPreferences?
+// todo: view model / livedata
 // todo: fix tablet pixel C api 30
 // todo: fix on foldables
 
@@ -71,9 +71,9 @@ class MainActivity : AppCompatActivity() {
 
     private var optionsMenu: Menu? = null
 
-    private var showOnboarding = false
     private var showingErrors = false
 
+    // This is elapsed milliseconds since we started the timer. It will be added to the overall saved duration for the game.
     private var elapsedTimerMs = 0L
     private val countDownTimer: CountDownTimer = object : CountDownTimer(COUNTDOWN_MAX_TIME, COUNTDOWN_INTERVAL) {
         override fun onTick(millisUntilFinished: Long) {
@@ -107,29 +107,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Observe creation of new game
-        viewModel.newlyCreatedGameWords.observe(this) { gameWords ->
-            if (gameWords.isNotEmpty()) {
+        // Observe starting or loading of a game
+        viewModel.gameStartOrLoadEvent.observe(this) { event ->
+            if (viewModel.currentGameWords.isNotEmpty()) {
+                // Apply the game to the puzzle fragment
                 puzzleFragment.createGridViewsAndSelectWord()
                 scrollWordIntoViewWithDelay()
-                binding.answerKeyboard.elapsedTime = getElapsedTimeText(0L)
                 startTimer()
             } else {
                 Toast.makeText(this, R.string.error_game_setup_failure, Toast.LENGTH_SHORT).show()
                 Log.e(TAG, "Error setting up game")
-            }
-        }
-
-        // Observe loading of existing game
-        viewModel.reloadedGameWords.observe(this) { gameWords ->
-            if (gameWords.isNotEmpty()) {
-                // Apply the loaded game to the puzzle fragment
-                puzzleFragment.createGridViewsAndSelectWord()
-                scrollWordIntoViewWithDelay()
-            } else {
-                // This will happen if on very first game, or if no saved game (due to an error).
-                setupNewGame()
-                showOnboarding = true
             }
         }
 
@@ -158,7 +145,7 @@ class MainActivity : AppCompatActivity() {
 
         if (viewModel.gridWidth > 0 && viewModel.gridHeight > 0) {
             // Attempt to load existing game, observer will create new one if not found.
-            viewModel.loadExistingGame()
+            viewModel.loadGame()
         }
 
         addKeyboardListeners()
@@ -224,8 +211,8 @@ class MainActivity : AppCompatActivity() {
         binding.answerKeyboard.infinitiveClickListener = {
             puzzleFragment.updateTextInPuzzleWord(it)
             onAnswerChanged()
-            if (showOnboarding) {
-                showOnboarding = false
+            if (viewModel.showOnboardingMessage) {
+                viewModel.showOnboardingMessage = false
                 binding.onboardingMessageLayout.visibility = View.GONE
             }
         }
@@ -436,7 +423,7 @@ class MainActivity : AppCompatActivity() {
                         .start()
             }, 1)
 
-            if (showOnboarding) {
+            if (viewModel.showOnboardingMessage) {
                 binding.onboardingMessageLayout.visibility = View.VISIBLE
             }
         }

@@ -29,14 +29,9 @@ class MainActivityViewModel(
     // Currently selected word in a game. Allows callers to read the current value from the immutable reference.
     private val _currentGameWord = MutableLiveData<GameWord?>()
 
-    // Game words loaded from StoredPreferences
-    private val _reloadedGameWords: MutableLiveData<List<GameWord>> by lazy {
-        MutableLiveData<List<GameWord>>()
-    }
-
-    // Game words newly generated
-    private val _newlyCreatedGameWords: MutableLiveData<List<GameWord>> by lazy {
-        MutableLiveData<List<GameWord>>()
+    // Event representing when a game is loaded or started.
+    private val _gameStartOrLoadEvent: MutableLiveData<GameEvent> by lazy {
+        MutableLiveData<GameEvent>()
     }
 
     private val viewablePuzzleHeight: Float
@@ -49,13 +44,16 @@ class MainActivityViewModel(
 
     // Public immutable LiveData accessors
     val currentGameWord = _currentGameWord as LiveData<GameWord?>
-    val reloadedGameWords = _reloadedGameWords as LiveData<List<GameWord>>
-    val newlyCreatedGameWords = _newlyCreatedGameWords as LiveData<List<GameWord>>
+    val gameStartOrLoadEvent = _gameStartOrLoadEvent as LiveData<GameEvent>
+
+    // List of word data for the current game
+    var currentGameWords: List<GameWord> = emptyList()
 
     // The character index within the selected word of the selected cell.
     var charIndexOfSelectedCell = 0
 
-    var currentGameWords: List<GameWord> = emptyList()
+
+    var showOnboardingMessage = false
 
     // Grid of cells making up the puzzle, plus some dimensions
     val cellGrid: Array<Array<GridCell?>>
@@ -136,30 +134,26 @@ class MainActivityViewModel(
      */
     fun launchNewGame() {
         viewModelScope.launch(context = Dispatchers.Default) {
-            val gameWords = gameSetup.newGame(resources, cellGrid, persistenceHelper.currentGameOptions)
-            persistenceHelper.currentGameWords = gameWords
-            persistenceHelper.currentGameCompleted = false
-            persistenceHelper.elapsedSeconds = 0L
-            elapsedSecondsSnapshot = 0L
-            currentGameWords = gameWords
-            _newlyCreatedGameWords.postValue(gameWords)
+            setupNewGame()
         }
     }
 
     /**
-     * Loads existing game on an IO thread.
+     * Loads existing game on an IO thread, starting new game if none found.
      */
-    fun loadExistingGame() {
+    fun loadGame() {
         // On app startup, the word list will be empty, but on a config change it likely won't be so no need to re-load.
         if (currentGameWords.isEmpty()) {
             viewModelScope.launch(context = Dispatchers.IO) {
                 val gameWords = persistenceHelper.currentGameWords
-                if (gameSetup.doWordsFitInGrid(gameWords, gridWidth, gridHeight)) {
-                    currentGameWords = gameWords
+                if (gameWords.isNotEmpty() && gameSetup.doWordsFitInGrid(gameWords, gridWidth, gridHeight)) {
                     gameSetup.addToGrid(gameWords, cellGrid)
-                    _reloadedGameWords.postValue(gameWords)
+                    currentGameWords = gameWords
+                    _gameStartOrLoadEvent.postValue(GameEvent.RELOADED)
                 } else {
-                    _reloadedGameWords.postValue(emptyList())
+                    // This will happen if on very first game, or if no saved game (due to an error).
+                    showOnboardingMessage = true
+                    setupNewGame()
                 }
             }
         }
@@ -302,6 +296,19 @@ class MainActivityViewModel(
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
+    /**
+     * Must be called within a coroutine.
+     */
+    private suspend fun setupNewGame() {
+        val gameWords = gameSetup.newGame(resources, cellGrid, persistenceHelper.currentGameOptions)
+        persistenceHelper.currentGameWords = gameWords
+        persistenceHelper.currentGameCompleted = false
+        persistenceHelper.elapsedSeconds = 0L
+        elapsedSecondsSnapshot = 0L
+        currentGameWords = gameWords
+        _gameStartOrLoadEvent.postValue(GameEvent.CREATED)
+    }
+
     private fun getActionBarHeightInPixels(displayMetrics: DisplayMetrics, theme: Resources.Theme): Int {
         // actionBar.getHeight() returns zero in onCreate (i.e. before it is shown)
         // for the following solution, see: http://stackoverflow.com/questions/12301510/how-to-get-the-actionbar-height/13216807#13216807
@@ -336,6 +343,11 @@ class MainActivityViewModel(
     //endregion
 
     //region INNER CLASSES -------------------------------------------------------------------------
+
+    enum class GameEvent {
+        CREATED,
+        RELOADED
+    }
 
     /**
      * Factory class for creating this view model.

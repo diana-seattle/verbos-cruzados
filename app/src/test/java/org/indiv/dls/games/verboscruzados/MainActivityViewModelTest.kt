@@ -75,7 +75,7 @@ class MainActivityViewModelTest {
             // Edit a game word and persist it, then reload game
             gameWord.setUserText(gameWord.word)
             viewModel.persistUserEntry(gameWord)
-            viewModel.loadExistingGame()
+            viewModel.loadGame()
         }
         viewModel.launchNewGame()
 
