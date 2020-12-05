@@ -1,4 +1,4 @@
-package org.indiv.dls.games.verboscruzados
+package org.indiv.dls.games.verboscruzados.view
 
 
 import android.os.Bundle
@@ -10,7 +10,9 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.TableRow
 import androidx.lifecycle.ViewModelProvider
-import org.indiv.dls.games.verboscruzados.component.PuzzleCellTextView
+import org.indiv.dls.games.verboscruzados.MainActivityViewModel
+import org.indiv.dls.games.verboscruzados.MainActivityViewModelFactory
+import org.indiv.dls.games.verboscruzados.view.component.PuzzleCellTextView
 import org.indiv.dls.games.verboscruzados.databinding.FragmentPuzzleBinding
 import org.indiv.dls.games.verboscruzados.model.GameWord
 import org.indiv.dls.games.verboscruzados.model.GridCell

@@ -3,9 +3,10 @@ package org.indiv.dls.games.verboscruzados
 import android.os.Build
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.indiv.dls.games.verboscruzados.async.GameSetup
-import org.indiv.dls.games.verboscruzados.game.GameWord
-import org.indiv.dls.games.verboscruzados.game.PersistenceHelper
+import org.indiv.dls.games.verboscruzados.model.GameWord
+import org.indiv.dls.games.verboscruzados.util.GameSetupImpl
+import org.indiv.dls.games.verboscruzados.util.GamePersistenceImpl
+import org.indiv.dls.games.verboscruzados.view.MainActivity
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -24,7 +25,7 @@ import org.robolectric.annotation.Config
 //@RunWith(MockitoJUnitRunner::class)
 class MainActivityViewModelTest {
 
-    @Mock private lateinit var gameSetup: GameSetup
+    @Mock private lateinit var gameSetup: GameSetupImpl
 
     @get:Rule var activityScenarioRule = activityScenarioRule<MainActivity>()
 
@@ -37,7 +38,7 @@ class MainActivityViewModelTest {
         MockitoAnnotations.initMocks(this)
         activityScenarioRule.scenario.onActivity { activity ->
             mainActivity = activity
-            val persistenceHelper = PersistenceHelper(activity)
+            val persistenceHelper = GamePersistenceImpl(activity)
             viewModel = MainActivityViewModel(activity.resources, activity.theme, persistenceHelper, gameSetup)
         }
     }

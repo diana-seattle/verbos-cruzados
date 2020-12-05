@@ -1,4 +1,4 @@
-package org.indiv.dls.games.verboscruzados.component
+package org.indiv.dls.games.verboscruzados.view.component
 
 import android.content.Context
 import android.util.AttributeSet
@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import org.indiv.dls.games.verboscruzados.model.AnswerPresentation
 import org.indiv.dls.games.verboscruzados.R
-import org.indiv.dls.games.verboscruzados.Vibration
+import org.indiv.dls.games.verboscruzados.view.Vibration
 import org.indiv.dls.games.verboscruzados.databinding.KeyboardMinimalBinding
 
 /**

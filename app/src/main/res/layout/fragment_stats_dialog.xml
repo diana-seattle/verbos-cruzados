@@ -53,7 +53,7 @@
                   android:orientation="vertical">
 
         <!-- stats view -->
-        <org.indiv.dls.games.verboscruzados.component.StatsGraphicView
+        <org.indiv.dls.games.verboscruzados.view.component.StatsGraphicView
             android:id="@+id/stats_dialog_graphic"
             android:layout_width="match_parent"
             android:layout_height="@dimen/stats_map_height"

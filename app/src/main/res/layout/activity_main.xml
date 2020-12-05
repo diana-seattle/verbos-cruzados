@@ -4,7 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context=".MainActivity">
+              tools:context=".view.MainActivity">
     <!-- using this above for better performance: android:baselineAligned="false" -->
 
     <com.google.android.material.appbar.AppBarLayout
@@ -27,11 +27,11 @@
                     android:background="@drawable/scene_desertrocks"
                     android:baselineAligned="false"
                     android:orientation="vertical"
-                    tools:context=".MainActivity">
+                    tools:context=".view.MainActivity">
 
         <!-- puzzle fragment -->
         <fragment android:id="@+id/puzzle_fragment"
-                  class="org.indiv.dls.games.verboscruzados.PuzzleFragment"
+                  class="org.indiv.dls.games.verboscruzados.view.PuzzleFragment"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"/>
 
@@ -66,7 +66,7 @@
         </LinearLayout>
 
         <!-- special keyboard for answer entry -->
-        <org.indiv.dls.games.verboscruzados.component.MinimalKeyboard
+        <org.indiv.dls.games.verboscruzados.view.component.MinimalKeyboard
             android:id="@+id/answer_keyboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -74,6 +74,6 @@
             android:layout_centerHorizontal="true"
             android:visibility="invisible">
 
-        </org.indiv.dls.games.verboscruzados.component.MinimalKeyboard>
+        </org.indiv.dls.games.verboscruzados.view.component.MinimalKeyboard>
     </RelativeLayout>
 </LinearLayout>

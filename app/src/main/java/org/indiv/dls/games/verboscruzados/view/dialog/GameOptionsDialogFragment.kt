@@ -1,4 +1,4 @@
-package org.indiv.dls.games.verboscruzados.dialog
+package org.indiv.dls.games.verboscruzados.view.dialog
 
 import android.app.Dialog
 import android.os.Bundle

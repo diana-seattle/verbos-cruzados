@@ -1,4 +1,4 @@
-package org.indiv.dls.games.verboscruzados.dialog
+package org.indiv.dls.games.verboscruzados.view.dialog
 
 import android.app.Dialog
 import android.os.Bundle
@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import org.indiv.dls.games.verboscruzados.R
-import org.indiv.dls.games.verboscruzados.component.StatsGraphicView
+import org.indiv.dls.games.verboscruzados.view.component.StatsGraphicView
 import org.indiv.dls.games.verboscruzados.databinding.FragmentStatsDialogBinding
 import org.indiv.dls.games.verboscruzados.util.GamePersistenceImpl
 import org.indiv.dls.games.verboscruzados.model.ConjugationType

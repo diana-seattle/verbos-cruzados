@@ -1,4 +1,4 @@
-package org.indiv.dls.games.verboscruzados
+package org.indiv.dls.games.verboscruzados.view
 
 import android.content.Context
 import android.os.Build
