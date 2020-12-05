@@ -135,7 +135,7 @@ class MainActivity : AppCompatActivity() {
                         puzzleFragment.updateTextInPuzzleWord(it.word)
                         onAnswerChanged()
                     }
-                } while (viewModel.selectNextGameWordWithWrapAround(shouldSelectEmptyOnly = false))
+                } while (viewModel.selectNextGameWordWithWrapAround(selectWordWithBlanks = false))
                 true
             }
         }
@@ -253,8 +253,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun selectNextGameWordFavoringEmpty(): Boolean {
-        return viewModel.selectNextGameWordWithWrapAround(shouldSelectEmptyOnly = true)
-                || viewModel.selectNextGameWordWithWrapAround(shouldSelectEmptyOnly = false)
+        return viewModel.selectNextGameWordWithWrapAround(selectWordWithBlanks = true)
+                || viewModel.selectNextGameWordWithWrapAround(selectWordWithBlanks = false)
     }
 
     /**

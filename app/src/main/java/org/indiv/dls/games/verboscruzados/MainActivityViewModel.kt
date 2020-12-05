@@ -9,7 +9,9 @@ import kotlinx.coroutines.launch
 import org.indiv.dls.games.verboscruzados.model.GameWord
 import org.indiv.dls.games.verboscruzados.model.GridCell
 
-
+/**
+ * ViewModel class for the Main activity based on Google's architectural components: https://developer.android.com/jetpack/guide
+ */
 class MainActivityViewModel(
         private val screenMetrics: ScreenMetrics,
         private val gameSetup: GameSetup,
@@ -18,10 +20,10 @@ class MainActivityViewModel(
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
-    // Currently selected word in a game. Allows callers to read the current value from the immutable reference.
+    // Private mutable LiveData representing currently selected word in a game.
     private val _currentGameWord = MutableLiveData<GameWord?>()
 
-    // Event representing when a game is loaded or started.
+    // Private mutable LiveData representing event when a game is loaded or started.
     private val _gameStartOrLoadEvent: MutableLiveData<GameEvent> by lazy {
         MutableLiveData<GameEvent>()
     }
@@ -40,17 +42,17 @@ class MainActivityViewModel(
     // The character index within the selected word of the selected cell.
     var charIndexOfSelectedCell = 0
 
-    // Set to true when saved data indicates initial installation
+    // Set to true when saved data indicates initial installation of the game, whereby the user needs initial instruction.
     var showOnboardingMessage = false
 
-    // This mode shows all empty and errored cells in red. It also auto-advances to the next incomplete word once a word
-    // is completed correctly.
+    // This mode displays all empty and errored cells in red. It also auto-advances to the next incomplete word once a
+    // word is completed correctly.
     var showingErrors = false
 
-    // Grid of cells making up the puzzle
+    // Grid of cells making up the puzzle and transparent puzzle background.
     val cellGrid: Array<Array<GridCell?>>
 
-    // Some game dimensions
+    // Game dimensions
     val gridHeight: Int
         get() = screenMetrics.gridHeight
     val gridWidth: Int
@@ -58,18 +60,26 @@ class MainActivityViewModel(
     val keyboardHeight: Float
         get() = screenMetrics.keyboardHeight
 
+    // Index of currently selected background image for the game
     var currentImageIndex: Int
         get() = gamePersistence.currentImageIndex
         set(value) {
             gamePersistence.currentImageIndex = value
         }
 
+    // A game can be completed and the user can elect to not start a new game. In this state, we need to do some special
+    // things such as not run the timer. Or if they un-finish and re-finish, we don't want to give them credit again in
+    // the game stats.
     var currentGameCompleted: Boolean
         get() = gamePersistence.currentGameCompleted
         set(value) {
             gamePersistence.currentGameCompleted = value
         }
 
+    // The elapsed time of the game is retrieved whenever a game is resumed. The main activity tracks a delta of elapsed
+    // time after resuming, and then when pausing, calls [addToElapsedSeconds] with the delta to update the persisted
+    // value. The snapshot variable allows the main activity to request the latest retrieved/saved value without
+    // performing i/o.
     var elapsedSecondsSnapshot = 0L // Last set or retrieved elapsed seconds value
     val persistedElapsedSeconds: Long
         get() {
@@ -82,6 +92,7 @@ class MainActivityViewModel(
     //region INITIALIZER ---------------------------------------------------------------------------
 
     init {
+        // Initialize the grid of cells based on screen dimensions. This is the board on which a game will be set up.
         cellGrid = Array(screenMetrics.gridHeight) { arrayOfNulls(screenMetrics.gridWidth) }
     }
 
@@ -95,11 +106,13 @@ class MainActivityViewModel(
     fun selectNewGameWord(gameWord: GameWord?, charIndexOfSelectedCell: Int) {
         // Set the index first so that it's available to observers of the game word change.
         this.charIndexOfSelectedCell = charIndexOfSelectedCell
+
+        // Update the LiveData value to publish to observers.
         _currentGameWord.value = gameWord
     }
 
     /**
-     * Launches new game, setting up on a worker thread.
+     * Launches new game, with setup up on a worker thread.
      */
     fun launchNewGame() {
         viewModelScope.launch(context = Dispatchers.Default) {
@@ -108,7 +121,7 @@ class MainActivityViewModel(
     }
 
     /**
-     * Loads existing game on an IO thread, starting new game if none found.
+     * Loads an existing game on an I/O thread, starting new game if none found.
      */
     fun loadGame() {
         // On app startup, the word list will be empty, but on a config change it likely won't be so no need to re-load.
@@ -128,6 +141,9 @@ class MainActivityViewModel(
         }
     }
 
+    /**
+     * Clears current game in preparation for a new one.
+     */
     fun clearGame() {
         selectNewGameWord(null, 0)
         for (row in 0 until gridHeight) {
@@ -135,17 +151,29 @@ class MainActivityViewModel(
         }
     }
 
+    /**
+     * Adds a delta of seconds to the last saved/retrieved elapsed time of the game and persists it.
+     */
     fun addToElapsedSeconds(seconds: Long) {
         elapsedSecondsSnapshot += seconds
-        gamePersistence.elapsedSeconds = elapsedSecondsSnapshot
+        viewModelScope.launch(context = Dispatchers.IO) {
+            gamePersistence.elapsedSeconds = elapsedSecondsSnapshot
+        }
     }
 
+    /**
+     * Persists user's changes to their entries within a game word.
+     */
     fun persistUserEntry(gameWord: GameWord) {
         viewModelScope.launch(context = Dispatchers.IO) {
             gamePersistence.persistUserEntry(gameWord)
         }
     }
 
+    /**
+     * Adds the current set of game words to the user's game statistics for the stats heat map. This is called when
+     * a game is completed.
+     */
     fun persistGameStatistics() {
         viewModelScope.launch(context = Dispatchers.IO) {
             gamePersistence.persistGameStats(currentGameWords)
@@ -153,18 +181,18 @@ class MainActivityViewModel(
     }
 
     /**
-     * Selects next empty or errored game word depending on parameter. Starts with current game word,
+     * Selects next incomplete or errored game word depending on parameter. Starts just after currently selected word,
      * searches to the end, then wraps around to the beginning.
      *
-     * @param shouldSelectEmptyOnly true if next empty game word should be selected, false if any errored game word should be selected.
+     * @param selectWordWithBlanks true if next incomplete game word should be selected, false if any errored game word should be selected.
      * @return true if word found and selected.
      */
-    fun selectNextGameWordWithWrapAround(shouldSelectEmptyOnly: Boolean): Boolean {
+    fun selectNextGameWordWithWrapAround(selectWordWithBlanks: Boolean): Boolean {
         val wordFoundAfterPosition = currentGameWord.value?.let {
-            selectNextGameWord(startingRow = it.row, startingCol = it.col, havingEmptyCells = shouldSelectEmptyOnly)
+            selectNextGameWord(startingRow = it.row, startingCol = it.col, havingEmptyCells = selectWordWithBlanks)
         } ?: false
         // If word not found after position, wrap around to beginning and look for word from start.
-        return wordFoundAfterPosition || selectNextGameWord(startingRow = 0, startingCol = 0, havingEmptyCells = shouldSelectEmptyOnly)
+        return wordFoundAfterPosition || selectNextGameWord(startingRow = 0, startingCol = 0, havingEmptyCells = selectWordWithBlanks)
     }
 
     /**
@@ -202,9 +230,9 @@ class MainActivityViewModel(
                     } ?: Pair(false, false)
 
                     // If cell is the beginning of an across word that is NOT already selected, choose it.
-                    if (cell.wordAcrossStartsInCol(col) && !wordAcrossIsSelected && isEmptyOrErroredGameWord(cell.gameWordAcross, havingEmptyCells)) {
+                    if (cell.wordAcrossStartsInCol(col) && !wordAcrossIsSelected && isIncompleteOrErroredGameWord(cell.gameWordAcross, havingEmptyCells)) {
                         nextGameWord = cell.gameWordAcross
-                    } else if (cell.wordDownStartsInRow(row) && !wordDownIsSelected && isEmptyOrErroredGameWord(cell.gameWordDown, havingEmptyCells)) {
+                    } else if (cell.wordDownStartsInRow(row) && !wordDownIsSelected && isIncompleteOrErroredGameWord(cell.gameWordDown, havingEmptyCells)) {
                         // Vertical word starts in the row of this cell, select it
                         nextGameWord = cell.gameWordDown
                     }
@@ -256,7 +284,7 @@ class MainActivityViewModel(
         _gameStartOrLoadEvent.postValue(GameEvent.CREATED)
     }
 
-    private fun isEmptyOrErroredGameWord(gameWord: GameWord?, havingEmptyCells: Boolean): Boolean {
+    private fun isIncompleteOrErroredGameWord(gameWord: GameWord?, havingEmptyCells: Boolean): Boolean {
         return gameWord?.let {
             return hasVisibleBlanks(it) || !havingEmptyCells && it.hasErroredCells
         } ?: false
@@ -283,6 +311,10 @@ class MainActivityViewModel(
     //endregion
 
     //region INNER CLASSES -------------------------------------------------------------------------
+
+    /*
+     Based on Robert C. Martin's "Clean Architecture" book, have all dependencies be "pluggable" via interfaces.
+     */
 
     interface ScreenMetrics {
         val keyboardHeight: Float
