@@ -17,6 +17,13 @@ class GameWord(val uniqueKey: String,            // unique key for use in persis
                val col: Int,                     // column in which the word begins
                val isAcross: Boolean,            // true if word appears in the across orientation, false if down
                var userEntry: CharArray = CharArray(word.length)) {   // text entered by the user
+
+    companion object {
+        const val BLANK = '\u0000'
+    }
+
+    //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
+
     val isAnsweredCompletelyAndCorrectly: Boolean
         get() {
             userEntry.forEachIndexed { index, c ->
@@ -26,6 +33,7 @@ class GameWord(val uniqueKey: String,            // unique key for use in persis
             }
             return true
         }
+
     val hasErroredCells: Boolean
         get() {
             userEntry.forEachIndexed { index, c ->
@@ -49,13 +57,11 @@ class GameWord(val uniqueKey: String,            // unique key for use in persis
             return word.length - 1
         }
 
-    companion object {
-        const val BLANK = '\u0000'
-    }
-
     fun setUserText(userText: String) {
         for (i in userEntry.indices) {
             userEntry[i] = if (i < userText.length) userText[i] else BLANK
         }
     }
+
+    //endregion
 }

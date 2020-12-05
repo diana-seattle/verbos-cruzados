@@ -12,6 +12,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -60,7 +61,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private val TAG = MainActivity::class.java.simpleName
         private const val KEYBOARD_ANIMATION_TIME = 150L
-        private const val COUNTDOWN_MAX_TIME = 100000000000L // basically infinite
+        private const val COUNTDOWN_MAX_TIME = Long.MAX_VALUE // basically infinite
         private const val COUNTDOWN_INTERVAL = 1000L // one second
     }
 
@@ -70,7 +71,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var viewModel: MainActivityViewModel
+    @VisibleForTesting lateinit var viewModel: MainActivityViewModel
 
     private lateinit var puzzleFragment: PuzzleFragment
 
@@ -111,13 +112,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Observe starting or loading of a game
-        viewModel.gameStartOrLoadEvent.observe(this) { event ->
+        viewModel.gameStartOrLoadEvent.observe(this) { _ ->
             if (viewModel.currentGameWords.isNotEmpty()) {
                 // Apply the game to the puzzle fragment
                 puzzleFragment.createGridViewsAndSelectWord()
                 scrollWordIntoViewWithDelay()
                 showErrors(viewModel.showingErrors)
-                startTimer()
+                if (!viewModel.currentGameCompleted) {
+                    startTimer()
+                }
             } else {
                 Toast.makeText(this, R.string.error_game_setup_failure, Toast.LENGTH_SHORT).show()
                 Log.e(TAG, "Error setting up game")
