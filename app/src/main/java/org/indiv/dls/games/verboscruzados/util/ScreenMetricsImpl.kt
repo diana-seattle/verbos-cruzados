@@ -6,12 +6,21 @@ import android.util.DisplayMetrics
 import android.util.TypedValue
 import org.indiv.dls.games.verboscruzados.MainActivityViewModel
 import org.indiv.dls.games.verboscruzados.R
+import kotlin.math.roundToInt
 
 class ScreenMetricsImpl(activity: Activity) : MainActivityViewModel.ScreenMetrics {
+
+    //region PRIVATE PROPERTIES --------------------------------------------------------------------
+
+    private val puzzleMarginTopPixels: Float
+    private val viewablePuzzleHeight: Float
+    private val pixelsPerCell: Float
+
+    //endregion
+
+    //region PUBLIC PROPERTIES ---------------------------------------------------------------------
+
     override val keyboardHeight: Float
-    override val puzzleMarginTopPixels: Float
-    override val viewablePuzzleHeight: Float
-    override val pixelsPerCell: Float
     override val gridHeight: Int
     override val gridWidth: Int
 
@@ -49,6 +58,49 @@ class ScreenMetricsImpl(activity: Activity) : MainActivityViewModel.ScreenMetric
         pixelsPerCell = resources.getDimension(R.dimen.cell_width)
         gridHeight = (puzzleHeightPixels / pixelsPerCell).toInt()
         gridWidth = (puzzleWidthPixels / pixelsPerCell).toInt()
+    }
+
+    //endregion
+
+    //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
+
+    /**
+     * Returns new scroll position to maximize position a game word, and especially the selected character of the word.
+     *
+     * @param startingRow row of first character of the selected game word.
+     * @param endingRow row of last character of the selected game word.
+     * @param rowOfSelectedCell row of the selected character within the selected game word.
+     * @param currentScrollPosition current scroll position of the game.
+     */
+    override fun newScrollPositionShowingFullWord(startingRow: Int, endingRow: Int, rowOfSelectedCell: Int, currentScrollPosition: Int): Int? {
+        val yOfFirstCell = startingRow * pixelsPerCell
+
+        val availableHeight = viewablePuzzleHeight - keyboardHeight
+        val wordHeight = (endingRow - startingRow + 1) * pixelsPerCell
+
+        // if there's room to display the whole word
+        if (wordHeight < availableHeight) {
+            // if first cell is above visible area, scroll up to it, or if last cell is below visible area, scroll down to it
+            if (yOfFirstCell < currentScrollPosition) {
+                return (yOfFirstCell - puzzleMarginTopPixels).roundToInt()
+            } else if (yOfFirstCell + wordHeight > currentScrollPosition + availableHeight) {
+                return (yOfFirstCell + wordHeight - availableHeight + puzzleMarginTopPixels).roundToInt()
+            }
+        } else {
+            // There is not room for the whole word vertically, so make sure the selected cell is at least visible.
+            // (This scenario should only happen with a vertical word.)
+            val yOfSelectedCell = rowOfSelectedCell * pixelsPerCell
+            if (yOfSelectedCell < currentScrollPosition) {
+                // scroll top of cell to top of viewable area
+                return (yOfSelectedCell - puzzleMarginTopPixels).roundToInt()
+            } else if (yOfSelectedCell + pixelsPerCell > currentScrollPosition + availableHeight) {
+                // scroll bottom of cell to bottom of viewable area
+                return (yOfSelectedCell + pixelsPerCell - availableHeight + puzzleMarginTopPixels).roundToInt()
+            }
+        }
+
+        // No scrolling is necessary
+        return null
     }
 
     //endregion
