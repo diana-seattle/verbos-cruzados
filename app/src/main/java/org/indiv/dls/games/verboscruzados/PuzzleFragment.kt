@@ -12,7 +12,8 @@ import android.widget.TableRow
 import androidx.lifecycle.ViewModelProvider
 import org.indiv.dls.games.verboscruzados.component.PuzzleCellTextView
 import org.indiv.dls.games.verboscruzados.databinding.FragmentPuzzleBinding
-import org.indiv.dls.games.verboscruzados.game.GameWord
+import org.indiv.dls.games.verboscruzados.model.GameWord
+import org.indiv.dls.games.verboscruzados.model.GridCell
 
 
 /**

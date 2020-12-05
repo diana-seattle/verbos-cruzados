@@ -1,4 +1,4 @@
-package org.indiv.dls.games.verboscruzados
+package org.indiv.dls.games.verboscruzados.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

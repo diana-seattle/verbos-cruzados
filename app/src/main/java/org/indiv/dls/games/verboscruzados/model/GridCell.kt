@@ -1,7 +1,4 @@
-package org.indiv.dls.games.verboscruzados
-
-import org.indiv.dls.games.verboscruzados.component.PuzzleCellTextView
-import org.indiv.dls.games.verboscruzados.game.GameWord
+package org.indiv.dls.games.verboscruzados.model
 
 /**
  * Represents a cell in the puzzle.

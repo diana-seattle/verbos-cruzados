@@ -8,7 +8,7 @@ import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatDialogFragment
 import org.indiv.dls.games.verboscruzados.R
 import org.indiv.dls.games.verboscruzados.databinding.FragmentGameOptionsDialogBinding
-import org.indiv.dls.games.verboscruzados.game.PersistenceHelper
+import org.indiv.dls.games.verboscruzados.util.GamePersistenceImpl
 import org.indiv.dls.games.verboscruzados.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.model.IrregularityCategory
@@ -89,7 +89,7 @@ class GameOptionsDialogFragment : AppCompatDialogFragment() {
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
     private fun initializeOptions() {
-        val persistenceHelper = PersistenceHelper(activity!!)
+        val persistenceHelper = GamePersistenceImpl(activity!!)
         val optionMap = persistenceHelper.currentGameOptions
 
         // Initialize checkboxes to checked or not based on persisted preferences
@@ -104,7 +104,7 @@ class GameOptionsDialogFragment : AppCompatDialogFragment() {
             optionMap[it] = checkboxMap[it]?.isChecked ?: false
         }
 
-        val persistenceHelper = PersistenceHelper(activity!!)
+        val persistenceHelper = GamePersistenceImpl(activity!!)
         persistenceHelper.currentGameOptions = optionMap
     }
 

@@ -1,4 +1,4 @@
-package org.indiv.dls.games.verboscruzados.game
+package org.indiv.dls.games.verboscruzados.model
 
 /**
  * Represents a word in the current game.

@@ -1,9 +1,11 @@
-package org.indiv.dls.games.verboscruzados
+package org.indiv.dls.games.verboscruzados.util
 
 import android.app.Activity
 import android.content.res.Resources
 import android.util.DisplayMetrics
 import android.util.TypedValue
+import org.indiv.dls.games.verboscruzados.MainActivityViewModel
+import org.indiv.dls.games.verboscruzados.R
 
 class ScreenMetricsImpl(activity: Activity) : MainActivityViewModel.ScreenMetrics {
     override val keyboardHeight: Float

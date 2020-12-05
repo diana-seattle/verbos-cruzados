@@ -6,7 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.indiv.dls.games.verboscruzados.game.GameWord
+import org.indiv.dls.games.verboscruzados.model.GameWord
+import org.indiv.dls.games.verboscruzados.model.GridCell
 import kotlin.math.roundToInt
 
 

@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
-import org.indiv.dls.games.verboscruzados.AnswerPresentation
+import org.indiv.dls.games.verboscruzados.model.AnswerPresentation
 import org.indiv.dls.games.verboscruzados.R
 import org.indiv.dls.games.verboscruzados.Vibration
 import org.indiv.dls.games.verboscruzados.databinding.KeyboardMinimalBinding

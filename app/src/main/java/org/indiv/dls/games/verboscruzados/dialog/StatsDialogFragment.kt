@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatDialogFragment
 import org.indiv.dls.games.verboscruzados.R
 import org.indiv.dls.games.verboscruzados.component.StatsGraphicView
 import org.indiv.dls.games.verboscruzados.databinding.FragmentStatsDialogBinding
-import org.indiv.dls.games.verboscruzados.game.PersistenceHelper
+import org.indiv.dls.games.verboscruzados.util.GamePersistenceImpl
 import org.indiv.dls.games.verboscruzados.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.model.IrregularityCategory
@@ -71,7 +71,7 @@ class StatsDialogFragment : AppCompatDialogFragment() {
                 .create()
 
         // fill in stats
-        val persistenceHelper = PersistenceHelper(activity!!)
+        val persistenceHelper = GamePersistenceImpl(activity!!)
         val statsMap = persistenceHelper.allGameStats
                 .mapKeys { getCoordinates(it.key) }
 

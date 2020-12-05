@@ -19,7 +19,9 @@ import androidx.lifecycle.ViewModelProvider
 import org.indiv.dls.games.verboscruzados.databinding.ActivityMainBinding
 import org.indiv.dls.games.verboscruzados.dialog.GameOptionsDialogFragment
 import org.indiv.dls.games.verboscruzados.dialog.StatsDialogFragment
-import org.indiv.dls.games.verboscruzados.game.GameWord
+import org.indiv.dls.games.verboscruzados.model.AnswerPresentation
+import org.indiv.dls.games.verboscruzados.model.GameWord
+import org.indiv.dls.games.verboscruzados.util.ImageSelecter
 
 
 /*

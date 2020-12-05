@@ -1,5 +1,6 @@
-package org.indiv.dls.games.verboscruzados
+package org.indiv.dls.games.verboscruzados.util
 
+import org.indiv.dls.games.verboscruzados.R
 import kotlin.math.roundToInt
 
 class ImageSelecter {

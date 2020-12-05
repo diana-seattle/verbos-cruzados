@@ -1,10 +1,11 @@
-package org.indiv.dls.games.verboscruzados.game
+package org.indiv.dls.games.verboscruzados.util
 
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import org.indiv.dls.games.verboscruzados.MainActivityViewModel
 import org.indiv.dls.games.verboscruzados.model.ConjugationType
+import org.indiv.dls.games.verboscruzados.model.GameWord
 import org.indiv.dls.games.verboscruzados.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.model.IrregularityCategory
 import org.indiv.dls.games.verboscruzados.model.SubjectPronoun
@@ -14,7 +15,7 @@ import java.util.ArrayList
 /**
  * Manages reading and writing from persisted storage.
  */
-class PersistenceHelper constructor(private val mContext: Context) : MainActivityViewModel.GamePersistence {
+class GamePersistenceImpl constructor(private val mContext: Context) : MainActivityViewModel.GamePersistence {
 
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
