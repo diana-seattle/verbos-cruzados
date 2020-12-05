@@ -47,6 +47,10 @@ class MainActivityViewModel(
     // Set to true when saved data indicates initial installation
     var showOnboardingMessage = false
 
+    // This mode shows all empty and errored cells in red. It also auto-advances to the next incomplete word once a word
+    // is completed correctly.
+    var showingErrors = false
+
     // Grid of cells making up the puzzle, plus some dimensions
     val cellGrid: Array<Array<GridCell?>>
     val keyboardHeight: Float = screenMetrics.keyboardHeight

@@ -71,8 +71,6 @@ class MainActivity : AppCompatActivity() {
 
     private var optionsMenu: Menu? = null
 
-    private var showingErrors = false
-
     // This is elapsed milliseconds since we started the timer. It will be added to the overall saved duration for the game.
     private var elapsedTimerMs = 0L
     private val countDownTimer: CountDownTimer = object : CountDownTimer(COUNTDOWN_MAX_TIME, COUNTDOWN_INTERVAL) {
@@ -113,6 +111,7 @@ class MainActivity : AppCompatActivity() {
                 // Apply the game to the puzzle fragment
                 puzzleFragment.createGridViewsAndSelectWord()
                 scrollWordIntoViewWithDelay()
+                showErrors(viewModel.showingErrors)
                 startTimer()
             } else {
                 Toast.makeText(this, R.string.error_game_setup_failure, Toast.LENGTH_SHORT).show()
@@ -164,7 +163,7 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_showerrors -> showErrors(!showingErrors)
+            R.id.action_showerrors -> showErrors(!viewModel.showingErrors)
             R.id.action_startnewgame -> promptForNewGame()
             R.id.action_help -> showHelpDialog()
             R.id.action_showstats -> showStatsDialog()
@@ -196,11 +195,6 @@ class MainActivity : AppCompatActivity() {
             stopTimer()
             viewModel.addToElapsedSeconds(elapsedTimerMs / 1000)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        showingErrors = false
     }
 
     //endregion
@@ -272,7 +266,7 @@ class MainActivity : AppCompatActivity() {
         val puzzleIsCompleteWithErrors = puzzleIsCompleteWithPossibleErrors && !puzzleIsCompleteAndCorrect
 
         // update error indications
-        if (showingErrors || puzzleIsCompleteWithErrors) {
+        if (viewModel.showingErrors || puzzleIsCompleteWithErrors) {
             showErrors(true)
 
             // auto-advance to the next word when in error-showing mode (with a small delay so it feels less abrupt)
@@ -312,10 +306,10 @@ class MainActivity : AppCompatActivity() {
      * show/hide errors in puzzle
      */
     private fun showErrors(showErrors: Boolean) {
-        showingErrors = showErrors
+        viewModel.showingErrors = showErrors
         val showErrorsMenuItem = optionsMenu?.findItem(R.id.action_showerrors)
-        showErrorsMenuItem?.setTitle(if (showingErrors) R.string.action_hideerrors else R.string.action_showerrors)
-        showErrorsMenuItem?.setIcon(if (showingErrors) R.drawable.ic_baseline_visibility_24px else R.drawable.ic_baseline_visibility_off_24px)
+        showErrorsMenuItem?.setTitle(if (viewModel.showingErrors) R.string.action_hideerrors else R.string.action_showerrors)
+        showErrorsMenuItem?.setIcon(if (viewModel.showingErrors) R.drawable.ic_baseline_visibility_24px else R.drawable.ic_baseline_visibility_off_24px)
         puzzleFragment.showErrors(showErrors)
     }
 
