@@ -81,7 +81,7 @@ class PuzzleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity(), MainActivityViewModel.Factory(requireActivity()))
+        viewModel = ViewModelProvider(requireActivity(), MainActivityViewModelFactory(requireActivity()))
                 .get(MainActivityViewModel::class.java)
 
         viewModel.currentGameWord.observe(viewLifecycleOwner) { gameWord ->

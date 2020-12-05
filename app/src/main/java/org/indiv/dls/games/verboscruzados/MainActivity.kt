@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this, MainActivityViewModel.Factory(this))
+        viewModel = ViewModelProvider(this, MainActivityViewModelFactory(this))
                 .get(MainActivityViewModel::class.java)
 
         // Observe changes to the currently selected word.

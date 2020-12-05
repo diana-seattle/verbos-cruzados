@@ -1,16 +1,12 @@
 package org.indiv.dls.games.verboscruzados
 
-import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.indiv.dls.games.verboscruzados.async.GameSetup
 import org.indiv.dls.games.verboscruzados.game.GameWord
-import org.indiv.dls.games.verboscruzados.game.PersistenceHelper
 import kotlin.math.roundToInt
 
 
@@ -315,6 +311,11 @@ class MainActivityViewModel(
         val gridWidth: Int
     }
 
+    interface GameSetup {
+        fun newGame(cellGrid: Array<Array<GridCell?>>, gameOptions: Map<String, Boolean>): List<GameWord>
+        fun addToGrid(gameWords: List<GameWord>, cellGrid: Array<Array<GridCell?>>)
+        fun doWordsFitInGrid(gameWords: List<GameWord>, gridWidth: Int, gridHeight: Int): Boolean
+    }
 
     interface GamePersistence {
         var currentGameWords: List<GameWord>
@@ -323,6 +324,7 @@ class MainActivityViewModel(
         var elapsedSeconds: Long
         var currentGameOptions: Map<String, Boolean>
         val allGameStats: Map<Int, Int>
+
         fun persistUserEntry(gameWord: GameWord)
         fun persistGameStats(gameWords: List<GameWord>)
     }
@@ -330,31 +332,6 @@ class MainActivityViewModel(
     enum class GameEvent {
         CREATED,
         RELOADED
-    }
-
-    /**
-     * Factory class for creating this view model.
-     */
-    class Factory(private val screenMetrics: ScreenMetrics,
-                  private val gameSetup: GameSetup,
-                  private val gamePersistence: GamePersistence) : ViewModelProvider.Factory {
-
-        constructor(activity: Activity) : this(
-                ScreenMetricsImpl(activity),
-                GameSetup(activity.resources),
-                PersistenceHelper(activity)
-        )
-
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(MainActivityViewModel::class.java)) {
-                return MainActivityViewModel(
-                        screenMetrics,
-                        gameSetup,
-                        gamePersistence
-                ) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModel class")
-        }
     }
 
     //endregion

@@ -1,7 +1,6 @@
-package org.indiv.dls.games.verboscruzados.async
+package org.indiv.dls.games.verboscruzados
 
 import android.content.res.Resources
-import org.indiv.dls.games.verboscruzados.GridCell
 import org.indiv.dls.games.verboscruzados.conjugation.conjugatorMap
 import org.indiv.dls.games.verboscruzados.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.game.GameWord
@@ -28,7 +27,7 @@ import kotlin.random.Random
 /**
  * Handles process of setting up a game.
  */
-open class GameSetup(val resources: Resources) {
+open class GameSetupImpl(val resources: Resources) : MainActivityViewModel.GameSetup {
 
     companion object {
         private val USTED_PRONOUN = "Usted"
@@ -42,7 +41,7 @@ open class GameSetup(val resources: Resources) {
     /**
      * Creates a new game.
      */
-    fun newGame(cellGrid: Array<Array<GridCell?>>, gameOptions: Map<String, Boolean>): List<GameWord> {
+    override fun newGame(cellGrid: Array<Array<GridCell?>>, gameOptions: Map<String, Boolean>): List<GameWord> {
         val gridHeight = cellGrid.size
         val gridWidth = cellGrid[0].size
 
@@ -57,13 +56,13 @@ open class GameSetup(val resources: Resources) {
     /**
      * Adds list of game words to the layout.
      */
-    fun addToGrid(gameWords: List<GameWord>, cellGrid: Array<Array<GridCell?>>) {
+    override fun addToGrid(gameWords: List<GameWord>, cellGrid: Array<Array<GridCell?>>) {
         gameWords.forEach {
             addToGrid(it, cellGrid)
         }
     }
 
-    fun doWordsFitInGrid(gameWords: List<GameWord>, gridWidth: Int, gridHeight: Int): Boolean {
+    override fun doWordsFitInGrid(gameWords: List<GameWord>, gridWidth: Int, gridHeight: Int): Boolean {
         gameWords.forEach {
             if ((it.row >= gridHeight || it.col >= gridWidth) ||
                     (it.isAcross && it.col + it.word.length > gridWidth) ||
