@@ -1,9 +1,6 @@
 package org.indiv.dls.games.verboscruzados
 
 import android.app.Activity
-import android.content.res.Resources
-import android.util.DisplayMetrics
-import android.util.TypedValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,10 +15,9 @@ import kotlin.math.roundToInt
 
 
 class MainActivityViewModel(
-        private val resources: Resources,
-        theme: Resources.Theme,
-        private val persistenceHelper: PersistenceHelper,
-        private val gameSetup: GameSetup
+        private val screenMetrics: ScreenMetrics,
+        private val gameSetup: GameSetup,
+        private val gamePersistence: GamePersistence
 ) : ViewModel() {
 
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
@@ -33,10 +29,6 @@ class MainActivityViewModel(
     private val _gameStartOrLoadEvent: MutableLiveData<GameEvent> by lazy {
         MutableLiveData<GameEvent>()
     }
-
-    private val viewablePuzzleHeight: Float
-    private val puzzleMarginTopPixels: Float
-    private val pixelsPerCell: Float
 
     //endregion
 
@@ -57,26 +49,26 @@ class MainActivityViewModel(
 
     // Grid of cells making up the puzzle, plus some dimensions
     val cellGrid: Array<Array<GridCell?>>
-    val keyboardHeight: Float
-    val gridHeight: Int
-    val gridWidth: Int
+    val keyboardHeight: Float = screenMetrics.keyboardHeight
+    val gridHeight: Int = screenMetrics.gridHeight
+    val gridWidth: Int = screenMetrics.gridWidth
 
     var currentImageIndex: Int
-        get() = persistenceHelper.currentImageIndex
+        get() = gamePersistence.currentImageIndex
         set(value) {
-            persistenceHelper.currentImageIndex = value
+            gamePersistence.currentImageIndex = value
         }
 
     var currentGameCompleted: Boolean
-        get() = persistenceHelper.currentGameCompleted
+        get() = gamePersistence.currentGameCompleted
         set(value) {
-            persistenceHelper.currentGameCompleted = value
+            gamePersistence.currentGameCompleted = value
         }
 
     var elapsedSecondsSnapshot = 0L // Last set or retrieved elapsed seconds value
     val persistedElapsedSeconds: Long
         get() {
-            elapsedSecondsSnapshot = persistenceHelper.elapsedSeconds
+            elapsedSecondsSnapshot = gamePersistence.elapsedSeconds
             return elapsedSecondsSnapshot
         }
 
@@ -85,35 +77,7 @@ class MainActivityViewModel(
     //region INITIALIZER ---------------------------------------------------------------------------
 
     init {
-        keyboardHeight = resources.getDimension(R.dimen.keyboard_height)
-        val displayMetrics = resources.displayMetrics
-        val configuration = resources.configuration
-        puzzleMarginTopPixels = resources.getDimension(R.dimen.puzzle_margin_top)
-        val puzzleMarginSidePixels = resources.getDimension(R.dimen.puzzle_margin_side)
-        val totalPuzzleMarginTopPixels = puzzleMarginTopPixels * 2
-        val totalPuzzleMarginSidePixels = puzzleMarginSidePixels * 2
-        val actionBarHeightPixels = getActionBarHeightInPixels(displayMetrics, theme)
-        val screenWidthDp = configuration.smallestScreenWidthDp
-        val screenHeightDp = maxOf(configuration.screenHeightDp, configuration.screenWidthDp)
-        val heightFactor = when {
-            screenWidthDp < 350 -> 2f
-            screenWidthDp < 450 -> 1.5f
-            else -> 1f
-        }
-        val screenWidthPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                screenWidthDp.toFloat(), displayMetrics)
-        val screenHeightPixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                screenHeightDp.toFloat(), displayMetrics)
-        viewablePuzzleHeight = screenHeightPixels - actionBarHeightPixels - totalPuzzleMarginTopPixels
-        val puzzleHeightPixels = viewablePuzzleHeight * heightFactor
-        val puzzleWidthPixels = screenWidthPixels - totalPuzzleMarginSidePixels
-
-        // calculate number of pixels equivalent to 24dp (24dp allows 13 cells on smallest screen supported by Android (320dp width, 426dp height))
-        pixelsPerCell = resources.getDimension(R.dimen.cell_width)
-        gridHeight = (puzzleHeightPixels / pixelsPerCell).toInt()
-        gridWidth = (puzzleWidthPixels / pixelsPerCell).toInt()
-
-        cellGrid = Array(gridHeight) { arrayOfNulls(gridWidth) }
+        cellGrid = Array(screenMetrics.gridHeight) { arrayOfNulls(screenMetrics.gridWidth) }
     }
 
     //endregion
@@ -145,7 +109,7 @@ class MainActivityViewModel(
         // On app startup, the word list will be empty, but on a config change it likely won't be so no need to re-load.
         if (currentGameWords.isEmpty()) {
             viewModelScope.launch(context = Dispatchers.IO) {
-                val gameWords = persistenceHelper.currentGameWords
+                val gameWords = gamePersistence.currentGameWords
                 if (gameWords.isNotEmpty() && gameSetup.doWordsFitInGrid(gameWords, gridWidth, gridHeight)) {
                     gameSetup.addToGrid(gameWords, cellGrid)
                     currentGameWords = gameWords
@@ -168,18 +132,18 @@ class MainActivityViewModel(
 
     fun addToElapsedSeconds(seconds: Long) {
         elapsedSecondsSnapshot += seconds
-        persistenceHelper.elapsedSeconds = elapsedSecondsSnapshot
+        gamePersistence.elapsedSeconds = elapsedSecondsSnapshot
     }
 
     fun persistUserEntry(gameWord: GameWord) {
         viewModelScope.launch(context = Dispatchers.IO) {
-            persistenceHelper.persistUserEntry(gameWord)
+            gamePersistence.persistUserEntry(gameWord)
         }
     }
 
     fun persistGameStatistics() {
         viewModelScope.launch(context = Dispatchers.IO) {
-            persistenceHelper.persistGameStats(currentGameWords)
+            gamePersistence.persistGameStats(currentGameWords)
         }
     }
 
@@ -263,30 +227,30 @@ class MainActivityViewModel(
                 it.isAcross -> it.row
                 else -> it.row + it.word.length - 1
             }
-            val yOfFirstCell = firstRowPosition * pixelsPerCell
+            val yOfFirstCell = firstRowPosition * screenMetrics.pixelsPerCell
 
-            val availableHeight = viewablePuzzleHeight - keyboardHeight
-            val wordHeight = (lastRowPosition - firstRowPosition + 1) * pixelsPerCell
+            val availableHeight = screenMetrics.viewablePuzzleHeight - keyboardHeight
+            val wordHeight = (lastRowPosition - firstRowPosition + 1) * screenMetrics.pixelsPerCell
 
             // if there's room to display the whole word
             if (wordHeight < availableHeight) {
                 // if first cell is above visible area, scroll up to it, or if last cell is below visible area, scroll down to it
                 if (yOfFirstCell < currentScrollPosition) {
-                    return (yOfFirstCell - puzzleMarginTopPixels).roundToInt()
+                    return (yOfFirstCell - screenMetrics.puzzleMarginTopPixels).roundToInt()
                 } else if (yOfFirstCell + wordHeight > currentScrollPosition + availableHeight) {
-                    return (yOfFirstCell + wordHeight - availableHeight + puzzleMarginTopPixels).roundToInt()
+                    return (yOfFirstCell + wordHeight - availableHeight + screenMetrics.puzzleMarginTopPixels).roundToInt()
                 }
             } else {
                 // There is not room for the whole word vertically, so make sure the selected cell is at least visible.
                 // (This scenario should only happen with a vertical word.)
                 val rowOfSelectedCell = it.row + charIndexOfSelectedCell
-                val yOfSelectedCell = rowOfSelectedCell * pixelsPerCell
+                val yOfSelectedCell = rowOfSelectedCell * screenMetrics.pixelsPerCell
                 if (yOfSelectedCell < currentScrollPosition) {
                     // scroll top of cell to top of viewable area
-                    return (yOfSelectedCell - puzzleMarginTopPixels).roundToInt()
-                } else if (yOfSelectedCell + pixelsPerCell > currentScrollPosition + availableHeight) {
+                    return (yOfSelectedCell - screenMetrics.puzzleMarginTopPixels).roundToInt()
+                } else if (yOfSelectedCell + screenMetrics.pixelsPerCell > currentScrollPosition + availableHeight) {
                     // scroll bottom of cell to bottom of viewable area
-                    return (yOfSelectedCell + pixelsPerCell - availableHeight + puzzleMarginTopPixels).roundToInt()
+                    return (yOfSelectedCell + screenMetrics.pixelsPerCell - availableHeight + screenMetrics.puzzleMarginTopPixels).roundToInt()
                 }
             }
         }
@@ -301,24 +265,13 @@ class MainActivityViewModel(
      * Must be called within a coroutine.
      */
     private suspend fun setupNewGame() {
-        val gameWords = gameSetup.newGame(resources, cellGrid, persistenceHelper.currentGameOptions)
-        persistenceHelper.currentGameWords = gameWords
-        persistenceHelper.currentGameCompleted = false
-        persistenceHelper.elapsedSeconds = 0L
+        val gameWords = gameSetup.newGame(cellGrid, gamePersistence.currentGameOptions)
+        gamePersistence.currentGameWords = gameWords
+        gamePersistence.currentGameCompleted = false
+        gamePersistence.elapsedSeconds = 0L
         elapsedSecondsSnapshot = 0L
         currentGameWords = gameWords
         _gameStartOrLoadEvent.postValue(GameEvent.CREATED)
-    }
-
-    private fun getActionBarHeightInPixels(displayMetrics: DisplayMetrics, theme: Resources.Theme): Int {
-        // actionBar.getHeight() returns zero in onCreate (i.e. before it is shown)
-        // for the following solution, see: http://stackoverflow.com/questions/12301510/how-to-get-the-actionbar-height/13216807#13216807
-        var actionBarHeight = 0  // actionBar.getHeight() returns zero in onCreate
-        val tv = TypedValue()
-        if (theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, displayMetrics)
-        }
-        return actionBarHeight
     }
 
     private fun isEmptyOrErroredGameWord(gameWord: GameWord?, havingEmptyCells: Boolean): Boolean {
@@ -349,6 +302,27 @@ class MainActivityViewModel(
 
     //region INNER CLASSES -------------------------------------------------------------------------
 
+    interface ScreenMetrics {
+        val keyboardHeight: Float
+        val puzzleMarginTopPixels: Float
+        val viewablePuzzleHeight: Float
+        val pixelsPerCell: Float
+        val gridHeight: Int
+        val gridWidth: Int
+    }
+
+
+    interface GamePersistence {
+        var currentGameWords: List<GameWord>
+        var currentGameCompleted: Boolean
+        var currentImageIndex: Int
+        var elapsedSeconds: Long
+        var currentGameOptions: Map<String, Boolean>
+        val allGameStats: Map<Int, Int>
+        fun persistUserEntry(gameWord: GameWord)
+        fun persistGameStats(gameWords: List<GameWord>)
+    }
+
     enum class GameEvent {
         CREATED,
         RELOADED
@@ -357,14 +331,22 @@ class MainActivityViewModel(
     /**
      * Factory class for creating this view model.
      */
-    class Factory(private val activity: Activity) : ViewModelProvider.Factory {
+    class Factory(private val screenMetrics: ScreenMetrics,
+                  private val gameSetup: GameSetup,
+                  private val gamePersistence: GamePersistence) : ViewModelProvider.Factory {
+
+        constructor(activity: Activity) : this(
+                ScreenMetricsImpl(activity),
+                GameSetup(activity.resources),
+                PersistenceHelper(activity)
+        )
+
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(MainActivityViewModel::class.java)) {
                 return MainActivityViewModel(
-                        activity.resources,
-                        activity.theme,
-                        PersistenceHelper(activity),
-                        GameSetup()
+                        screenMetrics,
+                        gameSetup,
+                        gamePersistence
                 ) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")

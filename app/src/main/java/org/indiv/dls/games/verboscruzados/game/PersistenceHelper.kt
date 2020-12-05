@@ -3,6 +3,7 @@ package org.indiv.dls.games.verboscruzados.game
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import org.indiv.dls.games.verboscruzados.MainActivityViewModel
 import org.indiv.dls.games.verboscruzados.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.model.IrregularityCategory
@@ -13,7 +14,7 @@ import java.util.ArrayList
 /**
  * Manages reading and writing from persisted storage.
  */
-class PersistenceHelper constructor(private val mContext: Context) {
+class PersistenceHelper constructor(private val mContext: Context) : MainActivityViewModel.GamePersistence {
 
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
@@ -37,7 +38,7 @@ class PersistenceHelper constructor(private val mContext: Context) {
     /**
      * list of persisted game words
      */
-    var currentGameWords: List<GameWord>
+    override var currentGameWords: List<GameWord>
         get() {
             val gameWords = ArrayList<GameWord>()
             val map: Map<String, *> = gameWordPrefs.all
@@ -59,7 +60,7 @@ class PersistenceHelper constructor(private val mContext: Context) {
     /**
      * True if current game has been completed at least once (user could modify and re-complete).
      */
-    var currentGameCompleted: Boolean
+    override var currentGameCompleted: Boolean
         get() = gamePrefs.getBoolean(KEY_CURRENT_GAME_COMPLETED, false)
         set(value) = gamePrefs.edit()
                 .putBoolean(KEY_CURRENT_GAME_COMPLETED, value)
@@ -68,7 +69,7 @@ class PersistenceHelper constructor(private val mContext: Context) {
     /**
      * Index of image for the current game.
      */
-    var currentImageIndex: Int
+    override var currentImageIndex: Int
         get() = gamePrefs.getInt(KEY_IMAGE_INDEX, 0)
         set(value) = gamePrefs.edit()
                 .putInt(KEY_IMAGE_INDEX, value)
@@ -77,7 +78,7 @@ class PersistenceHelper constructor(private val mContext: Context) {
     /**
      * Elapsed seconds of current game.
      */
-    var elapsedSeconds: Long
+    override var elapsedSeconds: Long
         get() = gamePrefs.getLong(KEY_ELAPSED_SECONDS, 0)
         set(value) = gamePrefs.edit()
                 .putLong(KEY_ELAPSED_SECONDS, value)
@@ -87,7 +88,7 @@ class PersistenceHelper constructor(private val mContext: Context) {
      * @return map of persisted game options where the keys are of the following:
      * InfinitiveEnding.name, IrregularityCategory.name, SubjectPronoun.name, ConjugationType.name
      */
-    var currentGameOptions: Map<String, Boolean>
+    override var currentGameOptions: Map<String, Boolean>
         get() {
             var map: Map<String, *> = gameOptionPrefs.all
             if (map.isEmpty()) {
@@ -110,7 +111,7 @@ class PersistenceHelper constructor(private val mContext: Context) {
     /**
      * @return map of stats index to total count.
      */
-    val allGameStats: Map<Int, Int>
+    override val allGameStats: Map<Int, Int>
         get() {
             val statsMap = mutableMapOf<Int, Int>()
             gameStatsPrefs.all.mapKeys {
@@ -145,7 +146,7 @@ class PersistenceHelper constructor(private val mContext: Context) {
      *
      * @return number of rows updated
      */
-    fun persistUserEntry(gameWord: GameWord) {
+    override fun persistUserEntry(gameWord: GameWord) {
         gameWordPrefs
                 .edit()
                 .putString(gameWord.uniqueKey, gson.toJson(gameWord, GameWord::class.java))
@@ -155,7 +156,7 @@ class PersistenceHelper constructor(private val mContext: Context) {
     /**
      * Persists game stats for the specified set of game words.
      */
-    fun persistGameStats(gameWords: List<GameWord>) {
+    override fun persistGameStats(gameWords: List<GameWord>) {
         // Get counts per index for the game
         val gameWordsByStatsIndex = gameWords.groupBy {
             it.statsIndex

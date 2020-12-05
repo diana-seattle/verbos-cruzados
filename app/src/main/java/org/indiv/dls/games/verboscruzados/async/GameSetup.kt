@@ -28,7 +28,7 @@ import kotlin.random.Random
 /**
  * Handles process of setting up a game.
  */
-open class GameSetup {
+open class GameSetup(val resources: Resources) {
 
     companion object {
         private val USTED_PRONOUN = "Usted"
@@ -42,7 +42,7 @@ open class GameSetup {
     /**
      * Creates a new game.
      */
-    fun newGame(resources: Resources, cellGrid: Array<Array<GridCell?>>, gameOptions: Map<String, Boolean>): List<GameWord> {
+    fun newGame(cellGrid: Array<Array<GridCell?>>, gameOptions: Map<String, Boolean>): List<GameWord> {
         val gridHeight = cellGrid.size
         val gridWidth = cellGrid[0].size
 
@@ -51,7 +51,7 @@ open class GameSetup {
         val wordCandidates = getWordCandidates(numWords, gameOptions).toMutableList()
 
         // determine layout and return the game words
-        return layoutWords(resources, cellGrid, wordCandidates)
+        return layoutWords(cellGrid, wordCandidates)
     }
 
     /**
@@ -171,7 +171,7 @@ open class GameSetup {
                 conjugationType, subjectPronoun)
     }
 
-    private fun createGameWord(resources: Resources, wordCandidate: WordCandidate, row: Int, col: Int, isAcross: Boolean): GameWord {
+    private fun createGameWord(wordCandidate: WordCandidate, row: Int, col: Int, isAcross: Boolean): GameWord {
         // Conjugated verb can be duplicate between imperative and subjunctive or between sentar and sentir.
         val uniqueKey = "${wordCandidate.infinitive}|${wordCandidate.conjugationType.name}|${wordCandidate.subjectPronoun?.name
                 ?: "na"}"
@@ -349,7 +349,7 @@ open class GameSetup {
      * Chooses words from the list of candidates that fit into the puzzle, returning a list of game words that contain
      * positional info.
      */
-    private fun layoutWords(resources: Resources, cellGrid: Array<Array<GridCell?>>, wordCandidates: MutableList<WordCandidate>): List<GameWord> {
+    private fun layoutWords(cellGrid: Array<Array<GridCell?>>, wordCandidates: MutableList<WordCandidate>): List<GameWord> {
         // Sort so that longest words are first (roughly).
         val sortedCandidates = sortCandidates(wordCandidates)
 
@@ -361,7 +361,7 @@ open class GameSetup {
         var i = 0
         while (i < sortedCandidates.size) {
             val word = sortedCandidates[i]
-            val gameWord = placeInGrid(resources, cellGrid, gameWords, word, across, firstWord)
+            val gameWord = placeInGrid(cellGrid, gameWords, word, across, firstWord)
 
             if (gameWord != null) {
                 gameWords.add(gameWord)
@@ -383,8 +383,7 @@ open class GameSetup {
         return gameWords
     }
 
-    private fun placeInGrid(resources: Resources,
-                            cellGrid: Array<Array<GridCell?>>,
+    private fun placeInGrid(cellGrid: Array<Array<GridCell?>>,
                             gameWords: List<GameWord>,
                             wordCandidate: WordCandidate,
                             across: Boolean,
@@ -441,7 +440,7 @@ open class GameSetup {
         }
 
         if (locationFound) {
-            gameWord = createGameWord(resources, wordCandidate, row, col, across)
+            gameWord = createGameWord(wordCandidate, row, col, across)
             addToGrid(gameWord, cellGrid)
         }
 

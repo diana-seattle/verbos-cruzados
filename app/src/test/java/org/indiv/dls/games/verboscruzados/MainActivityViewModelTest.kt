@@ -16,9 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
-import org.mockito.Mockito.`when` as whenever
 import org.robolectric.annotation.Config
 
 @RunWith(AndroidJUnit4::class)
