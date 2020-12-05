@@ -45,11 +45,10 @@ import org.indiv.dls.games.verboscruzados.util.ImageSelecter
  * https://www.e-spanyol.hu/en/grammar/irregular_ar.php
  */
 
-// todo: review all code
-// todo: add tests
-// todo: view model / livedata
-// todo: fix tablet pixel C api 30
-// todo: fix on foldables
+// TODO: more tests
+// TODO: decouple persisted GameWord class from view classes.
+// TODO: troubleshoot tablet pixel C api 30 emulator
+// TODO: fix on foldables
 
 /**
  * This is the main activity. It houses [PuzzleFragment].

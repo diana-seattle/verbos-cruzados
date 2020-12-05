@@ -2,6 +2,9 @@ package org.indiv.dls.games.verboscruzados.model
 
 /**
  * Represents a word in the current game.
+ *
+ * TODO: currently this model is persisted (as JSON) AND is tightly coupled to the view classes.
+ *  We need some layers of abstraction.
  */
 class GameWord(val uniqueKey: String,            // unique key for use in persistence
                val word: String,                 // word conjugated verb used in the puzzle

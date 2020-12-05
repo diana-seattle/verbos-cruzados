@@ -32,8 +32,10 @@ class MainActivityViewModel(
 
     //region PUBLIC PROPERTIES ---------------------------------------------------------------------
 
-    // Public immutable LiveData accessors
+    // Public immutable LiveData representing currently selected word in a game.
     val currentGameWord = _currentGameWord as LiveData<GameWord?>
+
+    // Public immutable LiveData representing event when a game is loaded or started.
     val gameStartOrLoadEvent = _gameStartOrLoadEvent as LiveData<GameEvent>
 
     // List of word data for the current game
