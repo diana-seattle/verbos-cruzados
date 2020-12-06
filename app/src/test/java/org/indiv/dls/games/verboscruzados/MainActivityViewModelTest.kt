@@ -21,7 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import java.util.UUID
 
 @RunWith(MockitoJUnitRunner::class)
-class MainActivityViewModelTest {
+class MainActivityViewModelTest : TestUtils {
     // This causes LiveData objects to execute synchronously.
     @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
 
@@ -289,35 +289,6 @@ class MainActivityViewModelTest {
 
         // Verify expected scroll position returned.
         assertEquals(expectedScrollPosition, result)
-    }
-
-    //endregion
-
-    //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
-
-    private fun createGameWord(
-            uniqueKey: String = UUID.randomUUID().toString(),
-            word: String = "hablo",
-            conjugationTypeLabel: String = "Present tense of",
-            subjectPronounLabel: String = "Yo",
-            infinitive: String = "hablar",
-            translation: String = "speak",
-            statsIndex: Int = 0,
-            row: Int = 0,
-            col: Int = 0,
-            isAcross: Boolean = true): GameWord {
-        return GameWord(
-                uniqueKey = uniqueKey,
-                word = word,
-                conjugationTypeLabel = conjugationTypeLabel,
-                subjectPronounLabel = subjectPronounLabel,
-                infinitive = infinitive,
-                translation = translation,
-                statsIndex = statsIndex,
-                row = row,
-                col = col,
-                isAcross = isAcross
-        )
     }
 
     //endregion
