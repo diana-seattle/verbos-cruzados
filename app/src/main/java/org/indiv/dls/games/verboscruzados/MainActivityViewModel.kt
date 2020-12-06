@@ -123,16 +123,17 @@ class MainActivityViewModel(
     }
 
     /**
-     * Loads an existing game on an I/O thread, starting new game if none found.
+     * Loads an existing game on a worker thread, starting new game if none found.
      */
     fun loadGame() {
         // On app startup, the word list will be empty, but on a config change it likely won't be so no need to re-load.
         if (currentGameWords.isEmpty()) {
-            viewModelScope.launch(context = Dispatchers.IO) {
+            viewModelScope.launch(context = Dispatchers.Default) {
                 val gameWords = gamePersistence.currentGameWords
                 if (gameWords.isNotEmpty() && gameSetup.doWordsFitInGrid(gameWords, gridWidth, gridHeight)) {
                     gameSetup.addToGrid(gameWords, cellGrid)
                     currentGameWords = gameWords
+                    // Must use postValue() from non-main thread.
                     _gameStartOrLoadEvent.postValue(GameEvent.RELOADED)
                 } else {
                     // This will happen if on very first game, or if no saved game (due to an error).
@@ -158,18 +159,14 @@ class MainActivityViewModel(
      */
     fun addToElapsedSeconds(seconds: Long) {
         elapsedSecondsSnapshot += seconds
-        viewModelScope.launch(context = Dispatchers.IO) {
-            gamePersistence.elapsedSeconds = elapsedSecondsSnapshot
-        }
+        gamePersistence.elapsedSeconds = elapsedSecondsSnapshot
     }
 
     /**
      * Persists user's changes to their entries within a game word.
      */
     fun persistUserEntry(gameWord: GameWord) {
-        viewModelScope.launch(context = Dispatchers.IO) {
-            gamePersistence.persistUserEntry(gameWord)
-        }
+        gamePersistence.persistUserEntry(gameWord)
     }
 
     /**
@@ -177,9 +174,7 @@ class MainActivityViewModel(
      * a game is completed.
      */
     fun persistGameStatistics() {
-        viewModelScope.launch(context = Dispatchers.IO) {
-            gamePersistence.persistGameStats(currentGameWords)
-        }
+        gamePersistence.persistGameStats(currentGameWords)
     }
 
     /**

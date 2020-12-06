@@ -8,7 +8,6 @@ import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.indiv.dls.games.verboscruzados.R
 import org.indiv.dls.games.verboscruzados.model.GameWord
-import org.junit.Before
 
 import org.junit.Assert.*
 import org.junit.Rule
