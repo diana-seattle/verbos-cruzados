@@ -1,152 +1,297 @@
 package org.indiv.dls.games.verboscruzados
 
-import android.os.Build
-import androidx.test.ext.junit.rules.activityScenarioRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import org.indiv.dls.games.verboscruzados.model.GameWord
-import org.indiv.dls.games.verboscruzados.util.GameSetupImpl
-import org.indiv.dls.games.verboscruzados.util.GamePersistenceImpl
-import org.indiv.dls.games.verboscruzados.view.MainActivity
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when` as whenever
 import org.mockito.MockitoAnnotations
-import org.robolectric.annotation.Config
+import org.mockito.junit.MockitoJUnitRunner
+import java.util.UUID
 
-@RunWith(AndroidJUnit4::class)
-@Config(sdk = [Build.VERSION_CODES.P])
-//@RunWith(MockitoJUnitRunner::class)
+@RunWith(MockitoJUnitRunner::class)
 class MainActivityViewModelTest {
+    // This causes LiveData objects to execute synchronously.
+    @Rule @JvmField val instantExecutorRule = InstantTaskExecutorRule()
 
-    @Mock private lateinit var gameSetup: GameSetupImpl
-
-    @get:Rule var activityScenarioRule = activityScenarioRule<MainActivity>()
-
-    private lateinit var mainActivity: MainActivity
+    @Mock private lateinit var screenMetrics: MainActivityViewModel.ScreenMetrics
+    @Mock private lateinit var gameSetup: MainActivityViewModel.GameSetup
+    @Mock private lateinit var gamePersistence: MainActivityViewModel.GamePersistence
 
     private lateinit var viewModel: MainActivityViewModel
 
-    @Before
-    public fun setUp() {
+    private val gridWidth = 5
+    private val gridHeight = 7
+
+    @Before fun setUp() {
         MockitoAnnotations.initMocks(this)
-        activityScenarioRule.scenario.onActivity { activity ->
-            mainActivity = activity
-            val persistenceHelper = GamePersistenceImpl(activity)
-            viewModel = MainActivityViewModel(activity.resources, activity.theme, persistenceHelper, gameSetup)
-        }
+        whenever(screenMetrics.gridWidth).thenReturn(gridWidth)
+        whenever(screenMetrics.gridHeight).thenReturn(gridHeight)
+
+        viewModel = MainActivityViewModelFactory(screenMetrics, gameSetup, gamePersistence)
+                .create(MainActivityViewModel::class.java)
     }
+
+    //region TESTS ---------------------------------------------------------------------------------
 
     @Test fun testInit() {
-        assertTrue(viewModel.keyboardHeight > 0)
-        assertTrue(viewModel.gridHeight > 0)
-        assertTrue(viewModel.gridWidth > 0)
-        assertTrue(viewModel.cellGrid.isNotEmpty())
-        assertTrue(viewModel.cellGrid[0].isNotEmpty())
+        assertEquals(gridHeight, viewModel.cellGrid.size)
+        assertEquals(gridWidth, viewModel.cellGrid[0].size)
     }
 
-    @Test fun testGetReloadedGameWords() {
-        // Observe new game creation, and launch new game
-        var resultGameWords: List<GameWord>? = null
-        viewModel.newlyCreatedGameWords.observe(mainActivity) { gameWords ->
-            assertTrue(gameWords.isNotEmpty())
-            resultGameWords = gameWords
+    @Test fun testCurrentGameWordLiveData() {
+        // Observe changes
+        var gameWordReceived: GameWord? = null
+        viewModel.currentGameWord.observeForever {
+            gameWordReceived = it
         }
-        viewModel.currentGameWord.observe(mainActivity) { gameWord ->
-            // Verify selected word is the first game word.
-            assertNotNull(gameWord)
-            assertTrue(resultGameWords?.isNotEmpty() ?: false)
-            assertEquals(resultGameWords!![0], gameWord)
-            assertNull(gameWord?.userEntry!![0])
 
-            // Now that the game is launched, observe a reload
-            viewModel.reloadedGameWords.observe(mainActivity) { gameWords ->
-                assertTrue(gameWords.isNotEmpty())
-                val firstWord = gameWords[0]
-                assertEquals(firstWord.word[0], firstWord.userEntry[0])
-            }
-            // Edit a game word and persist it, then reload game
-            gameWord.setUserText(gameWord.word)
-            viewModel.persistUserEntry(gameWord)
-            viewModel.loadGame()
+        // Trigger a LiveData event and verify received.
+        listOf(null, createGameWord(), null).forEach {
+            val charIndex = it?.defaultSelectionIndex ?: 0
+            viewModel.selectNewGameWord(it, charIndex)
+            assertEquals(it, gameWordReceived)
+            assertEquals(charIndex, viewModel.charIndexOfSelectedCell)
         }
-        viewModel.launchNewGame()
-
-
-
     }
 
-    fun testGetNewlyCreatedGameWords() {}
+    @Test fun testGameStartOrLoadEventLiveData() {
+        // Observe changes
+        var eventReceived: MainActivityViewModel.GameEvent? = null
+        viewModel.gameStartOrLoadEvent.observeForever {
+            eventReceived = it
+        }
 
-    fun testGetCharIndexOfSelectedCell() {}
-
-    fun testSetCharIndexOfSelectedCell() {}
-
-    fun testGetCurrentGameWords() {}
-
-    fun testSetCurrentGameWords() {}
-
-    fun testGetCellGrid() {}
-
-    fun testGetKeyboardHeight() {}
-
-    fun testGetViewablePuzzleHeight() {}
-
-    fun testGetPuzzleMarginTopPixels() {}
-
-    fun testGetPixelsPerCell() {}
-
-    fun testGetGridHeight() {}
-
-    fun testGetGridWidth() {}
-
-    @Test fun testCurrentImageIndex() {
-        val index = 5
-        viewModel.currentImageIndex = index
-        assertEquals(index, viewModel.currentImageIndex)
+        // For each event type, trigger a LiveData event and verify received.
+        listOf(MainActivityViewModel.GameEvent.CREATED, MainActivityViewModel.GameEvent.RELOADED).forEach {
+            viewModel._gameStartOrLoadEvent.value = it
+            assertEquals(it, eventReceived)
+        }
     }
 
-    @Test fun testCurrentGameCompleted() {
-        viewModel.currentGameCompleted = true
-        assertTrue(viewModel.currentGameCompleted)
+    @Test fun testGridHeight() {
+        (1..2).forEach {
+            whenever(screenMetrics.gridHeight).thenReturn(it)
 
-        viewModel.currentGameCompleted = false
-        assertFalse(viewModel.currentGameCompleted)
+            // WHEN call made
+            val result = viewModel.gridHeight
+
+            assertEquals(it, result)
+        }
+    }
+
+    @Test fun testGridWidth() {
+        (1..2).forEach {
+            whenever(screenMetrics.gridWidth).thenReturn(it)
+
+            // WHEN call made
+            val result = viewModel.gridWidth
+
+            assertEquals(it, result)
+        }
+    }
+
+    @Test fun testGetKeyboardHeight() {
+        (1..2).forEach {
+            whenever(screenMetrics.keyboardHeight).thenReturn(it.toFloat())
+
+            // WHEN call made
+            val result = viewModel.keyboardHeight
+
+            assertEquals(it.toFloat(), result)
+        }
+    }
+
+    @Test fun testGetCurrentImageIndex() {
+        (1..2).forEach {
+            whenever(gamePersistence.currentImageIndex).thenReturn(it)
+
+            // WHEN call made
+            val result = viewModel.currentImageIndex
+
+            assertEquals(it, result)
+        }
+    }
+
+    @Test fun testSetCurrentImageIndex() {
+        (1..2).forEach {
+            // WHEN call made
+            viewModel.currentImageIndex = it
+
+            verify(gamePersistence).currentImageIndex = it
+        }
+    }
+
+    @Test fun testGetCurrentGameCompleted() {
+        listOf(false, true).forEach {
+            whenever(gamePersistence.currentGameCompleted).thenReturn(it)
+
+            // WHEN call made
+            val result = viewModel.currentGameCompleted
+
+            assertEquals(it, result)
+        }
+    }
+
+    @Test fun testSetCurrentGameCompleted() {
+        listOf(false, true).forEach {
+            // WHEN call made
+            viewModel.currentGameCompleted = it
+
+            verify(gamePersistence).currentGameCompleted = it
+        }
     }
 
     @Test fun testElapsedSecondsSnapshot() {
         assertEquals(0L, viewModel.elapsedSecondsSnapshot)
 
-        viewModel.addToElapsedSeconds(5)
-        assertEquals(5, viewModel.elapsedSecondsSnapshot)
-        assertEquals(5, viewModel.persistedElapsedSeconds)
+        (1L..3L).forEach {
+            viewModel.addToElapsedSeconds(2)
 
-        viewModel.addToElapsedSeconds(2)
-        assertEquals(7, viewModel.elapsedSecondsSnapshot)
-        assertEquals(7, viewModel.persistedElapsedSeconds)
+            // WHEN call made
+            val result = viewModel.elapsedSecondsSnapshot
+
+            assertEquals(2 * it, result)
+        }
     }
 
-    fun testSelectNewGameWord() {}
+    @Test fun testPersistedElapsedSeconds() {
+        (1L..2L).forEach {
+            whenever(gamePersistence.elapsedSeconds).thenReturn(it)
 
-    fun testLaunchNewGame() {}
+            // WHEN call made
+            val result = viewModel.persistedElapsedSeconds
 
-    fun testLoadExistingGame() {}
+            assertEquals(it, result)
+            assertEquals(it, viewModel.elapsedSecondsSnapshot)
+        }
+    }
 
-    fun testClearGame() {}
+    @Test fun testLaunchNewGame() {
+        //todo
+        fail()
+    }
 
-    fun testPersistUserEntry() {}
+    @Test fun testLoadGame() {
+        //todo
+        fail()
+    }
 
-    fun testPersistGameStatistics() {}
+    @Test fun testClearGame() {
+        // WHEN call made
+        viewModel.clearGame()
 
-    fun testSelectNextGameWordAndWrapAround() {}
+        // Verify everything cleared
+        assertTrue(viewModel.currentGameWords.isEmpty())
+        assertNull(viewModel.currentGameWord.value)
+        for (row in 0 until gridHeight) {
+            for (col in 0 until gridWidth) {
+                assertNull(viewModel.cellGrid[row][col])
+            }
+        }
+    }
 
-    fun testSelectNextGameWord() {}
+    @Test fun testPersistUserEntry() {
+        val gameWord = createGameWord()
 
-    fun testNewScrollPositionShowingFullWord() {}
+        // WHEN call made
+        viewModel.persistUserEntry(gameWord)
+
+        verify(gamePersistence).persistUserEntry(gameWord)
+    }
+
+    @Test fun testPersistGameStatistics() {
+        // WHEN call made
+        viewModel.persistGameStatistics()
+
+        verify(gamePersistence).persistGameStats(viewModel.currentGameWords)
+    }
+
+    @Test fun testSelectNextGameWordAndWrapAround() {
+        //todo
+    }
+
+    @Test fun testSelectNextGameWord() {
+        //todo
+    }
+
+    @Test fun testNewScrollPositionShowingFullWord_horizontalWord() {
+        // Select a game word
+        val gameWord = createGameWord(row = 4, col = 2, isAcross = true)
+        viewModel.selectNewGameWord(gameWord)
+
+        // Expect a call to screenMetrics
+        val currentScrollPosition = 50
+        val expectedScrollPosition = 30
+        whenever(screenMetrics.newScrollPositionShowingFullWord(gameWord.row, gameWord.row, gameWord.row, currentScrollPosition))
+                .thenReturn(expectedScrollPosition)
+
+        // WHEN call made
+        val result = viewModel.newScrollPositionShowingFullWord(currentScrollPosition)
+
+        // Verify expected scroll position returned.
+        assertEquals(expectedScrollPosition, result)
+    }
+
+    @Test fun testNewScrollPositionShowingFullWord_verticalWord() {
+        // Select a game word
+        val gameWord = createGameWord(row = 4, col = 2, isAcross = false)
+        val indexOfSelectedChar = 1
+        viewModel.selectNewGameWord(gameWord, indexOfSelectedChar)
+
+        // Expect a call to screenMetrics
+        val currentScrollPosition = 50
+        val expectedScrollPosition = 30
+        whenever(screenMetrics.newScrollPositionShowingFullWord(
+                startingRow = gameWord.row,
+                endingRow = gameWord.row + gameWord.word.length - 1,
+                rowOfSelectedCell = gameWord.row + indexOfSelectedChar,
+                currentScrollPosition = currentScrollPosition))
+                .thenReturn(expectedScrollPosition)
+
+        // WHEN call made
+        val result = viewModel.newScrollPositionShowingFullWord(currentScrollPosition)
+
+        // Verify expected scroll position returned.
+        assertEquals(expectedScrollPosition, result)
+    }
+
+    //endregion
+
+    //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
+
+    private fun createGameWord(
+            uniqueKey: String = UUID.randomUUID().toString(),
+            word: String = "hablo",
+            conjugationTypeLabel: String = "Present tense of",
+            subjectPronounLabel: String = "Yo",
+            infinitive: String = "hablar",
+            translation: String = "speak",
+            statsIndex: Int = 0,
+            row: Int = 0,
+            col: Int = 0,
+            isAcross: Boolean = true): GameWord {
+        return GameWord(
+                uniqueKey = uniqueKey,
+                word = word,
+                conjugationTypeLabel = conjugationTypeLabel,
+                subjectPronounLabel = subjectPronounLabel,
+                infinitive = infinitive,
+                translation = translation,
+                statsIndex = statsIndex,
+                row = row,
+                col = col,
+                isAcross = isAcross
+        )
+    }
+
+    //endregion
 }

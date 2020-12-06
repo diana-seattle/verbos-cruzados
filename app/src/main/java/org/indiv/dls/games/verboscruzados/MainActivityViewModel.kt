@@ -1,5 +1,6 @@
 package org.indiv.dls.games.verboscruzados
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,7 +25,7 @@ class MainActivityViewModel(
     private val _currentGameWord = MutableLiveData<GameWord?>()
 
     // Private mutable LiveData representing event when a game is loaded or started.
-    private val _gameStartOrLoadEvent: MutableLiveData<GameEvent> by lazy {
+    @VisibleForTesting val _gameStartOrLoadEvent: MutableLiveData<GameEvent> by lazy {
         MutableLiveData<GameEvent>()
     }
 
