@@ -105,9 +105,9 @@ class MainActivityViewModel(
     /**
      * Allows callers on the main thread to update the current game word together with the char index of the selected cell.
      */
-    fun selectNewGameWord(gameWord: GameWord?, charIndexOfSelectedCell: Int) {
+    fun selectNewGameWord(gameWord: GameWord?, charIndexOfSelectedCell: Int? = null) {
         // Set the index first so that it's available to observers of the game word change.
-        this.charIndexOfSelectedCell = charIndexOfSelectedCell
+        this.charIndexOfSelectedCell = charIndexOfSelectedCell ?: gameWord?.defaultSelectionIndex ?: 0
 
         // Update the LiveData value to publish to observers.
         _currentGameWord.value = gameWord
@@ -117,6 +117,7 @@ class MainActivityViewModel(
      * Launches new game, with setup up on a worker thread.
      */
     fun launchNewGame() {
+        // Do with coroutine on worker thread
         viewModelScope.launch(context = Dispatchers.Default) {
             setupNewGame()
         }
@@ -128,6 +129,7 @@ class MainActivityViewModel(
     fun loadGame() {
         // On app startup, the word list will be empty, but on a config change it likely won't be so no need to re-load.
         if (currentGameWords.isEmpty()) {
+            // Do with coroutine on worker thread
             viewModelScope.launch(context = Dispatchers.Default) {
                 val gameWords = gamePersistence.currentGameWords
                 if (gameWords.isNotEmpty() && gameSetup.doWordsFitInGrid(gameWords, gridWidth, gridHeight)) {
@@ -148,7 +150,8 @@ class MainActivityViewModel(
      * Clears current game in preparation for a new one.
      */
     fun clearGame() {
-        selectNewGameWord(null, 0)
+        selectNewGameWord(null)
+        currentGameWords = emptyList()
         for (row in 0 until gridHeight) {
             cellGrid[row].fill(null)
         }
@@ -236,7 +239,7 @@ class MainActivityViewModel(
 
                     // If a word was found, select it and return
                     nextGameWord?.let {
-                        selectNewGameWord(it, it.defaultSelectionIndex)
+                        selectNewGameWord(it)
                         return true
                     }
                 }

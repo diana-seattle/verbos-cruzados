@@ -168,7 +168,7 @@ class PuzzleFragment : Fragment() {
         // If a game word is selected already, this represents a config change. Reselect the same word so we can observe
         // it and update the views accordingly.
         viewModel.currentGameWord.value?.let {
-            viewModel.selectNewGameWord(it, it.defaultSelectionIndex)
+            viewModel.selectNewGameWord(it)
         } ?: run {
             // Otherwise, no selection has been made yet. Choose a word in this priority:
             // 1. Select first word with empty cells if any
@@ -176,7 +176,7 @@ class PuzzleFragment : Fragment() {
             // 3. Select first word (this can happen if user returns to a finished game)
             if (!viewModel.selectNextGameWord(0, 0, true)
                     && !viewModel.selectNextGameWord(0, 0, false)) {
-                viewModel.selectNewGameWord(firstGameWord, firstGameWord?.defaultSelectionIndex ?: 0)
+                viewModel.selectNewGameWord(firstGameWord)
             }
         }
     }
