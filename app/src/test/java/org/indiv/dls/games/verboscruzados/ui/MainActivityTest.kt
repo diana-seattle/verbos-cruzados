@@ -1,4 +1,4 @@
-package org.indiv.dls.games.verboscruzados.view
+package org.indiv.dls.games.verboscruzados.ui
 
 import android.os.Build
 import androidx.test.espresso.Espresso.onView
@@ -21,10 +21,6 @@ import org.robolectric.annotation.Config
 class MainActivityTest {
 
     @get:Rule var activityScenarioRule = activityScenarioRule<MainActivity>()
-
-    @Before
-    fun setUp() {
-    }
 
     @Test fun testOnCreate() {
         activityScenarioRule.scenario.onActivity { activity ->

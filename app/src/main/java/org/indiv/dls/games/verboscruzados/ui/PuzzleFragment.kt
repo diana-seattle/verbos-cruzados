@@ -1,4 +1,4 @@
-package org.indiv.dls.games.verboscruzados.view
+package org.indiv.dls.games.verboscruzados.ui
 
 
 import android.os.Bundle
@@ -9,10 +9,11 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.TableRow
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModelProvider
 import org.indiv.dls.games.verboscruzados.MainActivityViewModel
 import org.indiv.dls.games.verboscruzados.MainActivityViewModelFactory
-import org.indiv.dls.games.verboscruzados.view.component.PuzzleCellTextView
+import org.indiv.dls.games.verboscruzados.ui.component.PuzzleCellTextView
 import org.indiv.dls.games.verboscruzados.databinding.FragmentPuzzleBinding
 import org.indiv.dls.games.verboscruzados.model.GameWord
 import org.indiv.dls.games.verboscruzados.model.GridCell
@@ -29,11 +30,11 @@ class PuzzleFragment : Fragment() {
     private var _binding: FragmentPuzzleBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: MainActivityViewModel
+    @VisibleForTesting lateinit var viewModel: MainActivityViewModel
 
     private lateinit var vibration: Vibration
 
-    private var gameWordLastSelected: GameWord? = null
+    @VisibleForTesting var gameWordLastSelected: GameWord? = null
 
     private var gameInitialized = false;
 

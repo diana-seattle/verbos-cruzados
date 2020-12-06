@@ -1,4 +1,4 @@
-package org.indiv.dls.games.verboscruzados.view
+package org.indiv.dls.games.verboscruzados.ui
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
@@ -22,8 +22,8 @@ import org.indiv.dls.games.verboscruzados.MainActivityViewModel
 import org.indiv.dls.games.verboscruzados.MainActivityViewModelFactory
 import org.indiv.dls.games.verboscruzados.R
 import org.indiv.dls.games.verboscruzados.databinding.ActivityMainBinding
-import org.indiv.dls.games.verboscruzados.view.dialog.GameOptionsDialogFragment
-import org.indiv.dls.games.verboscruzados.view.dialog.StatsDialogFragment
+import org.indiv.dls.games.verboscruzados.ui.dialog.GameOptionsDialogFragment
+import org.indiv.dls.games.verboscruzados.ui.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.model.AnswerPresentation
 import org.indiv.dls.games.verboscruzados.model.GameWord
 import org.indiv.dls.games.verboscruzados.util.ImageSelecter

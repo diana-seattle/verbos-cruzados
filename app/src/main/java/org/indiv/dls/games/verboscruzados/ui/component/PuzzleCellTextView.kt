@@ -1,4 +1,4 @@
-package org.indiv.dls.games.verboscruzados.view.component
+package org.indiv.dls.games.verboscruzados.ui.component
 
 import android.content.Context
 import android.graphics.Color

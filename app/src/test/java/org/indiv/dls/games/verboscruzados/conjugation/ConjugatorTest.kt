@@ -20,20 +20,13 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import kotlin.math.max
 
+/**
+ * Many of these tests print to standard out for visual verification of expected conjugations.
+ */
 class ConjugatorTest {
-
-    //region CLASSES UNDER TEST --------------------------------------------------------------------
-    //endregion
-
-    //region PROPERTIES ----------------------------------------------------------------------------
 
     // Width of the first printed column should be that of the widest pronoun plus padding.
     private val firstColumnWidth = SubjectPronoun.ELLOS_ELLAS_USTEDES.text.length + 2
-
-    //endregion
-
-    //region SETUP ---------------------------------------------------------------------------------
-    //endregion
 
     //region TESTS ---------------------------------------------------------------------------------
 
