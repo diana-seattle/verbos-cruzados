@@ -1,6 +1,9 @@
 package org.indiv.dls.games.verboscruzados
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.runBlockingTest
 import org.indiv.dls.games.verboscruzados.model.GameWord
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -175,14 +178,38 @@ class MainActivityViewModelTest {
         }
     }
 
+    @ExperimentalCoroutinesApi
     @Test fun testLaunchNewGame() {
-        //todo
-        fail()
+        val gameWords = listOf(createGameWord(), createGameWord())
+        val gameOptions = emptyMap<String, Boolean>()
+        whenever(gamePersistence.currentGameOptions).thenReturn(gameOptions)
+        whenever(gameSetup.newGame(viewModel.cellGrid, gameOptions))
+                .thenReturn(gameWords)
+
+        runBlockingTest {
+            // WHEN call made
+            viewModel.launchNewGame()
+
+            delay(10) // TODO why is this needed?
+        }
+
+        assertEquals(gameWords, viewModel.currentGameWords)
     }
 
+    @ExperimentalCoroutinesApi
     @Test fun testLoadGame() {
-        //todo
-        fail()
+        val gameWords = listOf(createGameWord(), createGameWord())
+        whenever(gamePersistence.currentGameWords).thenReturn(gameWords)
+        whenever(gameSetup.doWordsFitInGrid(gameWords, gridWidth, gridHeight)).thenReturn(true)
+
+        runBlockingTest {
+            // WHEN call made
+            viewModel.loadGame()
+
+            delay(10) // TODO why is this needed?
+        }
+
+        assertEquals(gameWords, viewModel.currentGameWords)
     }
 
     @Test fun testClearGame() {
