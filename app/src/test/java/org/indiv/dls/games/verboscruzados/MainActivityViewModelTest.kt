@@ -190,7 +190,7 @@ class MainActivityViewModelTest : TestUtils {
             // WHEN call made
             viewModel.launchNewGame()
 
-            delay(10) // TODO why is this needed?
+            delay(500) // TODO why is this needed?
         }
 
         assertEquals(gameWords, viewModel.currentGameWords)
@@ -206,7 +206,7 @@ class MainActivityViewModelTest : TestUtils {
             // WHEN call made
             viewModel.loadGame()
 
-            delay(10) // TODO why is this needed?
+            delay(100) // TODO why is this needed?
         }
 
         assertEquals(gameWords, viewModel.currentGameWords)

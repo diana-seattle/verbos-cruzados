@@ -72,7 +72,8 @@ class ScreenMetricsImpl(activity: Activity) : MainActivityViewModel.ScreenMetric
      * @param rowOfSelectedCell row of the selected character within the selected game word.
      * @param currentScrollPosition current scroll position of the game.
      */
-    override fun newScrollPositionShowingFullWord(startingRow: Int, endingRow: Int, rowOfSelectedCell: Int, currentScrollPosition: Int): Int? {
+    override fun newScrollPositionShowingFullWord(
+            startingRow: Int, endingRow: Int, rowOfSelectedCell: Int, currentScrollPosition: Int): Int? {
         val yOfFirstCell = startingRow * pixelsPerCell
 
         val availableHeight = viewablePuzzleHeight - keyboardHeight

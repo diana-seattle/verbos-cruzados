@@ -264,7 +264,7 @@ class MainActivityViewModel(
                     endingRow = endingRow,
                     rowOfSelectedCell = rowOfSelectedCell,
                     currentScrollPosition = currentScrollPosition
-            )
+            )?.coerceAtLeast(0)
         }
     }
 

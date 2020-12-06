@@ -66,8 +66,12 @@ dependencies {
     implementation "com.google.code.gson:gson:2.8.6"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    // Needed for FragmentScenario in fragment tests
+    // Needed for FragmentScenario in fragment tests, must be debugImplementation
     debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
+
+    // This must be debugImplementation too to match fragment-testing lib above or else it breaks
+    // activityScenarioRule.
+    debugImplementation("androidx.test:core:1.3.0")
 
     testImplementation 'junit:junit:4.13.1'
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
