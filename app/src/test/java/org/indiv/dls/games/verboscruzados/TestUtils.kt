@@ -1,6 +1,7 @@
 package org.indiv.dls.games.verboscruzados
 
 import org.indiv.dls.games.verboscruzados.model.GameWord
+import org.indiv.dls.games.verboscruzados.model.PuzzleWordPresentation
 import java.util.UUID
 
 interface TestUtils {
@@ -8,7 +9,7 @@ interface TestUtils {
     fun createGameWord(
             id: String = UUID.randomUUID().toString(),
             persistenceKey: String = UUID.randomUUID().toString(),
-            word: String = "hablo",
+            answer: String = "hablo",
             conjugationTypeLabel: String = "Present tense of",
             subjectPronounLabel: String = "Yo",
             infinitive: String = "hablar",
@@ -20,12 +21,29 @@ interface TestUtils {
         return GameWord(
                 id = id,
                 persistenceKey = persistenceKey,
-                answer = word,
+                answer = answer,
                 conjugationTypeLabel = conjugationTypeLabel,
                 subjectPronounLabel = subjectPronounLabel,
                 infinitive = infinitive,
                 translation = translation,
                 statsIndex = statsIndex,
+                startingRow = startingRow,
+                startingCol = startingCol,
+                isAcross = isAcross
+        )
+    }
+
+    fun createPuzzleWordPresentation(
+            id: String = UUID.randomUUID().toString(),
+            answer: String = "hablo",
+            infinitive: String = "hablar",
+            startingRow: Int = 0,
+            startingCol: Int = 0,
+            isAcross: Boolean = true): PuzzleWordPresentation {
+        return PuzzleWordPresentation(
+                id = id,
+                answer = answer,
+                infinitive = infinitive,
                 startingRow = startingRow,
                 startingCol = startingCol,
                 isAcross = isAcross

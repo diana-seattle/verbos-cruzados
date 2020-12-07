@@ -105,7 +105,7 @@ class MainActivityTest {
                 assertEquals(0, activity.viewModel.charIndexOfSelectedCell)
 
                 // All game words will be longer than one character, but check to be safe
-                if (selectedWord.word.length > 1) {
+                if (selectedWord.answer.length > 1) {
 
                     val letterButtonMap = mapOf(R.id.button_a to 'a', R.id.button_b to 'b', R.id.button_c to 'c',
                             R.id.button_d to 'd', R.id.button_e to 'e', R.id.button_f to 'f', R.id.button_g to 'g',

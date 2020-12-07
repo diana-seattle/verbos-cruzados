@@ -20,10 +20,11 @@ class GameWordConversionsImpl : MainActivityViewModel.GameWordConversions {
     override fun toPuzzleWordPresentation(gameWord: GameWord): PuzzleWordPresentation {
         return PuzzleWordPresentation(
                 id = gameWord.id,
-                word = gameWord.answer,
+                answer = gameWord.answer,
+                infinitive = gameWord.infinitive,
                 startingRow = gameWord.startingRow,
                 startingCol = gameWord.startingCol,
-                isAcross = gameWord.isAcross,
-                infinitive = gameWord.infinitive)
+                isAcross = gameWord.isAcross
+        )
     }
 }

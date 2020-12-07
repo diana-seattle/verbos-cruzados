@@ -4,8 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runBlockingTest
-import org.indiv.dls.games.verboscruzados.model.GameWord
 import org.indiv.dls.games.verboscruzados.model.GridCell
+import org.indiv.dls.games.verboscruzados.model.PuzzleWordPresentation
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -53,19 +53,21 @@ class MainActivityViewModelTest : TestUtils {
 
     @Test fun testCurrentGameWordLiveData() {
         // Observe changes
-        var gameWordReceived: GameWord? = null
-        viewModel.currentGameWord.observeForever {
-            gameWordReceived = it
+        var wordReceived: PuzzleWordPresentation? = null
+        viewModel.selectedPuzzleWord.observeForever {
+            wordReceived = it
         }
 
         // Create game of one word
         val gameWord = createGameWord()
         viewModel.gameWordMap = mapOf(gameWord.id to gameWord)
+        whenever(gameWordConversions.toPuzzleWordPresentation(gameWord))
+                .thenReturn(createPuzzleWordPresentation(id = gameWord.id))
 
         // Trigger LiveData events and verify received.
         listOf(null, gameWord, null).forEach {
             viewModel.selectNewGameWord(it?.id)
-            assertEquals(it, gameWordReceived)
+            assertEquals(it?.id, wordReceived?.id)
             assertEquals(it?.defaultSelectionIndex ?: 0, viewModel.charIndexOfSelectedCell)
         }
     }
@@ -227,7 +229,7 @@ class MainActivityViewModelTest : TestUtils {
         // Setup a minimal 1-word game
         val gameWord = createGameWord()
         viewModel.gameWordMap = mapOf(gameWord.id to gameWord)
-        viewModel.currentGameWord.value = gameWord
+        viewModel.selectNewGameWord(gameWord.id)
         viewModel.charIndexOfSelectedCell = 0
         viewModel.cellGrid[0][0] = GridCell(answerChar = 'h')
 
@@ -236,7 +238,7 @@ class MainActivityViewModelTest : TestUtils {
 
         // Verify everything cleared
         assertTrue(viewModel.gameWordMap.isEmpty())
-        assertNull(viewModel.currentGameWord.value)
+        assertNull(viewModel.selectedPuzzleWord.value)
         for (row in 0 until gridHeight) {
             for (col in 0 until gridWidth) {
                 assertNull(viewModel.cellGrid[row][col])
@@ -248,7 +250,7 @@ class MainActivityViewModelTest : TestUtils {
         // Setup a minimal 1-word game
         val gameWord = createGameWord(startingRow = 0, startingCol = 0, isAcross = true)
         viewModel.gameWordMap = mapOf(gameWord.id to gameWord)
-        viewModel.currentGameWord.value = gameWord
+        viewModel.selectNewGameWord(gameWord.id)
         viewModel.charIndexOfSelectedCell = 0
         viewModel.cellGrid[0][0] = GridCell(answerChar = 'h').apply {
             gameWordIdAcross = gameWord.id

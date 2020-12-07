@@ -216,7 +216,7 @@ class PuzzleFragment : Fragment() {
             // show answer in puzzle
             var row = puzzleWord.startingRow
             var col = puzzleWord.startingCol
-            for (charIndex in 0 until puzzleWord.word.length) {
+            for (charIndex in 0 until puzzleWord.answer.length) {
                 viewModel.cellGrid[row][col]?.let {
                     fillTextView(it, viewByPositionMap[Position(row, col)])
                     if (puzzleWord.isAcross) col++ else row++
@@ -264,7 +264,7 @@ class PuzzleFragment : Fragment() {
         puzzleWord?.let {
             var row = it.startingRow
             var col = it.startingCol
-            for (i in it.word.indices) {
+            for (i in it.answer.indices) {
                 val textView = viewByPositionMap[Position(row, col)]
                 if (asSelected && i == viewModel.charIndexOfSelectedCell) {
                     textView?.setIndividualSelection(true)

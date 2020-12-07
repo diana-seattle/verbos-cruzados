@@ -34,7 +34,7 @@ class MainActivityViewModel(
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
     // Private mutable LiveData representing currently selected word in a game.
-    val currentGameWord = MutableLiveData<GameWord?>()
+    private val currentGameWord = MutableLiveData<GameWord?>()
 
     // Private mutable LiveData representing event when a game is loaded or started.
     @VisibleForTesting val _gameStartOrLoadEvent: MutableLiveData<GameEvent> by lazy {
@@ -272,7 +272,7 @@ class MainActivityViewModel(
             charIndexOfSelectedCell = if (inBackwardDirection) {
                 (charIndexOfSelectedCell - 1).coerceAtLeast(0)
             } else {
-                (charIndexOfSelectedCell + 1).coerceAtMost(it.word.length - 1)
+                (charIndexOfSelectedCell + 1).coerceAtMost(it.answer.length - 1)
             }
         }
     }
