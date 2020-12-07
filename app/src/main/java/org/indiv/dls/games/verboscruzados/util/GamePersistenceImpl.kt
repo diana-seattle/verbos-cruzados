@@ -8,6 +8,7 @@ import org.indiv.dls.games.verboscruzados.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.model.GameWord
 import org.indiv.dls.games.verboscruzados.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.model.IrregularityCategory
+import org.indiv.dls.games.verboscruzados.model.PersistedGameWord
 import org.indiv.dls.games.verboscruzados.model.SubjectPronoun
 import java.lang.Integer.parseInt
 import java.util.ArrayList
@@ -15,7 +16,9 @@ import java.util.ArrayList
 /**
  * Manages reading and writing from persisted storage.
  */
-class GamePersistenceImpl constructor(private val mContext: Context) : MainActivityViewModel.GamePersistence {
+class GamePersistenceImpl constructor(private val mContext: Context,
+                                      private val persistenceConversions: PersistenceConversions
+                                      ) : MainActivityViewModel.GamePersistence {
 
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
@@ -41,19 +44,19 @@ class GamePersistenceImpl constructor(private val mContext: Context) : MainActiv
      */
     override var currentGameWords: List<GameWord>
         get() {
-            val gameWords = ArrayList<GameWord>()
+            val persistedGameWords = ArrayList<PersistedGameWord>()
             val map: Map<String, *> = gameWordPrefs.all
             for (key in map.keys) {
-                gameWords.add(gson.fromJson(map[key] as String, GameWord::class.java))
+                persistedGameWords.add(gson.fromJson(map[key] as String, PersistedGameWord::class.java))
             }
-            return gameWords
+            return persistedGameWords.map(persistenceConversions::fromPersistedGameWord)
         }
         set(gameWords) {
             var prefsEditor: SharedPreferences.Editor = gameWordPrefs
                     .edit()
                     .clear()
             for (gameWord in gameWords) {
-                prefsEditor = prefsEditor.putString(gameWord.uniqueKey, gson.toJson(gameWord, GameWord::class.java))
+                prefsEditor = prefsEditor.putString(gameWord.persistenceKey, toJson(gameWord))
             }
             prefsEditor.apply()
         }
@@ -150,7 +153,7 @@ class GamePersistenceImpl constructor(private val mContext: Context) : MainActiv
     override fun persistUserEntry(gameWord: GameWord) {
         gameWordPrefs
                 .edit()
-                .putString(gameWord.uniqueKey, gson.toJson(gameWord, GameWord::class.java))
+                .putString(gameWord.persistenceKey, toJson(gameWord))
                 .apply()
     }
 
@@ -177,6 +180,11 @@ class GamePersistenceImpl constructor(private val mContext: Context) : MainActiv
     //endregion
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
+
+    private fun toJson(gameWord: GameWord): String {
+        val persistableGameWord = persistenceConversions.toPersistedGameWord(gameWord)
+        return gson.toJson(persistableGameWord, PersistedGameWord::class.java)
+    }
 
     private fun setDefaults(): Map<String, *> {
         val editor = gameOptionPrefs.edit()

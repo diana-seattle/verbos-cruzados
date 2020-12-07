@@ -26,7 +26,7 @@ class GameSetupImplTest : TestUtils {
 
     @Before
     fun setUp() {
-        gameSetupImpl = GameSetupImpl(context.resources)
+        gameSetupImpl = GameSetupImpl(context.resources, IdGenerator)
     }
 
     @Test

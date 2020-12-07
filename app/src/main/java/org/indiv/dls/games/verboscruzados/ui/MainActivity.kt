@@ -24,8 +24,6 @@ import org.indiv.dls.games.verboscruzados.R
 import org.indiv.dls.games.verboscruzados.databinding.ActivityMainBinding
 import org.indiv.dls.games.verboscruzados.ui.dialog.GameOptionsDialogFragment
 import org.indiv.dls.games.verboscruzados.ui.dialog.StatsDialogFragment
-import org.indiv.dls.games.verboscruzados.model.AnswerPresentation
-import org.indiv.dls.games.verboscruzados.model.GameWord
 import org.indiv.dls.games.verboscruzados.util.ImageSelecter
 
 
@@ -47,7 +45,7 @@ import org.indiv.dls.games.verboscruzados.util.ImageSelecter
  */
 
 // TODO: more tests
-// TODO: decouple persisted GameWord class from view classes.
+// TODO: hilt/dagger
 // TODO: troubleshoot tablet pixel C api 30 emulator
 // TODO: fix on foldables
 
@@ -82,7 +80,7 @@ class MainActivity : AppCompatActivity() {
     private val countDownTimer: CountDownTimer = object : CountDownTimer(COUNTDOWN_MAX_TIME, COUNTDOWN_INTERVAL) {
         override fun onTick(millisUntilFinished: Long) {
             elapsedTimerMs = COUNTDOWN_MAX_TIME - millisUntilFinished
-            binding.answerKeyboard.elapsedTime = getElapsedTimeText(viewModel.elapsedSecondsSnapshot + elapsedTimerMs / 1000)
+            binding.answerKeyboard.elapsedTime = viewModel.getElapsedTimeText(viewModel.elapsedSecondsSnapshot + elapsedTimerMs / 1000)
         }
         override fun onFinish() {}
     }
@@ -100,10 +98,10 @@ class MainActivity : AppCompatActivity() {
                 .get(MainActivityViewModel::class.java)
 
         // Observe changes to the currently selected word.
-        viewModel.currentGameWord.observe(this) { gameWord ->
-            gameWord?.let {
+        viewModel.answerPresentation.observe(this) { answerPresentation ->
+            answerPresentation?.let {
                 // Update keyboard with answer info, and make sure visible.
-                binding.answerKeyboard.answerPresentation = createAnswerPresentation(it)
+                binding.answerKeyboard.answerPresentation = it
                 showKeyboard()
 
                 // Make sure entire word is visible.
@@ -112,8 +110,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Observe starting or loading of a game
-        viewModel.gameStartOrLoadEvent.observe(this) { _ ->
-            if (viewModel.currentGameWords.isNotEmpty()) {
+        viewModel.gameStartOrLoadEvent.observe(this) {
+            if (viewModel.wordCount > 0) {
                 // Apply the game to the puzzle fragment
                 puzzleFragment.createGridViewsAndSelectWord()
                 scrollWordIntoViewWithDelay()
@@ -133,8 +131,9 @@ class MainActivity : AppCompatActivity() {
             // This is a special debug-build-only hack that allows the developer/tester to complete a game immediately.
             binding.toolbar.setOnLongClickListener { _ ->
                 do {
-                    viewModel.currentGameWord.value?.let {
-                        puzzleFragment.updateTextInPuzzleWord(it.word)
+                    viewModel.answerPresentation.value?.let {
+                        viewModel.updateTextOfSelectedWord(it.word)
+                        puzzleFragment.refreshTextOfSelectedWord()
                         onAnswerChanged()
                     }
                 } while (viewModel.selectNextGameWordWithWrapAround(selectWordWithBlanks = false))
@@ -191,7 +190,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        binding.answerKeyboard.elapsedTime = getElapsedTimeText(viewModel.persistedElapsedSeconds)
+        binding.answerKeyboard.elapsedTime = viewModel.getElapsedTimeText(viewModel.persistedElapsedSeconds)
         if (!viewModel.currentGameCompleted) {
             startTimer()
         }
@@ -210,8 +209,9 @@ class MainActivity : AppCompatActivity() {
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
     private fun addKeyboardListeners() {
-        binding.answerKeyboard.infinitiveClickListener = {
-            puzzleFragment.updateTextInPuzzleWord(it)
+        binding.answerKeyboard.infinitiveClickListener = { text ->
+            viewModel.updateTextOfSelectedWord(text)
+            puzzleFragment.refreshTextOfSelectedWord()
             onAnswerChanged()
             if (viewModel.showOnboardingMessage) {
                 viewModel.showOnboardingMessage = false
@@ -219,58 +219,48 @@ class MainActivity : AppCompatActivity() {
             }
         }
         binding.answerKeyboard.deleteLongClickListener = {
-            puzzleFragment.updateTextInPuzzleWord("")
+            viewModel.updateTextOfSelectedWord("")
+            puzzleFragment.refreshTextOfSelectedWord()
             onAnswerChanged()
         }
         binding.answerKeyboard.deleteClickListener = {
-            val conflictingGameWord = puzzleFragment.deleteLetterInPuzzle()
-            conflictingGameWord?.let {
-                viewModel.persistUserEntry(it)
-            }
+            viewModel.updateCharOfSelectedCell(null)
+            puzzleFragment.refreshCharOfSelectedCell()
             onAnswerChanged()
         }
         binding.answerKeyboard.letterClickListener = { char ->
-            val conflictingGameWord = puzzleFragment.updateLetterInPuzzle(char)
-            conflictingGameWord?.let {
-                viewModel.persistUserEntry(it)
-            }
-            puzzleFragment.advanceSelectedCellInPuzzle(false)
+            viewModel.updateCharOfSelectedCell(char)
+            puzzleFragment.refreshCharOfSelectedCell()
+
+            viewModel.advanceSelectedCellInPuzzle(inBackwardDirection = false)
+            puzzleFragment.refreshStyleOfSelectedWord()
             scrollWordIntoView()
             onAnswerChanged()
         }
         binding.answerKeyboard.leftClickListener = {
-            puzzleFragment.advanceSelectedCellInPuzzle(true)
+            viewModel.advanceSelectedCellInPuzzle(inBackwardDirection = true)
+            puzzleFragment.refreshStyleOfSelectedWord()
             scrollWordIntoView()
         }
         binding.answerKeyboard.rightClickListener = {
-            puzzleFragment.advanceSelectedCellInPuzzle(false)
+            viewModel.advanceSelectedCellInPuzzle(inBackwardDirection = false)
+            puzzleFragment.refreshStyleOfSelectedWord()
             scrollWordIntoView()
         }
         binding.answerKeyboard.nextWordClickListener = {
-            selectNextGameWordFavoringEmpty()
+            viewModel.selectNextGameWordFavoringIncomplete()
         }
         binding.answerKeyboard.dismissClickListener = {
             hideKeyboard()
         }
     }
 
-    private fun selectNextGameWordFavoringEmpty(): Boolean {
-        return viewModel.selectNextGameWordWithWrapAround(selectWordWithBlanks = true)
-                || viewModel.selectNextGameWordWithWrapAround(selectWordWithBlanks = false)
-    }
-
     /**
      * Handles housekeeping after an answer has changed.
      */
     private fun onAnswerChanged() {
-
-        // persist the user's answer
-        viewModel.currentGameWord.value?.let {
-            viewModel.persistUserEntry(it)
-        }
-
-        val puzzleIsCompleteWithPossibleErrors = puzzleFragment.isPuzzleComplete(false)
-        val puzzleIsCompleteAndCorrect = puzzleIsCompleteWithPossibleErrors && puzzleFragment.isPuzzleComplete(true)
+        val puzzleIsCompleteWithPossibleErrors = viewModel.isPuzzleComplete(false)
+        val puzzleIsCompleteAndCorrect = puzzleIsCompleteWithPossibleErrors && viewModel.isPuzzleComplete(true)
         val puzzleIsCompleteWithErrors = puzzleIsCompleteWithPossibleErrors && !puzzleIsCompleteAndCorrect
 
         // update error indications
@@ -278,9 +268,9 @@ class MainActivity : AppCompatActivity() {
             showErrors(true)
 
             // auto-advance to the next word when in error-showing mode (with a small delay so it feels less abrupt)
-            if (viewModel.currentGameWord.value?.isAnsweredCompletelyAndCorrectly == true) {
+            if (viewModel.isCurrentGameWordAnsweredCompletelyAndCorrectly()) {
                 Handler(Looper.getMainLooper()).postDelayed({
-                    selectNextGameWordFavoringEmpty()
+                    viewModel.selectNextGameWordFavoringIncomplete()
                 }, 200)
             }
         }
@@ -298,16 +288,12 @@ class MainActivity : AppCompatActivity() {
             }
 
             // prompt with congrats and new game
-            val completionRate = (viewModel.currentGameWords.size * 60f) / viewModel.elapsedSecondsSnapshot
             val message = resources.getString(R.string.dialog_startnewgame_completion_message,
-                    viewModel.currentGameWords.size, getElapsedTimeText(viewModel.elapsedSecondsSnapshot), completionRate)
+                    viewModel.wordCount,
+                    viewModel.getElapsedTimeText(viewModel.elapsedSecondsSnapshot),
+                    viewModel.calculateCompletionRate())
             promptForNewGame(message)
         }
-    }
-
-    private fun createAnswerPresentation(gameWord: GameWord): AnswerPresentation {
-        return AnswerPresentation(gameWord.word, gameWord.isAcross, gameWord.conjugationTypeLabel,
-                gameWord.subjectPronounLabel, gameWord.infinitive, gameWord.translation)
     }
 
     /*
@@ -450,12 +436,6 @@ class MainActivity : AppCompatActivity() {
             animator.start()
             binding.onboardingMessageLayout.visibility = View.GONE
         }
-    }
-
-    private fun getElapsedTimeText(elapsedMs: Long): String {
-        val minutes = elapsedMs / 60L
-        val seconds = elapsedMs % 60L
-        return "$minutes:${seconds.toString().padStart(2, '0')}"
     }
 
     private fun startTimer() {

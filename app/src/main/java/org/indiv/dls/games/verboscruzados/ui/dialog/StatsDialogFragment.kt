@@ -12,6 +12,8 @@ import org.indiv.dls.games.verboscruzados.util.GamePersistenceImpl
 import org.indiv.dls.games.verboscruzados.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.model.IrregularityCategory
+import org.indiv.dls.games.verboscruzados.util.IdGenerator
+import org.indiv.dls.games.verboscruzados.util.PersistenceConversions
 
 /**
  * Dialog for showing game stats.
@@ -63,7 +65,7 @@ class StatsDialogFragment : AppCompatDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = FragmentStatsDialogBinding.inflate(LayoutInflater.from(context))
 
-        val dialog = AlertDialog.Builder(activity!!)
+        val dialog = AlertDialog.Builder(requireContext())
                 .setTitle(R.string.dialog_stats_heading)
                 .setNeutralButton(R.string.action_showgameoptions) { _, _ -> showGameOptionsListener?.invoke() }
                 .setPositiveButton(R.string.dialog_ok) { _, _ -> }
@@ -71,8 +73,8 @@ class StatsDialogFragment : AppCompatDialogFragment() {
                 .create()
 
         // fill in stats
-        val persistenceHelper = GamePersistenceImpl(activity!!)
-        val statsMap = persistenceHelper.allGameStats
+        val gamePersistence = GamePersistenceImpl(requireContext(), PersistenceConversions(IdGenerator))
+        val statsMap = gamePersistence.allGameStats
                 .mapKeys { getCoordinates(it.key) }
 
         val statsGraphicView: StatsGraphicView = binding.statsDialogGraphic
@@ -81,11 +83,5 @@ class StatsDialogFragment : AppCompatDialogFragment() {
         return dialog
     }
 
-    //endregion
-
-    //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
-    //endregion
-
-    //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
     //endregion
 }

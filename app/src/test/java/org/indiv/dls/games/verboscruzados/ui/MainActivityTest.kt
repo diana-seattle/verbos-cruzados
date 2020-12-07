@@ -8,6 +8,7 @@ import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.indiv.dls.games.verboscruzados.R
 import org.indiv.dls.games.verboscruzados.model.GameWord
+import org.indiv.dls.games.verboscruzados.model.PuzzleWordPresentation
 
 import org.junit.Assert.*
 import org.junit.Rule
@@ -21,11 +22,13 @@ class MainActivityTest {
 
     @get:Rule var activityScenarioRule = activityScenarioRule<MainActivity>()
 
+    //region TESTS ---------------------------------------------------------------------------------
+
     @Test fun testOnCreate() {
         activityScenarioRule.scenario.onActivity { activity ->
-            assertTrue(activity.viewModel.currentGameWords.isNotEmpty())
-            assertNotNull(activity.viewModel.currentGameWord.value)
-            assertNotNull(activity.viewModel.currentGameWord.hasActiveObservers())
+            assertTrue(activity.viewModel.wordCount > 0)
+            assertNotNull(activity.viewModel.selectedPuzzleWord.value)
+            assertNotNull(activity.viewModel.selectedPuzzleWord.hasActiveObservers())
             assertNotNull(activity.viewModel.gameStartOrLoadEvent.hasActiveObservers())
             assertFalse(activity.viewModel.showingErrors)
             assertTrue(activity.viewModel.showOnboardingMessage)
@@ -39,10 +42,13 @@ class MainActivityTest {
 
     @Test fun testKeyboardInfinitiveButton() {
         activityScenarioRule.scenario.onActivity { activity ->
-            assertNotNull(activity.viewModel.currentGameWord.value)
-            activity.viewModel.currentGameWord.value?.let { gameWord ->
+            assertNotNull(activity.viewModel.selectedPuzzleWord.value)
+            activity.viewModel.selectedPuzzleWord.value?.let { selectedWord ->
+                val userEntry = getUserEntry(activity, selectedWord)
+                assertNotNull(userEntry)
+
                 // Verify current game word has no user text
-                gameWord.userEntry.forEachIndexed { index, letter ->
+                userEntry?.forEachIndexed { index, letter ->
                     assertEquals(GameWord.BLANK, letter)
                 }
 
@@ -50,9 +56,9 @@ class MainActivityTest {
                 onView(withId(R.id.keyboard_button_infinitive)).perform(click())
 
                 // Verify current game word has the infinitive text
-                gameWord.userEntry.forEachIndexed { index, letter ->
-                    val expectedLetter = if (index < gameWord.infinitive.length)
-                        gameWord.infinitive.get(index) else GameWord.BLANK
+                userEntry?.forEachIndexed { index, letter ->
+                    val expectedLetter = if (index < selectedWord.infinitive.length)
+                        selectedWord.infinitive.get(index) else GameWord.BLANK
                     assertEquals(expectedLetter, letter)
                 }
             }
@@ -61,21 +67,21 @@ class MainActivityTest {
 
     @Test fun testKeyboarNextButton() {
         activityScenarioRule.scenario.onActivity { activity ->
-            assertNotNull(activity.viewModel.currentGameWord.value)
-            activity.viewModel.currentGameWord.value?.let { gameWord ->
+            assertNotNull(activity.viewModel.selectedPuzzleWord.value)
+            activity.viewModel.selectedPuzzleWord.value?.let { gameWord ->
                 // Verify initial selection starts in the top left corner and goes across
-                assertEquals(0, gameWord.row)
-                assertEquals(0, gameWord.col)
+                assertEquals(0, gameWord.startingRow)
+                assertEquals(0, gameWord.startingCol)
                 assertTrue(gameWord.isAcross)
 
-                if (activity.viewModel.currentGameWords.size > 1) {
+                if (activity.viewModel.wordCount > 1) {
                     // Click on the keyboard's "next" button
                     onView(withId(R.id.button_next_word)).perform(click())
 
                     // Verify new game word has been selected and is vertical.
-                    assertNotNull(activity.viewModel.currentGameWord.value)
-                    activity.viewModel.currentGameWord.value?.let { newGameWord ->
-                        assertEquals(0, newGameWord.row)
+                    assertNotNull(activity.viewModel.selectedPuzzleWord.value)
+                    activity.viewModel.selectedPuzzleWord.value?.let { newGameWord ->
+                        assertEquals(0, newGameWord.startingRow)
                         assertFalse(newGameWord.isAcross)
                     }
                 }
@@ -85,10 +91,13 @@ class MainActivityTest {
 
     @Test fun testKeyboardLetterButtons() {
         activityScenarioRule.scenario.onActivity { activity ->
-            assertNotNull(activity.viewModel.currentGameWord.value)
-            activity.viewModel.currentGameWord.value?.let { gameWord ->
+            assertNotNull(activity.viewModel.selectedPuzzleWord.value)
+            activity.viewModel.selectedPuzzleWord.value?.let { selectedWord ->
+                val userEntry = getUserEntry(activity, selectedWord)
+                assertNotNull(userEntry)
+
                 // Verify current game word has no user text
-                gameWord.userEntry.forEachIndexed { index, letter ->
+                userEntry?.forEachIndexed { index, letter ->
                     assertEquals(GameWord.BLANK, letter)
                 }
 
@@ -96,7 +105,7 @@ class MainActivityTest {
                 assertEquals(0, activity.viewModel.charIndexOfSelectedCell)
 
                 // All game words will be longer than one character, but check to be safe
-                if (gameWord.word.length > 1) {
+                if (selectedWord.word.length > 1) {
 
                     val letterButtonMap = mapOf(R.id.button_a to 'a', R.id.button_b to 'b', R.id.button_c to 'c',
                             R.id.button_d to 'd', R.id.button_e to 'e', R.id.button_f to 'f', R.id.button_g to 'g',
@@ -114,7 +123,7 @@ class MainActivityTest {
                         onView(withId(it.key)).perform(click())
 
                         // Verify current game word has the new text
-                        assertEquals(it.value, gameWord.userEntry[0])
+                        assertEquals(it.value, userEntry?.get(0))
 
                         // Verify selection has moved to the next letter
                         assertEquals(1, activity.viewModel.charIndexOfSelectedCell)
@@ -127,4 +136,14 @@ class MainActivityTest {
             }
         }
     }
+
+    //endregion
+
+    //region PRIVATE FUNCTION ----------------------------------------------------------------------
+
+    fun getUserEntry(activity: MainActivity, puzzleWord: PuzzleWordPresentation): CharArray? {
+        return activity.viewModel.gameWordMap[puzzleWord.id]?.userEntry
+    }
+
+    //endregion
 }

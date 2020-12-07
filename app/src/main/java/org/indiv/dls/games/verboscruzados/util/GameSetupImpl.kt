@@ -29,7 +29,7 @@ import kotlin.random.Random
 /**
  * Handles process of setting up a game.
  */
-open class GameSetupImpl(val resources: Resources) : MainActivityViewModel.GameSetup {
+open class GameSetupImpl(val resources: Resources, val idGenerator: IdGenerator) : MainActivityViewModel.GameSetup {
 
     companion object {
         private val USTED_PRONOUN = "Usted"
@@ -66,9 +66,9 @@ open class GameSetupImpl(val resources: Resources) : MainActivityViewModel.GameS
 
     override fun doWordsFitInGrid(gameWords: List<GameWord>, gridWidth: Int, gridHeight: Int): Boolean {
         gameWords.forEach {
-            if ((it.row >= gridHeight || it.col >= gridWidth) ||
-                    (it.isAcross && it.col + it.word.length > gridWidth) ||
-                    (!it.isAcross && it.row + it.word.length > gridHeight)) {
+            if ((it.startingRow >= gridHeight || it.startingCol >= gridWidth) ||
+                    (it.isAcross && it.startingCol + it.answer.length > gridWidth) ||
+                    (!it.isAcross && it.startingRow + it.answer.length > gridHeight)) {
                 return false
             }
         }
@@ -83,9 +83,9 @@ open class GameSetupImpl(val resources: Resources) : MainActivityViewModel.GameS
      * Adds existing game word to layout.
      */
     private fun addToGrid(gameWord: GameWord, cellGrid: Array<Array<GridCell?>>) {
-        var row = gameWord.row
-        var col = gameWord.col
-        val word = gameWord.word
+        var row = gameWord.startingRow
+        var col = gameWord.startingCol
+        val word = gameWord.answer
         val userEntry = gameWord.userEntry
         val wordLength = word.length
         var charIndex = 0
@@ -96,12 +96,12 @@ open class GameSetupImpl(val resources: Resources) : MainActivityViewModel.GameS
             cellGrid[row][col]!!.apply {
                 val userEntryChar = userEntry[charIndex]
                 if (gameWord.isAcross) {
-                    gameWordAcross = gameWord
+                    gameWordIdAcross = gameWord.id
                     userCharAcross = userEntryChar
                     acrossCharIndex = charIndex
                     col++
                 } else {
-                    gameWordDown = gameWord
+                    gameWordIdDown = gameWord.id
                     userCharDown = userEntryChar
                     downCharIndex = charIndex
                     row++
@@ -174,15 +174,24 @@ open class GameSetupImpl(val resources: Resources) : MainActivityViewModel.GameS
 
     private fun createGameWord(wordCandidate: WordCandidate, row: Int, col: Int, isAcross: Boolean): GameWord {
         // Conjugated verb can be duplicate between imperative and subjunctive or between sentar and sentir.
-        val uniqueKey = "${wordCandidate.infinitive}|${wordCandidate.conjugationType.name}|${wordCandidate.subjectPronoun?.name
-                ?: "na"}"
+        val persistenceKey = "${wordCandidate.infinitive}|${wordCandidate.conjugationType.name}|${wordCandidate.subjectPronoun?.name ?: "na"}"
         val conjugationTypeLabel = resources.getString(wordCandidate.conjugationType.textResId)
         val isImperative = wordCandidate.conjugationType == ConjugationType.IMPERATIVE
         val subjectPronounLabel = wordCandidate.subjectPronoun?.let { getPronounText(it, isImperative) }.orEmpty()
         val statsIndex = StatsDialogFragment.createStatsIndex(wordCandidate.conjugationType,
                 wordCandidate.infinitiveEnding, wordCandidate.irregularityCategory)
-        return GameWord(uniqueKey, wordCandidate.word, conjugationTypeLabel, subjectPronounLabel,
-                wordCandidate.infinitive, wordCandidate.translation, statsIndex, row, col, isAcross)
+        return GameWord(
+                id = idGenerator.generateId(),
+                persistenceKey = persistenceKey,
+                answer = wordCandidate.word,
+                conjugationTypeLabel = conjugationTypeLabel,
+                subjectPronounLabel = subjectPronounLabel,
+                infinitive = wordCandidate.infinitive,
+                translation = wordCandidate.translation,
+                statsIndex = statsIndex,
+                startingRow = row,
+                startingCol = col,
+                isAcross = isAcross)
     }
 
     private fun getPronounText(subjectPronoun: SubjectPronoun, isImperative: Boolean): String {
@@ -356,26 +365,26 @@ open class GameSetupImpl(val resources: Resources) : MainActivityViewModel.GameS
 
         // Place each word into character grid.
         val gameWords = ArrayList<GameWord>()
-        var across = true
-        var firstWord = true
+        var isAcross = true
+        var isFirstWord = true
         var lastGaspEffortTaken = false
         var i = 0
         while (i < sortedCandidates.size) {
-            val word = sortedCandidates[i]
-            val gameWord = placeInGrid(cellGrid, gameWords, word, across, firstWord)
+            val wordCandidate = sortedCandidates[i]
+            val placedGameWord = placeWordCandidateInGrid(cellGrid, gameWords, wordCandidate, isAcross, isFirstWord)
 
-            if (gameWord != null) {
-                gameWords.add(gameWord)
+            if (placedGameWord != null) {
+                gameWords.add(placedGameWord)
                 sortedCandidates.removeAt(i) // remove used word from list of available words
                 i = -1 // start over at beginning of list for next word
-                across = !across
-                firstWord = false
+                isAcross = !isAcross
+                isFirstWord = false
                 lastGaspEffortTaken = false // since we found a word, continue on
             } else {
                 // if we're about to give up, make one last effort with opposite direction
                 if (!lastGaspEffortTaken && i == sortedCandidates.size - 1) {
                     lastGaspEffortTaken = true
-                    across = !across
+                    isAcross = !isAcross
                     i = -1
                 }
             }
@@ -384,45 +393,48 @@ open class GameSetupImpl(val resources: Resources) : MainActivityViewModel.GameS
         return gameWords
     }
 
-    private fun placeInGrid(cellGrid: Array<Array<GridCell?>>,
-                            gameWords: List<GameWord>,
-                            wordCandidate: WordCandidate,
-                            across: Boolean,
-                            firstWord: Boolean): GameWord? {
-        var gameWord: GameWord? = null
+    /**
+     * Attempts to place the word candidate into the puzzle. Returns the resulting game word if successful, null otherwise.
+     */
+    private fun placeWordCandidateInGrid(cellGrid: Array<Array<GridCell?>>,
+                                         alreadyPlacedGameWords: List<GameWord>,
+                                         wordCandidate: WordCandidate,
+                                         isAcross: Boolean,
+                                         isFirstWord: Boolean): GameWord? {
+        var newlyPlacedGameWord: GameWord? = null
         val word = wordCandidate.word
         val wordLength = word.length
         var locationFound = false
         var row = 0
         var col = 0
-        val lastPositionTried = wordCandidate.getLastPositionTried(across)
+        val lastPositionTried = wordCandidate.getLastPositionTried(isAcross)
 
-        if (firstWord) {
-            if (isLocationValid(cellGrid, word, row, col, across, firstWord)) {
+        if (isFirstWord) {
+            if (isLocationValid(cellGrid, word, row, col, isAcross, isFirstWord)) {
                 locationFound = true
             }
-            wordCandidate.setLastPositionTried(across, 0)
+            wordCandidate.setLastPositionTried(isAcross, 0)
         } else {
             // traverse list of lain down words backwards
-            var iGW = gameWords.size - 1
-            while (iGW > lastPositionTried && !locationFound) {
-                val gw = gameWords[iGW]
-                if (gw.isAcross != across) {
+            var indexOfGameWord = alreadyPlacedGameWords.size - 1
+            while (indexOfGameWord > lastPositionTried && !locationFound) {
+                val gameWord = alreadyPlacedGameWords[indexOfGameWord]
+                if (gameWord.isAcross != isAcross) {
                     // traverse letters of lain down word backwards
-                    var iChar = gw.word.length - 1
+                    var iChar = gameWord.answer.length - 1
                     while (iChar >= 0 && !locationFound) {
-                        val c = gw.word[iChar]
+                        val c = gameWord.answer[iChar]
                         // find first instance of character in word we're trying to place
                         var indexOfChar = word.indexOf(c)
                         while (indexOfChar != -1) {
-                            if (gw.isAcross) {
-                                col = gw.col + iChar // determine column purely from already lain down word
-                                row = gw.row - indexOfChar // offset row by position in word we're laying down
+                            if (gameWord.isAcross) {
+                                col = gameWord.startingCol + iChar // determine column purely from already lain down word
+                                row = gameWord.startingRow - indexOfChar // offset row by position in word we're laying down
                             } else {
-                                row = gw.row + iChar // determine row purely from already lain down word
-                                col = gw.col - indexOfChar // offset col by position in word we're laying down
+                                row = gameWord.startingRow + iChar // determine row purely from already lain down word
+                                col = gameWord.startingCol - indexOfChar // offset col by position in word we're laying down
                             }
-                            if (isLocationValid(cellGrid, word, row, col, across, firstWord)) {
+                            if (isLocationValid(cellGrid, word, row, col, isAcross, isFirstWord)) {
                                 locationFound = true
                                 break
                             }
@@ -435,17 +447,17 @@ open class GameSetupImpl(val resources: Resources) : MainActivityViewModel.GameS
                         iChar--
                     }
                 }
-                iGW--
+                indexOfGameWord--
             }
-            wordCandidate.setLastPositionTried(across, gameWords.size - 1)
+            wordCandidate.setLastPositionTried(isAcross, alreadyPlacedGameWords.size - 1)
         }
 
         if (locationFound) {
-            gameWord = createGameWord(wordCandidate, row, col, across)
-            addToGrid(gameWord, cellGrid)
+            newlyPlacedGameWord = createGameWord(wordCandidate, row, col, isAcross)
+            addToGrid(newlyPlacedGameWord, cellGrid)
         }
 
-        return gameWord
+        return newlyPlacedGameWord
     }
 
     private fun isLocationValid(cellGrid: Array<Array<GridCell?>>,
@@ -479,9 +491,9 @@ open class GameSetupImpl(val resources: Resources) : MainActivityViewModel.GameS
         while (charIndex < wordLength) {
             cellGrid[row][col]?.let {
                 // if characters match
-                if (it.char == word[charIndex]) {
+                if (it.answerChar == word[charIndex]) {
                     // if other word is in the same direction, return false
-                    if (across && it.gameWordAcross != null || !across && it.gameWordDown != null) {
+                    if (across && it.gameWordIdAcross != null || !across && it.gameWordIdDown != null) {
                         return false
                     }
                     crossingFound = true // at least one crossing with another word has been found

@@ -13,6 +13,8 @@ import org.indiv.dls.games.verboscruzados.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.model.IrregularityCategory
 import org.indiv.dls.games.verboscruzados.model.SubjectPronoun
+import org.indiv.dls.games.verboscruzados.util.IdGenerator
+import org.indiv.dls.games.verboscruzados.util.PersistenceConversions
 
 /**
  * Dialog for selecting game options.
@@ -29,6 +31,8 @@ class GameOptionsDialogFragment : AppCompatDialogFragment() {
 
     private lateinit var binding: FragmentGameOptionsDialogBinding
 
+    private lateinit var gamePersistence: GamePersistenceImpl
+
     private val checkboxMap = mutableMapOf<String, CheckBox>()
 
     //endregion
@@ -38,8 +42,10 @@ class GameOptionsDialogFragment : AppCompatDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = FragmentGameOptionsDialogBinding.inflate(LayoutInflater.from(context))
 
+        gamePersistence = GamePersistenceImpl(requireContext(), PersistenceConversions(IdGenerator))
+
         // wrap activity with ContextThemeWrapper to get better dialog styling
-        val dialog = AlertDialog.Builder(activity!!)
+        val dialog = AlertDialog.Builder(requireContext())
                 .setNeutralButton(R.string.dialog_options_newgame) { _, _ ->
                     saveOptions()
                     startNewGameListener?.invoke()
@@ -83,14 +89,10 @@ class GameOptionsDialogFragment : AppCompatDialogFragment() {
 
     //endregion
 
-    //region PUBLIC FUNCTIONS ----------------------------------------------------------------------
-    //endregion
-
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
     private fun initializeOptions() {
-        val persistenceHelper = GamePersistenceImpl(activity!!)
-        val optionMap = persistenceHelper.currentGameOptions
+        val optionMap = gamePersistence.currentGameOptions
 
         // Initialize checkboxes to checked or not based on persisted preferences
         checkboxMap.keys.forEach {
@@ -104,8 +106,7 @@ class GameOptionsDialogFragment : AppCompatDialogFragment() {
             optionMap[it] = checkboxMap[it]?.isChecked ?: false
         }
 
-        val persistenceHelper = GamePersistenceImpl(activity!!)
-        persistenceHelper.currentGameOptions = optionMap
+        gamePersistence.currentGameOptions = optionMap
     }
 
     //endregion

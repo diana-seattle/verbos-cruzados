@@ -15,8 +15,8 @@ import org.indiv.dls.games.verboscruzados.MainActivityViewModel
 import org.indiv.dls.games.verboscruzados.MainActivityViewModelFactory
 import org.indiv.dls.games.verboscruzados.ui.component.PuzzleCellTextView
 import org.indiv.dls.games.verboscruzados.databinding.FragmentPuzzleBinding
-import org.indiv.dls.games.verboscruzados.model.GameWord
 import org.indiv.dls.games.verboscruzados.model.GridCell
+import org.indiv.dls.games.verboscruzados.model.PuzzleWordPresentation
 
 
 /**
@@ -34,7 +34,7 @@ class PuzzleFragment : Fragment() {
 
     private lateinit var vibration: Vibration
 
-    @VisibleForTesting var gameWordLastSelected: GameWord? = null
+    @VisibleForTesting var puzzleWordLastSelected: PuzzleWordPresentation? = null
 
     private var gameInitialized = false;
 
@@ -48,18 +48,26 @@ class PuzzleFragment : Fragment() {
         getCellForView(v)?.let { gridCell ->
             vibration.vibrate()
 
-            // If clicked-on cell is part of the already selected word, let it remain the selected word, otherwise
-            // choose the vertical word if exists, otherwise the horizontal word.
-            val newGameWord = viewModel.currentGameWord.value?.takeIf {
-                it == gridCell.gameWordDown || it == gridCell.gameWordAcross
-            } ?: gridCell.gameWordDown ?: gridCell.gameWordAcross
+            // If clicked-on cell is part of the already selected word, let it remain the selected word.
+            val (newPuzzleWordId, isAcross) = viewModel.selectedPuzzleWord.value?.takeIf { current ->
+                current.id == gridCell.gameWordIdDown || current.id == gridCell.gameWordIdAcross
+            }?.let { current ->
+                (current.id to current.isAcross)
+            } ?: run {
+                // A different word was clicked on.
 
-            newGameWord?.let {
-                val charIndexOfSelectedCell = if (it.isAcross) gridCell.acrossCharIndex else gridCell.downCharIndex
-
-                // This will cause us to be notified, which will take care of showing word and cell as selected
-                viewModel.selectNewGameWord(newGameWord, charIndexOfSelectedCell)
+                // Choose the vertical word if exists, otherwise the horizontal word.
+                val newPuzzleWordId = gridCell.gameWordIdDown ?: gridCell.gameWordIdAcross
+                val newWordIsAcross = newPuzzleWordId == gridCell.gameWordIdAcross
+                (newPuzzleWordId to newWordIsAcross)
             }
+
+            // This will trigger notifications, which will take care of showing word and individual cell as selected.
+            // (The main activity needs this too even if same word, e.g. to reshow the keyboard if it has been dismissed.)
+            viewModel.selectNewGameWord(
+                    gameWordId = newPuzzleWordId,
+                    charIndexOfSelectedCell = if (isAcross) gridCell.acrossCharIndex else gridCell.downCharIndex
+            )
         }
     }
 
@@ -88,16 +96,16 @@ class PuzzleFragment : Fragment() {
         viewModel = ViewModelProvider(requireActivity(), MainActivityViewModelFactory(requireActivity()))
                 .get(MainActivityViewModel::class.java)
 
-        viewModel.currentGameWord.observe(viewLifecycleOwner) { gameWord ->
+        viewModel.selectedPuzzleWord.observe(viewLifecycleOwner) { puzzleWord ->
             if (gameInitialized) {
                 // deselect word that currently has selection, if any
-                gameWordLastSelected?.let { showAsSelected(it, false) }
+                puzzleWordLastSelected?.let { showAsSelected(it, false) }
 
                 // select new word if any
-                gameWord?.let { showAsSelected(it, true) }
+                puzzleWord?.let { showAsSelected(it, true) }
 
                 // Remember last selected so we can deselect it later.
-                gameWordLastSelected = gameWord
+                puzzleWordLastSelected = puzzleWord
             }
         }
 
@@ -126,7 +134,7 @@ class PuzzleFragment : Fragment() {
         }
         viewByPositionMap.clear()
         positionOfViewMap.clear()
-        gameWordLastSelected = null
+        puzzleWordLastSelected = null
         gameInitialized = false
     }
 
@@ -137,12 +145,12 @@ class PuzzleFragment : Fragment() {
 
         // add views into table rows and columns
         val activityContext = requireContext()
-        var firstGameWord: GameWord? = null
+        var firstPuzzleWordId: String? = null
         for (row in 0 until viewModel.gridHeight) {
             val tableRow = binding.cellTableLayout.getChildAt(row) as TableRow
             tableRow.removeAllViews()
             for (col in 0 until viewModel.gridWidth) {
-                viewModel.cellGrid[row][col]?.let {
+                viewModel.cellGrid[row][col]?.let { cell ->
                     // create text view for this row and column
                     val textView = PuzzleCellTextView(activityContext)
                     textView.setOnClickListener(onPuzzleClickListener)
@@ -152,11 +160,11 @@ class PuzzleFragment : Fragment() {
                     viewByPositionMap[position] = textView
                     positionOfViewMap[textView] = position
 
-                    fillTextView(it, textView)
+                    fillTextView(cell, textView)
 
                     // set current game word to the first across word found
-                    if (firstGameWord == null) {
-                        firstGameWord = it.gameWordAcross ?: it.gameWordDown
+                    if (firstPuzzleWordId == null) {
+                        firstPuzzleWordId = cell.gameWordIdAcross ?: cell.gameWordIdDown
                     }
                 } ?: run {
                     tableRow.addView(View(activityContext), col)
@@ -167,16 +175,14 @@ class PuzzleFragment : Fragment() {
 
         // If a game word is selected already, this represents a config change. Reselect the same word so we can observe
         // it and update the views accordingly.
-        viewModel.currentGameWord.value?.let {
-            viewModel.selectNewGameWord(it)
+        viewModel.selectedPuzzleWord.value?.let {
+            viewModel.selectNewGameWord(it.id)
         } ?: run {
             // Otherwise, no selection has been made yet. Choose a word in this priority:
-            // 1. Select first word with empty cells if any
-            // 2. Select first word with errored cells if any
-            // 3. Select first word (this can happen if user returns to a finished game)
-            if (!viewModel.selectNextGameWord(0, 0, true)
-                    && !viewModel.selectNextGameWord(0, 0, false)) {
-                viewModel.selectNewGameWord(firstGameWord)
+            // 1. Select first word with empty or errored cells if any
+            // 2. Select first word (this can happen if user returns to a finished game)
+            if (!viewModel.selectNextGameWordFavoringIncomplete()) {
+                viewModel.selectNewGameWord(firstPuzzleWordId)
             }
         }
     }
@@ -192,8 +198,8 @@ class PuzzleFragment : Fragment() {
             for (col in 0 until viewModel.gridWidth) {
                 // if cell is part of currently selected game word, adjust the level to set the background color
                 viewModel.cellGrid[row][col]?.let { cell ->
-                    val isSelected = viewModel.currentGameWord.value?.let {
-                        it == cell.gameWordAcross || it == cell.gameWordDown
+                    val isSelected = viewModel.selectedPuzzleWord.value?.let {
+                        it.id == cell.gameWordIdAcross || it.id == cell.gameWordIdDown
                     } ?: false
 
                     viewByPositionMap[Position(row, col)]?.setStyle(isSelected, indicateError = showErrors && cell.hasUserError)
@@ -203,58 +209,43 @@ class PuzzleFragment : Fragment() {
     }
 
     /**
-     * @param correctly true if puzzle considered complete when everything filled in correctly, false if puzzle
-     * considered complete when everything filled in regardless of correctness.
-     * @return true if puzzle is completely filled in.
+     * Fills in the entire selected word with the specified text.
      */
-    fun isPuzzleComplete(correctly: Boolean): Boolean {
-        for (row in 0 until viewModel.gridHeight) {
-            for (col in 0 until viewModel.gridWidth) {
-                val gridCell = viewModel.cellGrid[row][col]
-                if (gridCell != null) {
-                    // if cell is empty, then not complete
-                    if (gridCell.userChar == GameWord.BLANK || correctly && gridCell.hasUserError) {
-                        return false
-                    }
+    fun refreshTextOfSelectedWord() {
+        viewModel.selectedPuzzleWord.value?.let { puzzleWord ->
+            // show answer in puzzle
+            var row = puzzleWord.startingRow
+            var col = puzzleWord.startingCol
+            for (charIndex in 0 until puzzleWord.word.length) {
+                viewModel.cellGrid[row][col]?.let {
+                    fillTextView(it, viewByPositionMap[Position(row, col)])
+                    if (puzzleWord.isAcross) col++ else row++
                 }
             }
+            showAsSelected(puzzleWord, true)
         }
-        return true
     }
 
     /**
-     * Fills in the entire word with the specified text.
+     * Updates letter in the selected cell of the puzzle.
      */
-    fun updateTextInPuzzleWord(userText: String) {
-        viewModel.currentGameWord.value?.let {
-            it.setUserText(userText.take(it.word.length))
-            updateUserEntryInPuzzle(it)
-            viewModel.charIndexOfSelectedCell = it.defaultSelectionIndex
-            showAsSelected(it, true)
-        }
-    }
-
-    fun deleteLetterInPuzzle(): GameWord? {
-        return updateLetterInPuzzle(GameWord.BLANK)
-    }
-
-    fun updateLetterInPuzzle(userChar: Char): GameWord? {
-        viewModel.currentGameWord.value?.let {
-            it.userEntry[viewModel.charIndexOfSelectedCell] = userChar
-            val row = if (it.isAcross) it.row else it.row + viewModel.charIndexOfSelectedCell
-            val col = if (it.isAcross) it.col + viewModel.charIndexOfSelectedCell else it.col
-            return updateUserLetterInPuzzle(userChar, it.isAcross, row, col)
-        }
-        return null
-    }
-
-    fun advanceSelectedCellInPuzzle(backwardDirection: Boolean) {
-        viewModel.currentGameWord.value?.let {
-            viewModel.charIndexOfSelectedCell = if (backwardDirection) {
-                (viewModel.charIndexOfSelectedCell - 1).coerceAtLeast(0)
-            } else {
-                (viewModel.charIndexOfSelectedCell + 1).coerceAtMost(it.word.length - 1)
+    fun refreshCharOfSelectedCell() {
+        viewModel.selectedPuzzleWord.value?.let { puzzleWord ->
+            val row = if (puzzleWord.isAcross)
+                puzzleWord.startingRow else puzzleWord.startingRow + viewModel.charIndexOfSelectedCell
+            val col = if (puzzleWord.isAcross)
+                puzzleWord.startingCol + viewModel.charIndexOfSelectedCell else puzzleWord.startingCol
+            viewModel.cellGrid[row][col]?.let { cell ->
+                fillTextView(cell, viewByPositionMap[Position(row, col)])
             }
+        }
+    }
+
+    /**
+     * Re-displays currently selected word with appropriate cell selection and style.
+     */
+    fun refreshStyleOfSelectedWord() {
+        viewModel.selectedPuzzleWord.value?.let {
             showAsSelected(it, true)
         }
     }
@@ -264,77 +255,15 @@ class PuzzleFragment : Fragment() {
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
     /**
-     * Fills in the puzzle with the user's answer for the specified game word.
-     */
-    private fun updateUserEntryInPuzzle(gameWord: GameWord) {
-        // show answer in puzzle
-        val userEntry = gameWord.userEntry
-        val wordLength = gameWord.word.length
-        val isAcross = gameWord.isAcross
-        var row = gameWord.row
-        var col = gameWord.col
-        for (charIndex in 0 until wordLength) {
-            viewModel.cellGrid[row][col]?.let {
-                val userChar = userEntry[charIndex]
-                val position = Position(row, col)
-                if (isAcross) {
-                    it.userCharAcross = userChar
-                    col++
-                } else {
-                    it.userCharDown = userChar
-                    row++
-                }
-                fillTextView(it, viewByPositionMap[position])
-            }
-        }
-    }
-
-    /**
-     * Fills in the puzzle with the user's letter for the specified position.
-     *
-     * @return word in opposing direction that had conflict and was updated if any, otherwise null
-     */
-    private fun updateUserLetterInPuzzle(userChar: Char, isAcross: Boolean, row: Int, col: Int): GameWord? {
-        var conflictingGameWord: GameWord? = null
-        viewModel.cellGrid[row][col]?.let { cell ->
-            if (isAcross) {
-                val inConflict = cell.userCharDown != GameWord.BLANK && userChar != cell.userCharDown
-                cell.userCharAcross = userChar
-                if (inConflict) {
-                    cell.userCharDown = userChar
-                    val index = cell.downCharIndex
-                    conflictingGameWord = cell.gameWordDown
-                    conflictingGameWord?.let {
-                        it.userEntry[index] = userChar
-                    }
-                }
-            } else {
-                val inConflict = cell.userCharAcross != GameWord.BLANK && userChar != cell.userCharAcross
-                cell.userCharDown = userChar
-                if (inConflict) {
-                    cell.userCharAcross = userChar
-                    val index = cell.acrossCharIndex
-                    conflictingGameWord = cell.gameWordAcross
-                    conflictingGameWord?.let {
-                        it.userEntry[index] = userChar
-                    }
-                }
-            }
-            fillTextView(cell, viewByPositionMap[Position(row, col)])
-        }
-        return conflictingGameWord
-    }
-
-    /**
      * Shows the specified word as selected (yellow highlight), or not selected.
      *
-     * @param gameWord word to show as selected or unselected.
+     * @param puzzleWord word to show as selected or unselected.
      * @param asSelected true if word should be shown as selected, false if unselected.
      */
-    private fun showAsSelected(gameWord: GameWord?, asSelected: Boolean) {
-        gameWord?.let {
-            var row = it.row
-            var col = it.col
+    private fun showAsSelected(puzzleWord: PuzzleWordPresentation?, asSelected: Boolean) {
+        puzzleWord?.let {
+            var row = it.startingRow
+            var col = it.startingCol
             for (i in it.word.indices) {
                 val textView = viewByPositionMap[Position(row, col)]
                 if (asSelected && i == viewModel.charIndexOfSelectedCell) {

@@ -6,26 +6,28 @@ import java.util.UUID
 interface TestUtils {
 
     fun createGameWord(
-            uniqueKey: String = UUID.randomUUID().toString(),
+            id: String = UUID.randomUUID().toString(),
+            persistenceKey: String = UUID.randomUUID().toString(),
             word: String = "hablo",
             conjugationTypeLabel: String = "Present tense of",
             subjectPronounLabel: String = "Yo",
             infinitive: String = "hablar",
             translation: String = "speak",
             statsIndex: Int = 0,
-            row: Int = 0,
-            col: Int = 0,
+            startingRow: Int = 0,
+            startingCol: Int = 0,
             isAcross: Boolean = true): GameWord {
         return GameWord(
-                uniqueKey = uniqueKey,
-                word = word,
+                id = id,
+                persistenceKey = persistenceKey,
+                answer = word,
                 conjugationTypeLabel = conjugationTypeLabel,
                 subjectPronounLabel = subjectPronounLabel,
                 infinitive = infinitive,
                 translation = translation,
                 statsIndex = statsIndex,
-                row = row,
-                col = col,
+                startingRow = startingRow,
+                startingCol = startingCol,
                 isAcross = isAcross
         )
     }

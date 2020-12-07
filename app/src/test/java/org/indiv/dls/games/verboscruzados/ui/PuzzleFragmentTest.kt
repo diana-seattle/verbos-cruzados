@@ -3,9 +3,10 @@ package org.indiv.dls.games.verboscruzados.ui
 import android.os.Build
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 import org.junit.runner.RunWith
@@ -22,29 +23,28 @@ class PuzzleFragmentTest {
             // Observe when the game is set up
             fragment.viewModel.gameStartOrLoadEvent.observe(fragment.viewLifecycleOwner) {
                 // Verify game is set up and first word of puzzle is selected
-                Assert.assertTrue(fragment.viewModel.currentGameWords.isNotEmpty())
-                Assert.assertNotNull(fragment.viewModel.currentGameWord.value)
+                assertTrue(fragment.viewModel.wordCount > 0)
+                assertNotNull(fragment.viewModel.selectedPuzzleWord.value)
+                val initialWordSelection = fragment.viewModel.selectedPuzzleWord.value
 
                 // Set up puzzle in the fragment
                 fragment.createGridViewsAndSelectWord()
 
                 // Verify first word is still selected
-                Assert.assertNotNull(fragment.viewModel.currentGameWord.value)
+                assertEquals(initialWordSelection, fragment.viewModel.selectedPuzzleWord.value)
 
-                if (fragment.viewModel.currentGameWords.size > 1) {
-                    fragment.viewModel.currentGameWord.value?.let { gameWord ->
+                fragment.viewModel.selectedPuzzleWord.value?.let { initialWord ->
 
-                        // Select the next game word
-                        fragment.viewModel.selectNextGameWord(gameWord.row, gameWord.col, false)
+                    // Select the next game word
+                    fragment.viewModel.selectNextGameWord(initialWord.startingRow, initialWord.startingCol, false)
 
-                        // Verify newly selected game word
-                        Assert.assertNotNull(fragment.viewModel.currentGameWord.value)
-                        val newlySelected = fragment.viewModel.currentGameWord.value!!
-                        assertNotEquals(newlySelected, gameWord)
+                    // Verify newly selected game word
+                    assertNotNull(fragment.viewModel.selectedPuzzleWord.value)
+                    val newlySelected = fragment.viewModel.selectedPuzzleWord.value!!
+                    assertNotEquals(newlySelected, initialWord)
 
-                        // Verify fragment notified of selection change.
-                        assertEquals(newlySelected, fragment.gameWordLastSelected)
-                    }
+                    // Verify fragment notified of selection change.
+                    assertEquals(newlySelected, fragment.puzzleWordLastSelected)
                 }
             }
         }
