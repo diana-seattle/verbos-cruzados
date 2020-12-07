@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.res.Resources
 import android.util.DisplayMetrics
 import android.util.TypedValue
-import org.indiv.dls.games.verboscruzados.MainActivityViewModel
+import org.indiv.dls.games.verboscruzados.viewmodel.MainActivityViewModel
 import org.indiv.dls.games.verboscruzados.R
 import kotlin.math.roundToInt
 

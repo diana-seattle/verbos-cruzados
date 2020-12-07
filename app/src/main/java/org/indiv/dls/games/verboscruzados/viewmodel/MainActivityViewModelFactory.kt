@@ -1,4 +1,4 @@
-package org.indiv.dls.games.verboscruzados
+package org.indiv.dls.games.verboscruzados.viewmodel
 
 import android.app.Activity
 import androidx.lifecycle.ViewModel

@@ -1,6 +1,6 @@
 package org.indiv.dls.games.verboscruzados.util
 
-import org.indiv.dls.games.verboscruzados.MainActivityViewModel
+import org.indiv.dls.games.verboscruzados.viewmodel.MainActivityViewModel
 import org.indiv.dls.games.verboscruzados.model.AnswerPresentation
 import org.indiv.dls.games.verboscruzados.model.GameWord
 import org.indiv.dls.games.verboscruzados.model.PuzzleWordPresentation

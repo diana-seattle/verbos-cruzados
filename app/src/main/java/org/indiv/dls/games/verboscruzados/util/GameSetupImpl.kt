@@ -2,7 +2,7 @@ package org.indiv.dls.games.verboscruzados.util
 
 import android.content.res.Resources
 import org.indiv.dls.games.verboscruzados.model.GridCell
-import org.indiv.dls.games.verboscruzados.MainActivityViewModel
+import org.indiv.dls.games.verboscruzados.viewmodel.MainActivityViewModel
 import org.indiv.dls.games.verboscruzados.conjugation.conjugatorMap
 import org.indiv.dls.games.verboscruzados.ui.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.model.GameWord

@@ -3,7 +3,7 @@ package org.indiv.dls.games.verboscruzados.util
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import org.indiv.dls.games.verboscruzados.MainActivityViewModel
+import org.indiv.dls.games.verboscruzados.viewmodel.MainActivityViewModel
 import org.indiv.dls.games.verboscruzados.model.ConjugationType
 import org.indiv.dls.games.verboscruzados.model.GameWord
 import org.indiv.dls.games.verboscruzados.model.InfinitiveEnding

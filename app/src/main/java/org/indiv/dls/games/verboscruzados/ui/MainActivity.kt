@@ -18,8 +18,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import org.indiv.dls.games.verboscruzados.BuildConfig
-import org.indiv.dls.games.verboscruzados.MainActivityViewModel
-import org.indiv.dls.games.verboscruzados.MainActivityViewModelFactory
+import org.indiv.dls.games.verboscruzados.viewmodel.MainActivityViewModel
+import org.indiv.dls.games.verboscruzados.viewmodel.MainActivityViewModelFactory
 import org.indiv.dls.games.verboscruzados.R
 import org.indiv.dls.games.verboscruzados.databinding.ActivityMainBinding
 import org.indiv.dls.games.verboscruzados.ui.dialog.GameOptionsDialogFragment

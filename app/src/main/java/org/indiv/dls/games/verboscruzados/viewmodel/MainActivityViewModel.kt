@@ -1,4 +1,4 @@
-package org.indiv.dls.games.verboscruzados
+package org.indiv.dls.games.verboscruzados.viewmodel
 
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData

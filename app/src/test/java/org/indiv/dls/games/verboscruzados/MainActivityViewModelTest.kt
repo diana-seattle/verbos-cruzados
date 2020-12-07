@@ -7,6 +7,8 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.indiv.dls.games.verboscruzados.model.AnswerPresentation
 import org.indiv.dls.games.verboscruzados.model.GridCell
 import org.indiv.dls.games.verboscruzados.model.PuzzleWordPresentation
+import org.indiv.dls.games.verboscruzados.viewmodel.MainActivityViewModel
+import org.indiv.dls.games.verboscruzados.viewmodel.MainActivityViewModelFactory
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
