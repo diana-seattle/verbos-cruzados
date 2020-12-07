@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runBlockingTest
+import org.indiv.dls.games.verboscruzados.model.AnswerPresentation
 import org.indiv.dls.games.verboscruzados.model.GridCell
 import org.indiv.dls.games.verboscruzados.model.PuzzleWordPresentation
 import org.junit.Assert.assertEquals
@@ -51,7 +52,7 @@ class MainActivityViewModelTest : TestUtils {
         assertEquals(gridWidth, viewModel.cellGrid[0].size)
     }
 
-    @Test fun testCurrentGameWordLiveData() {
+    @Test fun testSelectedPuzzleWordLiveData() {
         // Observe changes
         var wordReceived: PuzzleWordPresentation? = null
         viewModel.selectedPuzzleWord.observeForever {
@@ -68,6 +69,27 @@ class MainActivityViewModelTest : TestUtils {
         listOf(null, gameWord, null).forEach {
             viewModel.selectNewGameWord(it?.id)
             assertEquals(it?.id, wordReceived?.id)
+            assertEquals(it?.defaultSelectionIndex ?: 0, viewModel.charIndexOfSelectedCell)
+        }
+    }
+
+    @Test fun testAnswerPresentationLiveData() {
+        // Observe changes
+        var answerPresentationReceived: AnswerPresentation? = null
+        viewModel.answerPresentation.observeForever {
+            answerPresentationReceived = it
+        }
+
+        // Create game of one word
+        val gameWord = createGameWord()
+        viewModel.gameWordMap = mapOf(gameWord.id to gameWord)
+        whenever(gameWordConversions.toAnswerPresentation(gameWord))
+                .thenReturn(createAnswerPresentation(infinitive = gameWord.infinitive))
+
+        // Trigger LiveData events and verify received.
+        listOf(null, gameWord, null).forEach {
+            viewModel.selectNewGameWord(it?.id)
+            assertEquals(it?.infinitive, answerPresentationReceived?.infinitive)
             assertEquals(it?.defaultSelectionIndex ?: 0, viewModel.charIndexOfSelectedCell)
         }
     }

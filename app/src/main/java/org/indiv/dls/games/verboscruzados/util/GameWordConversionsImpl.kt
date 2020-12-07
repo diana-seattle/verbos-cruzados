@@ -9,8 +9,7 @@ class GameWordConversionsImpl : MainActivityViewModel.GameWordConversions {
 
     override fun toAnswerPresentation(gameWord: GameWord): AnswerPresentation {
         return AnswerPresentation(
-                word = gameWord.answer,
-                across = gameWord.isAcross,
+                isAcross = gameWord.isAcross,
                 conjugationTypeLabel = gameWord.conjugationTypeLabel,
                 subjectPronounLabel = gameWord.subjectPronounLabel,
                 infinitive = gameWord.infinitive,

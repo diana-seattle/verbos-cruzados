@@ -155,8 +155,8 @@ open class MinimalKeyboard @JvmOverloads constructor(context: Context,
                 binding.keyboardTranslation.text = "($translation)"
                 binding.keyboardSubjectPronounLabel.text = subjectPronounLabel
                 binding.keyboardSubjectPronounLabel.visibility = if (subjectPronounLabel.isEmpty()) GONE else VISIBLE
-                binding.buttonLeftArrow.setImageDrawable(if (across) backwardArrowDrawable else upArrowDrawable)
-                binding.buttonRightArrow.setImageDrawable(if (across) forwardArrowDrawable else downwardArrowDrawable)
+                binding.buttonLeftArrow.setImageDrawable(if (isAcross) backwardArrowDrawable else upArrowDrawable)
+                binding.buttonRightArrow.setImageDrawable(if (isAcross) forwardArrowDrawable else downwardArrowDrawable)
             }
         }
 

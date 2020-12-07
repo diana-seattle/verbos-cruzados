@@ -1,5 +1,6 @@
 package org.indiv.dls.games.verboscruzados
 
+import org.indiv.dls.games.verboscruzados.model.AnswerPresentation
 import org.indiv.dls.games.verboscruzados.model.GameWord
 import org.indiv.dls.games.verboscruzados.model.PuzzleWordPresentation
 import java.util.UUID
@@ -46,6 +47,21 @@ interface TestUtils {
                 infinitive = infinitive,
                 startingRow = startingRow,
                 startingCol = startingCol,
+                isAcross = isAcross
+        )
+    }
+
+    fun createAnswerPresentation(
+            conjugationTypeLabel: String = "Present tense of",
+            subjectPronounLabel: String = "Yo",
+            infinitive: String = "hablar",
+            translation: String = "speak",
+            isAcross: Boolean = true): AnswerPresentation {
+        return AnswerPresentation(
+                conjugationTypeLabel = conjugationTypeLabel,
+                subjectPronounLabel = subjectPronounLabel,
+                infinitive = infinitive,
+                translation = translation,
                 isAcross = isAcross
         )
     }

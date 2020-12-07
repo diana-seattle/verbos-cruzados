@@ -131,8 +131,8 @@ class MainActivity : AppCompatActivity() {
             // This is a special debug-build-only hack that allows the developer/tester to complete a game immediately.
             binding.toolbar.setOnLongClickListener { _ ->
                 do {
-                    viewModel.answerPresentation.value?.let {
-                        viewModel.updateTextOfSelectedWord(it.word)
+                    viewModel.selectedPuzzleWord.value?.let {
+                        viewModel.updateTextOfSelectedWord(it.answer)
                         puzzleFragment.refreshTextOfSelectedWord()
                         onAnswerChanged()
                     }
