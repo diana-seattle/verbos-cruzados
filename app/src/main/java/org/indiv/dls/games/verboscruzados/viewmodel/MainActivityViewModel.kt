@@ -188,7 +188,6 @@ class MainActivityViewModel(
         gamePersistence.elapsedSeconds = elapsedSecondsSnapshot
     }
 
-
     /**
      * Persists user's change to the full text of their entry for a game word.
      */
@@ -267,7 +266,7 @@ class MainActivityViewModel(
         }
     }
 
-    fun advanceSelectedCellInPuzzle(inBackwardDirection: Boolean) {
+    fun advanceSelectedCellWithinWord(inBackwardDirection: Boolean) {
         selectedPuzzleWord.value?.let {
             charIndexOfSelectedCell = if (inBackwardDirection) {
                 (charIndexOfSelectedCell - 1).coerceAtLeast(0)

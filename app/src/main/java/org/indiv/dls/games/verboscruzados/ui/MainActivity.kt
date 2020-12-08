@@ -232,18 +232,18 @@ class MainActivity : AppCompatActivity() {
             viewModel.updateCharOfSelectedCell(char)
             puzzleFragment.refreshCharOfSelectedCell()
 
-            viewModel.advanceSelectedCellInPuzzle(inBackwardDirection = false)
+            viewModel.advanceSelectedCellWithinWord(inBackwardDirection = false)
             puzzleFragment.refreshStyleOfSelectedWord()
             scrollWordIntoView()
             onAnswerChanged()
         }
         binding.answerKeyboard.leftClickListener = {
-            viewModel.advanceSelectedCellInPuzzle(inBackwardDirection = true)
+            viewModel.advanceSelectedCellWithinWord(inBackwardDirection = true)
             puzzleFragment.refreshStyleOfSelectedWord()
             scrollWordIntoView()
         }
         binding.answerKeyboard.rightClickListener = {
-            viewModel.advanceSelectedCellInPuzzle(inBackwardDirection = false)
+            viewModel.advanceSelectedCellWithinWord(inBackwardDirection = false)
             puzzleFragment.refreshStyleOfSelectedWord()
             scrollWordIntoView()
         }

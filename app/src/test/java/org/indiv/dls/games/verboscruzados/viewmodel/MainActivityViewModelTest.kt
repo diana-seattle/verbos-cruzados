@@ -6,6 +6,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runBlockingTest
 import org.indiv.dls.games.verboscruzados.TestUtils
 import org.indiv.dls.games.verboscruzados.model.AnswerPresentation
+import org.indiv.dls.games.verboscruzados.model.GameWord
 import org.indiv.dls.games.verboscruzados.model.GridCell
 import org.indiv.dls.games.verboscruzados.model.PuzzleWordPresentation
 import org.junit.Assert.assertEquals
@@ -17,6 +18,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when` as whenever
 import org.mockito.MockitoAnnotations
@@ -34,8 +36,8 @@ class MainActivityViewModelTest : TestUtils {
 
     private lateinit var viewModel: MainActivityViewModel
 
-    private val gridWidth = 5
-    private val gridHeight = 7
+    private val gridWidth = 20
+    private val gridHeight = 30
 
     @Before fun setUp() {
         MockitoAnnotations.initMocks(this)
@@ -250,11 +252,7 @@ class MainActivityViewModelTest : TestUtils {
 
     @Test fun testClearGame() {
         // Setup a minimal 1-word game
-        val gameWord = createGameWord()
-        viewModel.gameWordMap = mapOf(gameWord.id to gameWord)
-        viewModel.selectNewGameWord(gameWord.id)
-        viewModel.charIndexOfSelectedCell = 0
-        viewModel.cellGrid[0][0] = GridCell(answerChar = 'h')
+        setupMinimal2WordGame()
 
         // WHEN call made
         viewModel.clearGame()
@@ -269,15 +267,58 @@ class MainActivityViewModelTest : TestUtils {
         }
     }
 
+    @Test fun testUpdateTextOfSelectedWord_textTooLong() {
+        val (gameWordAcross, _) = setupMinimal2WordGame()
+
+        val tooLongText = "z".repeat(gameWordAcross.answer.length + 1)
+
+        // WHEN call made
+        viewModel.updateTextOfSelectedWord(tooLongText)
+
+        // verify truncated updates made in word
+        verifyUserEntry(tooLongText.take(gameWordAcross.answer.length), gameWordAcross)
+        verify(gamePersistence).persistUserEntry(gameWordAcross)
+    }
+
+    @Test fun testUpdateTextOfSelectedWord_textFallsShort() {
+        val (gameWordAcross, _) = setupMinimal2WordGame()
+
+        // Fill word initially
+        val tooLongText = "z".repeat(gameWordAcross.answer.length)
+        viewModel.updateTextOfSelectedWord(tooLongText)
+
+        val tooShortText = "a"
+
+        // WHEN call made
+        viewModel.updateTextOfSelectedWord(tooShortText)
+
+        // verify updates made in word, with cells at end cleared
+        verifyUserEntry(tooShortText, gameWordAcross)
+        verify(gamePersistence, times(2)).persistUserEntry(gameWordAcross)
+    }
+
+    @Test fun testUpdateCharOfSelectedCell_intersectingCell() {
+        val (gameWordAcross, gameWordDown) = setupMinimal2WordGame()
+
+        // Update first chars of horizontal word, verify chars updated
+        viewModel.updateCharOfSelectedCell('a')
+        viewModel.charIndexOfSelectedCell++
+        viewModel.updateCharOfSelectedCell('b')
+        verifyUserEntry("ab", gameWordAcross)
+
+        // Select vertical word, update intersecting cell with conflicting value, verify both words updated.
+        viewModel.selectNewGameWord(gameWordDown.id, 0)
+        viewModel.updateCharOfSelectedCell('z')
+        verifyUserEntry("z", gameWordDown)
+        verifyUserEntry("zb", gameWordAcross)
+
+        // Verify first word persisted 3 times, second word only once.
+        verify(gamePersistence, times(3)).persistUserEntry(gameWordAcross)
+        verify(gamePersistence).persistUserEntry(gameWordDown)
+    }
+
     @Test fun testPersistUserEntry() {
-        // Setup a minimal 1-word game
-        val gameWord = createGameWord(startingRow = 0, startingCol = 0, isAcross = true)
-        viewModel.gameWordMap = mapOf(gameWord.id to gameWord)
-        viewModel.selectNewGameWord(gameWord.id)
-        viewModel.charIndexOfSelectedCell = 0
-        viewModel.cellGrid[0][0] = GridCell(answerChar = 'h').apply {
-            gameWordIdAcross = gameWord.id
-        }
+        val (gameWordAcross, _) = setupMinimal2WordGame()
 
         // WHEN call made
         val newChar = 'z'
@@ -285,7 +326,7 @@ class MainActivityViewModelTest : TestUtils {
 
         // verify updates made in game
         assertEquals(newChar, viewModel.cellGrid[0][0]?.userCharAcross)
-        verify(gamePersistence).persistUserEntry(gameWord)
+        verify(gamePersistence).persistUserEntry(gameWordAcross)
     }
 
     @Test fun testPersistGameStatistics() {
@@ -344,6 +385,59 @@ class MainActivityViewModelTest : TestUtils {
 
         // Verify expected scroll position returned.
         assertEquals(expectedScrollPosition, result)
+    }
+
+    //endregion
+
+    //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
+
+    /**
+     * Sets up a minimal game with a horizontal and vertical word, both starting at position 0,0.
+     *
+     * @return the list of 2 game words.
+     */
+    private fun setupMinimal2WordGame(): Pair<GameWord, GameWord> {
+        // Setup a minimal 1-word game
+        val gameWordAcross = createGameWord(startingRow = 0, startingCol = 0, isAcross = true)
+        val gameWordDown = createGameWord(startingRow = 0, startingCol = 0, isAcross = false)
+        viewModel.gameWordMap = mapOf(gameWordAcross.id to gameWordAcross, gameWordDown.id to gameWordDown)
+        viewModel.selectNewGameWord(gameWordAcross.id)
+        viewModel.charIndexOfSelectedCell = 0
+
+        // Add grid cells going across (first cell will be the intersecting cell containin the vertical word too)
+        gameWordAcross.answer.forEachIndexed { index, ch ->
+            viewModel.cellGrid[0][index] = GridCell(answerChar = ch).apply {
+                gameWordIdAcross = gameWordAcross.id
+                acrossCharIndex = index
+                if (index == 0) {
+                    gameWordIdDown = gameWordDown.id
+                    downCharIndex = index
+                }
+            }
+        }
+        // Add grid cells going down for the vertical word (minus the first one added above).
+        gameWordDown.answer.forEachIndexed { index, ch ->
+            if (index > 0) {
+                viewModel.cellGrid[index][0] = GridCell(answerChar = ch).apply {
+                    gameWordIdDown = gameWordDown.id
+                    downCharIndex = index
+                }
+            }
+        }
+
+        return Pair(gameWordAcross, gameWordDown)
+    }
+
+    private fun verifyUserEntry(expectedText: String, gameWord: GameWord) {
+        gameWord.userEntry.forEachIndexed { i, ch ->
+            val expectedChar = if (i < expectedText.length) expectedText[i] else GameWord.BLANK
+            assertEquals(expectedChar, ch)
+            if (gameWord.isAcross) {
+                assertEquals(expectedChar, viewModel.cellGrid[gameWord.startingRow][gameWord.startingCol + i]?.userCharAcross)
+            } else {
+                assertEquals(expectedChar, viewModel.cellGrid[gameWord.startingRow + i][gameWord.startingCol]?.userCharDown)
+            }
+        }
     }
 
     //endregion
