@@ -44,8 +44,10 @@ import org.indiv.dls.games.verboscruzados.util.ImageSelecter
  * https://www.e-spanyol.hu/en/grammar/irregular_ar.php
  */
 
+// TODO: incorporate hilt/dagger
+// TODO: move more logic out of MainActivity and PuzzleFragment
+// TODO: move some logic out of the view model into dependencies
 // TODO: more tests
-// TODO: hilt/dagger
 // TODO: troubleshoot tablet pixel C api 30 emulator
 // TODO: fix on foldables
 
