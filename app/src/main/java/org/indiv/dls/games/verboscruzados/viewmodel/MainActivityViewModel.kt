@@ -23,6 +23,53 @@ class MainActivityViewModel(
         private val gameWordConversions: GameWordConversions
 ) : ViewModel() {
 
+    //region INTERFACES ----------------------------------------------------------------------------
+
+    /*
+     Based on Robert C. Martin's "Clean Architecture" book, dependencies are "pluggable" via interfaces.
+     */
+
+    interface ScreenMetrics {
+        val keyboardHeight: Float
+        val gridHeight: Int
+        val gridWidth: Int
+
+        /**
+         * Returns new scroll position to maximize position a game word, and especially the selected character of the word.
+         *
+         * @param startingRow row of first character of the selected game word.
+         * @param endingRow row of last character of the selected game word.
+         * @param rowOfSelectedCell row of the selected character within the selected game word.
+         * @param currentScrollPosition current scroll position of the game.
+         */
+        fun newScrollPositionShowingFullWord(startingRow: Int, endingRow: Int, rowOfSelectedCell: Int, currentScrollPosition: Int): Int?
+    }
+
+    interface GameSetup {
+        fun newGame(cellGrid: Array<Array<GridCell?>>, gameOptions: Map<String, Boolean>): List<GameWord>
+        fun addToGrid(gameWords: List<GameWord>, cellGrid: Array<Array<GridCell?>>)
+        fun doWordsFitInGrid(gameWords: List<GameWord>, gridWidth: Int, gridHeight: Int): Boolean
+    }
+
+    interface GamePersistence {
+        var currentGameWords: List<GameWord>
+        var currentGameCompleted: Boolean
+        var currentImageIndex: Int
+        var elapsedSeconds: Long
+        var currentGameOptions: Map<String, Boolean>
+        val allGameStats: Map<Int, Int>
+
+        fun persistUserEntry(gameWord: GameWord)
+        fun persistGameStats(gameWords: List<GameWord>)
+    }
+
+    interface GameWordConversions {
+        fun toAnswerPresentation(gameWord: GameWord): AnswerPresentation
+        fun toPuzzleWordPresentation(gameWord: GameWord): PuzzleWordPresentation
+    }
+
+    //endregion
+
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
     companion object {
@@ -483,49 +530,6 @@ class MainActivityViewModel(
     //endregion
 
     //region INNER CLASSES -------------------------------------------------------------------------
-
-    /*
-     Based on Robert C. Martin's "Clean Architecture" book, have all dependencies be "pluggable" via interfaces.
-     */
-
-    interface ScreenMetrics {
-        val keyboardHeight: Float
-        val gridHeight: Int
-        val gridWidth: Int
-
-        /**
-         * Returns new scroll position to maximize position a game word, and especially the selected character of the word.
-         *
-         * @param startingRow row of first character of the selected game word.
-         * @param endingRow row of last character of the selected game word.
-         * @param rowOfSelectedCell row of the selected character within the selected game word.
-         * @param currentScrollPosition current scroll position of the game.
-         */
-        fun newScrollPositionShowingFullWord(startingRow: Int, endingRow: Int, rowOfSelectedCell: Int, currentScrollPosition: Int): Int?
-    }
-
-    interface GameSetup {
-        fun newGame(cellGrid: Array<Array<GridCell?>>, gameOptions: Map<String, Boolean>): List<GameWord>
-        fun addToGrid(gameWords: List<GameWord>, cellGrid: Array<Array<GridCell?>>)
-        fun doWordsFitInGrid(gameWords: List<GameWord>, gridWidth: Int, gridHeight: Int): Boolean
-    }
-
-    interface GamePersistence {
-        var currentGameWords: List<GameWord>
-        var currentGameCompleted: Boolean
-        var currentImageIndex: Int
-        var elapsedSeconds: Long
-        var currentGameOptions: Map<String, Boolean>
-        val allGameStats: Map<Int, Int>
-
-        fun persistUserEntry(gameWord: GameWord)
-        fun persistGameStats(gameWords: List<GameWord>)
-    }
-
-    interface GameWordConversions {
-        fun toAnswerPresentation(gameWord: GameWord): AnswerPresentation
-        fun toPuzzleWordPresentation(gameWord: GameWord): PuzzleWordPresentation
-    }
 
     enum class GameEvent {
         CREATED,
