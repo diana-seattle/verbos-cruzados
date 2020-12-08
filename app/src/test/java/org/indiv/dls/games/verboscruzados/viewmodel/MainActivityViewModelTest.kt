@@ -10,6 +10,7 @@ import org.indiv.dls.games.verboscruzados.model.GameWord
 import org.indiv.dls.games.verboscruzados.model.GridCell
 import org.indiv.dls.games.verboscruzados.model.PuzzleWordPresentation
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -329,11 +330,96 @@ class MainActivityViewModelTest : TestUtils {
         verify(gamePersistence).persistUserEntry(gameWordAcross)
     }
 
+    @Test fun testAdvanceSelectedCellWithinWord() {
+        val (gameWordAcross, _) = setupMinimal2WordGame()
+        assertEquals(0, viewModel.charIndexOfSelectedCell)
+
+        // Verify we can't go backwards from zero
+        viewModel.advanceSelectedCellWithinWord(inBackwardDirection = true)
+        assertEquals(0, viewModel.charIndexOfSelectedCell)
+
+        // Verify we can go forwards up to the end of the word
+        gameWordAcross.answer.indices.forEach { i ->
+            viewModel.advanceSelectedCellWithinWord(inBackwardDirection = false)
+            val expectedCellIndex = if (i < gameWordAcross.answer.length - 1) i + 1 else i
+            assertEquals(expectedCellIndex, viewModel.charIndexOfSelectedCell)
+        }
+
+        // Verify we can go back again
+        val currentIndex = viewModel.charIndexOfSelectedCell
+        viewModel.advanceSelectedCellWithinWord(inBackwardDirection = true)
+        assertEquals(currentIndex - 1, viewModel.charIndexOfSelectedCell)
+    }
+
+    @Test fun testIsPuzzleComplete() {
+        // Set up game, and verify incomplete
+        val (gameWordAcross, gameWordDown) = setupMinimal2WordGame()
+        assertFalse(viewModel.isPuzzleComplete(correctly = true))
+        assertFalse(viewModel.isPuzzleComplete(correctly = false))
+        assertFalse(viewModel.isCurrentGameWordAnsweredCompletelyAndCorrectly())
+
+        // Add a letter, and verify incomplete
+        viewModel.updateCharOfSelectedCell('z')
+        assertFalse(viewModel.isPuzzleComplete(correctly = true))
+        assertFalse(viewModel.isPuzzleComplete(correctly = false))
+        assertFalse(viewModel.isCurrentGameWordAnsweredCompletelyAndCorrectly())
+
+        // Fill the puzzle with incorrect text, and verify complete with correctly=false
+        val wrongCompleteAnswer = "z".repeat(20)
+        viewModel.updateTextOfSelectedWord(wrongCompleteAnswer)
+        assertFalse(viewModel.isCurrentGameWordAnsweredCompletelyAndCorrectly())
+        assertTrue(viewModel.selectNextGameWordWithWrapAround(false))
+        viewModel.updateTextOfSelectedWord(wrongCompleteAnswer)
+        assertFalse(viewModel.isCurrentGameWordAnsweredCompletelyAndCorrectly())
+        assertFalse(viewModel.isPuzzleComplete(correctly = true))
+        assertTrue(viewModel.isPuzzleComplete(correctly = false))
+
+        // Fill the puzzle with correct text, and verify complete
+        viewModel.updateTextOfSelectedWord(gameWordDown.answer)
+        assertTrue(viewModel.isCurrentGameWordAnsweredCompletelyAndCorrectly())
+        assertTrue(viewModel.selectNextGameWordWithWrapAround(false))
+        viewModel.updateTextOfSelectedWord(gameWordAcross.answer)
+        assertTrue(viewModel.isCurrentGameWordAnsweredCompletelyAndCorrectly())
+        assertTrue(viewModel.isPuzzleComplete(correctly = true))
+        assertTrue(viewModel.isPuzzleComplete(correctly = false))
+    }
+
+    @Test fun testCalculateCompletionRate() {
+        val (_, _) = setupMinimal2WordGame()
+
+        // Initialize elapsed time
+        val elapsedSeconds = 70L
+        whenever(gamePersistence.elapsedSeconds).thenReturn(elapsedSeconds)
+        assertEquals(elapsedSeconds, viewModel.persistedElapsedSeconds)
+        assertEquals(elapsedSeconds, viewModel.elapsedSecondsSnapshot)
+
+        val expectedResult = (2 * 60).toFloat() / elapsedSeconds
+
+        // WHEN call made
+        val result = viewModel.calculateCompletionRate()
+
+        // verify result
+        assertEquals(expectedResult, result)
+    }
+
+    @Test fun testGetElapsedTimeText() {
+        assertEquals("0:00", viewModel.getElapsedTimeText(0))
+        assertEquals("0:04", viewModel.getElapsedTimeText(4))
+        assertEquals("0:50", viewModel.getElapsedTimeText(50))
+        assertEquals("1:04", viewModel.getElapsedTimeText(64))
+        assertEquals("1:11", viewModel.getElapsedTimeText(71))
+        assertEquals("11:01", viewModel.getElapsedTimeText(661))
+    }
+
     @Test fun testPersistGameStatistics() {
         // WHEN call made
         viewModel.persistGameStatistics()
 
         verify(gamePersistence).persistGameStats(viewModel.gameWordMap.values.toList())
+    }
+
+    @Test fun testSelectNextGameWordFavoringIncomplete() {
+        //todo
     }
 
     @Test fun testSelectNextGameWordAndWrapAround() {

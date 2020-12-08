@@ -267,7 +267,7 @@ class MainActivityViewModel(
     }
 
     fun advanceSelectedCellWithinWord(inBackwardDirection: Boolean) {
-        selectedPuzzleWord.value?.let {
+        currentGameWord.value?.let {
             charIndexOfSelectedCell = if (inBackwardDirection) {
                 (charIndexOfSelectedCell - 1).coerceAtLeast(0)
             } else {
@@ -316,7 +316,7 @@ class MainActivityViewModel(
     fun getElapsedTimeText(elapsedMs: Long): String {
         val minutes = elapsedMs / 60L
         val seconds = elapsedMs % 60L
-        return "$minutes:${seconds.toString().padStart(2, '0')}"
+        return "%d:%02d".format(minutes, seconds)
     }
 
     /**
@@ -361,8 +361,9 @@ class MainActivityViewModel(
      */
     fun selectNextGameWord(startingRow: Int, startingCol: Int, havingEmptyCells: Boolean): Boolean {
         // If current word is vertical and starts on starting cell, do NOT select the horizontal word starting on that cell
-        // or we'll end up circularly going back and forth between the vertical and horizontal on that cell.
-        val currentWordIsVerticalAndStartsOnStartingPosition = currentGameWord.value?.let {
+        // or we'll end up circularly going back and forth between the vertical and horizontal on that cell. Unless that's
+        // what we want because there are only 2 words in the game.
+        val currentWordIsVerticalAndStartsOnStartingPosition = wordCount > 2 && currentGameWord.value?.let {
             !it.isAcross && it.startingRow == startingRow && it.startingCol == startingCol
         } ?: false
 

@@ -19,6 +19,8 @@ class MainActivityViewModelFactory(private val screenMetrics: MainActivityViewMo
                                    private val gameWordConversions: MainActivityViewModel.GameWordConversions,
 ) : ViewModelProvider.Factory {
 
+    // TODO: incorporate Hilt/Dagger
+
     // View controllers will use this secondary constructor. Unit tests can use the primary constructor above.
     constructor(activity: Activity) : this(
             ScreenMetricsImpl(activity),
