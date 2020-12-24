@@ -348,15 +348,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setPuzzleBackgroundImage(imageIndex: Int) {
-        // If night mode, override the specified image with the nighttime image.
-        val imageResourceId = if (isNightMode()) {
-            R.drawable.scene_night
-        } else {
-            ImageSelecter.instance.getImageResId(imageIndex)
-        }
-
+        val imageResourceId = ImageSelecter.instance.getImageResId(imageIndex)
         ResourcesCompat.getDrawable(resources, imageResourceId, null)?.let {
             binding.mainActivityContainerLayout.background = it
+
+            // If night mode, set a low alpha
+            binding.mainActivityContainerLayout.background.alpha = if (isNightMode()) 20 else 255
         }
         viewModel.currentImageIndex = imageIndex
     }
