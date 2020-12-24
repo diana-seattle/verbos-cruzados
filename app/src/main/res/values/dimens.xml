@@ -34,8 +34,9 @@
     <dimen name="keyboard_height">204dp</dimen>
 
     <!-- give lots of room so user can scroll puzzle to see photo -->
-    <dimen name="puzzle_bottom_padding">660dp</dimen>
+    <dimen name="puzzle_bottom_padding">760dp</dimen>
 
+    <dimen name="keyboard_next_size">@dimen/large_fixed</dimen>
     <dimen name="keyboard_letter_size">22dp</dimen>
     <dimen name="keyboard_infinitive_size">@dimen/large_fixed</dimen>
 
