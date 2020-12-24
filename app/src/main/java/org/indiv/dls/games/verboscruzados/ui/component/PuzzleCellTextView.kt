@@ -8,6 +8,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import androidx.appcompat.widget.AppCompatTextView
 import org.indiv.dls.games.verboscruzados.R
+import org.indiv.dls.games.verboscruzados.util.extensions.isInNightMode
 import kotlin.math.roundToInt
 
 
@@ -22,6 +23,7 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
     //region PRIVATE PROPERTIES --------------------------------------------------------------------
 
     private val fontColorBlack: Int = ResourcesCompat.getColor(resources, R.color.soft_black, null)
+    private val fontColorWhite: Int = ResourcesCompat.getColor(resources, R.color.soft_white, null)
     private val fontColorRed: Int = Color.RED
     private val size = resources.getDimension(R.dimen.cell_width).roundToInt()
     private val fontHeight = size * FONT_SIZE_FRACTION
@@ -40,7 +42,9 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
         background = ResourcesCompat.getDrawable(resources, R.drawable.cell_drawable, null)
         width = size
         height = size
-        background.level = CELL_BKGD_LEVEL_NORMAL // default to normal text cell background (i.e. no error indication)
+
+        // default to normal text cell background (i.e. no error indication)
+        background.level = if (isNightMode()) CELL_BKGD_LEVEL_DARK else CELL_BKGD_LEVEL_LIGHT
     }
 
     //endregion
@@ -50,12 +54,13 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
     companion object {
         private const val FONT_SIZE_FRACTION = .82f
 
-        private const val CELL_BKGD_LEVEL_NORMAL = 1
+        private const val CELL_BKGD_LEVEL_LIGHT = 1
         private const val CELL_BKGD_LEVEL_ERRORED = 2
         private const val CELL_BKGD_LEVEL_SELECTED = 3
         private const val CELL_BKGD_LEVEL_ERRORED_SELECTED = 4
         private const val CELL_BKGD_LEVEL_SELECTED_INDIV = 5 // Individual cell selected within selected word
         private const val CELL_BKGD_LEVEL_ERRORED_SELECTED_INDIV = 6
+        private const val CELL_BKGD_LEVEL_DARK = 7
 
         private val ERRORED_BACKGROUND_LEVELS = listOf(CELL_BKGD_LEVEL_ERRORED,
                 CELL_BKGD_LEVEL_ERRORED_SELECTED,
@@ -92,10 +97,10 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
             indicateError && !isSelected -> CELL_BKGD_LEVEL_ERRORED
             !indicateError && isSelected && individuallySelected -> CELL_BKGD_LEVEL_SELECTED_INDIV
             !indicateError && isSelected && !individuallySelected -> CELL_BKGD_LEVEL_SELECTED
-            else -> CELL_BKGD_LEVEL_NORMAL
+            isNightMode() -> CELL_BKGD_LEVEL_DARK
+            else -> CELL_BKGD_LEVEL_LIGHT
         }
-        val textColor = if (indicateError) fontColorRed else fontColorBlack
-        setTextColor(textColor)
+        setAppropriateTextColor(selected = isSelected, hasError = indicateError)
     }
 
     /**
@@ -107,8 +112,10 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
             selected && showingError -> CELL_BKGD_LEVEL_ERRORED_SELECTED
             selected && !showingError -> CELL_BKGD_LEVEL_SELECTED
             !selected && showingError -> CELL_BKGD_LEVEL_ERRORED
-            else -> CELL_BKGD_LEVEL_NORMAL
+            isNightMode() -> CELL_BKGD_LEVEL_DARK
+            else -> CELL_BKGD_LEVEL_LIGHT
         }
+        setAppropriateTextColor(selected = selected, hasError = showingError)
     }
 
     /**
@@ -123,6 +130,25 @@ open class PuzzleCellTextView @JvmOverloads constructor(context: Context,
             !individuallySelected && showingError -> CELL_BKGD_LEVEL_ERRORED_SELECTED
             else -> CELL_BKGD_LEVEL_SELECTED
         }
+        setAppropriateTextColor(selected = individuallySelected, hasError = showingError)
+    }
+
+    //endregion
+
+    //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
+
+    private fun isNightMode(): Boolean {
+        return resources.isInNightMode()
+    }
+
+    private fun setAppropriateTextColor(selected: Boolean, hasError: Boolean) {
+        val textColor = when {
+            hasError -> fontColorRed
+            selected -> fontColorBlack
+            isNightMode() -> fontColorWhite
+            else -> fontColorBlack
+        }
+        setTextColor(textColor)
     }
 
     //endregion

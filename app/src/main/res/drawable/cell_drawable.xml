@@ -25,4 +25,8 @@
         android:drawable="@drawable/cell_background_errored_selected_indiv"
         android:maxLevel="6"
     />
+    <item
+        android:drawable="@drawable/cell_background_used_night"
+        android:maxLevel="7"
+    />
 </level-list>

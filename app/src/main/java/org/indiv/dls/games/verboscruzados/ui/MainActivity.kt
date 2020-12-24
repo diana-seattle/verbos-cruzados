@@ -25,6 +25,7 @@ import org.indiv.dls.games.verboscruzados.databinding.ActivityMainBinding
 import org.indiv.dls.games.verboscruzados.ui.dialog.GameOptionsDialogFragment
 import org.indiv.dls.games.verboscruzados.ui.dialog.StatsDialogFragment
 import org.indiv.dls.games.verboscruzados.util.ImageSelecter
+import org.indiv.dls.games.verboscruzados.util.extensions.isInNightMode
 
 
 /*
@@ -342,18 +343,13 @@ class MainActivity : AppCompatActivity() {
         viewModel.launchNewGame()
     }
 
-    private fun isNightMode(): Boolean {
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        return currentNightMode == Configuration.UI_MODE_NIGHT_YES
-    }
-
     private fun setPuzzleBackgroundImage(imageIndex: Int) {
         val imageResourceId = ImageSelecter.instance.getImageResId(imageIndex)
         ResourcesCompat.getDrawable(resources, imageResourceId, null)?.let {
             binding.mainActivityContainerLayout.background = it
 
             // If night mode, set a low alpha
-            binding.mainActivityContainerLayout.background.alpha = if (isNightMode()) 20 else 255
+            binding.mainActivityContainerLayout.background.alpha = if (resources.isInNightMode()) 20 else 255
         }
         viewModel.currentImageIndex = imageIndex
     }
