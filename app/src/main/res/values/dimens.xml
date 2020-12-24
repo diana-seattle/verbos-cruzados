@@ -23,6 +23,7 @@
     <dimen name="large_fixed">18dp</dimen>
     <dimen name="x_large_fixed">20dp</dimen>
     <dimen name="xx_large_fixed">24dp</dimen>
+    <dimen name="xxx_large_fixed">28dp</dimen>
 
     <!-- offset for top margin of clue text in the answer fragment -->
     <dimen name="answer_clue_offset">28dp</dimen>
@@ -30,8 +31,8 @@
 
     <dimen name="fab_margin">16dp</dimen>
 
-    <!-- height of bottom margin to allow for scrolling puzzle above keyboard -->
-    <dimen name="keyboard_height">204dp</dimen>
+    <!-- height of keyboard -->
+    <dimen name="keyboard_height">230dp</dimen>
 
     <!-- give lots of room so user can scroll puzzle to see photo -->
     <dimen name="puzzle_bottom_padding">760dp</dimen>

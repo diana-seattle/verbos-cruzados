@@ -15,8 +15,7 @@
 
         <!-- Row for answer presentation and infinitive button -->
         <RelativeLayout android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1.6"
+                        android:layout_height="wrap_content"
                         android:paddingStart="@dimen/half_margin">
 
             <!-- Conjugation type (tense/mood) -->
@@ -49,17 +48,18 @@
                 android:textSize="@dimen/keyboard_next_size"
                 android:textStyle="italic"/>
 
-            <LinearLayout android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:layout_below="@id/keyboard_conjugation_type_label"
-                          android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/keyboard_conjugation_type_label"
+                android:layout_marginTop="1dp"
+                android:orientation="horizontal">
 
-                <!-- Subject pronoun -->
+            <!-- Subject pronoun -->
                 <TextView
                     android:id="@+id/keyboard_subject_pronoun_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
                     android:paddingEnd="3dp"
                     android:textColor="?android:attr/textColorPrimary"
                     android:textSize="@dimen/medium_fixed"/>
@@ -69,14 +69,14 @@
                     android:id="@+id/keyboard_button_infinitive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="2dp"
+                    android:layout_marginBottom="@dimen/quarter_margin"
                     android:layout_marginEnd="1dp"
                     android:layout_marginStart="1dp"
-                    android:layout_marginTop="1dp"
                     android:background="@drawable/keyboard_special_letter_background"
                     android:elevation="2dp"
                     android:foreground="?attr/selectableItemBackgroundBorderless"
-                    android:paddingBottom="2dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="@dimen/quarter_margin"
                     android:paddingEnd="@dimen/half_margin"
                     android:paddingStart="@dimen/half_margin"
                     android:textColor="@color/keyboard_special_letters"
@@ -89,7 +89,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/quarter_margin"
-                    android:layout_marginTop="1dp"
                     android:lines="1"
                     android:textColor="@color/light_gray"
                     android:textSize="@dimen/small_fixed"
