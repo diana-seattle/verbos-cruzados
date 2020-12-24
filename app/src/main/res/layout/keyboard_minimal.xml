@@ -39,10 +39,10 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:paddingBottom="@dimen/default_margin"
-                android:paddingEnd="@dimen/three_quarter_margin"
                 android:paddingStart="@dimen/default_margin"
-                android:paddingTop="@dimen/quarter_margin"
+                android:paddingTop="@dimen/half_margin"
+                android:paddingEnd="@dimen/default_margin"
+                android:paddingBottom="@dimen/default_margin"
                 android:text="@string/keyboard_next"
                 android:textColor="@color/keyboard_special_letters"
                 android:textSize="@dimen/keyboard_next_size"
@@ -55,7 +55,7 @@
                 android:layout_marginTop="1dp"
                 android:orientation="horizontal">
 
-            <!-- Subject pronoun -->
+                <!-- Subject pronoun -->
                 <TextView
                     android:id="@+id/keyboard_subject_pronoun_label"
                     android:layout_width="wrap_content"
