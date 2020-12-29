@@ -348,8 +348,8 @@ class MainActivity : AppCompatActivity() {
         ResourcesCompat.getDrawable(resources, imageResourceId, null)?.let {
             binding.mainActivityContainerLayout.background = it
 
-            // If night mode, set a low alpha
-            binding.mainActivityContainerLayout.background.alpha = if (resources.isInNightMode()) 20 else 255
+            // If night mode, set a low alpha on the background image of the puzzle
+            binding.mainActivityContainerLayout.background.alpha = if (resources.isInNightMode()) 30 else 255
         }
         viewModel.currentImageIndex = imageIndex
     }
