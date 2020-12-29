@@ -349,7 +349,7 @@ class MainActivity : AppCompatActivity() {
             binding.mainActivityContainerLayout.background = it
 
             // If night mode, set a low alpha on the background image of the puzzle
-            binding.mainActivityContainerLayout.background.alpha = if (resources.isInNightMode()) 30 else 255
+            binding.mainActivityContainerLayout.background.alpha = if (resources.isInNightMode()) 100 else 255
         }
         viewModel.currentImageIndex = imageIndex
     }
