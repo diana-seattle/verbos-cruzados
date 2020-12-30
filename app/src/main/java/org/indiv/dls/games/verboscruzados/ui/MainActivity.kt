@@ -2,7 +2,6 @@ package org.indiv.dls.games.verboscruzados.ui
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
-import android.content.res.Configuration
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler

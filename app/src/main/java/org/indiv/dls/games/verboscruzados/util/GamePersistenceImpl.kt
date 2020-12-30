@@ -56,7 +56,7 @@ class GamePersistenceImpl constructor(private val mContext: Context,
                     .edit()
                     .clear()
             for (gameWord in gameWords) {
-                prefsEditor = prefsEditor.putString(gameWord.persistenceKey, toJson(gameWord))
+                prefsEditor = prefsEditor.putString(gameWord.persistenceKey, toPersistableJson(gameWord))
             }
             prefsEditor.apply()
         }
@@ -153,7 +153,7 @@ class GamePersistenceImpl constructor(private val mContext: Context,
     override fun persistUserEntry(gameWord: GameWord) {
         gameWordPrefs
                 .edit()
-                .putString(gameWord.persistenceKey, toJson(gameWord))
+                .putString(gameWord.persistenceKey, toPersistableJson(gameWord))
                 .apply()
     }
 
@@ -181,7 +181,7 @@ class GamePersistenceImpl constructor(private val mContext: Context,
 
     //region PRIVATE FUNCTIONS ---------------------------------------------------------------------
 
-    private fun toJson(gameWord: GameWord): String {
+    private fun toPersistableJson(gameWord: GameWord): String {
         val persistableGameWord = persistenceConversions.toPersistedGameWord(gameWord)
         return gson.toJson(persistableGameWord, PersistedGameWord::class.java)
     }
