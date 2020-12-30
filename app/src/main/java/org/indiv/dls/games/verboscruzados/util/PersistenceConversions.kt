@@ -20,19 +20,19 @@ class PersistenceConversions(private val idGenerator: IdGenerator) {
                 userEntry = gameWord.userEntry)
     }
 
-    fun fromPersistedGameWord(gameWord: PersistedGameWord): GameWord {
+    fun fromPersistedGameWord(persistedGameWord: PersistedGameWord): GameWord {
         return GameWord(
                 id = idGenerator.generateId(),
-                persistenceKey = gameWord.uniqueKey,
-                answer = gameWord.word,
-                conjugationTypeLabel = gameWord.conjugationTypeLabel,
-                subjectPronounLabel = gameWord.subjectPronounLabel,
-                infinitive = gameWord.infinitive,
-                translation = gameWord.translation,
-                statsIndex = gameWord.statsIndex,
-                startingRow = gameWord.row,
-                startingCol = gameWord.col,
-                isAcross = gameWord.isAcross,
-                userEntry = gameWord.userEntry)
+                persistenceKey = persistedGameWord.uniqueKey,
+                answer = persistedGameWord.word,
+                conjugationTypeLabel = persistedGameWord.conjugationTypeLabel,
+                subjectPronounLabel = persistedGameWord.subjectPronounLabel,
+                infinitive = persistedGameWord.infinitive,
+                translation = persistedGameWord.translation,
+                statsIndex = persistedGameWord.statsIndex,
+                startingRow = persistedGameWord.row,
+                startingCol = persistedGameWord.col,
+                isAcross = persistedGameWord.isAcross,
+                userEntry = persistedGameWord.userEntry)
     }
 }

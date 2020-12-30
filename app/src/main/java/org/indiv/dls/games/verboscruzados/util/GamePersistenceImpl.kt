@@ -2,6 +2,7 @@ package org.indiv.dls.games.verboscruzados.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.google.gson.Gson
 import org.indiv.dls.games.verboscruzados.viewmodel.MainActivityViewModel
 import org.indiv.dls.games.verboscruzados.model.ConjugationType
@@ -10,6 +11,7 @@ import org.indiv.dls.games.verboscruzados.model.InfinitiveEnding
 import org.indiv.dls.games.verboscruzados.model.IrregularityCategory
 import org.indiv.dls.games.verboscruzados.model.PersistedGameWord
 import org.indiv.dls.games.verboscruzados.model.SubjectPronoun
+import org.indiv.dls.games.verboscruzados.ui.MainActivity
 import java.lang.Integer.parseInt
 import java.util.ArrayList
 
@@ -23,6 +25,8 @@ class GamePersistenceImpl constructor(private val mContext: Context,
     //region COMPANION OBJECT ----------------------------------------------------------------------
 
     companion object {
+        private val TAG = GamePersistenceImpl::class.java.simpleName
+
         private const val PREFS_GAME_WORDS = "game words"
         private const val PREFS_GAME_WORD_OPTIONS = "game options"
         private const val PREFS_GAME_STATS = "game stats"
@@ -44,12 +48,17 @@ class GamePersistenceImpl constructor(private val mContext: Context,
      */
     override var currentGameWords: List<GameWord>
         get() {
-            val persistedGameWords = ArrayList<PersistedGameWord>()
-            val map: Map<String, *> = gameWordPrefs.all
-            for (key in map.keys) {
-                persistedGameWords.add(gson.fromJson(map[key] as String, PersistedGameWord::class.java))
+            try {
+                val persistedGameWords = ArrayList<PersistedGameWord>()
+                val map: Map<String, *> = gameWordPrefs.all
+                for (key in map.keys) {
+                    persistedGameWords.add(gson.fromJson(map[key] as String, PersistedGameWord::class.java))
+                }
+                return persistedGameWords.map(persistenceConversions::fromPersistedGameWord)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error loading game: ${e.message}")
+                return emptyList()
             }
-            return persistedGameWords.map(persistenceConversions::fromPersistedGameWord)
         }
         set(gameWords) {
             var prefsEditor: SharedPreferences.Editor = gameWordPrefs
