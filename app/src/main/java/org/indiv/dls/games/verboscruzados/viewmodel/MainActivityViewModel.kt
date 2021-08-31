@@ -190,6 +190,7 @@ class MainActivityViewModel(
         // Do with coroutine on worker thread
         viewModelScope.launch(context = Dispatchers.Default) {
             setupNewGame()
+            _gameStartOrLoadEvent.postValue(GameEvent.CREATED)
         }
     }
 
@@ -211,6 +212,7 @@ class MainActivityViewModel(
                     // This will happen if on very first game, or if no saved game (due to an error).
                     showOnboardingMessage = true
                     setupNewGame()
+                    _gameStartOrLoadEvent.postValue(GameEvent.CREATED)
                 }
             }
         }
@@ -487,16 +489,15 @@ class MainActivityViewModel(
     }
 
     /**
-     * Must be called within a coroutine.
+     * Should be called on a worker thread.
      */
-    private suspend fun setupNewGame() {
+    private fun setupNewGame() {
         val gameWords = gameSetup.newGame(cellGrid, gamePersistence.currentGameOptions)
         gamePersistence.currentGameWords = gameWords
         gamePersistence.currentGameCompleted = false
         gamePersistence.elapsedSeconds = 0L
         elapsedSecondsSnapshot = 0L
         createGameWordMap(gameWords)
-        _gameStartOrLoadEvent.postValue(GameEvent.CREATED)
     }
 
     private fun isIncompleteOrErroredGameWord(gameWordId: String?, havingEmptyCells: Boolean): Boolean {
