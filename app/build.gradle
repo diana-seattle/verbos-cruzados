@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 
 android {
     buildFeatures {
@@ -48,37 +48,35 @@ android {
 }
 
 dependencies {
-    def lifecycle_version = "2.2.0"
-
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
+    implementation 'com.google.android.material:material:1.4.0'
 
     // kotlin extensions
-    implementation "androidx.core:core-ktx:1.5.0"
-    implementation "androidx.fragment:fragment-ktx:$fragment_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.core:core-ktx:1.6.0"
+    implementation "androidx.fragment:fragment-ktx:1.3.6"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
 
-    implementation "com.google.code.gson:gson:2.8.6"
+    implementation "com.google.code.gson:gson:2.8.7"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     // Needed for FragmentScenario in fragment tests, must be debugImplementation
-    debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
+    debugImplementation "androidx.fragment:fragment-testing:1.3.6"
 
     // This must be debugImplementation too to match fragment-testing lib above or else it breaks
     // activityScenarioRule.
-    debugImplementation("androidx.test:core:1.3.0")
+    debugImplementation("androidx.test:core:1.4.0")
 
-    testImplementation 'junit:junit:4.13.1'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
-    testImplementation 'androidx.test:core:1.3.0'
-    testImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    testImplementation 'androidx.test.ext:junit-ktx:1.1.2'
+    testImplementation 'androidx.test:core:1.4.0'
+    testImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    testImplementation 'androidx.test.ext:junit-ktx:1.1.3'
     testImplementation 'org.mockito:mockito-core:3.3.3'
-    testImplementation 'org.robolectric:robolectric:4.4'
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.0-M1"
+    testImplementation 'org.robolectric:robolectric:4.5.1'
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1"
 }

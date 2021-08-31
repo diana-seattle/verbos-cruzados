@@ -1,7 +1,7 @@
 package org.indiv.dls.games.verboscruzados.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class AnswerPresentation(val isAcross: Boolean,
