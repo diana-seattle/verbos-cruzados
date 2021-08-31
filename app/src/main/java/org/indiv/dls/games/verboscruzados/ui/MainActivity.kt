@@ -1,6 +1,7 @@
 package org.indiv.dls.games.verboscruzados.ui
 
 import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -11,11 +12,11 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.ViewModelProvider
 import org.indiv.dls.games.verboscruzados.BuildConfig
 import org.indiv.dls.games.verboscruzados.viewmodel.MainActivityViewModel
 import org.indiv.dls.games.verboscruzados.viewmodel.MainActivityViewModelFactory
@@ -71,7 +72,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    @VisibleForTesting lateinit var viewModel: MainActivityViewModel
+    @VisibleForTesting val viewModel: MainActivityViewModel by viewModels<MainActivityViewModel>(
+        factoryProducer = { MainActivityViewModelFactory(this) }
+    )
 
     private lateinit var puzzleFragment: PuzzleFragment
 
@@ -95,9 +98,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        viewModel = ViewModelProvider(this, MainActivityViewModelFactory(this))
-                .get(MainActivityViewModel::class.java)
 
         // Observe changes to the currently selected word.
         viewModel.answerPresentation.observe(this) { answerPresentation ->
@@ -400,9 +400,7 @@ class MainActivity : AppCompatActivity() {
 
             // Delay very slightly so that animation is seen on app startup
             binding.answerKeyboard.postDelayed({
-                ObjectAnimator.ofFloat(binding.answerKeyboard, "translationY", 0f)
-                        .setDuration(KEYBOARD_ANIMATION_TIME)
-                        .start()
+                binding.answerKeyboard.animate().translationY(0f).setDuration(KEYBOARD_ANIMATION_TIME).start()
             }, 1)
 
             if (viewModel.showOnboardingMessage) {
@@ -416,14 +414,8 @@ class MainActivity : AppCompatActivity() {
             // Animate off screen, then set invisible
             val animator = ObjectAnimator.ofFloat(binding.answerKeyboard, "translationY", viewModel.keyboardHeight)
                     .setDuration(KEYBOARD_ANIMATION_TIME)
-            animator.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(animation: Animator?) {}
-                override fun onAnimationStart(animation: Animator?) {}
-                override fun onAnimationCancel(animation: Animator?) {
-                    binding.answerKeyboard.visibility = View.INVISIBLE
-                }
-
-                override fun onAnimationEnd(animation: Animator?) {
+            animator.addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
                     binding.answerKeyboard.visibility = View.INVISIBLE
                 }
             })
